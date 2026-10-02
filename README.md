@@ -2,6 +2,8 @@
 
 **by Elospeed**
 
+> ⚠️ **Beta:** Compatibility with Traktor Pro 4 is still being tested. Please report problems via [Issues](https://github.com/Elospeed/StemMaker/issues).
+
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.

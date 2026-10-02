@@ -2,6 +2,8 @@
 
 **by Elospeed**
 
+> ⚠️ **Beta:** Die Kompatibilität mit Traktor Pro 4 wird noch getestet. Probleme bitte über [Issues](https://github.com/Elospeed/StemMaker/issues) melden.
+
 🇬🇧 **English version:** [README.md](README.md)
 
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
