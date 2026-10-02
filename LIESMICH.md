@@ -194,6 +194,11 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
 - **Icon:** `art/make_icon.py` (Python + Pillow) zeichnet das Programmsymbol: vier Balken in den Stem-Farben. Ergebnis `StemMaker.ico` in `src\`, Lazarus baut es automatisch ein.
 - **demucs.cpp für Windows:** `demucs-build/build_demucs_windows.sh` (Cross-Build unter Linux/WSL mit mingw-w64). Der Patch ändert nur 3 Dinge: `.string()` für Windows-Pfade, wählbare CPU-Architektur statt `-march=native`, und die Tests werden nicht mitgebaut.
 
+## Entwicklung
+
+- [Entwicklungslog](docs/ENTWICKLUNGSLOG.md): aufgetretene Probleme und ihre Lösungen
+- [Ideen für künftige Versionen](docs/IDEEN.md)
+
 ## Lizenzen / Credits
 
 - StemMaker: © 2026 Elospeed, MIT-Lizenz (siehe `LICENSE`).

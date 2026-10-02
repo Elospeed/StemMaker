@@ -196,6 +196,11 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 - **Icon:** `art/make_icon.py` (Python + Pillow) draws the program icon: four bars in the stem colors. The result `StemMaker.ico` goes into `src\`; Lazarus embeds it automatically.
 - **demucs.cpp for Windows:** `demucs-build/build_demucs_windows.sh` (cross-build on Linux/WSL with mingw-w64). The patch changes only 3 things: `.string()` for Windows paths, selectable CPU architecture instead of `-march=native`, and the tests are not built.
 
+## Development
+
+- [Development log](docs/ENTWICKLUNGSLOG.md) (German): problems found during development and how they were solved
+- [Ideas for future versions](docs/IDEEN.md) (German)
+
 ## Licenses / Credits
 
 - StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
