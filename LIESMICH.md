@@ -2,6 +2,8 @@
 
 **by Elospeed**
 
+🇬🇧 **English version:** [README.md](README.md)
+
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
 Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stemgen), nur **ohne Python** und ohne Setup: ein Lazarus-Programm, das alles Nötige beim ersten Start selbst holt.
 
