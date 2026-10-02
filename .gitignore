@@ -1,0 +1,31 @@
+# Build output (Lazarus / Free Pascal)
+bin/
+lib/
+backup/
+*.exe
+*.o
+*.ppu
+*.compiled
+*.res
+*.lps
+*.dbg
+
+# Downloaded at runtime by StemMaker - never commit
+models/
+tools/ffmpeg.exe
+*.bin
+
+# User data created next to the exe
+StemMaker.ini
+StemMaker_queue.txt
+StemMaker_queue.txt.tmp
+logs/
+
+# demucs.cpp build tree (see demucs-build/)
+demucs-build/demucs.cpp/
+
+# Misc
+*.zip
+.DS_Store
+Thumbs.db
+__pycache__/

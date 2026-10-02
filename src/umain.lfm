@@ -1,0 +1,505 @@
+object frmMain: TfrmMain
+  Left = 300
+  Height = 700
+  Top = 150
+  Width = 860
+  AllowDropFiles = True
+  Caption = 'StemMaker'
+  ClientHeight = 700
+  ClientWidth = 860
+  Constraints.MinHeight = 560
+  Constraints.MinWidth = 800
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
+  Position = poScreenCenter
+  ShowHint = True
+  object pnlTop: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 860
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 860
+    TabOrder = 0
+    object btnAddFiles: TButton
+      Left = 70
+      Height = 30
+      Top = 6
+      Width = 150
+      Caption = 'Dateien hinzuf'#252'gen...'
+      OnClick = btnAddFilesClick
+      TabOrder = 0
+    end
+    object btnAddFolder: TButton
+      Left = 226
+      Height = 30
+      Top = 6
+      Width = 80
+      Caption = 'Ordner...'
+      Hint = 'Alle Audiodateien eines Ordners (inkl. Unterordner) hinzuf'#252'gen'
+      OnClick = btnAddFolderClick
+      TabOrder = 1
+    end
+    object btnRemove: TButton
+      Left = 312
+      Height = 30
+      Top = 6
+      Width = 86
+      Caption = 'Entfernen'
+      OnClick = btnRemoveClick
+      TabOrder = 2
+    end
+    object btnClear: TButton
+      Left = 404
+      Height = 30
+      Top = 6
+      Width = 90
+      Caption = 'Liste leeren'
+      OnClick = btnClearClick
+      TabOrder = 3
+    end
+    object btnCheck: TButton
+      Left = 500
+      Height = 30
+      Top = 6
+      Width = 115
+      Caption = 'Stem pr'#252'fen...'
+      Hint = 'Zeigt Spuren und Stem-Metadaten einer vorhandenen .stem.mp4'
+      OnClick = btnCheckClick
+      TabOrder = 4
+    end
+    object btnInfo: TButton
+      Left = 8
+      Height = 30
+      Top = 6
+      Width = 56
+      Caption = 'Info'
+      Hint = 'Anleitung, Version, Spenden, Logs'
+      OnClick = btnInfoClick
+      TabOrder = 5
+    end
+    object btnCopyLog: TButton
+      Left = 621
+      Height = 30
+      Top = 6
+      Width = 105
+      Caption = 'Log kopieren'
+      Hint = 'Kopiert das Protokoll unten in die Zwischenablage'
+      OnClick = btnCopyLogClick
+      TabOrder = 6
+    end
+    object lblDrop: TLabel
+      Left = 734
+      Height = 15
+      Top = 13
+      Width = 120
+      Caption = 'oder hierher ziehen'
+      Font.Color = clGrayText
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object lvFiles: TListView
+    Left = 0
+    Height = 282
+    Top = 42
+    Width = 860
+    Align = alClient
+    Columns = <
+      item
+        Caption = 'Datei'
+        Width = 340
+      end
+      item
+        Caption = 'Status'
+        Width = 150
+      end
+      item
+        AutoSize = True
+        Caption = 'Pfad'
+        Width = 350
+      end>
+    MultiSelect = True
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 1
+    ViewStyle = vsReport
+  end
+  object gbSettings: TGroupBox
+    Left = 0
+    Height = 206
+    Top = 294
+    Width = 860
+    Align = alBottom
+    Caption = 'Einstellungen'
+    ClientHeight = 186
+    ClientWidth = 856
+    TabOrder = 2
+    object lblOut: TLabel
+      Left = 8
+      Height = 15
+      Top = 12
+      Width = 100
+      Caption = 'Ausgabeordner:'
+      ParentColor = False
+    end
+    object edtOut: TDirectoryEdit
+      Left = 120
+      Height = 25
+      Top = 8
+      Width = 420
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object chkBeside: TCheckBox
+      Left = 556
+      Height = 19
+      Top = 10
+      Width = 220
+      Caption = 'neben der Originaldatei speichern'
+      OnChange = chkBesideChange
+      TabOrder = 1
+    end
+    object lblModel: TLabel
+      Left = 8
+      Height = 15
+      Top = 44
+      Width = 100
+      Caption = 'Trenn-Modell:'
+      ParentColor = False
+    end
+    object cbModel: TComboBox
+      Left = 120
+      Height = 25
+      Top = 40
+      Width = 330
+      ItemHeight = 15
+      OnChange = cbModelChange
+      Style = csDropDownList
+      TabOrder = 2
+    end
+    object lblThreads: TLabel
+      Left = 470
+      Height = 15
+      Top = 44
+      Width = 50
+      Caption = 'Teile:'
+      Hint = 'Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zus'#228'tzlich mehrere Kerne und braucht gut 2 GB RAM.'
+      ParentColor = False
+    end
+    object seThreads: TSpinEdit
+      Left = 530
+      Height = 25
+      Top = 40
+      Width = 60
+      Hint = 'Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zus'#228'tzlich mehrere Kerne und braucht gut 2 GB RAM.'
+      MaxValue = 64
+      MinValue = 1
+      TabOrder = 3
+      Value = 4
+      OnChange = seThreadsChange
+    end
+    object chkAutoThreads: TCheckBox
+      Left = 598
+      Height = 19
+      Top = 43
+      Width = 60
+      Caption = 'Auto'
+      Hint = 'Auto: so viele Teile wie der Prozessor echte Kerne hat (h'#246'chstens 4) und der Arbeitsspeicher verkraftet'
+      OnChange = chkAutoThreadsChange
+      TabOrder = 10
+    end
+    object lblCores: TLabel
+      Left = 660
+      Height = 15
+      Top = 44
+      Width = 180
+      Caption = '(je 1 Kern)'
+      ParentColor = False
+    end
+    object lblFormat: TLabel
+      Left = 8
+      Height = 15
+      Top = 76
+      Width = 100
+      Caption = 'Audio-Format:'
+      ParentColor = False
+    end
+    object cbFormat: TComboBox
+      Left = 120
+      Height = 25
+      Top = 72
+      Width = 330
+      ItemHeight = 15
+      Items.Strings = (
+        'AAC automatisch (wie die Quelle, max. 320 kbit/s)'
+        'AAC 256 kbit/s (NI-Standard)'
+        'AAC 320 kbit/s'
+        'ALAC verlustfrei (gro'#223'e Dateien)'
+      )
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).'#13#10'Gr'#246'sser bringt nichts - besser als die Quelle wird es nie.'#13#10'Sehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zus'#228'tzlich verloren geht.'
+      Style = csDropDownList
+      TabOrder = 4
+    end
+    object chkOverwrite: TCheckBox
+      Left = 470
+      Height = 19
+      Top = 74
+      Width = 260
+      Caption = 'vorhandene Stem-Dateien '#252'berschreiben'
+      TabOrder = 5
+    end
+    object lblStems: TLabel
+      Left = 8
+      Height = 15
+      Top = 108
+      Width = 100
+      Caption = 'Stems:'
+      Hint = 'Namen und Farben der 4 Stems, so wie Traktor sie anzeigt'
+      ParentColor = False
+    end
+    object edtStem1: TEdit
+      Left = 120
+      Height = 25
+      Top = 104
+      Width = 110
+      TabOrder = 6
+      Text = 'Drums'
+    end
+    object clr1: TColorButton
+      Left = 232
+      Height = 25
+      Top = 104
+      Width = 34
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = 7577088
+    end
+    object edtStem2: TEdit
+      Left = 276
+      Height = 25
+      Top = 104
+      Width = 110
+      TabOrder = 7
+      Text = 'Bass'
+    end
+    object clr2: TColorButton
+      Left = 388
+      Height = 25
+      Top = 104
+      Width = 34
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = 24277
+    end
+    object edtStem3: TEdit
+      Left = 432
+      Height = 25
+      Top = 104
+      Width = 110
+      TabOrder = 8
+      Text = 'Other'
+    end
+    object clr3: TColorButton
+      Left = 544
+      Height = 25
+      Top = 104
+      Width = 34
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = 10975692
+    end
+    object edtStem4: TEdit
+      Left = 588
+      Height = 25
+      Top = 104
+      Width = 110
+      TabOrder = 9
+      Text = 'Vox'
+    end
+    object clr4: TColorButton
+      Left = 700
+      Height = 25
+      Top = 104
+      Width = 34
+      BorderWidth = 2
+      ButtonColorSize = 16
+      ButtonColor = 15316054
+    end
+    object lblTools: TLabel
+      Left = 8
+      Height = 15
+      Top = 138
+      Width = 300
+      Caption = 'Tools: ...'
+      ParentColor = False
+      ParentFont = False
+    end
+    object chkKeepAwake: TCheckBox
+      Left = 470
+      Height = 19
+      Top = 135
+      Width = 380
+      Caption = 'PC w'#228'hrend der Konvertierung wach halten (kein Standby)'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Verhindert den Ruhezustand und setzt den Energiesparmodus vor'#252'bergehend aus.'#13#10'Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen.'
+      TabOrder = 11
+    end
+    object chkKeepTree: TCheckBox
+      Left = 120
+      Height = 19
+      Top = 163
+      Width = 330
+      Caption = 'Unterordner im Ausgabeordner nachbauen'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Bei ganzen Ordnern: Musik\House\2024\track.mp3 wird zu <Ausgabeordner>\House\2024\track.stem.mp4'
+      TabOrder = 12
+    end
+    object chkShutdown: TCheckBox
+      Left = 470
+      Height = 19
+      Top = 163
+      Width = 380
+      Caption = 'PC nach Abschluss herunterfahren'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar).'
+      TabOrder = 13
+    end
+  end
+  object pnlRun: TPanel
+    Left = 0
+    Height = 82
+    Top = 500
+    Width = 860
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 82
+    ClientWidth = 860
+    TabOrder = 3
+    object btnStart: TButton
+      Left = 8
+      Height = 32
+      Top = 8
+      Width = 110
+      Caption = 'Start'
+      Font.Style = [fsBold]
+      OnClick = btnStartClick
+      ParentFont = False
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 124
+      Height = 32
+      Top = 8
+      Width = 110
+      Caption = 'Abbrechen'
+      OnClick = btnCancelClick
+      TabOrder = 1
+    end
+    object btnOpenOut: TButton
+      Left = 240
+      Height = 32
+      Top = 8
+      Width = 140
+      Caption = 'Ordner '#246'ffnen'
+      OnClick = btnOpenOutClick
+      TabOrder = 2
+    end
+    object pbFile: TProgressBar
+      Left = 392
+      Height = 14
+      Top = 6
+      Width = 460
+      Anchors = [akTop, akLeft, akRight]
+      Smooth = True
+      TabOrder = 3
+    end
+    object lblFileTime: TLabel
+      Left = 392
+      Height = 15
+      Top = 22
+      Width = 460
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      ParentColor = False
+    end
+    object pbTotal: TProgressBar
+      Left = 392
+      Height = 14
+      Top = 42
+      Width = 460
+      Anchors = [akTop, akLeft, akRight]
+      Smooth = True
+      TabOrder = 4
+    end
+    object lblTotal: TLabel
+      Left = 392
+      Height = 15
+      Top = 58
+      Width = 460
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      ParentColor = False
+    end
+    object lblStage: TLabel
+      Left = 8
+      Height = 15
+      Top = 48
+      Width = 372
+      AutoSize = False
+      ParentColor = False
+    end
+  end
+  object splLog: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 582
+    Width = 860
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object memLog: TMemo
+    Left = 0
+    Height = 113
+    Top = 587
+    Width = 860
+    Align = alBottom
+    Font.Name = 'Consolas'
+    ParentFont = False
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 5
+    WordWrap = False
+  end
+  object tmrTime: TTimer
+    Enabled = False
+    OnTimer = tmrTimeTimer
+    Left = 200
+    Top = 100
+  end
+  object dlgOpen: TOpenDialog
+    Title = 'Audiodateien w'#228'hlen'
+    Filter = 'Audio (*.mp3;*.wav;*.flac;*.aif;*.aiff;*.m4a;*.aac;*.ogg;*.opus)|*.mp3;*.wav;*.wave;*.flac;*.aif;*.aiff;*.m4a;*.aac;*.ogg;*.opus|MP3 (*.mp3)|*.mp3|Alle Dateien|*.*'
+    Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 40
+    Top = 100
+  end
+  object dlgFolder: TSelectDirectoryDialog
+    Title = 'Ordner mit Audiodateien w'#228'hlen'
+    Left = 120
+    Top = 100
+  end
+end

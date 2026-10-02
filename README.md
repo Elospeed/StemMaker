@@ -1,0 +1,206 @@
+# Elospeed StemMaker 1.6
+
+**by Elospeed**
+
+Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
+It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setup: a single Lazarus program that downloads everything it needs on first start.
+
+The German version of this guide is `LIESMICH.md`.
+
+```
+MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / other / vocals
+                                                     │
+      Master + 4 stems ──ffmpeg (AAC/ALAC)──► MP4 with 5 tracks
+                                                     │
+                       StemMaker (Pascal) ──► NI "stem" metadata ──► *.stem.mp4
+```
+
+## Getting started
+
+1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
+2. Run `StemMaker.exe`.
+
+On startup the **startup check window** opens first. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
+- **All green:** The main window opens by itself after about a second.
+- **On the very first start** ffmpeg (approx. 170 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. StemMaker then checks again and starts.
+- **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
+
+If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
+
+## Donations
+
+StemMaker is free and open source. Before it starts, a small window asks for a voluntary donation via [Ko-fi](https://ko-fi.com/elospeed). "Start tool" simply carries on. Tick "Don't show at startup" to hide the window for good. You can still donate any time via **Info → Donate now**.
+
+## Folder structure
+
+```
+StemMaker\
+  StemMaker.exe          program (GUI)
+  StemMaker.ini          settings (created when you first close the program)
+  StemMaker_queue.txt    saved file list (queue)
+  logs\                  logs of the last 20 program starts
+  AddOns\                extra programs for advanced users
+    StemCLI.exe          command-line version (batch files, Task Scheduler)
+  tools\
+    demucs_mt.cpp.main.exe      separation, Demucs v4 (AVX2 build)
+    demucs_ft_mt.cpp.main.exe   separation, Demucs v4 fine-tuned
+    demucs_v3_mt.cpp.main.exe   separation, Demucs v3
+    avx\...                     same, for CPUs with AVX but without AVX2 (approx. 2011-2013)
+    generic\...                 same, for even older CPUs
+    ffmpeg.exe                  ← downloaded on first start
+  models\
+    ggml-model-htdemucs-4s-f16.bin   ← downloaded on first start
+  lang\                  language files (gettext .po)
+  src\                   complete source code (Lazarus)
+  demucs-build\          build instructions for the demucs programs
+```
+
+The demucs programs are fully statically linked; they need no DLLs and no installation. StemMaker detects which instructions your CPU supports and picks the fastest matching build: AVX2, AVX or generic. In testing, the AVX build was a good 30 % faster than generic.
+
+## Usage
+
+- **Drag** files or whole folders **into the window**, or use "Add files..." or "Folder...". You can also drop them straight onto `StemMaker.exe`.
+- **Start** processes the list one file after another. "Cancel" stops immediately and cleans up the temp files.
+- Below both progress bars you see **elapsed and estimated remaining time**: the top one for the current file, the bottom one for the whole list. The estimate uses the length of the waiting songs and the speed of this PC, and gets more accurate with every finished file. After each song the list shows how long it took, e.g. "OK (4:12)".
+- The result is `Title.stem.mp4`, by default next to the original file. Alternatively, choose an output folder.
+- Tags (title, artist, album, genre, year, track) and the **cover art** are copied from the MP3.
+- **Check stem...** shows whether a file is a valid stem (5 tracks + stem metadata). This also works with purchased NI stems.
+- A normal player only plays track 1, the master. You only hear the individual stems in Traktor.
+
+- **Info** (top left) shows this guide, the version and the name of the current log. From there you can also open the logs folder or donate.
+- **Copy log** puts the log on the clipboard, e.g. to pass it on when reporting a problem.
+
+### Converting a whole collection
+
+StemMaker is built for preparing an entire music collection in one go, e.g. overnight:
+
+- **Time estimate before you start:** Below the lower progress bar you'll see e.g. "87 files pending, 6:12:40 of music - approx. 11:30:00". StemMaker reads the song lengths in the background and learns the speed of your PC with every finished track: "(this PC's speed)" means the estimate is based on your machine, "(rough estimate)" means it hasn't measured yet.
+- **The list is remembered:** The file list and the status of every file is saved continuously (`StemMaker_queue.txt`). If StemMaker crashes, the power fails or you close the program, the list is back on the next start. Click **Start** to continue where it stopped. An interrupted file is redone. "Clear list" also deletes the saved list.
+- **Recreate subfolders in the output folder:** If you add a whole folder, e.g. `D:\Music\House`, then `D:\Music\House\2024\track.mp3` ends up as `<output folder>\House\2024\track.stem.mp4`. Only applies with your own output folder.
+- **Shut down the PC when finished:** When all files are done, a 60-second countdown with "Cancel" appears. Then StemMaker closes cleanly and Windows shuts down. The checkbox only applies to the next run. If you cancel the run, the PC does not shut down.
+- **Keep the PC awake** (see Settings) stops Windows from going to sleep halfway through.
+- Stem files that already exist are skipped (unless "overwrite existing stem files" is on).
+
+### Logs and troubleshooting
+
+Every program start writes a log to the `logs` folder. Each line is saved immediately, so even after a crash everything up to the last action is in it. The last 20 logs are kept.
+
+| File name ends with | Meaning |
+|---|---|
+| `_LAEUFT.log` | StemMaker is currently running |
+| `.log` | closed normally |
+| `_FEHLER.log` | closed normally, but an error occurred along the way |
+| `_ABSTURZ.log` | ended unexpectedly (crash, Task Manager, power failure); renamed like this on the next start |
+
+The log contains:
+- system info: Windows version, processor, cores, RAM, graphics card
+- every ffmpeg and demucs call with all parameters and the result
+- progress in 10 % steps
+- for errors, the call stack with file and line number in the source code
+- at the end of a run, a summary: total time, average per track, cores used and the peak RAM usage of demucs
+
+The graphics card is only listed. demucs.cpp computes on the CPU only.
+
+### Settings
+
+| Setting | Meaning |
+|---|---|
+| Separation model | **htdemucs**: default, good quality. **htdemucs_ft**: best quality, approx. 4× slower, 4 model files. **hdemucs_mmi (v3)**: faster, slightly worse. |
+| Parts / Auto | How many parts of the song are separated in parallel. **Auto** (default) recalculates on every start: as many parts as the processor has physical cores, at most 4 – and only as many as the RAM can handle (each part needs a good 2 GB, so with 8 GB RAM at most 2). Each part also uses additional cores; this is distributed automatically. Without the tick, the number you set applies. |
+| Audio format | **AAC automatic** (default): the stem file gets the bitrate of the source, e.g. MP3 256 → AAC 256, MP3 320 → AAC 320. Going higher gains nothing; it can never be better than the source. Sources below 192 kbit/s get 192, so nothing extra is lost when re-encoding. Lossless sources (WAV/FLAC) get 320. **AAC 256**: NI standard, fixed. **AAC 320**: fixed. **ALAC**: lossless, very large, only worthwhile for WAV/FLAC sources. The log shows per file e.g. "Source: mp3 320 kbit/s → stem file AAC 320 kbit/s". |
+| Stem names/colors | How the stems appear in Traktor. The defaults use the same colors as Stemgen. |
+| Keep the PC awake during conversion | On by default. During conversion the PC won't go to sleep (the screen may turn off). If Windows is set to the **Power saver** plan (or, on Windows 11, the power mode is "Best power efficiency"), it switches to more performance for the duration of the conversion. Afterwards everything is back to how it was, even after a crash: in that case StemMaker restores the old power plan on the next start. "Balanced" is left untouched. |
+
+### Command line (AddOns\StemCLI.exe)
+
+The same without a window, e.g. for batch files or Task Scheduler:
+```
+AddOns\StemCLI.exe "D:\Music\New" -o "D:\Music\Stems" -m ht -t 4
+AddOns\StemCLI.exe track.mp3 -f alac --overwrite
+AddOns\StemCLI.exe --check "track.stem.mp4"
+```
+Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
+Most people won't need this: the main window handles whole folders, the queue and overnight runs. StemCLI is meant for automation (batch files, Windows Task Scheduler). It uses the same tools, models, language and settings (`StemMaker.ini`) as the main program and doesn't download anything itself; StemMaker.exe must have run once beforehand.
+
+## Processing time
+
+Separation runs purely on the processor (CPU). Measured with a 12-minute track (extended mix), converted to a normal 4-minute track:
+
+| Computer | htdemucs (default) | hdemucs_mmi (v3) |
+|---|---|---|
+| Intel i7-12700KF (12 cores, 2021) | 22 min → approx. **7–8 min** per 4-min track | 12.5 min → approx. **4 min** per 4-min track |
+| Intel i5-2500 (4 cores, 2011) | 1 h 22 min → approx. **27 min** per 4-min track | – |
+
+Rule of thumb: on a current PC, htdemucs takes about **twice as long as the song**, v3 about **as long as the song**. htdemucs_ft takes roughly four times as long as htdemucs. Time grows with song length. Larger batches are best run overnight.
+
+Older processors without AVX2 (e.g. 2nd/3rd generation Intel Core i) are much slower: a 12-minute track can take over an hour there. Laptops on battery are also throttled; StemMaker shows a notice in that case. If the PC went to sleep in between, this is noted at the end of the log.
+
+## How the stem file is built
+
+Same as Stemgen with `ni-stem`/MP4Box:
+- MP4 with 5 audio tracks: track 1 is the master and the only *enabled* one, tracks 2–5 are Drums/Bass/Other/Vox and *disabled*.
+- `moov/udta/stem`: JSON with stem names, colors and mastering DSP (compressor/limiter off, same values as Stemgen).
+- iTunes tags plus `TAUT = STEM`.
+
+## Advanced: StemMaker.ini
+
+```ini
+[Tools]
+FFmpeg=D:\Programs\ffmpeg\bin\ffmpeg.exe    ; use an existing ffmpeg
+DemucsDir=...                                ; different folder for demucs
+ModelsDir=D:\Models                          ; store models elsewhere
+
+[Download]
+FFmpegZipURL=https://...                     ; in case a download source moves
+ModelBaseURL=https://...
+```
+
+## Problems?
+
+- **Download fails:** Check your internet connection, firewall or proxy. If necessary, download manually:
+  - ffmpeg: <https://www.gyan.dev/ffmpeg/builds/> ("release essentials"). Copy `ffmpeg.exe` to `tools\`.
+  - Models: <https://huggingface.co/datasets/Retrobear/demucs.cpp/tree/main>. Put the `.bin` files in `models\`.
+- **demucs aborts:** The log at the bottom of the main window shows the last lines of output. If the path contains unusual characters (e.g. Japanese), move the StemMaker folder to a simple path. Umlauts are fine.
+
+## Languages
+
+On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time in the Info window under "Language:". The new language applies from the next start.
+
+The language files are in the `lang\` folder (gettext, `.po`). To add a language, copy `lang\StemMaker.pot` to e.g. `lang\fr.po` and translate it with [Poedit](https://poedit.net).
+
+## Build it yourself
+
+- **StemMaker/StemCLI:** Open `src\StemMaker.lpi` or `src\StemCLI.lpi` in Lazarus (≥ 2.2, FPC 3.2) and press F9. No extra packages are needed, only LCL and LazUtils, which ship with Lazarus. The code is extensively commented in German:
+
+  | Unit | Purpose |
+  |---|---|
+  | `StemMaker.lpr` | main program: startup check window first, then main window |
+  | `umain.pas/.lfm` | main window, file list, worker thread |
+  | `uinit.pas` | startup check window with checks and download |
+  | `ustemjob.pas` | converts one file (ffmpeg → demucs → ffmpeg → metadata) |
+  | `ustemmp4.pas` | writes the Traktor stem info into the MP4 (pure Pascal) |
+  | `udownload.pas` | download via WinINet + unzip |
+  | `ulog.pas` | real-time log file, crash detection, system info |
+  | `ulogui.pas` | catches unexpected errors and writes them to the log |
+  | `udonate.pas` | donation window before startup |
+  | `uinfo.pas` | Info window |
+  | `upower.pas` | keep the PC awake, power plan, battery, sleep detection |
+  | `ulang.pas` | multilingual support: `_()` function and `.po` reader |
+  | `ulangui.pas` | language picker at first start, translates forms |
+  | `uqueue.pas` | Remembers the queue, reads song lengths, learns the speed |
+  | `stemcli.lpr` | command-line version |
+
+- **Language files:** `lang-tools/i18n.py` collects all texts from the code (`_('...')` and `.lfm`) and generates `src/lang/StemMaker.pot` and `src/lang/en.po` (copied to `lang\` in the release) from `lang-tools/en.json`.
+- **Icon:** `art/make_icon.py` (Python + Pillow) draws the program icon: four bars in the stem colors. The result `StemMaker.ico` goes into `src\`; Lazarus embeds it automatically.
+- **demucs.cpp for Windows:** `demucs-build/build_demucs_windows.sh` (cross-build on Linux/WSL with mingw-w64). The patch changes only 3 things: `.string()` for Windows paths, selectable CPU architecture instead of `-march=native`, and the tests are not built.
+
+## Licenses / Credits
+
+- StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
+- [demucs.cpp](https://github.com/sevagh/demucs.cpp) by Sevag Hanssian (MIT) – the separation programs shipped in `tools\`.
+- The [Demucs](https://github.com/facebookresearch/demucs) models are by Alexandre Défossez et al. / Meta AI. They are downloaded from their original location and not redistributed by StemMaker – see the licensing note in `THIRD-PARTY-NOTICES.md`.
+- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start; Windows builds by BtbN).
+- Approach and metadata values based on [Stemgen](https://github.com/axeldelafosse/stemgen) by axeldelafosse (MIT).
+- Traktor and STEMS are trademarks of Native Instruments; StemMaker is not affiliated with Native Instruments.
+- Full list of all components, authors and licenses: **`THIRD-PARTY-NOTICES.md`**.
+- Only use with material you have the rights to.

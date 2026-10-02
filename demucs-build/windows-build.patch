@@ -1,0 +1,101 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6184f79..75dc6d8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -16,7 +16,7 @@ endif()
+ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+ set(CMAKE_CXX_FLAGS_DEBUG "-g -DEIGEN_FAST_MATH=0 -O0")
+ 
+-set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -march=native -fno-unsafe-math-optimizations -freciprocal-math -fno-signed-zeros")
++set(CMAKE_CXX_FLAGS_RELEASE "-Ofast ${DEMUCS_ARCH} -fno-unsafe-math-optimizations -freciprocal-math -fno-signed-zeros")
+ 
+ # define a macro NDEBUG for Eigen3 release builds
+ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG")
+@@ -130,11 +130,11 @@ add_custom_target(lint
+ 
+ # get gtest from vendor/googletest
+ set(BUILD_GMOCK OFF CACHE BOOL "Disable gmock in googletest" FORCE)
+-add_subdirectory(vendor/googletest)
++#add_subdirectory(vendor/googletest)
+ 
+ # include test/*.cpp as test files
+ file(GLOB TEST_SOURCES "test/*.cpp")
+ 
+-add_executable(demucs.cpp.test ${TEST_SOURCES})
+-target_link_libraries(demucs.cpp.test demucs.cpp.lib gtest gtest_main libnyquist)
+-add_test(NAME tests COMMAND demucs.cpp.test)
++#add_executable(demucs.cpp.test ${TEST_SOURCES})
++#target_link_libraries(demucs.cpp.test demucs.cpp.lib gtest gtest_main libnyquist)
++#add_test(NAME tests COMMAND demucs.cpp.test)
+diff --git a/cli-apps/demucs.cpp b/cli-apps/demucs.cpp
+index 8ba3b98..5ab97aa 100644
+--- a/cli-apps/demucs.cpp
++++ b/cli-apps/demucs.cpp
+@@ -227,6 +227,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
+diff --git a/cli-apps/demucs_ft.cpp b/cli-apps/demucs_ft.cpp
+index 7ccccf4..3b29bab 100644
+--- a/cli-apps/demucs_ft.cpp
++++ b/cli-apps/demucs_ft.cpp
+@@ -304,6 +304,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
+diff --git a/cli-apps/demucs_ft_mt.cpp b/cli-apps/demucs_ft_mt.cpp
+index c50f22e..653e8cc 100644
+--- a/cli-apps/demucs_ft_mt.cpp
++++ b/cli-apps/demucs_ft_mt.cpp
+@@ -281,6 +281,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
+diff --git a/cli-apps/demucs_mt.cpp b/cli-apps/demucs_mt.cpp
+index 876dbd9..3fe2edc 100644
+--- a/cli-apps/demucs_mt.cpp
++++ b/cli-apps/demucs_mt.cpp
+@@ -224,6 +224,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
+diff --git a/cli-apps/demucs_v3.cpp b/cli-apps/demucs_v3.cpp
+index 0e9077b..f81b4d3 100644
+--- a/cli-apps/demucs_v3.cpp
++++ b/cli-apps/demucs_v3.cpp
+@@ -227,6 +227,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
+diff --git a/cli-apps/demucs_v3_mt.cpp b/cli-apps/demucs_v3_mt.cpp
+index 61bd88a..0b5b430 100644
+--- a/cli-apps/demucs_v3_mt.cpp
++++ b/cli-apps/demucs_v3_mt.cpp
+@@ -222,6 +222,6 @@ int main(int argc, const char **argv)
+             }
+         }
+ 
+-        write_audio_file(target_waveform, p_target);
++        write_audio_file(target_waveform, p_target.string());
+     }
+ }
