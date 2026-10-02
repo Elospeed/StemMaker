@@ -41,6 +41,7 @@ StemMaker\
   logs\                  Protokolle der letzten 20 Programmstarts
   AddOns\                Zusatzprogramme für Fortgeschrittene
     StemCLI.exe          Kommandozeilen-Version (Batch/Skripte, Aufgabenplanung)
+    StemPlayer.exe       Testplayer für .stem.mp4-Dateien (Mute/Solo pro Stem)
   tools\
     demucs_mt.cpp.main.exe      Trennung, Demucs v4 (AVX2-Version)
     demucs_ft_mt.cpp.main.exe   Trennung, Demucs v4 fine-tuned
@@ -121,6 +122,10 @@ AddOns\StemCLI.exe --check "track.stem.mp4"
 ```
 Optionen: `-o ordner`, `-m ht|ft|v3`, `-t teile`, `-f aac|alac`, `-b auto|kbit` (Standard auto), `--overwrite`, `--keep` (Temp-Ordner behalten), `--no-awake` (PC darf in den Ruhezustand), `--ffmpeg exe`, `--demucs ordner`, `--models ordner`.
 Für die meisten ist das nicht nötig: Das Hauptfenster kann ganze Ordner, Warteschlange und Nachtläufe. StemCLI ist für Automatisierung gedacht (Batch-Dateien, Windows-Aufgabenplanung). Es nutzt dieselben Werkzeuge, Modelle, Sprache und Einstellungen (`StemMaker.ini`) wie das Hauptprogramm und lädt selbst nichts herunter; vorher muss StemMaker.exe einmal gelaufen sein.
+
+### Testplayer (AddOns\StemPlayer.exe)
+
+Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
 
 ## Dauer
 

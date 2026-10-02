@@ -43,6 +43,7 @@ StemMaker\
   logs\                  logs of the last 20 program starts
   AddOns\                extra programs for advanced users
     StemCLI.exe          command-line version (batch files, Task Scheduler)
+    StemPlayer.exe       test player for .stem.mp4 files (mute/solo per stem)
   tools\
     demucs_mt.cpp.main.exe      separation, Demucs v4 (AVX2 build)
     demucs_ft_mt.cpp.main.exe   separation, Demucs v4 fine-tuned
@@ -123,6 +124,10 @@ AddOns\StemCLI.exe --check "track.stem.mp4"
 ```
 Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
 Most people won't need this: the main window handles whole folders, the queue and overnight runs. StemCLI is meant for automation (batch files, Windows Task Scheduler). It uses the same tools, models, language and settings (`StemMaker.ini`) as the main program and doesn't download anything itself; StemMaker.exe must have run once beforehand.
+
+### Test player (AddOns\StemPlayer.exe)
+
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
 
 ## Processing time
 

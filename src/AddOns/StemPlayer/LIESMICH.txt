@@ -1,0 +1,51 @@
+Elospeed StemPlayer 1.1  -  von Elospeed  (ko-fi.com/elospeed)
+================================================================
+
+Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
+Jeder der 4 Stems lässt sich stummschalten, solo hören (auch mehrere
+gleichzeitig) und in der Lautstärke ändern.
+
+INSTALLATION
+  StemPlayer.exe in den StemMaker-Ordner kopieren. ffmpeg.exe wird
+  automatisch gesucht:  neben der exe, in tools\, bin\, ffmpeg\bin\
+  (auch eine Ebene höher) und im PATH. Wird sie nicht gefunden, fragt
+  das Programm einmal nach und merkt sich den Pfad in StemPlayer.ini.
+
+BEDIENUNG
+  Datei öffnen, auf das Fenster ziehen oder als Parameter übergeben:
+      StemPlayer.exe "C:\Musik\Track.stem.mp4"
+  Die Wiedergabe startet nach dem Laden automatisch.
+
+  Leertaste      Play / Pause
+  1 .. 4         Stem stumm an/aus
+  Shift+1 .. 4   Solo an/aus (mehrere Solos möglich)
+  0              alles zurücksetzen
+  S / O / R      Modus Stems / Original / Rest
+  Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
+
+MODI
+  Stems     Die 4 Stems gemischt (mit Mute/Solo/Fader)
+  Original  Spur 0 = Originalmix aus der Datei (A/B-Vergleich)
+  Rest      Original minus Summe aller 4 Stems. Zeigt, was bei der
+            Trennung verloren ging. Bei guter Trennung sehr leise.
+            Etwas Rest ist durch die AAC-Kodierung normal.
+
+TECHNIK
+  ffmpeg dekodiert alle Spuren einmal als PCM in den Temp-Ordner
+  %TEMP%\ElospeedStemPlayer_...  (ca. 10 MB pro Spur und Minute).
+  Der Ordner wird gelöscht, wenn ein anderer Track geladen oder das
+  Programm geschlossen wird. Bleibt nach einem Absturz etwas liegen,
+  wird es beim nächsten Start automatisch entfernt.
+  Gemischt wird live, Ausgabe über die Windows-waveOut-API
+  (winmm.dll) - keine weiteren DLLs nötig.
+
+KOMPILIEREN
+  StemPlayer.lpi in Lazarus öffnen und kompilieren (Lazarus 3.x,
+  Windows 64 Bit). Das Fenster wird im Code aufgebaut, es gibt
+  deshalb keine .lfm-Datei.
+
+VERSIONEN
+  1.0  Erste Version
+  1.1  Verwaiste Temp-Ordner werden beim Start gelöscht, Schliessen
+       während des Ladens bricht ffmpeg sauber ab, ffmpeg-Fehlermeldung
+       wird angezeigt, eigenes Programmsymbol
