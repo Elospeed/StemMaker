@@ -10,7 +10,6 @@ Neueste Einträge oben.
 
 | Problem | Lösung |
 |---|---|
-| Commits erschienen auf GitHub unter „claude“ statt unter Elospeed. | Beide Commits auf den Autor `Elospeed` (GitHub-noreply-Adresse) umgeschrieben und neu hochgeladen. Künftige Commits laufen direkt unter Elospeed. Der Kasten „Contributors“ auf der Startseite aktualisiert sich bei GitHub mit Verzögerung. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |
 | Rechtliche Frage: darf man fremde Teile im eigenen Repository haben? | demucs.cpp (MIT) und FFmpeg (LGPL, mit Lizenz + Quellcode) dürfen weitergegeben werden. Die Lizenz der Demucs-Modelle ist unklar → Modelle werden **nicht** selbst verteilt, sondern vom Originalort geladen. Alles dokumentiert in `THIRD-PARTY-NOTICES.md`. |
 
