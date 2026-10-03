@@ -7,6 +7,7 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 | Ordner | Inhalt |
 |---|---|
 | `StemPlayer/1.2/` | StemPlayer 1.2 mit neuem Design „Traktor Dark“ (PR #2) |
+| `StemMaker/1.6-Test/` | StemMaker 1.6 mit Sperre gegen einen zweiten gleichzeitigen Start |
 | `StemMaker/1.6.1-test/` | StemMaker 1.6 mit Fehlerbehebung: lässt sich wieder beenden (Längen-Abfrage hing) |
 
 ## StemPlayer testen
@@ -15,7 +16,11 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 
 ## StemMaker testen
 
-`StemMaker.exe` in einer bestehenden StemMaker-1.6-Installation ersetzen (vorher die alte exe umbenennen, z.B. in `StemMaker-1.6.exe`). Einstellungen, Liste, Modelle und ffmpeg bleiben erhalten.
+Beide Testversionen: `StemMaker.exe` in einer bestehenden StemMaker-1.6-Installation ersetzen (vorher die alte exe umbenennen, z.B. in `StemMaker-1.6.exe`). Einstellungen, Liste, Modelle und ffmpeg bleiben erhalten.
+
+`1.6-Test/`: Die neuen Hinweistexte sind auf Deutsch; die englische Übersetzung kommt erst mit der neuen `lang\en.po` der nächsten Version.
+
+`1.6.1-test/`: enthält nur die Fehlerbehebung beim Beenden, noch nicht die Sperre gegen einen zweiten Start. Beides zusammen kommt mit der nächsten Version.
 
 ## Hinweise
 

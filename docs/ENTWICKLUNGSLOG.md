@@ -14,6 +14,17 @@ Neueste Einträge oben.
 
 ---
 
+## Nur ein StemMaker gleichzeitig (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Zweiter StemMaker parallel gestartet (z. B. v4 und v3 gleichzeitig für einen Hörvergleich) – das geht schief. | Beide teilen sich `StemMaker_queue.txt` (der zweite lädt die Liste des ersten und beide überschreiben sie), `StemMaker.ini` (der zweite stellt den vom ersten umgestellten Energiesparplan als „Absturz-Rest“ zurück), `logs\` (das laufende Log des ersten bekommt einen Absturz-Vermerk) und den Namen der fertigen Datei (hängt nicht vom Modell ab). Ausserdem nutzt demucs schon allein alle Kerne. |
+| Wie verhindert man einen zweiten Start zuverlässig, auch nach einem Absturz? | Benannter Windows-Mutex `Local\Elospeed.StemMaker.EinzigeInstanz` in `usingleinstance.pas`, ganz am Anfang von `StemMaker.lpr`, noch vor Log und INI. Windows gibt ihn beim Programmende immer frei (auch bei Absturz/Task-Manager) – keine Sperrdatei, die liegen bleiben kann. |
+| Das Fenster des laufenden StemMaker finden. | `EnumWindows` + Exe-Name des Prozesses (`QueryFullProcessImageNameW`, dynamisch geladen). Lazarus-Programme haben zusätzlich ein unsichtbares Anwendungsfenster (Grösse 0): ist es minimiert, dieses mit `SW_RESTORE` wiederherstellen. Ist ein Dialog offen, nur das „enabled“ Fenster nach vorne holen. |
+| Sprache für den Hinweis, bevor die normale Sprachwahl läuft. | Sprache still aus `StemMaker.ini` lesen (ohne Auswahlfenster), sonst Windows-Sprache. |
+
+---
+
 ## StemPlayer 1.1 / 1.2 (AddOn, Oktober 2026)
 
 | Problem | Lösung |
@@ -103,3 +114,5 @@ Neueste Einträge oben.
 - Getestet wird unter Linux mit Wine (Windows-Exe) und Xvfb (Bildschirmfotos); echte Tests auf Windows-PCs durch Elospeed mit Logs.
 - `pkill -f <text>` kann die eigene Shell beenden, wenn der Text im Befehl vorkommt → Prozesse gezielt mit `pkill -x Name` beenden.
 - Wine braucht nach `wineserver -k` einige Sekunden, bevor ein Fenster erscheint.
+- Ubuntu-Pakete reichen für den Windows-Build nicht: `fp-units-win-rtl` enthält nur die RTL, und der Debian-Quellcode von FPC hat keine Makefiles. Lösung: FPC-3.2.2-Quellcode von gitlab.com/freepascal.org laden, `make all OS_TARGET=win64 CPU_TARGET=x86_64` und `make install ... CROSSINSTALL=1`, dann die Units nach `/usr/lib/x86_64-linux-gnu/fpc/3.2.2/units/x86_64-win64` verlinken. Danach klappt `lazbuild --os=win64 --cpu=x86_64 --ws=win32`.
+- Testversionen in `Temp/` mit `x86_64-w64-mingw32-strip` verkleinern (StemMaker: 29 MB → 3,5 MB; fehlen dann nur die Zeilennummern im Absturz-Log).

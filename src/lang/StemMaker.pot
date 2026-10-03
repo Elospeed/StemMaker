@@ -353,6 +353,10 @@ msgstr ""
 msgid "Breche ab ..."
 msgstr ""
 
+#: usingleinstance.pas:207
+msgid "Das offene Fenster wird jetzt nach vorne geholt. Weitere Dateien einfach dort zur Liste hinzufügen."
+msgstr ""
+
 #: umain.lfm:114
 msgid "Datei"
 msgstr ""
@@ -773,8 +777,16 @@ msgstr ""
 msgid "StemMaker"
 msgstr ""
 
+#: usingleinstance.pas:203
+msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
+msgstr ""
+
 #: udonate.pas:89
 msgid "StemMaker ist kostenlos"
+msgstr ""
+
+#: usingleinstance.pas:202
+msgid "StemMaker läuft schon"
 msgstr ""
 
 #: ulogui.pas:54
