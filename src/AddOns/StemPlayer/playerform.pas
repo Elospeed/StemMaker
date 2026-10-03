@@ -50,6 +50,9 @@
     1.1  (02.10.2026)  Verwaiste Temp-Ordner werden beim Start gelöscht,
                        Schliessen während des Dekodierens bricht ffmpeg sauber ab,
                        ffmpeg-Fehlermeldung wird im Fehlerfall angezeigt
+    1.2  (03.10.2026)  Neues Design "Traktor Dark": selbst gezeichnete Buttons,
+                       Fader, Positionsleiste und LED-Meter (djcontrols.pas).
+                       Bedienung und Funktion unverändert.
   ============================================================================ }
 unit playerform;
 
@@ -60,11 +63,11 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, mp4stem, stemengine;
+  LazFileUtils, IniFiles, mp4stem, stemengine, djcontrols;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.1';
+  APP_VER   = '1.2';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -72,13 +75,12 @@ const
 type
   { Eine Zeile pro Stem }
   TStemRow = record
-    Panel    : TPanel;
-    ColorBar : TShape;
+    Panel    : TDJPanel;   // Zeile mit farbigem Streifen links (Stemfarbe)
     LblName  : TLabel;
     LblState : TLabel;
-    BtnMute  : TSpeedButton;
-    BtnSolo  : TSpeedButton;
-    TrkVol   : TTrackBar;
+    BtnMute  : TDJButton;
+    BtnSolo  : TDJButton;
+    TrkVol   : TDJSlider;
     LblVol   : TLabel;
     Meter    : TPaintBox;
     Color    : TColor;
@@ -90,31 +92,31 @@ type
   TMainForm = class(TForm)
   private
     { --- Oberer Bereich --- }
-    PnlTop      : TPanel;
-    BtnOpen     : TButton;
+    PnlTop      : TDJPanel;
+    BtnOpen     : TDJButton;
     LblFile     : TLabel;
-    { --- Transport --- }
-    PnlTransport: TPanel;
-    BtnPlay     : TButton;
-    BtnStop     : TButton;
-    TrkPos      : TTrackBar;
-    LblTime     : TLabel;
-    { --- Modus --- }
-    PnlMode     : TPanel;
-    BtnModeStems: TSpeedButton;
-    BtnModeOrig : TSpeedButton;
-    BtnModeRest : TSpeedButton;
-    BtnReset    : TButton;
+    LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
+    { --- "Deck": Transport + Modus --- }
+    PnlDeck     : TDJPanel;
+    BtnPlay     : TDJButton;
+    BtnStop     : TDJButton;
+    TrkPos      : TDJSlider;
+    LblTime     : TLabel;      // aktuelle Position (gross)
+    LblTotal    : TLabel;      // Gesamtlänge (klein, gedimmt)
+    BtnModeStems: TDJButton;
+    BtnModeOrig : TDJButton;
+    BtnModeRest : TDJButton;
+    BtnReset    : TDJButton;
     { --- Stems --- }
     Rows        : array[1..STEM_COUNT] of TStemRow;
     { --- Master --- }
-    PnlMaster   : TPanel;
-    TrkMaster   : TTrackBar;
+    PnlMaster   : TDJPanel;
+    TrkMaster   : TDJSlider;
     LblMasterVol: TLabel;
     MeterOut    : TPaintBox;
-    LblClip     : TLabel;
+    BtnClip     : TDJButton;   // reine Anzeige, leuchtet bei Übersteuerung
     { --- Unten --- }
-    PnlBottom   : TPanel;
+    PnlBottom   : TDJPanel;
     LblHelp     : TLabel;
     LblStatus   : TLabel;
     LblKofi     : TLabel;
@@ -139,9 +141,12 @@ type
     FClipTicks  : Integer;
 
     procedure BuildUI;
-    procedure BuildStemRow(Idx: Integer; ATop: Integer);
-    function  MakeSpeed(AParent: TWinControl; const ACaption: string;
-                        ALeft, ATop, AWidth: Integer; AGroup: Integer): TSpeedButton;
+    procedure BuildStemRow(Idx: Integer);
+    function  MakeButton(AParent: TWinControl; const ACaption: string;
+                         ALeft, ATop, AWidth, AHeight: Integer): TDJButton;
+    function  MakeFader(AParent: TWinControl; ALeft, ATop, AWidth: Integer;
+                        AFill: TColor): TDJSlider;
+    function  MakeDJPanel(AHeight, ASpaceTop: Integer): TDJPanel;
     function  MakeLabel(AParent: TWinControl; const ACaption: string;
                         ALeft, ATop: Integer; ASize: Integer; ABold: Boolean): TLabel;
 
@@ -198,13 +203,10 @@ var
 implementation
 
 const
-  { Farben für das dunkle "DJ-Look"-Layout }
-  CLR_BG      = $00202020;
-  CLR_PANEL   = $002C2C2C;
-  CLR_TEXT    = $00F0F0F0;
-  CLR_DIM     = $00808080;
-  CLR_METERBG = $00141414;
-  ROW_HEIGHT  = 60;
+  { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
+  ROW_HEIGHT  = 54;   // Höhe einer Stem-Zeile
+  MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
+  MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
 
 { ============================================================================
   Aufbau des Fensters
@@ -215,13 +217,15 @@ begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
   Caption := APP_TITLE + ' ' + APP_VER + '  -  von Elospeed';
-  Width := 800;
-  Height := 560;
-  Constraints.MinWidth := 700;
-  Constraints.MinHeight := 560;
+  Width := 820;
+  Height := 590;
+  Constraints.MinWidth := 720;
+  Constraints.MinHeight := 590;
   Position := poScreenCenter;
-  Color := CLR_BG;
-  Font.Color := CLR_TEXT;
+  Color := DJ_BG;
+  Font.Name := 'Segoe UI';
+  Font.Color := DJ_TEXT;
+  DoubleBuffered := True;   // weniger Flackern bei den Pegelanzeigen
   KeyPreview := True;
   AllowDropFiles := True;
   OnKeyDown := @FormKeyDown;
@@ -263,249 +267,256 @@ begin
   Result.Left := ALeft;
   Result.Top := ATop;
   Result.Caption := ACaption;
-  Result.Font.Color := CLR_TEXT;
+  Result.Font.Color := DJ_TEXT;
   if ASize > 0 then Result.Font.Size := ASize;
   if ABold then Result.Font.Style := [fsBold];
 end;
 
-function TMainForm.MakeSpeed(AParent: TWinControl; const ACaption: string;
-  ALeft, ATop, AWidth: Integer; AGroup: Integer): TSpeedButton;
+{ Flacher DJ-Button (siehe djcontrols.pas) }
+function TMainForm.MakeButton(AParent: TWinControl; const ACaption: string;
+  ALeft, ATop, AWidth, AHeight: Integer): TDJButton;
 begin
-  Result := TSpeedButton.Create(Self);
+  Result := TDJButton.Create(Self);
   Result.Parent := AParent;
-  Result.SetBounds(ALeft, ATop, AWidth, 32);
+  Result.SetBounds(ALeft, ATop, AWidth, AHeight);
   Result.Caption := ACaption;
-  Result.GroupIndex := AGroup;   // GroupIndex <> 0 -> Button rastet ein
-  Result.Font.Color := clBlack;  // Buttons sind hell -> dunkle Schrift
+end;
+
+{ Lautstärke-Fader 0..100 % mit farbiger Füllung }
+function TMainForm.MakeFader(AParent: TWinControl; ALeft, ATop, AWidth: Integer;
+  AFill: TColor): TDJSlider;
+begin
+  Result := TDJSlider.Create(Self);
+  Result.Parent := AParent;
+  Result.SetBounds(ALeft, ATop, AWidth, 26);
+  Result.Style := dssFader;
+  Result.Min := 0;
+  Result.Max := 100;
+  Result.FillColor := AFill;
+end;
+
+{ Dunkle Fläche mit Rahmen, oben angedockt, links/rechts mit Abstand zum Rand.
+  Die Reihenfolge der oben angedockten Flächen ergibt sich aus der
+  Reihenfolge der Aufrufe (jede neue Fläche kommt unter die vorige). }
+function TMainForm.MakeDJPanel(AHeight, ASpaceTop: Integer): TDJPanel;
+begin
+  Result := TDJPanel.Create(Self);
+  Result.Parent := Self;
+  Result.Align := alTop;
+  { Aufsteigender Top-Wert -> neue Fläche landet unter allen bisherigen }
+  Result.Top := ControlCount * 100;
+  Result.Height := AHeight;
+  Result.BorderSpacing.Top := ASpaceTop;
+  Result.BorderSpacing.Left := MARGIN;
+  Result.BorderSpacing.Right := MARGIN;
+  { Breite vorab setzen, damit die rechts verankerten Elemente stimmen }
+  Result.Width := ClientWidth - 2 * MARGIN;
 end;
 
 procedure TMainForm.BuildUI;
 var
-  i: Integer;
+  i, W: Integer;
+  L: TLabel;
 begin
-  { ---------- Oben: Datei ---------- }
-  PnlTop := TPanel.Create(Self);
-  PnlTop.Parent := Self;
-  PnlTop.Align := alTop;
-  PnlTop.Height := 50;
-  PnlTop.BevelOuter := bvNone;
-  PnlTop.Color := CLR_BG;
-  PnlTop.Width := ClientWidth;   // Breite vorab setzen, damit Anker stimmen
+  W := ClientWidth - 2 * MARGIN;   // Breite der Flächen
 
-  BtnOpen := TButton.Create(Self);
-  BtnOpen.Parent := PnlTop;
-  BtnOpen.SetBounds(10, 10, 110, 30);
-  BtnOpen.Caption := 'Öffnen...';
+  { ---------- Oben: Datei ---------- }
+  PnlTop := MakeDJPanel(56, 4);
+  PnlTop.Color := DJ_BG;
+  PnlTop.BorderColor := clNone;    // ohne Rahmen, liegt direkt auf dem Fenster
+
+  BtnOpen := MakeButton(PnlTop, 'ÖFFNEN', 0, 12, 96, 32);
+  BtnOpen.Hint := 'Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen';
+  BtnOpen.ShowHint := True;
   BtnOpen.OnClick := @BtnOpenClick;
 
-  LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 132, 16, 10, True);
+  LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
-  LblFile.Width := PnlTop.Width - 142;
+  LblFile.SetBounds(110, 8, W - 110, 24);
 
-  { ---------- Transport ---------- }
-  PnlTransport := TPanel.Create(Self);
-  PnlTransport.Parent := Self;
-  PnlTransport.Align := alTop;
-  PnlTransport.Top := 100;
-  PnlTransport.Height := 50;
-  PnlTransport.BevelOuter := bvNone;
-  PnlTransport.Color := CLR_BG;
-  PnlTransport.Width := ClientWidth;
+  LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
+  LblFileInfo.Font.Color := DJ_DIM;
 
-  BtnPlay := TButton.Create(Self);
-  BtnPlay.Parent := PnlTransport;
-  BtnPlay.SetBounds(10, 8, 90, 32);
-  BtnPlay.Caption := 'Play';
+  { ---------- Deck: Transport (Zeile 1) + Modus (Zeile 2) ---------- }
+  PnlDeck := MakeDJPanel(96, 4);
+
+  BtnPlay := MakeButton(PnlDeck, '', 12, 12, 46, 34);
+  BtnPlay.Glyph := dgPlay;
+  BtnPlay.LitColor := DJ_GREEN;
   BtnPlay.Enabled := False;
+  BtnPlay.Hint := 'Play / Pause (Leertaste)';
+  BtnPlay.ShowHint := True;
   BtnPlay.OnClick := @BtnPlayClick;
 
-  BtnStop := TButton.Create(Self);
-  BtnStop.Parent := PnlTransport;
-  BtnStop.SetBounds(104, 8, 70, 32);
-  BtnStop.Caption := 'Stop';
+  BtnStop := MakeButton(PnlDeck, '', 64, 12, 46, 34);
+  BtnStop.Glyph := dgStop;
   BtnStop.Enabled := False;
+  BtnStop.Hint := 'Stop und zurück an den Anfang';
+  BtnStop.ShowHint := True;
   BtnStop.OnClick := @BtnStopClick;
 
-  TrkPos := TTrackBar.Create(Self);
-  TrkPos.Parent := PnlTransport;
-  TrkPos.SetBounds(182, 8, PnlTransport.Width - 182 - 150, 32);
+  TrkPos := TDJSlider.Create(Self);
+  TrkPos.Parent := PnlDeck;
+  TrkPos.Style := dssPosition;
+  TrkPos.SetBounds(120, 12, W - 120 - 172, 34);
   TrkPos.Anchors := [akLeft, akTop, akRight];
   TrkPos.Min := 0;
   TrkPos.Max := 1000;
-  TrkPos.TickStyle := tsNone;
-  TrkPos.PageSize := 50;
   TrkPos.Enabled := False;
   TrkPos.OnChange := @PosChange;
   TrkPos.OnMouseDown := @PosMouseDown;
   TrkPos.OnMouseUp := @PosMouseUp;
 
-  LblTime := MakeLabel(PnlTransport, '00:00 / 00:00', 0, 14, 11, True);
+  { Zeit: aktuelle Position gross, Gesamtlänge klein daneben }
+  LblTime := MakeLabel(PnlDeck, '00:00', 0, 12, 18, True);
+  LblTime.Font.Name := MONO_FONT;
   LblTime.AutoSize := False;
   LblTime.Alignment := taRightJustify;
-  LblTime.SetBounds(PnlTransport.Width - 150, 14, 138, 24);
+  LblTime.SetBounds(W - 168, 12, 88, 32);
   LblTime.Anchors := [akTop, akRight];
 
-  { ---------- Modus ---------- }
-  PnlMode := TPanel.Create(Self);
-  PnlMode.Parent := Self;
-  PnlMode.Align := alTop;
-  PnlMode.Top := 200;
-  PnlMode.Height := 46;
-  PnlMode.BevelOuter := bvNone;
-  PnlMode.Color := CLR_BG;
-  PnlMode.Width := ClientWidth;
+  LblTotal := MakeLabel(PnlDeck, '/ 00:00', 0, 22, 10, False);
+  LblTotal.Font.Name := MONO_FONT;
+  LblTotal.Font.Color := DJ_DIM;
+  LblTotal.AutoSize := False;
+  LblTotal.SetBounds(W - 76, 22, 70, 20);
+  LblTotal.Anchors := [akTop, akRight];
 
-  MakeLabel(PnlMode, 'Hören:', 10, 14, 0, False);
-  BtnModeStems := MakeSpeed(PnlMode, 'Stems (S)', 60, 6, 110, 1);
-  BtnModeOrig  := MakeSpeed(PnlMode, 'Original (O)', 172, 6, 110, 1);
-  BtnModeRest  := MakeSpeed(PnlMode, 'Rest = Original - Stems (R)', 284, 6, 190, 1);
+  L := MakeLabel(PnlDeck, 'HÖREN', 12, 62, 8, False);
+  L.Font.Color := DJ_DIM;
+
+  { Modus-Umschaltung: drei aneinanderliegende Buttons, der aktive ist hell }
+  BtnModeStems := MakeButton(PnlDeck, 'STEMS  S', 62, 56, 96, 28);
+  BtnModeOrig  := MakeButton(PnlDeck, 'ORIGINAL  O', 157, 56, 116, 28);
+  BtnModeRest  := MakeButton(PnlDeck, 'REST  R', 272, 56, 90, 28);
   BtnModeStems.Down := True;
-  BtnModeStems.Hint := 'Die 4 Stems gemischt - mit Mute / Solo / Lautstärke';
-  BtnModeOrig.Hint  := 'Originalmix aus der Datei (Spur 0) zum A/B-Vergleich';
-  BtnModeRest.Hint  := 'Original minus Summe aller Stems: hörbar, was bei der Trennung' + LineEnding +
-                       'verloren ging oder anders klingt (ideal: fast Stille).';
+  BtnModeStems.Hint := 'Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)';
+  BtnModeOrig.Hint  := 'Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)';
+  BtnModeRest.Hint  := 'Rest = Original minus Summe aller Stems (Taste R):' + LineEnding +
+                       'hörbar, was bei der Trennung verloren ging oder anders' + LineEnding +
+                       'klingt (ideal: fast Stille).';
   BtnModeStems.ShowHint := True; BtnModeOrig.ShowHint := True; BtnModeRest.ShowHint := True;
   BtnModeStems.OnClick := @ModeClick;
   BtnModeOrig.OnClick := @ModeClick;
   BtnModeRest.OnClick := @ModeClick;
 
-  BtnReset := TButton.Create(Self);
-  BtnReset.Parent := PnlMode;
-  BtnReset.SetBounds(PnlMode.Width - 170, 6, 160, 32);
+  BtnReset := MakeButton(PnlDeck, 'RESET  0', W - 112, 56, 100, 28);
   BtnReset.Anchors := [akTop, akRight];
-  BtnReset.Caption := 'Alles zurücksetzen (0)';
+  BtnReset.Hint := 'Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)';
+  BtnReset.ShowHint := True;
   BtnReset.OnClick := @BtnResetClick;
 
   { ---------- 4 Stem-Zeilen ---------- }
   for i := 1 to STEM_COUNT do
-    BuildStemRow(i, 300 + i * ROW_HEIGHT);
+    BuildStemRow(i);
 
   { ---------- Master ---------- }
-  PnlMaster := TPanel.Create(Self);
-  PnlMaster.Parent := Self;
-  PnlMaster.Align := alTop;
-  PnlMaster.Top := 900;
-  PnlMaster.Height := 56;
-  PnlMaster.BevelOuter := bvNone;
-  PnlMaster.Color := CLR_BG;
-  PnlMaster.BorderSpacing.Top := 6;
-  PnlMaster.Width := ClientWidth;
+  PnlMaster := MakeDJPanel(60, 8);
 
-  MakeLabel(PnlMaster, 'Master', 14, 16, 12, True);
-  TrkMaster := TTrackBar.Create(Self);
-  TrkMaster.Parent := PnlMaster;
-  TrkMaster.SetBounds(295, 10, 170, 32);
-  TrkMaster.Min := 0;
-  TrkMaster.Max := 100;
+  MakeLabel(PnlMaster, 'MASTER', 14, 10, 11, True);
+  L := MakeLabel(PnlMaster, 'AUSGANG L / R', 14, 34, 8, False);
+  L.Font.Color := DJ_DIM;
+
+  TrkMaster := MakeFader(PnlMaster, 224, 17, 200, DJ_TEXT);
   TrkMaster.Position := 80;
-  TrkMaster.Frequency := 10;
-  TrkMaster.TickStyle := tsNone;
   TrkMaster.OnChange := @MasterChange;
-  LblMasterVol := MakeLabel(PnlMaster, '80%', 470, 18, 0, False);
+  LblMasterVol := MakeLabel(PnlMaster, '80%', 0, 21, 0, False);
+  LblMasterVol.Font.Name := MONO_FONT;
+  LblMasterVol.Font.Color := $00AAAAAA;
+  LblMasterVol.AutoSize := False;
+  LblMasterVol.Alignment := taRightJustify;
+  LblMasterVol.SetBounds(428, 21, 46, 20);
 
   MeterOut := TPaintBox.Create(Self);
   MeterOut.Parent := PnlMaster;
-  MeterOut.SetBounds(520, 12, PnlMaster.Width - 520 - 80, 30);
+  MeterOut.SetBounds(486, 16, W - 486 - 72, 28);
   MeterOut.Anchors := [akLeft, akTop, akRight];
   MeterOut.OnPaint := @OutMeterPaint;
 
-  LblClip := MakeLabel(PnlMaster, 'CLIP', 0, 18, 0, True);
-  LblClip.AutoSize := False;
-  LblClip.Alignment := taCenter;
-  LblClip.SetBounds(PnlMaster.Width - 72, 18, 60, 20);
-  LblClip.Anchors := [akTop, akRight];
-  LblClip.Font.Color := CLR_DIM;
-  LblClip.Hint := 'Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)';
-  LblClip.ShowHint := True;
+  BtnClip := MakeButton(PnlMaster, 'CLIP', W - 60, 17, 48, 26);
+  BtnClip.Anchors := [akTop, akRight];
+  BtnClip.LitColor := DJ_RED;
+  BtnClip.Font.Size := 7;
+  BtnClip.Hint := 'Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)';
+  BtnClip.ShowHint := True;
 
   { ---------- Unten ---------- }
-  PnlBottom := TPanel.Create(Self);
+  PnlBottom := TDJPanel.Create(Self);
   PnlBottom.Parent := Self;
   PnlBottom.Align := alBottom;
   PnlBottom.Height := 66;
-  PnlBottom.BevelOuter := bvNone;
-  PnlBottom.Color := CLR_PANEL;
+  PnlBottom.Color := DJ_FOOTER;
   PnlBottom.Width := ClientWidth;
 
   LblHelp := MakeLabel(PnlBottom,
     'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 zurücksetzen  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  Pos1 Anfang', 10, 6, 0, False);
-  LblHelp.Font.Color := CLR_DIM;
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  Pos1 Anfang', 12, 6, 0, False);
+  LblHelp.Font.Color := $00999999;
 
-  LblStatus := MakeLabel(PnlBottom, '', 10, 26, 0, False);
-  LblStatus.Font.Color := CLR_DIM;
+  LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
+  LblStatus.Font.Color := DJ_DIM;
   LblStatus.Anchors := [akLeft, akTop, akRight];
   LblStatus.AutoSize := False;
-  LblStatus.Width := PnlBottom.Width - 20;
+  LblStatus.Width := PnlBottom.Width - 24;
 
-  LblKofi := MakeLabel(PnlBottom, 'Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed', 10, 45, 0, False);
-  LblKofi.Font.Color := $00FFB050;
-  LblKofi.Font.Style := [fsUnderline];
+  LblKofi := MakeLabel(PnlBottom, 'Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed', 12, 44, 0, False);
+  LblKofi.Font.Color := DJ_KOFI;
   LblKofi.Cursor := crHandPoint;
   LblKofi.OnClick := @KofiClick;
 end;
 
-procedure TMainForm.BuildStemRow(Idx: Integer; ATop: Integer);
+{ Eine Stem-Zeile:  Name/Zustand | M S | Fader | % | LED-Meter }
+procedure TMainForm.BuildStemRow(Idx: Integer);
 var
   R: ^TStemRow;
+  W: Integer;
 begin
   R := @Rows[Idx];
   R^.Color := FInfo.Colors[Idx - 1];
   R^.Level := 0;
 
-  R^.Panel := TPanel.Create(Self);
-  R^.Panel.Parent := Self;
-  R^.Panel.Align := alTop;
-  R^.Panel.Top := ATop;
-  R^.Panel.Height := ROW_HEIGHT - 4;
-  R^.Panel.BorderSpacing.Top := 4;
-  R^.Panel.BorderSpacing.Left := 8;
-  R^.Panel.BorderSpacing.Right := 8;
-  R^.Panel.BevelOuter := bvNone;
-  R^.Panel.Color := CLR_PANEL;
-  R^.Panel.Width := ClientWidth - 16;
+  R^.Panel := MakeDJPanel(ROW_HEIGHT, 6);
+  R^.Panel.AccentWidth := 6;
+  R^.Panel.AccentColor := R^.Color;
+  W := R^.Panel.Width;
 
-  R^.ColorBar := TShape.Create(Self);
-  R^.ColorBar.Parent := R^.Panel;
-  R^.ColorBar.Align := alLeft;
-  R^.ColorBar.Width := 8;
-  R^.ColorBar.Pen.Style := psClear;
-  R^.ColorBar.Brush.Color := R^.Color;
+  R^.LblName := MakeLabel(R^.Panel, Format('%d  %s', [Idx, UpperCase(FInfo.Names[Idx - 1])]), 20, 7, 11, True);
+  R^.LblName.Font.Color := R^.Color;
+  R^.LblState := MakeLabel(R^.Panel, '', 20, 31, 8, False);
+  R^.LblState.Font.Color := DJ_DIM;
 
-  R^.LblName := MakeLabel(R^.Panel, Format('%d  %s', [Idx, FInfo.Names[Idx - 1]]), 18, 6, 12, True);
-  R^.LblState := MakeLabel(R^.Panel, '', 18, 32, 0, False);
-  R^.LblState.Font.Color := CLR_DIM;
-
-  R^.BtnMute := MakeSpeed(R^.Panel, 'Mute', 140, 12, 66, 10 + Idx);
-  R^.BtnMute.AllowAllUp := True;
+  R^.BtnMute := MakeButton(R^.Panel, 'M', 140, 13, 32, 28);
+  R^.BtnMute.Toggle := True;
+  R^.BtnMute.LitColor := DJ_RED;
   R^.BtnMute.Tag := Idx;
   R^.BtnMute.OnClick := @MuteSoloClick;
-  R^.BtnMute.Hint := Format('Stem stumm schalten (Taste %d)', [Idx]);
+  R^.BtnMute.Hint := Format('Mute: Stem stumm schalten (Taste %d)', [Idx]);
   R^.BtnMute.ShowHint := True;
 
-  R^.BtnSolo := MakeSpeed(R^.Panel, 'Solo', 210, 12, 66, 20 + Idx);
-  R^.BtnSolo.AllowAllUp := True;
+  R^.BtnSolo := MakeButton(R^.Panel, 'S', 178, 13, 32, 28);
+  R^.BtnSolo.Toggle := True;
+  R^.BtnSolo.LitColor := DJ_YELLOW;
   R^.BtnSolo.Tag := 100 + Idx;
   R^.BtnSolo.OnClick := @MuteSoloClick;
-  R^.BtnSolo.Hint := Format('Nur Solo-Stems hören - mehrere möglich (Shift+%d)', [Idx]);
+  R^.BtnSolo.Hint := Format('Solo: nur Solo-Stems hören - mehrere möglich (Shift+%d)', [Idx]);
   R^.BtnSolo.ShowHint := True;
 
-  R^.TrkVol := TTrackBar.Create(Self);
-  R^.TrkVol.Parent := R^.Panel;
-  R^.TrkVol.SetBounds(287, 10, 170, 32);
-  R^.TrkVol.Min := 0;
-  R^.TrkVol.Max := 100;
+  R^.TrkVol := MakeFader(R^.Panel, 224, 14, 200, R^.Color);
   R^.TrkVol.Position := 100;
-  R^.TrkVol.TickStyle := tsNone;
   R^.TrkVol.Tag := Idx;
   R^.TrkVol.OnChange := @VolChange;
 
-  R^.LblVol := MakeLabel(R^.Panel, '100%', 462, 18, 0, False);
+  R^.LblVol := MakeLabel(R^.Panel, '100%', 0, 18, 0, False);
+  R^.LblVol.Font.Name := MONO_FONT;
+  R^.LblVol.Font.Color := $00AAAAAA;
+  R^.LblVol.AutoSize := False;
+  R^.LblVol.Alignment := taRightJustify;
+  R^.LblVol.SetBounds(428, 18, 46, 20);
 
   R^.Meter := TPaintBox.Create(Self);
   R^.Meter.Parent := R^.Panel;
-  R^.Meter.SetBounds(512, 14, R^.Panel.Width - 512 - 10, 28);
+  R^.Meter.SetBounds(486, 16, W - 486 - 12, 22);
   R^.Meter.Anchors := [akLeft, akTop, akRight];
   R^.Meter.Tag := Idx;
   R^.Meter.OnPaint := @MeterPaint;
@@ -810,6 +821,7 @@ begin
                 IntToStr(GetTickCount64) + PathDelim;
     ForceDirectories(FTempDir);
     LblFile.Caption := ExtractFileName(FileName);
+    LblFileInfo.Caption := 'Dekodiere ...';
     Ok := DecodeTracks(FileName, Tracks, ErrText);
     if not Ok then
     begin
@@ -819,8 +831,10 @@ begin
         { Abbruch durch Schliessen des Fensters -> keine Fehlermeldung }
         LblStatus.Caption := 'Laden abgebrochen.';
         LblFile.Caption := '';
+        LblFileInfo.Caption := '';
         Exit;
       end;
+      LblFileInfo.Caption := 'Fehler beim Dekodieren';
       LblStatus.Caption := 'Fehler beim Dekodieren: ' +
         StringReplace(ErrText, LineEnding, ' | ', [rfReplaceAll]);
       MessageDlg(APP_TITLE, 'ffmpeg konnte die Datei nicht dekodieren:' + LineEnding +
@@ -841,9 +855,8 @@ begin
     { 4) Oberfläche anpassen }
     for i := 1 to STEM_COUNT do
     begin
-      Rows[i].LblName.Caption := Format('%d  %s', [i, FInfo.Names[i - 1]]);
+      Rows[i].LblName.Caption := Format('%d  %s', [i, UpperCase(FInfo.Names[i - 1])]);
       Rows[i].Color := FInfo.Colors[i - 1];
-      Rows[i].ColorBar.Brush.Color := Rows[i].Color;
       Rows[i].Panel.Enabled := i < Tracks;     // fehlende Spuren deaktivieren
     end;
     FUpdatingPos := True;
@@ -856,6 +869,8 @@ begin
     FLastClip := 0;
     FClipTicks := 0;
     Caption := ExtractFileName(FileName) + '  -  ' + APP_TITLE;
+    LblFileInfo.Caption := Format('%d Spuren  ·  Länge %s', [Tracks, FormatTime(Engine.TotalFrames)]);
+    LblTotal.Caption := '/ ' + FormatTime(Engine.TotalFrames);
 
     if Msg <> '' then LblStatus.Caption := Msg
     else LblStatus.Caption := Format('%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s',
@@ -908,62 +923,53 @@ begin
   UpdateRowLook;
 end;
 
-{ Zeigt den Zustand jeder Zeile an (Text + abgedunkelt). }
+{ Zeigt den Zustand jeder Zeile an (Text, Farben, abgedunkelt).
+  Die Buttons zeichnen ihren gedrückten Zustand selbst (Mute rot, Solo gelb). }
 procedure TMainForm.UpdateRowLook;
 var
   i: Integer;
   S: string;
   IsOn, StemMode: Boolean;
+  StateColor: TColor;
 begin
   StemMode := BtnModeStems.Down;
-  { aktiven Modus-Button fett darstellen }
-  if BtnModeStems.Down then BtnModeStems.Font.Style := [fsBold] else BtnModeStems.Font.Style := [];
-  if BtnModeOrig.Down then BtnModeOrig.Font.Style := [fsBold] else BtnModeOrig.Font.Style := [];
-  if BtnModeRest.Down then BtnModeRest.Font.Style := [fsBold] else BtnModeRest.Font.Style := [];
   for i := 1 to STEM_COUNT do
   begin
     IsOn := Rows[i].Panel.Tag = 1;
+    StateColor := DJ_DIM;
     if not StemMode then
     begin
-      if BtnModeOrig.Down then S := '(Modus: Original)' else S := '(Modus: Rest)';
+      if BtnModeOrig.Down then S := 'MODUS: ORIGINAL' else S := 'MODUS: REST';
     end
-    else if Rows[i].BtnSolo.Down then S := 'SOLO'
+    else if Rows[i].BtnSolo.Down then
+    begin
+      S := 'SOLO';
+      StateColor := DJ_YELLOW;
+    end
     else if not IsOn then
     begin
-      if Rows[i].BtnMute.Down then S := 'STUMM' else S := 'aus (anderes Solo aktiv)';
+      if Rows[i].BtnMute.Down then
+      begin
+        S := 'STUMM';
+        StateColor := DJ_RED;
+      end
+      else S := 'AUS (SOLO)';  // ein anderer Stem ist auf Solo
     end
-    else S := 'hörbar';
+    else S := 'HÖRBAR';
     Rows[i].LblState.Caption := S;
-    { Gedrückte Mute/Solo-Buttons zusätzlich farbig + fett hervorheben }
-    if Rows[i].BtnMute.Down then
-    begin
-      Rows[i].BtnMute.Font.Color := clRed;
-      Rows[i].BtnMute.Font.Style := [fsBold];
-    end
-    else
-    begin
-      Rows[i].BtnMute.Font.Color := clBlack;
-      Rows[i].BtnMute.Font.Style := [];
-    end;
-    if Rows[i].BtnSolo.Down then
-    begin
-      Rows[i].BtnSolo.Font.Color := $00008000;  // dunkelgrün
-      Rows[i].BtnSolo.Font.Style := [fsBold];
-    end
-    else
-    begin
-      Rows[i].BtnSolo.Font.Color := clBlack;
-      Rows[i].BtnSolo.Font.Style := [];
-    end;
+    Rows[i].LblState.Font.Color := StateColor;
+    { Hörbare Stems in ihrer Farbe, alle anderen grau }
     if IsOn and StemMode then
     begin
-      Rows[i].LblName.Font.Color := CLR_TEXT;
-      Rows[i].ColorBar.Brush.Color := Rows[i].Color;
+      Rows[i].LblName.Font.Color := Rows[i].Color;
+      Rows[i].Panel.AccentColor := Rows[i].Color;
+      Rows[i].TrkVol.FillColor := Rows[i].Color;
     end
     else
     begin
-      Rows[i].LblName.Font.Color := CLR_DIM;
-      Rows[i].ColorBar.Brush.Color := CLR_DIM;
+      Rows[i].LblName.Font.Color := $00707070;
+      Rows[i].Panel.AccentColor := $00444444;
+      Rows[i].TrkVol.FillColor := DJ_OFF;
     end;
     Rows[i].Meter.Invalidate;
   end;
@@ -995,11 +1001,10 @@ end;
 
 procedure TMainForm.SetMode(M: TPlayMode);
 begin
-  case M of
-    pmStems   : BtnModeStems.Down := True;
-    pmMaster  : BtnModeOrig.Down := True;
-    pmResidual: BtnModeRest.Down := True;
-  end;
+  { Genau einer der drei Modus-Buttons ist gedrückt }
+  BtnModeStems.Down := M = pmStems;
+  BtnModeOrig.Down  := M = pmMaster;
+  BtnModeRest.Down  := M = pmResidual;
   if Engine <> nil then Engine.Mode := M;
   UpdateRowLook;
 end;
@@ -1071,7 +1076,7 @@ end;
 procedure TMainForm.VolChange(Sender: TObject);
 var i: Integer;
 begin
-  i := TTrackBar(Sender).Tag;
+  i := TDJSlider(Sender).Tag;
   if (i >= 1) and (i <= STEM_COUNT) then
     Rows[i].LblVol.Caption := IntToStr(Rows[i].TrkVol.Position) + '%';
   UpdateGains;
@@ -1105,61 +1110,36 @@ end;
 procedure TMainForm.MeterPaint(Sender: TObject);
 var
   PB: TPaintBox;
-  i, W: Integer;
+  i: Integer;
   IsOn: Boolean;
   C: TColor;
 begin
   PB := TPaintBox(Sender);
   i := PB.Tag;
   IsOn := (Rows[i].Panel.Tag = 1) and BtnModeStems.Down;
-  with PB.Canvas do
-  begin
-    Brush.Color := CLR_METERBG;
-    FillRect(0, 0, PB.Width, PB.Height);
-    W := Round(LevelToFrac(Rows[i].Level) * PB.Width);
-    { Aktive Stems in ihrer Farbe, stumme grau (Pegel wird trotzdem angezeigt,
-      damit man sieht, ob in dieser Spur überhaupt etwas los ist) }
-    if IsOn then C := Rows[i].Color else C := $00505050;
-    Brush.Color := C;
-    if W > 0 then FillRect(0, 4, W, PB.Height - 4);
-    { Skalenstriche bei -36, -24, -12, -6 dB }
-    Pen.Color := $00606060;
-    Line(Round(PB.Width * 12 / 48), 0, Round(PB.Width * 12 / 48), 3);
-    Line(Round(PB.Width * 24 / 48), 0, Round(PB.Width * 24 / 48), 3);
-    Line(Round(PB.Width * 36 / 48), 0, Round(PB.Width * 36 / 48), 3);
-    Line(Round(PB.Width * 42 / 48), 0, Round(PB.Width * 42 / 48), 3);
-  end;
+  { Hintergrund wie die Zeile, damit die Lücken zwischen den LEDs passen }
+  PB.Canvas.Brush.Color := DJ_PANEL;
+  PB.Canvas.FillRect(0, 0, PB.Width, PB.Height);
+  { Aktive Stems in ihrer Farbe, stumme grau (Pegel wird trotzdem angezeigt,
+    damit man sieht, ob in dieser Spur überhaupt etwas los ist) }
+  if IsOn then C := Rows[i].Color else C := DJ_OFF;
+  DrawLedBar(PB.Canvas, Rect(0, 0, PB.Width, PB.Height),
+             LevelToFrac(Rows[i].Level), C, False);
 end;
 
 procedure TMainForm.OutMeterPaint(Sender: TObject);
 var
-  ch, W, H, Y: Integer;
-  F: Single;
+  ch, H, Y: Integer;
 begin
-  with MeterOut.Canvas do
+  MeterOut.Canvas.Brush.Color := DJ_PANEL;
+  MeterOut.Canvas.FillRect(0, 0, MeterOut.Width, MeterOut.Height);
+  { Zwei LED-Ketten (L oben, R unten): grün bis -6 dB, gelb bis -1 dB, rot darüber }
+  H := (MeterOut.Height - 4) div 2;
+  for ch := 0 to 1 do
   begin
-    Brush.Color := CLR_METERBG;
-    FillRect(0, 0, MeterOut.Width, MeterOut.Height);
-    H := (MeterOut.Height - 6) div 2;
-    for ch := 0 to 1 do
-    begin
-      Y := 2 + ch * (H + 2);
-      F := LevelToFrac(FOutLevel[ch]);
-      W := Round(F * MeterOut.Width);
-      { grün bis -6 dB, gelb bis -1 dB, rot darüber }
-      Brush.Color := $0050C850;
-      FillRect(0, Y, Min(W, Round(MeterOut.Width * 42 / 48)), Y + H);
-      if W > Round(MeterOut.Width * 42 / 48) then
-      begin
-        Brush.Color := $0000D0F0;
-        FillRect(Round(MeterOut.Width * 42 / 48), Y, Min(W, Round(MeterOut.Width * 47 / 48)), Y + H);
-      end;
-      if W > Round(MeterOut.Width * 47 / 48) then
-      begin
-        Brush.Color := $003030F0;
-        FillRect(Round(MeterOut.Width * 47 / 48), Y, W, Y + H);
-      end;
-    end;
+    Y := ch * (H + 4);
+    DrawLedBar(MeterOut.Canvas, Rect(0, Y, MeterOut.Width, Y + H),
+               LevelToFrac(FOutLevel[ch]), DJ_GREEN, True);
   end;
 end;
 
@@ -1180,7 +1160,9 @@ begin
     Playing := False;
   end;
 
-  if Playing then BtnPlay.Caption := 'Pause' else BtnPlay.Caption := 'Play';
+  { Play-Button: leuchtet grün und zeigt das Pause-Symbol, solange es läuft }
+  BtnPlay.Down := Playing;
+  if Playing then BtnPlay.Glyph := dgPause else BtnPlay.Glyph := dgPlay;
 
   { Position anzeigen (nicht während der Benutzer den Regler zieht) }
   if not FDraggingPos then
@@ -1189,7 +1171,7 @@ begin
     TrkPos.Position := Engine.PlayPos div (SAMPLE_RATE div 10);
     FUpdatingPos := False;
   end;
-  LblTime.Caption := FormatTime(Engine.PlayPos) + ' / ' + FormatTime(Engine.TotalFrames);
+  LblTime.Caption := FormatTime(Engine.PlayPos);
 
   { Pegel: schnell hoch, langsam runter (klassisches Peak-Meter-Verhalten) }
   for i := 1 to STEM_COUNT do
@@ -1213,13 +1195,8 @@ begin
     FLastClip := Engine.ClipCount;
     FClipTicks := 33;
   end;
-  if FClipTicks > 0 then
-  begin
-    Dec(FClipTicks);
-    LblClip.Font.Color := $003030FF;
-  end
-  else
-    LblClip.Font.Color := CLR_DIM;
+  if FClipTicks > 0 then Dec(FClipTicks);
+  BtnClip.Down := FClipTicks > 0;
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
@@ -1235,7 +1212,7 @@ begin
     VK_SPACE:
       begin
         TogglePlay;
-        Key := 0;  // verhindert, dass der fokussierte Button die Taste auch bekommt
+        Key := 0;  // Taste ist verarbeitet
       end;
     VK_1..VK_4:
       begin
