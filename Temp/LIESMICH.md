@@ -7,7 +7,8 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 | Ordner | Inhalt |
 |---|---|
 | `StemPlayer/1.2/` | StemPlayer 1.2 mit neuem Design „Traktor Dark“ (PR #2) |
-| `StemMaker/1.7-statistik/` | StemMaker 1.6 + Log-Statistik (Dateigröße, Tempo, `logs\statistik.csv`) |
+| `StemMaker/1.7-statistik/` | StemMaker 1.6 + Sperre gegen zweiten Start + Log-Statistik (Dateigröße, Tempo, Lautheit, `logs\statistik.csv`) |
+| `StemMaker/1.6-Test/` | StemMaker 1.6 mit Sperre gegen einen zweiten gleichzeitigen Start |
 
 ## StemMaker-Testversion
 
@@ -16,6 +17,10 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 ## StemPlayer testen
 
 `StemPlayer.exe` in den Ordner `AddOns\` einer StemMaker-Installation kopieren, damit `tools\ffmpeg.exe` gefunden wird. Alternativ irgendwo hinlegen, dann fragt der Player beim ersten Öffnen einmal nach ffmpeg.exe.
+
+## StemMaker testen
+
+`StemMaker.exe` in den Ordner einer bestehenden StemMaker-1.6-Installation kopieren (die alte exe vorher sichern). Die neuen Hinweistexte sind auf Deutsch; die englische Übersetzung kommt erst mit der neuen `lang\en.po` der nächsten Version.
 
 ## Hinweise
 

@@ -6,6 +6,7 @@
   Version : 1.6
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
+    00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
     0. Log starten, Spendenfenster zeigen (abschaltbar)
     1. Einstellungen lesen (welches Modell ist gewählt?)
     2. Startfenster mit den Prüfungen zeigen (uInit).
@@ -24,6 +25,7 @@
     uDonate    Spendenfenster vor dem Start
     uInfo      Info-Fenster (Anleitung, Version, Spenden, Logs)
     uPower     PC wach halten, Energiesparplan, Akku, Standby-Erkennung
+    uSingleInstance  nur ein StemMaker gleichzeitig (Sperre beim Start)
   ============================================================================ }
 program StemMaker;
 
@@ -35,7 +37,7 @@ uses
   {$ENDIF}
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
-  uPower, uLang, uLangUI;
+  uPower, uLang, uLangUI, uSingleInstance;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -47,6 +49,12 @@ begin
   Application.Scaled := True;
   Application.Title := APP_NAME;
   Application.Initialize;
+
+  { 00. Läuft schon ein StemMaker? Dann Hinweis zeigen, dessen Fenster nach
+        vorne holen und sofort aufhören - noch bevor Log, INI oder
+        Warteschlange angefasst werden (Details in uSingleInstance). }
+  if not SingleInstanceCheck(StemIniFileName) then
+    Exit;
 
   { 0. Log-Datei anlegen (logs\StemMaker_<Datum>_LAEUFT.log) und alle
        unerwarteten Fehler mitschreiben lassen }
