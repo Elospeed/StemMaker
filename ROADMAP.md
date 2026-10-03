@@ -11,7 +11,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 
 ## 🔨 In Arbeit
 
-- **StemPlayer: neues Aussehen** – Design „Traktor Dark“ (dunkel, Stem-Farben wie in Traktor).
+- Gerade nichts.
 
 ## 📋 Geplant für Version 1.7
 
