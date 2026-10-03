@@ -9,6 +9,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
+- Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
+- Von Speedy getestet, kommt so in die nächste StemMaker-Version.
+
 ### StemPlayer 1.1 (AddOn) – 2. Oktober 2026
 - Test-Player für `.stem.mp4`: pro Stem Stumm, Solo und Lautstärke-Regler, Pegelanzeigen.
 - A/B-Vergleich mit dem Original und Modus „Rest“ (Original minus Summe der Stems) – zeigt, was bei der Trennung verloren geht.
@@ -19,6 +23,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Entwicklungslog und Ideen-Liste unter `docs/`.
 - Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
 - Sprach-Links oben in README und LIESMICH.
+- README/LIESMICH: Abschnitt zur Windows-SmartScreen-Warnung (warum sie kommt, „Trotzdem ausführen“, ZIP „Zulassen“, Download prüfen).
 
 ---
 

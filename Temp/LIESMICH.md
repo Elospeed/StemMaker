@@ -14,5 +14,5 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 
 ## Hinweise
 
-- Das sind Testversionen, nicht signiert. Windows SmartScreen kann deshalb warnen.
+- Das sind Testversionen, nicht signiert. Windows SmartScreen warnt deshalb: „Weitere Informationen“ → „Trotzdem ausführen“ (Details in der [LIESMICH](../LIESMICH.md#windows-warnung-der-computer-wurde-durch-windows-geschützt)).
 - Jede exe, die hier eingecheckt wird, bleibt dauerhaft im Git-Verlauf, auch wenn sie später gelöscht wird. Deshalb nur kleine Programme hier ablegen und alte Versionen nicht immer wieder ersetzen.

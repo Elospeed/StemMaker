@@ -20,7 +20,7 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 ## Loslegen
 
 1. ZIP entpacken, z. B. nach `C:\Tools\StemMaker`.
-2. `StemMaker.exe` starten.
+2. `StemMaker.exe` starten. Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
 
 Beim Start öffnet sich zuerst das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, ffmpeg, demucs, Modell und Temp-Ordner.
 - **Alles grün:** Nach knapp einer Sekunde geht das Hauptfenster von selbst auf.
@@ -28,6 +28,25 @@ Beim Start öffnet sich zuerst das **Prüffenster**. Es hakt der Reihe nach ab: 
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
 
 Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htdemucs_ft), fragt StemMaker, ob es jetzt geladen werden soll.
+
+## Windows-Warnung („Der Computer wurde durch Windows geschützt“)
+
+StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
+
+**So startest du es trotzdem:**
+1. Im blauen Fenster auf **„Weitere Informationen“** klicken.
+2. Auf **„Trotzdem ausführen“** klicken.
+
+Windows merkt sich das, das Fenster kommt pro Programm nur einmal.
+
+**Tipp:** Vor dem Entpacken mit der rechten Maustaste auf das heruntergeladene ZIP → **Eigenschaften** → unten das Häkchen **„Zulassen“** setzen → OK. Dann behandelt Windows die entpackten Dateien als lokal und warnt meist gar nicht.
+
+**Wenn Windows komplett blockiert** (kein Knopf „Trotzdem ausführen“): Dann ist die intelligente App-Steuerung (Smart App Control, Windows 11) eingeschaltet. StemMaker lässt sich dann nur starten, wenn du sie unter *Windows-Sicherheit → App- & Browsersteuerung → Intelligente App-Steuerung* ausschaltest. Mach das nur, wenn du der Quelle vertraust.
+
+**Download prüfen?**
+- ZIP oder exe bei [VirusTotal](https://www.virustotal.com) hochladen. Einzelne Treffer von wenig bekannten Scannern sind bei unsignierten Programmen häufig und meist Fehlalarme.
+- Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.6.zip` (Dateinamen anpassen).
+- Der komplette Quellcode liegt in diesem Repository. Du kannst StemMaker selbst kompilieren (siehe [Selber kompilieren](#selber-kompilieren)).
 
 ## Spenden
 

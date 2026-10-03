@@ -44,7 +44,7 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 
 - 🟢 **Weitere Sprachen** – Französisch, Italienisch, Spanisch … (`lang\StemMaker.pot` übersetzen, z. B. mit Poedit; Helfer aus der Community).
 - 🟢 **Kurzes Video** – MP3 reinziehen → Stem in Traktor; für r/Traktor, NI-Forum, DJ-Gruppen.
-- 🟡 **Code-Signing-Zertifikat** – vermeidet die Windows-SmartScreen-Warnung „unbekannter Herausgeber“ (kostet jährlich).
+- 🟡 **Code-Signing-Zertifikat** – vermeidet die Windows-SmartScreen-Warnung „unbekannter Herausgeber“ (kostet jährlich). *Vorerst verworfen (03.10.2026): Kosten lohnen sich jetzt nicht, kostenlose Option SignPath würde „SignPath Foundation“ statt „Elospeed“ als Herausgeber zeigen. Stattdessen Erklärung in README/LIESMICH.*
 - 🟡 **Automatisch bauen mit GitHub Actions** – bei jeder neuen Version Exe und ZIP automatisch erstellen.
 
 ## Kleinigkeiten
