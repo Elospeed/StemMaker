@@ -353,6 +353,10 @@ msgstr "Please choose an output folder or enable \"next to the original file\"."
 msgid "Breche ab ..."
 msgstr "Cancelling ..."
 
+#: usingleinstance.pas:207
+msgid "Das offene Fenster wird jetzt nach vorne geholt. Weitere Dateien einfach dort zur Liste hinzufügen."
+msgstr "The open window will now be brought to the front. Simply add more files to the list there."
+
 #: umain.lfm:114
 msgid "Datei"
 msgstr "File"
@@ -773,9 +777,17 @@ msgstr "StemCLI %s (Elospeed StemMaker) - creates Traktor stem files (*.stem.mp4
 msgid "StemMaker"
 msgstr "StemMaker"
 
+#: usingleinstance.pas:203
+msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
+msgstr "StemMaker is already open. Only one StemMaker can run at a time, because two would share the queue, the settings and the finished files."
+
 #: udonate.pas:89
 msgid "StemMaker ist kostenlos"
 msgstr "StemMaker is free"
+
+#: usingleinstance.pas:202
+msgid "StemMaker läuft schon"
+msgstr "StemMaker is already running"
 
 #: ulogui.pas:54
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
