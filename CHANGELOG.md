@@ -10,7 +10,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## Unveröffentlicht
 
 ### StemMaker (kommt mit der nächsten Version)
-- Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei).
+- Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei). Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert (PR #7).
 - Traktor-Pro-4-Test erledigt (Speedy, 3. Oktober 2026): Stem-Dateien aus StemMaker spielen in Traktor.
 
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026

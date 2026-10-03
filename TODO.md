@@ -13,7 +13,6 @@ Zuletzt aktualisiert: 3. Oktober 2026
 
 ## 🧪 Speedy testet
 
-- [ ] **Nur ein StemMaker gleichzeitig:** Testversion [`Temp/StemMaker/1.6-Test/StemMaker.exe`](Temp/StemMaker/1.6-Test/) in eine StemMaker-1.6-Installation kopieren, StemMaker starten und ein zweites Mal starten. Erwartet: Hinweis „StemMaker läuft schon“, danach kommt das offene Fenster nach vorne (auch wenn es minimiert war).
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
 
@@ -39,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Nur ein StemMaker gleichzeitig (Sperre beim Start) – wartet auf Speedys Test und Merge.
+- PR #7: Nur ein StemMaker gleichzeitig – von Speedy unter Windows getestet, bereit zum Mergen.

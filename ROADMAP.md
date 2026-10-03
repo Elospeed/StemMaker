@@ -12,7 +12,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 
 ## 🔨 In Arbeit
 
-- **Nur ein StemMaker gleichzeitig** – ein zweiter Start zeigt einen Hinweis und holt das offene Fenster nach vorne (PR #7, wartet auf Speedys Test unter Windows).
+- **Nur ein StemMaker gleichzeitig** – ein zweiter Start zeigt einen Hinweis und holt das offene Fenster nach vorne (PR #7, unter Windows getestet, wartet auf Merge).
 
 ## 📋 Geplant für Version 1.7
 
