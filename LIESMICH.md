@@ -60,6 +60,7 @@ StemMaker\
   StemMaker.ini          Einstellungen (entsteht beim ersten Beenden)
   StemMaker_queue.txt    gespeicherte Dateiliste (Warteschlange)
   logs\                  Protokolle der letzten 20 Programmstarts
+    statistik.csv        eine Zeile pro umgewandelter Datei (zum Auswerten)
   AddOns\                Zusatzprogramme für Fortgeschrittene
     StemCLI.exe          Kommandozeilen-Version (Batch/Skripte, Aufgabenplanung)
     StemPlayer.exe       Testplayer für .stem.mp4-Dateien (Mute/Solo pro Stem)
@@ -113,6 +114,10 @@ Jeder Programmstart schreibt ein Log in den Ordner `logs`. Jede Zeile wird sofor
 | `.log` | normal beendet |
 | `_FEHLER.log` | normal beendet, aber unterwegs gab es einen Fehler |
 | `_ABSTURZ.log` | unerwartet beendet (Absturz, Task-Manager, Stromausfall); wird beim nächsten Start so umbenannt |
+
+Pro Datei steht im Log: Dateigröße, Länge, Quelle (z. B. mp3 320 kbit/s), Umwandlungszeit und das Tempo in „Sekunden pro Minute Musik“. Diese Zahl hängt nicht von der Song-Länge ab und eignet sich darum zum Vergleichen von Modellen und PCs.
+
+Zusätzlich schreibt StemMaker für jede umgewandelte Datei eine Zeile in `logs\statistik.csv` (Datum, Datei, Größe, Länge, Modell, Kerne, Umwandlungszeit, Sekunden pro Minute Musik, RAM, CPU, Ergebnis). Die Datei wird nicht aufgeräumt und öffnet sich per Doppelklick in Excel oder LibreOffice (Trennzeichen `;`, Dezimal-Komma). Ist sie gerade in Excel geöffnet, fehlt die Zeile für diese Datei.
 
 Im Log stehen:
 - Rechner-Infos: Windows-Version, Prozessor, Kerne, RAM, Grafikkarte

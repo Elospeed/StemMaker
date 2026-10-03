@@ -13,7 +13,8 @@ Zuletzt aktualisiert: 3. Oktober 2026
 
 ## 🧪 Speedy testet
 
-- [ ] **Traktor Pro 4:** Stem-Dateien aus StemMaker 1.6 in Traktor laden und prüfen (Spuren, Farben, Namen, Abspielen). Danach kann der Beta-Hinweis oben in README/LIESMICH weg.
+- [x] **Traktor Pro 4:** Stem-Dateien aus StemMaker laufen in Traktor (Speedy, 3. Oktober 2026). Der Beta-Hinweis oben in README/LIESMICH kann weg.
+- [ ] **Testversion mit Statistik:** [`Temp/StemMaker/1.7-statistik/StemMaker.exe`](Temp/StemMaker/1.7-statistik/StemMaker.exe) in den StemMaker-Ordner kopieren, ein paar Songs umwandeln, dann `logs\statistik.csv` in Excel öffnen und das Log ansehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
 
 ## 🧑‍⚖️ Speedy entscheidet oder macht von Hand
@@ -37,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Keine. (Stand: 3. Oktober 2026 – PR #1 bis #5 sind gemergt.)
+- Log und `logs\statistik.csv`: Dateigröße, Länge, Tempo pro Datei (dieser PR).

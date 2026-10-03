@@ -9,6 +9,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker (kommt in 1.7) – 3. Oktober 2026
+- Log pro Datei: Dateigröße, Größe der fertigen Stem-Datei und Tempo in „Sekunden pro Minute Musik“ mit Modell. Die Zusammenfassung zeigt das Tempo über alle Dateien.
+- Neue Datei `logs\statistik.csv`: eine Zeile pro umgewandelter Datei (Größe, Länge, Quelle, Modell, Teile/Kerne, Umwandlungszeit, s pro Musikminute, RAM, CPU, Ergebnis) zum Auswerten in Excel. Grundlage für eine spätere Zeitschätzung vor grossen Ordnern.
+- Am 3. Oktober 2026 unter Wine getestet (mit Test-Programm statt echtem demucs).
+
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
 - Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert; kommt so in die nächste StemMaker-Version.
