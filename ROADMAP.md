@@ -42,6 +42,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 - Einzelnen Stem (z. B. Vocals oder Drum-Beat) als eigene MP3/WAV exportieren – für Traktor Remix Decks und Loops.
 - Hotcues und Beatgrid aus Traktors `collection.nml` übernehmen.
 - Grafikkarte (ONNX Runtime + DirectML) und Mel-Band RoFormer für sauberere Vocals.
-- Weitere Sprachen, Code-Signing.
+- Weitere Sprachen.
+- Code-Signing: vorerst nicht (Entscheidung 03.10.2026, Kosten lohnen sich im Anfangsstadium nicht). Stattdessen Hinweis zur Windows-Warnung in README/LIESMICH.
 
 Mehr in [docs/IDEEN.md](docs/IDEEN.md).

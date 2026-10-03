@@ -19,6 +19,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Entwicklungslog und Ideen-Liste unter `docs/`.
 - Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
 - Sprach-Links oben in README und LIESMICH.
+- README/LIESMICH: Abschnitt zur Windows-SmartScreen-Warnung (warum sie kommt, „Trotzdem ausführen“, ZIP „Zulassen“, Download prüfen).
 
 ---
 

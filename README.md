@@ -22,7 +22,7 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 ## Getting started
 
 1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
-2. Run `StemMaker.exe`.
+2. Run `StemMaker.exe`. If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
 On startup the **startup check window** opens first. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
 - **All green:** The main window opens by itself after about a second.
@@ -30,6 +30,25 @@ On startup the **startup check window** opens first. It ticks off, one by one: p
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
+
+## Windows warning ("Windows protected your PC")
+
+StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
+
+**To start it anyway:**
+1. Click **"More info"** in the blue window.
+2. Click **"Run anyway"**.
+
+Windows remembers this, so the window only appears once per program.
+
+**Tip:** Before unzipping, right-click the downloaded ZIP → **Properties** → tick **"Unblock"** at the bottom → OK. Then Windows treats the unzipped files as local and usually doesn't warn at all.
+
+**If Windows blocks it completely** (no "Run anyway" button): Smart App Control is switched on (Windows 11). Then StemMaker can only be started after turning it off under *Windows Security → App & browser control → Smart App Control*. Only do this if you trust the source.
+
+**Want to check the download?**
+- Upload the ZIP or the exe to [VirusTotal](https://www.virustotal.com). Single hits from little-known scanners are common with unsigned programs and are usually false alarms.
+- If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.6.zip` (adjust the file name).
+- The full source code is in this repository. You can build StemMaker yourself (see [Build it yourself](#build-it-yourself)).
 
 ## Donations
 
