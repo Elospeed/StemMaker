@@ -1,6 +1,6 @@
 # Ideen für künftige Versionen – Elospeed StemMaker
 
-Sammlung von Ideen, grob nach Aufwand und Nutzen sortiert. Nichts davon ist versprochen – es ist eine Merkliste. Erledigtes wird ins Entwicklungslog verschoben.
+Sammlung von Ideen, grob nach Aufwand und Nutzen sortiert. Nichts davon ist versprochen – es ist eine Merkliste. Erledigtes wird ins [CHANGELOG](../CHANGELOG.md) verschoben, der aktuelle Stand steht in der [ROADMAP](../ROADMAP.md).
 
 Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 
@@ -12,7 +12,6 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 - 🟢 **Feste ffmpeg-Version** statt täglich „latest“ – als eigene Release im Repository, mit Lizenztext und Quellcode (LGPL).
 - 🟢 **Prüfsummen (SHA-256)** für alle Downloads (ffmpeg, Modelle, Updates).
 - 🟢 **Download-Adressen in `update.json`** – zieht eine Datei um, wird nur diese Datei auf GitHub geändert.
-- 🟢 **„Summe der Stems = Original“** – Spur „Other“ als Original minus Drums, Bass und Vocals berechnen. Alle Stems zusammen klingen dann exakt wie das Original (wie bei NUO Stems).
 - 🟢 **THIRD-PARTY-NOTICES im Info-Fenster anzeigen.**
 
 ## Entscheidungen, die noch offen sind
@@ -20,9 +19,13 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 - 🟢 **v3 (hdemucs_mmi) als Standard?** – fast doppelt so schnell (12:33 statt 22:16 für 12 min). Erst nach Hörvergleich in Traktor (Vocals solo, Instrumental, Drums).
 - 🟢 **Discussions** auf GitHub einschalten, wenn Nutzer Fragen haben.
 
+## Zurückgestellt
+
+- 🟢 **„Summe der Stems = Original“** – Spur „Other“ als Original minus Drums, Bass und Vocals berechnen. Alle Stems zusammen klingen dann exakt wie das Original (wie bei NUO Stems). Am 3. Oktober 2026 zurückgestellt: vorerst bleibt es wie bisher.
+
 ## Zusatzprogramme (AddOns)
 
-- 🟡 **Stem-Player** – Stem-Datei öffnen, 4 Spuren einzeln stumm/lauter schalten, ohne Traktor anhören. Liegt in `AddOns\`, nutzt den Hauptordner.
+- 🟢 **Einzelnen Stem exportieren** – z. B. nur Vocals oder Drum-Beat als eigene MP3/WAV, für Traktor Remix Decks und Loops.
 - 🟡 **Schwester-Tool für Pioneer/Serato/Rekordbox** – einzelne Stems, Acapella/Instrumental als normale Audiodateien. Gleiche `tools\` und `models\`.
 - 🟢 **„Eigene Stems verpacken“** – vorhandene Einzelspuren (z. B. aus dem Studio) ohne Trennung zu einer Traktor-Stem-Datei zusammenbauen.
 
