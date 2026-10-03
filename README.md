@@ -205,6 +205,8 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 
 ## Development
 
+- [Roadmap](ROADMAP.md) (German): what is being worked on and what is planned next
+- [Changelog](CHANGELOG.md) (German): what is done, per version
 - [Development log](docs/ENTWICKLUNGSLOG.md) (German): problems found during development and how they were solved
 - [Ideas for future versions](docs/IDEEN.md) (German)
 
