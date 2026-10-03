@@ -22,7 +22,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 - [ ] **Testversionen künftig wo?** Weiter im Ordner `Temp/` im Repo (bleibt für immer im Git-Verlauf) oder als GitHub-Pre-Release (Download neben dem Code). Empfehlung: Pre-Releases.
 - [ ] **ffmpeg-Release anlegen**, sobald die feste ffmpeg-Version für 1.7 vorbereitet ist (Releases erstellt Speedy selbst).
 
-## 🔨 Claude baut als Nächstes
+## 🔨 Elospeed baut als Nächstes
 
 Reihenfolge = Vorschlag, Speedy kann umstellen.
 
