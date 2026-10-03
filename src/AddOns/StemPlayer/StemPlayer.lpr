@@ -9,6 +9,7 @@
     playerform.pas   Fenster, Bedienung, ffmpeg-Aufruf, Temp-Ordner
     stemengine.pas   Audio-Thread: Mischen + Ausgabe über Windows-waveOut
     mp4stem.pas      liest Spuranzahl, Stem-Namen und -Farben aus der MP4
+    djcontrols.pas   selbst gezeichnete Buttons, Fader und LED-Meter (DJ-Look)
     StemPlayer.ico   Programmsymbol (wird über die .lpi eingebunden)
   ============================================================================ }
 program StemPlayer;
