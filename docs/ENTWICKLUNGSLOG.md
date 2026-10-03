@@ -6,6 +6,14 @@ Neueste Einträge oben.
 
 ---
 
+## Fehlerbehebung nach 1.6 (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| StemMaker liess sich nach einer Konvertierung nicht schliessen, Fenster „Keine Rückmeldung“. Verdacht war das im Editor offene Log – das war es nicht (Editor sperrt die Datei nicht). | Die Längen-Abfrage (`ProbeDurationMS` in `uqueue.pas`) startete ffmpeg mit `poUsePipes` **und** `poWaitOnExit` und las die Ausgabe erst danach. Passt die Ausgabe nicht in die Pipe (wenige KB, z.B. MP3 mit langen Kommentaren/Liedtexten), blockiert ffmpeg beim Schreiben und `Execute` wartet für immer. Der Hintergrund-Thread hing also schon seit dem Hinzufügen; beim Beenden wartete `StopProbe` mit `WaitFor` darauf. Lösung: Ausgabe in einer Schleife laufend lesen (wie in `uStemJob`), bei `Terminated` oder nach 30 s ffmpeg beenden. **Regel: nie `poWaitOnExit` zusammen mit `poUsePipes`.** |
+
+---
+
 ## StemPlayer 1.1 / 1.2 (AddOn, Oktober 2026)
 
 | Problem | Lösung |
