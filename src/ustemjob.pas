@@ -108,6 +108,14 @@ type
     FSrcKbps   : Integer;          // Bitrate der Audiospur, 0 = unbekannt
     FSrcDone   : Boolean;          // True = Eingangs-Infos fertig gelesen
     FUsedKbps  : Integer;          // tatsächlich verwendete AAC-Bitrate
+    { Lautheit der Master-Spur der fertigen Stem-Datei (ffmpeg-Filter
+      ebur128, Werte aus der Zusammenfassung am Ende): }
+    FLoudScan  : Boolean;          // True = gerade läuft die Lautheits-Messung
+    FLoudI     : Double;           // Integrierte Lautheit in LUFS
+    FLoudLRA   : Double;           // Lautheitsumfang (Loudness Range) in LU
+    FTruePeak  : Double;           // True Peak in dBFS (über 0 = Übersteuerung)
+    FLoudFound : Boolean;          // True = I: wurde gefunden
+    FPeakFound : Boolean;          // True = Peak: wurde gefunden
     procedure Log(const Msg: string);
     procedure Progress(Percent: Integer; const Stage: string);
     procedure SetStage(Lo, Hi: Integer; const Name: string);
@@ -716,6 +724,27 @@ begin
   while FTail.Count > 25 do
     FTail.Delete(0);
 
+  if FLoudScan then
+  begin
+    { ---- Lautheits-Messung (ebur128-Zusammenfassung) ----
+      ffmpeg schreibt am Ende z.B.:
+          I:         -9.1 LUFS
+          LRA:        5.3 LU
+          Peak:       0.4 dBFS
+      Die Zahl steht zwischen dem ":" und der Einheit. Der Punkt ist bei
+      ffmpeg immer der Dezimaltrenner. }
+    FS := DefaultFormatSettings;
+    FS.DecimalSeparator := '.';
+    NumStr := Trim(Line);
+    if (Copy(NumStr, 1, 2) = 'I:') and (Pos('LUFS', NumStr) > 0) then
+      FLoudFound := TryStrToFloat(Trim(Copy(NumStr, 3, Pos('LUFS', NumStr) - 3)), FLoudI, FS)
+    else if (Copy(NumStr, 1, 4) = 'LRA:') and (Pos(' LU', NumStr) > 0) then
+      TryStrToFloat(Trim(Copy(NumStr, 5, Pos(' LU', NumStr) - 5)), FLoudLRA, FS)
+    else if (Copy(NumStr, 1, 5) = 'Peak:') and (Pos('dBFS', NumStr) > 0) then
+      FPeakFound := TryStrToFloat(Trim(Copy(NumStr, 6, Pos('dBFS', NumStr) - 6)), FTruePeak, FS);
+    Exit;
+  end;
+
   if not IsDemucs then
   begin
     { ---- ffmpeg ---- }
@@ -1013,6 +1042,16 @@ var
   var
     FS: TFormatSettings;
     Fmt: string;
+
+    { Messwert als Text, leer wenn nicht gemessen }
+    function LoudText(Found: Boolean; V: Double): string;
+    begin
+      if Found then
+        Result := FormatFloat('0.0', V, FS)
+      else
+        Result := '';
+    end;
+
   begin
     FS := DefaultFormatSettings;
     FS.DecimalSeparator := ',';      // Dezimal-Komma fürs deutsche Excel
@@ -1024,7 +1063,7 @@ var
       ['Datum', 'Datei', 'Endung', 'Groesse_MB', 'Laenge_s', 'Quelle',
        'Quelle_kbps', 'Modell', 'Teile', 'Kerne_je_Teil', 'Stem_Format',
        'Stem_MB', 'Umwandlung_s', 's_pro_Audiominute', 'RAM_Spitze_MB',
-       'CPU', 'Ergebnis'],
+       'LUFS', 'LRA_LU', 'TruePeak_dBFS', 'CPU', 'Ergebnis'],
       [FormatDateTime('yyyy-mm-dd hh:nn:ss', Now),
        ExtractFileName(InputFile),
        LowerCase(ExtractFileExt(InputFile)),
@@ -1040,6 +1079,9 @@ var
        FormatFloat('0.0', RunMS / 1000, FS),
        FormatFloat('0.0', SecPerAudioMin, FS),
        IntToStr(FPeakMemMB),
+       LoudText(FLoudFound, FLoudI),
+       LoudText(FLoudFound, FLoudLRA),
+       LoudText(FPeakFound, FTruePeak),
        SysCPUName,
        StatResult]);
   end;
@@ -1079,6 +1121,12 @@ begin
   FSrcKbps := 0;
   FSrcDone := False;
   FUsedKbps := 0;
+  FLoudScan := False;
+  FLoudFound := False;
+  FPeakFound := False;
+  FLoudI := 0;
+  FLoudLRA := 0;
+  FTruePeak := 0;
   OutFile := StemOutputName(InputFile, FSettings.OutputDir);
   WorkDir := '';
   T0 := GetTickCount64;
@@ -1223,6 +1271,35 @@ begin
       { Kontrolle: es müssen genau 5 Spuren drin sein }
       if CountTracks(TmpMp4) <> 5 then
         raise Exception.Create(_('Ergebnis hat nicht 5 Audiospuren'));
+
+      { ---- Lautheit der Master-Spur messen -----------------------------
+        Nur zur Info (Log + Statistik), die Datei wird NICHT verändert.
+        Gemessen wird die fertige AAC/ALAC-Spur, weil AAC-Kodieren die
+        Spitzen leicht anheben kann (True Peak über 0 dBFS = Übersteuerung).
+        Schlägt die Messung fehl, ist das kein Fehler der Umwandlung. }
+      SetStage(99, 99, _('Lautheit messen'));
+      FLoudScan := True;
+      try
+        RunTool(FSettings.FFmpegExe, ['-hide_banner', '-nostdin', '-nostats',
+          '-i', TmpMp4, '-map', '0:a:0',
+          '-af', 'ebur128=peak=true:framelog=quiet',
+          '-f', 'null', '-'], False);
+      except
+        on E: EStemCancelled do raise;
+        on E: Exception do
+          Log('  ' + Format(_('Lautheit konnte nicht gemessen werden: %s'), [E.Message]));
+      end;
+      FLoudScan := False;
+      if FLoudFound then
+      begin
+        if FPeakFound then
+          Log('  ' + Format(_('Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS'),
+            [FLoudI, FLoudLRA, FTruePeak]))
+        else
+          Log('  ' + Format(_('Lautheit Master: %.1f LUFS, Umfang %.1f LU'), [FLoudI, FLoudLRA]));
+        if FPeakFound and (FTruePeak > 0) then
+          Log('  ' + _('Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern'));
+      end;
 
       { ---- 5. an den Zielort verschieben --------------------------------
         RenameFile klappt nur auf dem gleichen Laufwerk. Liegt das Ziel auf

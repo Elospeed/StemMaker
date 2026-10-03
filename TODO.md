@@ -38,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Log und `logs\statistik.csv`: Dateigröße, Länge, Tempo pro Datei (dieser PR).
+- Log und `logs\statistik.csv`: Dateigröße, Länge, Tempo und Lautheit pro Datei (PR #8).

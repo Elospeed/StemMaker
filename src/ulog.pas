@@ -239,6 +239,8 @@ end;
   Excel per Doppelklick öffnen. UTF-8 mit BOM, damit Umlaute stimmen.
   --------------------------------------------------------------------------- }
 procedure LogStatRow(const Header, Fields: array of string);
+const
+  BOM = #$EF#$BB#$BF;              // UTF-8-Kennung am Dateianfang (für Excel)
 
   { Feld für CSV vorbereiten: enthält es ; oder " -> in "..." einpacken }
   function CsvField(const F: string): string;
@@ -262,17 +264,44 @@ procedure LogStatRow(const Header, Fields: array of string);
     Result := Result + LineEnding;
   end;
 
-const
-  BOM = #$EF#$BB#$BF;
+  { erste Zeile einer vorhandenen Datei (ohne BOM), '' wenn nicht lesbar }
+  function FirstLine(const FileName: string): string;
+  var
+    L: TStringList;
+  begin
+    Result := '';
+    L := TStringList.Create;
+    try
+      try
+        L.LoadFromFile(FileName);
+        if L.Count > 0 then
+          Result := L[0];
+        if Copy(Result, 1, 3) = BOM then
+          Delete(Result, 1, 3);
+      except
+        Result := '';
+      end;
+    finally
+      L.Free;
+    end;
+  end;
+
 var
-  FN, T: string;
+  FN, T, Head: string;
   St: TFileStream;
 begin
   if GStream = nil then Exit;       // nur in StemMaker (nicht in StemCLI)
   FN := LogDir + 'statistik.csv';
+  Head := CsvLine(Header);
   EnterCriticalSection(GLock);
   try
     try
+      { Haben sich die Spalten geändert (neue StemMaker-Version)? Dann die
+        alte Datei umbenennen und neu anfangen - sonst passen die Spalten
+        in Excel nicht mehr zusammen. }
+      if FileExistsUTF8(FN) and (FirstLine(FN) + LineEnding <> Head) then
+        RenameFile(FN, LogDir + 'statistik_bis_' +
+          FormatDateTime('yyyy-mm-dd_hh-nn-ss', Now) + '.csv');
       if FileExistsUTF8(FN) then
       begin
         St := TFileStream.Create(FN, fmOpenReadWrite or fmShareDenyNone);
@@ -282,7 +311,7 @@ begin
       else
       begin
         St := TFileStream.Create(FN, fmCreate or fmShareDenyNone);
-        T := BOM + CsvLine(Header);
+        T := BOM + Head;
       end;
       try
         T := T + CsvLine(Fields);

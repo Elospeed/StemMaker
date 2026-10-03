@@ -117,9 +117,9 @@ Every program start writes a log to the `logs` folder. Each line is saved immedi
 | `_FEHLER.log` | closed normally, but an error occurred along the way |
 | `_ABSTURZ.log` | ended unexpectedly (crash, Task Manager, power failure); renamed like this on the next start |
 
-For each file the log shows: file size, length, source (e.g. mp3 320 kbit/s), conversion time and the speed in "seconds per minute of music". That number does not depend on the song length, so it is good for comparing models and PCs.
+For each file the log shows: file size, length, source (e.g. mp3 320 kbit/s), loudness of the master track (LUFS, range, true peak), conversion time and the speed in "seconds per minute of music". That number does not depend on the song length, so it is good for comparing models and PCs.
 
-In addition, StemMaker adds one line per converted file to `logs\statistik.csv` (date, file, size, length, model, cores, conversion time, seconds per minute of music, RAM, CPU, result). The file is never cleaned up and opens with a double click in Excel or LibreOffice (separator `;`, decimal comma). If it is open in Excel at that moment, the line for that file is missing.
+In addition, StemMaker adds one line per converted file to `logs\statistik.csv` (date, file, size, length, model, cores, conversion time, seconds per minute of music, RAM, loudness, CPU, result). If a new version changes the columns, the old file is renamed to `statistik_bis_<date>.csv`. The file is never cleaned up and opens with a double click in Excel or LibreOffice (separator `;`, decimal comma). If it is open in Excel at that moment, the line for that file is missing.
 
 The log contains:
 - system info: Windows version, processor, cores, RAM, graphics card

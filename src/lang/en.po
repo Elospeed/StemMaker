@@ -189,7 +189,7 @@ msgstr ", power plan %s -> %s (restored)"
 msgid ", ohne Schlafsperre"
 msgstr ", PC not kept awake"
 
-#: ustemjob.pas:1055
+#: ustemjob.pas:1097
 msgid "--- letzte Ausgabe ---"
 msgstr "--- last output ---"
 
@@ -301,7 +301,7 @@ msgstr "Usage: StemCLI <file|folder> [...] [-o outputfolder] [-m ht|ft|v3]"
 msgid "Ausbalanciert"
 msgstr "Balanced"
 
-#: ustemjob.pas:1111
+#: ustemjob.pas:1159
 msgid "Ausgabeordner kann nicht erstellt werden"
 msgstr "Cannot create output folder"
 
@@ -345,7 +345,7 @@ msgstr "Best power efficiency"
 msgid "Beste Leistung"
 msgstr "Best performance"
 
-#: ustemjob.pas:1232
+#: ustemjob.pas:1309
 msgid "Bestehende Zieldatei kann nicht ersetzt werden"
 msgstr "Cannot replace existing target file"
 
@@ -365,7 +365,7 @@ msgstr "File"
 msgid "Datei kann nicht gespeichert werden: %s"
 msgstr "File cannot be saved: %s"
 
-#: ustemjob.pas:1095
+#: ustemjob.pas:1143
 msgid "Datei nicht gefunden: %s"
 msgstr "File not found: %s"
 
@@ -377,11 +377,11 @@ msgstr "File:  elapsed %s   |   remaining %s"
 msgid "Dateien hinzufügen..."
 msgstr "Add files..."
 
-#: ustemjob.pas:1108
+#: ustemjob.pas:1156
 msgid "Dateigröße: %.1f MB"
 msgstr "File size: %.1f MB"
 
-#: ustemjob.pas:1127
+#: ustemjob.pas:1175
 msgid "Dekodieren"
 msgstr "Decoding"
 
@@ -457,7 +457,7 @@ msgstr "Remove"
 msgid "Entpacken fehlgeschlagen"
 msgstr "Unpacking failed"
 
-#: ustemjob.pas:1225
+#: ustemjob.pas:1273
 msgid "Ergebnis hat nicht 5 Audiospuren"
 msgstr "Result does not have 5 audio tracks"
 
@@ -481,7 +481,7 @@ msgstr "An unexpected error occurred:"
 msgid "FEHLER im Hintergrund: %s (Details im Log)"
 msgstr "ERROR in background: %s (details in the log)"
 
-#: ustemjob.pas:1264
+#: ustemjob.pas:1341
 msgid "FEHLER: "
 msgstr "ERROR: "
 
@@ -493,7 +493,7 @@ msgstr "Error"
 msgid "Fehlt: %s"
 msgstr "Missing: %s"
 
-#: ustemjob.pas:1237
+#: ustemjob.pas:1314
 msgid "Fertig"
 msgstr "Done"
 
@@ -557,6 +557,10 @@ msgstr "Note: The PC was asleep for about %d min."
 msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Note: The last run ended unexpectedly - details in the log with \"_ABSTURZ\" in its name (Info -> Open logs folder)."
 
+#: ustemjob.pas:1301
+msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
+msgstr "Note: true peak above 0 dBFS - the master track may clip slightly during playback"
+
 #: upower.pas:245
 msgid "Höchstleistung"
 msgstr "High performance"
@@ -593,7 +597,7 @@ msgstr "Donate now"
 msgid "Kann %s nicht schreiben"
 msgstr "Cannot write %s"
 
-#: ustemjob.pas:1235
+#: ustemjob.pas:1312
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "Cannot write target file: %s"
 
@@ -612,6 +616,22 @@ msgstr "Copied ✓"
 #: uinit.pas:847
 msgid "Lade %s  (%d von %d)"
 msgstr "Downloading %s  (%d of %d)"
+
+#: ustemjob.pas:1299
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU"
+msgstr "Master loudness: %.1f LUFS, range %.1f LU"
+
+#: ustemjob.pas:1296
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS"
+msgstr "Master loudness: %.1f LUFS, range %.1f LU, true peak %.1f dBFS"
+
+#: ustemjob.pas:1290
+msgid "Lautheit konnte nicht gemessen werden: %s"
+msgstr "Loudness could not be measured: %s"
+
+#: ustemjob.pas:1280
+msgid "Lautheit messen"
+msgstr "Measuring loudness"
 
 #: udownload.pas:181
 msgid "Lesefehler beim Download (Fehler %d)"
@@ -633,7 +653,7 @@ msgstr "Copy log"
 msgid "Logs-Ordner öffnen"
 msgstr "Open logs folder"
 
-#: ustemjob.pas:1141
+#: ustemjob.pas:1189
 msgid "Länge: %d:%.2d min"
 msgstr "Length: %d:%.2d min"
 
@@ -645,7 +665,7 @@ msgstr "At least one check failed (red). Hover the mouse over the line to see de
 msgid "Modell %s"
 msgstr "Model %s"
 
-#: ustemjob.pas:661
+#: ustemjob.pas:669
 msgid "Modell fehlt: %s"
 msgstr "Model missing: %s"
 
@@ -701,11 +721,11 @@ msgstr "Problem found"
 msgid "Prozessor"
 msgstr "Processor"
 
-#: ustemjob.pas:1162
+#: ustemjob.pas:1210
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s"
 msgstr "Source: %s -> stem file AAC %d kbit/s"
 
-#: ustemjob.pas:1159
+#: ustemjob.pas:1207
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "Source: %s -> stem file AAC %d kbit/s (automatic)"
 
@@ -749,11 +769,11 @@ msgstr "Stem   : "
 msgid "Stem prüfen..."
 msgstr "Check stem..."
 
-#: ustemjob.pas:1102
+#: ustemjob.pas:1150
 msgid "Stem-Datei existiert schon"
 msgstr "Stem file already exists"
 
-#: ustemjob.pas:1188
+#: ustemjob.pas:1236
 msgid "Stem-Datei kodieren"
 msgstr "Encoding stem file"
 
@@ -761,11 +781,11 @@ msgstr "Encoding stem file"
 msgid "Stem-Datei prüfen"
 msgstr "Check stem file"
 
-#: ustemjob.pas:1248
+#: ustemjob.pas:1325
 msgid "Stem-Datei: %.1f MB"
 msgstr "Stem file: %.1f MB"
 
-#: ustemjob.pas:1245
+#: ustemjob.pas:1322
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr "Stem file: %.1f MB, speed: %.1f s per minute of music (%s)"
 
@@ -773,11 +793,11 @@ msgstr "Stem file: %.1f MB, speed: %.1f s per minute of music (%s)"
 msgid "Stem-Dateien"
 msgstr "Stem files"
 
-#: ustemjob.pas:1220
+#: ustemjob.pas:1268
 msgid "Stem-Metadaten schreiben"
 msgstr "Writing stem metadata"
 
-#: ustemjob.pas:1222
+#: ustemjob.pas:1270
 msgid "Stem-Metadaten: %s"
 msgstr "Stem metadata: %s"
 
@@ -801,7 +821,7 @@ msgstr "StemMaker will keep running. If something no longer works properly, plea
 msgid "StemMaker und sein Quellcode sind frei für alle. Ich entwickle das Tool in meiner Freizeit."
 msgstr "StemMaker and its source code are free for everyone. I build it in my spare time."
 
-#: ustemjob.pas:1168
+#: ustemjob.pas:1216
 msgid "Stems trennen (demucs)"
 msgstr "Separating stems (demucs)"
 
@@ -817,11 +837,11 @@ msgstr "Parts:"
 msgid "Temp-Ordner"
 msgstr "Temp folder"
 
-#: ustemjob.pas:1282
+#: ustemjob.pas:1359
 msgid "Temp-Ordner behalten: %s"
 msgstr "Temp folder kept: %s"
 
-#: ustemjob.pas:1121
+#: ustemjob.pas:1169
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr "Cannot create temp folder: %s"
 
@@ -889,7 +909,7 @@ msgstr "ZIP error: %s"
 msgid "Zeigt Spuren und Stem-Metadaten einer vorhandenen .stem.mp4"
 msgstr "Shows the tracks and stem metadata of an existing .stem.mp4"
 
-#: umain.pas:879 umain.pas:1559 ustemjob.pas:1258
+#: umain.pas:879 umain.pas:1559 ustemjob.pas:1335
 msgid "abgebrochen"
 msgstr "cancelled"
 
@@ -905,19 +925,19 @@ msgstr "approx. %s"
 msgid "curl nicht gefunden"
 msgstr "curl not found"
 
-#: ustemjob.pas:1181
+#: ustemjob.pas:1229
 msgid "demucs.cpp hat %s nicht erzeugt"
 msgstr "demucs.cpp did not create %s"
 
-#: ustemjob.pas:1178
+#: ustemjob.pas:1226
 msgid "demucs.cpp ist fehlgeschlagen (Code %d)"
 msgstr "demucs.cpp failed (code %d)"
 
-#: ustemjob.pas:657
+#: ustemjob.pas:665
 msgid "demucs.cpp nicht gefunden: %s"
 msgstr "demucs.cpp not found: %s"
 
-#: ustemjob.pas:1172
+#: ustemjob.pas:1220
 msgid "demucs: %s (%s), %d Teile x je %d Kerne"
 msgstr "demucs: %s (%s), %d parts x %d cores each"
 
@@ -949,27 +969,27 @@ msgstr "missing: %s - please unpack the complete StemMaker ZIP again"
 msgid "ffmpeg (neu)"
 msgstr "ffmpeg (new)"
 
-#: ustemjob.pas:1139
+#: ustemjob.pas:1187
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg could not decode the file (code %d)"
 
-#: ustemjob.pas:1217
+#: ustemjob.pas:1265
 msgid "ffmpeg konnte die Stem-Datei nicht erstellen (Code %d)"
 msgstr "ffmpeg could not create the stem file (code %d)"
 
-#: ustemjob.pas:655
+#: ustemjob.pas:663
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg not found: %s"
 
-#: ustemjob.pas:218
+#: ustemjob.pas:226
 msgid "hdemucs_mmi (Demucs v3, schneller)"
 msgstr "hdemucs_mmi (Demucs v3, faster)"
 
-#: ustemjob.pas:220
+#: ustemjob.pas:228
 msgid "htdemucs (Standard, Demucs v4)"
 msgstr "htdemucs (default, Demucs v4)"
 
-#: ustemjob.pas:217
+#: ustemjob.pas:225
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (best quality, approx. 4x slower)"
 
@@ -1049,7 +1069,7 @@ msgstr "calculating ..."
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "Skipped (format not supported): %s"
 
-#: ustemjob.pas:1103
+#: ustemjob.pas:1151
 msgid "übersprungen, existiert schon: %s"
 msgstr "skipped, already exists: %s"
 

@@ -38,6 +38,7 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 - 🔴 **Grafikkarte** – ONNX Runtime + DirectML (NVIDIA, AMD, Intel). Ziel: < 1 Minute pro Track. CPU-Weg bleibt als Rückfall.
 - 🔴 **Mel-Band RoFormer für Vocals** – deutlich sauberere Gesangsspur; braucht den Grafikkarten-/ONNX-Weg.
 - 🟡 **Hybrid-CPUs (Intel 12. Gen+)** – Aufteilung auf schnelle/sparsame Kerne testen (i7-12700KF: 8 P- + 4 E-Kerne).
+- 🟢 **Pegel „Traktor-optimiert“?** – Einschätzung (3. Oktober 2026): Traktor gleicht die Lautstärke beim Analysieren selbst an (Autogain pro Track), lauter oder leiser in der Datei bringt deshalb fast nichts. Die Stems dürfen nie anders verstärkt werden als der Master, sonst springt die Lautstärke beim Umschalten zwischen Master und Stems. Sinnvoll wäre nur: liegt der True Peak der Master-Spur über ca. −0,3 dBFS (AAC kann Spitzen anheben), alle 5 Spuren gleich um diesen Überstand absenken. Erst entscheiden, wenn `logs\statistik.csv` (Spalte `TruePeak_dBFS`) zeigt, dass das bei echten Songs oft vorkommt.
 - 🟢 **Stem-Datei schneller kodieren** – die 5 AAC-Spuren parallel statt nacheinander (alter PC: 2:34 min nur fürs Kodieren).
 
 ## Sprachen und Verbreitung
