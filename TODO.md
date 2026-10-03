@@ -37,4 +37,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
+- PR #9: Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
