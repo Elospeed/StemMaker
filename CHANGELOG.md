@@ -11,7 +11,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
-- Von Speedy getestet, kommt so in die nächste StemMaker-Version.
+- Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert; kommt so in die nächste StemMaker-Version.
 
 ### StemPlayer 1.1 (AddOn) – 2. Oktober 2026
 - Test-Player für `.stem.mp4`: pro Stem Stumm, Solo und Lautstärke-Regler, Pegelanzeigen.
@@ -19,11 +19,14 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Liegt als `AddOns\StemPlayer.exe` im StemMaker-Ordner. Quellcode unter `src/AddOns/StemPlayer/` (PR #1).
 
 ### Repository
+- `TODO.md`: kurze Liste, was als Nächstes getestet, entschieden oder gebaut wird.
+- `ROADMAP.md` und `CHANGELOG.md` angelegt (PR #3).
+- Ordner `Temp/` für Testversionen, darin `StemPlayer/1.2/StemPlayer.exe` (PR #4).
 - README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch).
 - Entwicklungslog und Ideen-Liste unter `docs/`.
 - Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
 - Sprach-Links oben in README und LIESMICH.
-- README/LIESMICH: Abschnitt zur Windows-SmartScreen-Warnung (warum sie kommt, „Trotzdem ausführen“, ZIP „Zulassen“, Download prüfen).
+- README/LIESMICH: Abschnitt zur Windows-SmartScreen-Warnung (warum sie kommt, „Trotzdem ausführen“, ZIP „Zulassen“, Download prüfen) (PR #5).
 
 ---
 

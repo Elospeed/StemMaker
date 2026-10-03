@@ -6,10 +6,27 @@ Neueste Einträge oben.
 
 ---
 
+## StemPlayer 1.1 / 1.2 (AddOn, Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Mehrere Spuren gleichzeitig abspielen, ohne für jede Spur ffmpeg zu starten. | Ein einziger ffmpeg-Aufruf dekodiert alle Spuren als rohe s16le-Dateien in einen eigenen Temp-Ordner `%TEMP%\ElospeedStemPlayer_<PID>_<Zeit>\`. |
+| Temp-Ordner von abgestürzten Playern blieben liegen. | In jedem Ordner liegt `instance.lock`, das der laufende Player offen hält. Beim Start werden Ordner gelöscht, deren Lock-Datei sich löschen lässt. Nicht nach PID entscheiden: Windows vergibt PIDs neu. |
+| Compiler-Fehler, weil Unit und Formular-Variable gleich hiessen. | Unit-Name und Formular-Variable müssen verschieden sein (Unit heisst `playerform`). |
+| Eine lokale Variable `Active` tat nicht, was sie sollte. | Sie verdeckte `TForm.Active`. Lokale Namen wählen, die es im Formular nicht schon gibt. |
+| Icon-Fehler beim Start. | Wie beim StemMaker-Icon: kleine ICO-Grössen müssen klassische Bitmaps sein, nicht PNG. |
+| Seltsame Compiler-Fehler in Kommentaren. | In einem `{ … }`-Kommentar darf kein weiteres `{` stehen. |
+| 1.2: Die hellen Windows-Standardknöpfe und -regler lassen sich nicht dunkel einfärben. | Eigene, selbst gezeichnete Steuerelemente in `djcontrols.pas` (`TDJButton`, `TDJSlider`, `TDJPanel`, `DrawLedBar`). Die Bedienlogik im Formular blieb unverändert. |
+
+---
+
 ## GitHub-Start (Oktober 2026)
 
 | Problem | Lösung |
 |---|---|
+| Den Überblick behalten: was läuft, was ist fertig, was muss getestet werden? | Drei Dateien im Hauptordner: `ROADMAP.md` (Plan), `CHANGELOG.md` (erledigt), `TODO.md` (nächste Tests, Entscheidungen, Bauschritte). Jede Aufgabe trägt sich dort selbst ein und aus. |
+| Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. Alternative: GitHub-Pre-Releases. |
+| Windows SmartScreen warnt beim Start („Herausgeber: Unbekannt“). | Code-Signing vorerst verworfen (Kosten; kostenloses SignPath würde „SignPath Foundation“ als Herausgeber zeigen). Stattdessen Abschnitt „Windows-Warnung“ in README/LIESMICH. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |
 | Rechtliche Frage: darf man fremde Teile im eigenen Repository haben? | demucs.cpp (MIT) und FFmpeg (LGPL, mit Lizenz + Quellcode) dürfen weitergegeben werden. Die Lizenz der Demucs-Modelle ist unklar → Modelle werden **nicht** selbst verteilt, sondern vom Originalort geladen. Alles dokumentiert in `THIRD-PARTY-NOTICES.md`. |
 
