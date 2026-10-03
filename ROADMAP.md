@@ -3,6 +3,7 @@
 🇬🇧 *This file is kept in German. English readers: see the [README](README.md).*
 
 Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert ins [CHANGELOG](CHANGELOG.md).
+Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
 Zuletzt aktualisiert: 3. Oktober 2026
@@ -23,7 +24,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 
 ## 📋 Geplant für den StemPlayer
 
-- Knopf „Anhören“ direkt in StemMaker.
+- Knopf „Anhören“ direkt in StemMaker (StemPlayer 1.2 kommt mit der nächsten StemMaker-Version mit).
 - Deutsch/Englisch über `lang\` wie StemMaker.
 - Einstellungen in `StemMaker.ini` (wie StemCLI).
 - Saubere Darstellung bei hoher Bildschirm-Skalierung (High-DPI).
@@ -32,6 +33,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 ## ❓ Offene Entscheidungen
 
 - **v3 (hdemucs_mmi) als Standard-Modell?** – fast doppelt so schnell. Entscheidung nach Hörvergleich in Traktor.
+- **Testversionen:** weiter im Ordner `Temp/` oder als GitHub-Pre-Release?
 
 ## ⏸️ Zurückgestellt
 
