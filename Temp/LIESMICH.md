@@ -6,6 +6,7 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 
 | Ordner | Inhalt |
 |---|---|
+| `StemMaker/1.7-anhoeren/` | StemMaker mit allem bis Club-Pegel/Bass-Fix + Knopf „Anhören“ (StemPlayer), Doppelklick in der Liste, „Ordner nach der Umwandlung öffnen“ |
 | `StemPlayer/1.2/` | StemPlayer 1.2 mit neuem Design „Traktor Dark“ (PR #2) |
 | `StemMaker/1.7-statistik/` | StemMaker 1.6 + Sperre gegen zweiten Start + Log-Statistik (Dateigröße, Tempo, Lautheit, `logs\statistik.csv`) |
 | `StemMaker/1.6-Test/` | StemMaker 1.6 mit Sperre gegen einen zweiten gleichzeitigen Start |

@@ -66,6 +66,7 @@ type
     FSyncItem  : Integer;
     FSyncStatus: TItemState;
     FSyncDone  : Integer;
+    FSyncOut   : string;           // fertige Stem-Datei (leer = keine)
     FLastPct   : Integer;          // zuletzt gemeldete Prozentzahl
     FCancelled : Boolean;
     procedure JobLog(const Msg: string);
@@ -100,6 +101,8 @@ type
     btnStart: TButton;
     btnCancel: TButton;
     btnOpenOut: TButton;
+    btnListen: TButton;
+    chkOpenWhenDone: TCheckBox;
     cbModel: TComboBox;
     cbFormat: TComboBox;
     chkBeside: TCheckBox;
@@ -148,6 +151,8 @@ type
     procedure btnCheckClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure btnOpenOutClick(Sender: TObject);
+    procedure btnListenClick(Sender: TObject);
+    procedure lvFilesDblClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
@@ -185,6 +190,11 @@ type
     FOKAudioMS : Int64;            // Musik-Länge aller fertigen Dateien (für das Tempo)
     FCurIndex  : Integer;          // Zeile der Datei, die gerade läuft
     FUserCancelled: Boolean;       // Benutzer hat "Abbrechen" gedrückt
+    FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
+    function ItemOutFile(Index: Integer): string;
+    function ListenIndex: Integer;
+    procedure OpenInPlayer(const StemFile: string);
+    procedure ShowInExplorer(const FileName: string);
     procedure UpdateTimes;
     procedure EndPower;
     procedure WriteRunSummary(W: TStemWorker);
@@ -218,6 +228,7 @@ type
     procedure AddLog(const Msg: string);
     procedure SetFileProgress(Percent: Integer; const Stage: string);
     procedure SetItemStatus(Index: Integer; Status: TItemState; Done: Integer);
+    procedure SetItemOutFile(Index: Integer; const FileName: string);
   end;
 
 var
@@ -240,7 +251,8 @@ const
 
   { Spalten der Dateiliste (SubItems):
       0 = Status (sichtbar)          1 = voller Pfad (sichtbar)
-      2 = Basisordner (unsichtbar)   3 = Länge in ms (unsichtbar, -1 = unbekannt) }
+      2 = Basisordner (unsichtbar)   3 = Länge in ms (unsichtbar, -1 = unbekannt)
+      4 = fertige Stem-Datei (unsichtbar, erst nach der Umwandlung vorhanden) }
 
 function ItemState(Item: TListItem): Integer;
 begin
@@ -369,6 +381,9 @@ end;
 
 procedure TStemWorker.SyncStatus;
 begin
+  { zuerst die Zieldatei merken - SetItemStatus kann sie schon brauchen }
+  if FSyncOut <> '' then
+    FForm.SetItemOutFile(FSyncItem, FSyncOut);
   FForm.SetItemStatus(FSyncItem, FSyncStatus, FSyncDone);
 end;
 
@@ -393,6 +408,7 @@ begin
     FSyncItem := FIndexes[I];
     FSyncStatus := isRunning;
     FSyncDone := I;
+    FSyncOut := '';
     Synchronize(@SyncStatus);
 
     { Einstellungen für DIESE Datei. "Unterordner nachbauen": Ausgabe-
@@ -450,7 +466,14 @@ begin
     end;
     FSyncItem := FIndexes[I];
     FSyncDone := I + 1;
+    { Name der Stem-Datei mitgeben (auch bei "existiert schon" - die Datei
+      gibt es ja), damit "Anhören" und "Ordner öffnen" sie finden }
+    if OK or WasSkipped then
+      FSyncOut := OutF
+    else
+      FSyncOut := '';
     Synchronize(@SyncStatus);
+    FSyncOut := '';
   end;
   except
     on E: Exception do
@@ -637,6 +660,8 @@ begin
     { Klang-Optionen (ab 1.7), Standard an }
     chkNormalize.Checked := Ini.ReadBool('Main', 'Normalize', D.Normalize);
     chkBassFix.Checked := Ini.ReadBool('Main', 'BassFix', D.BassFix);
+    { ab 1.7: nach der Umwandlung den Ordner zeigen (Standard an) }
+    chkOpenWhenDone.Checked := Ini.ReadBool('Main', 'OpenWhenDone', True);
     for I := 0 to 3 do
     begin
       Edits[I].Text := Ini.ReadString('Stems', 'Name' + IntToStr(I + 1), D.Stems[I].Name);
@@ -679,6 +704,7 @@ begin
       Ini.WriteBool('Main', 'KeepAwake', chkKeepAwake.Checked);
       Ini.WriteBool('Main', 'Normalize', chkNormalize.Checked);
       Ini.WriteBool('Main', 'BassFix', chkBassFix.Checked);
+      Ini.WriteBool('Main', 'OpenWhenDone', chkOpenWhenDone.Checked);
       for I := 0 to 3 do
       begin
         Ini.WriteString('Stems', 'Name' + IntToStr(I + 1), S.Stems[I].Name);
@@ -883,6 +909,8 @@ begin
             GetTickCount64 - FFileStart, ItemDurMS(Index));
         end;
         AddLog(Format(_('  Dauer: %s'), [Dur]));
+        { für "Ordner nach der Umwandlung öffnen" und "Anhören" }
+        FLastOutFile := ItemOutFile(Index);
       end;
     isSkipped:   S := _('existiert schon');
     isCancelled: S := _('abgebrochen');
@@ -1182,13 +1210,177 @@ begin
   end;
 end;
 
-{ Ausgabeordner im Explorer öffnen (bzw. den Ordner der ersten Datei) }
-procedure TfrmMain.btnOpenOutClick(Sender: TObject);
+{ ---------------------------------------------------------------------------
+  Fertige Stem-Dateien: Ordner zeigen und im StemPlayer anhören
+  --------------------------------------------------------------------------- }
+
+{ Wo liegt (bzw. landet) die Stem-Datei einer Zeile?
+  Nach der Umwandlung steht der genaue Name in Spalte 4. Fehlt er (z.B.
+  bei einer Liste vom letzten Mal), wird er wie in TStemWorker.Execute aus
+  den aktuellen Einstellungen berechnet. }
+function TfrmMain.ItemOutFile(Index: Integer): string;
+var
+  Item: TListItem;
+  OutDir, Root: string;
 begin
+  Result := '';
+  if (Index < 0) or (Index >= lvFiles.Items.Count) then Exit;
+  Item := lvFiles.Items[Index];
+  if (Item.SubItems.Count > 4) and (Item.SubItems[4] <> '') then
+    Exit(Item.SubItems[4]);
+  if chkBeside.Checked then
+    OutDir := ''                                  // neben der Originaldatei
+  else
+  begin
+    OutDir := edtOut.Directory;
+    Root := Item.SubItems[2];
+    if chkKeepTree.Checked and (OutDir <> '') and (Root <> '') then
+      OutDir := IncludeTrailingPathDelimiter(OutDir) +
+        ExtractRelativePath(IncludeTrailingPathDelimiter(Root),
+          ExtractFilePath(Item.SubItems[1]));
+  end;
+  Result := StemOutputName(Item.SubItems[1], OutDir);
+end;
+
+{ Fertige Stem-Datei einer Zeile merken (Spalte 4, siehe oben) }
+procedure TfrmMain.SetItemOutFile(Index: Integer; const FileName: string);
+var
+  Item: TListItem;
+begin
+  if (Index < 0) or (Index >= lvFiles.Items.Count) then Exit;
+  Item := lvFiles.Items[Index];
+  while Item.SubItems.Count < 5 do
+    Item.SubItems.Add('');
+  Item.SubItems[4] := FileName;
+end;
+
+{ Welche Zeile soll "Anhören" nehmen?
+  Die markierte Zeile - sonst die zuletzt fertig gewordene Datei,
+  sonst die unterste Zeile, deren Stem-Datei es gibt. -1 = keine. }
+function TfrmMain.ListenIndex: Integer;
+var
+  I: Integer;
+begin
+  if lvFiles.Selected <> nil then
+    Exit(lvFiles.Selected.Index);
+  if FLastOutFile <> '' then
+    for I := 0 to lvFiles.Items.Count - 1 do
+      if SameFileName(ItemOutFile(I), FLastOutFile) then
+        Exit(I);
+  for I := lvFiles.Items.Count - 1 downto 0 do
+    if FileExists(ItemOutFile(I)) then
+      Exit(I);
+  Result := -1;
+end;
+
+{ StemPlayer (AddOns\StemPlayer.exe) starten, auf Wunsch gleich mit einer
+  Datei. StemMaker wartet NICHT auf den Player - beide laufen unabhängig
+  weiter (auch während einer Umwandlung). }
+procedure TfrmMain.OpenInPlayer(const StemFile: string);
+var
+  Exe: string;
+  P: TProcessUTF8;
+begin
+  Exe := AppBaseDir + 'AddOns' + PathDelim + ExeName('StemPlayer');
+  if not FileExists(Exe) then
+  begin
+    MessageDlg(Format(_('StemPlayer nicht gefunden:%s%s'), [LineEnding + LineEnding, Exe]),
+      mtWarning, [mbOK], 0);
+    Exit;
+  end;
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Executable := Exe;
+    P.CurrentDirectory := ExtractFilePath(Exe);
+    if StemFile <> '' then
+      P.Parameters.Add(StemFile);
+    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+    try
+      P.Execute;
+      if StemFile <> '' then
+        LogLine('StemPlayer gestartet: ' + StemFile)
+      else
+        LogLine('StemPlayer gestartet (ohne Datei)');
+    except
+      on E: Exception do
+        AddLog(Format(_('StemPlayer konnte nicht gestartet werden: %s'), [E.Message]));
+    end;
+  finally
+    P.Free;                        // gibt nur unseren Zugriff frei, der Player läuft weiter
+  end;
+end;
+
+{ Explorer öffnen und die Datei darin markieren - so kann man sie gleich
+  in Traktor ziehen. Gibt es die Datei nicht, wird nur ihr Ordner geöffnet. }
+procedure TfrmMain.ShowInExplorer(const FileName: string);
+begin
+  {$IFDEF WINDOWS}
+  if FileExists(FileName) then
+  begin
+    { explorer.exe /select,"D:\Stems\Song.stem.mp4"
+      Über ShellExecuteW (Unicode), damit Umlaute im Pfad stimmen. }
+    ShellExecuteW(0, 'open', 'explorer.exe',
+      PWideChar(UTF8Decode('/select,"' + FileName + '"')), nil, SW_SHOWNORMAL);
+    Exit;
+  end;
+  {$ENDIF}
+  if DirectoryExists(ExtractFilePath(FileName)) then
+    OpenDocument(ExtractFilePath(FileName));
+end;
+
+{ "Ordner öffnen": Ist eine Zeile mit fertiger Stem-Datei markiert, wird
+  genau diese Datei im Explorer gezeigt. Sonst der Ausgabeordner (bzw. bei
+  "neben der Originaldatei" der Ordner der ersten Datei). }
+procedure TfrmMain.btnOpenOutClick(Sender: TObject);
+var
+  F: string;
+begin
+  if lvFiles.Selected <> nil then
+  begin
+    F := ItemOutFile(lvFiles.Selected.Index);
+    if FileExists(F) then
+    begin
+      ShowInExplorer(F);
+      Exit;
+    end;
+  end;
   if (not chkBeside.Checked) and DirectoryExists(edtOut.Directory) then
     OpenDocument(edtOut.Directory)
   else if lvFiles.Items.Count > 0 then
     OpenDocument(ExtractFilePath(lvFiles.Items[0].SubItems[1]));
+end;
+
+{ "Anhören": Stem-Datei der markierten (bzw. zuletzt fertigen) Zeile im
+  StemPlayer öffnen. Gibt es noch keine, startet der Player leer - dort
+  kann man eine Datei hineinziehen. }
+procedure TfrmMain.btnListenClick(Sender: TObject);
+var
+  I: Integer;
+  F: string;
+begin
+  I := ListenIndex;
+  F := ItemOutFile(I);
+  if (F <> '') and not FileExists(F) then
+  begin
+    AddLog(Format(_('Noch keine Stem-Datei für "%s" - zuerst umwandeln. ' +
+      'Der StemPlayer startet ohne Datei.'), [lvFiles.Items[I].Caption]));
+    F := '';
+  end;
+  OpenInPlayer(F);
+end;
+
+{ Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
+procedure TfrmMain.lvFilesDblClick(Sender: TObject);
+var
+  F: string;
+begin
+  if lvFiles.Selected = nil then Exit;
+  F := ItemOutFile(lvFiles.Selected.Index);
+  if FileExists(F) then
+    OpenInPlayer(F)
+  else
+    AddLog(Format(_('Noch keine Stem-Datei für "%s" - zuerst umwandeln.'),
+      [lvFiles.Selected.Caption]));
 end;
 
 { ---------------------------------------------------------------------------
@@ -1306,6 +1498,7 @@ begin
   FOKAudioMS := 0;
   FCurIndex := -1;
   FUserCancelled := False;
+  FLastOutFile := '';
   SaveQueueNow;
   lblFileTime.Caption := '';
   lblTotal.Caption := '';
@@ -1346,6 +1539,12 @@ begin
   FWorker := nil;
   SetRunning(False);
   SaveQueueNow;
+
+  { "Ordner nach der Umwandlung öffnen": die zuletzt fertige Stem-Datei im
+    Explorer zeigen. Nicht, wenn gleich heruntergefahren wird. }
+  if chkOpenWhenDone.Checked and (FLastOutFile <> '') and
+    not (chkShutdown.Checked and not FUserCancelled) then
+    ShowInExplorer(FLastOutFile);
 
   { "PC nach Abschluss herunterfahren" - nur wenn nicht abgebrochen wurde.
     Das Häkchen gilt nur für diesen einen Durchlauf.

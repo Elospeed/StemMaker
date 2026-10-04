@@ -155,7 +155,7 @@ Most people won't need this: the main window handles whole folders, the queue an
 
 ### Test player (AddOns\StemPlayer.exe)
 
-Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with **Listen** (or double-click a finished file in the list), or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
 
 ## Processing time
 

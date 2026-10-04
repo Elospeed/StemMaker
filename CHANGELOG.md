@@ -19,6 +19,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Log-Statistik und Lautheit am 3. Oktober 2026 von Speedy unter Windows getestet (i5-2500, v3, 8-min-Track): alle Werte im Log und in `statistik.csv` stimmen (PR #8).
 - Neu: **Lautstärke angleichen (Club-Pegel)**, standardmässig an. Alle 5 Spuren werden gemeinsam angehoben, bis die lauteste Spitze (Master, Stems und Stem-Summe) bei ca. −1 dB liegt. Kein Limiter. Leise Quellen bekommen in Traktor dadurch grosse, lesbare Wellenformen. Abschaltbar im Fenster und mit `--no-normalize` in StemCLI.
 - Neu: **Bass-Fix**, standardmässig an. Tiefbass unter 80 Hz wandert von „Other“ in den Bass-Stem (Tiefpass vorwärts und rückwärts, damit die Phase stimmt; Summe aller Stems bleibt gleich). Hintergrund: Vergleich mit Traktor Pro 4 am 4. Oktober 2026 – danach liegen Bass- und Other-Pegel wie bei Traktor. Abschaltbar im Fenster und mit `--no-bassfix`.
+- Neu: **Anhören** – startet `AddOns\StemPlayer.exe` mit der fertigen Stem-Datei der markierten (sonst der zuletzt fertigen) Zeile. Doppelklick auf eine fertige Datei in der Liste geht auch.
+- Neu: **Ordner nach der Umwandlung öffnen**, standardmässig an. Der Explorer geht auf und markiert die zuletzt fertige Stem-Datei, so kann man sie direkt in Traktor ziehen. Nicht, wenn danach heruntergefahren wird.
+- „Ordner öffnen“ zeigt bei markierter Zeile genau deren Stem-Datei im Explorer.
 
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).

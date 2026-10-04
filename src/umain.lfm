@@ -127,6 +127,7 @@ object frmMain: TfrmMain
     ReadOnly = True
     RowSelect = True
     TabOrder = 1
+    OnDblClick = lvFilesDblClick
     ViewStyle = vsReport
   end
   object gbSettings: TGroupBox
@@ -414,7 +415,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 32
       Top = 8
-      Width = 110
+      Width = 100
       Caption = 'Start'
       Font.Style = [fsBold]
       OnClick = btnStartClick
@@ -422,55 +423,70 @@ object frmMain: TfrmMain
       TabOrder = 0
     end
     object btnCancel: TButton
-      Left = 124
+      Left = 112
       Height = 32
       Top = 8
-      Width = 110
+      Width = 100
       Caption = 'Abbrechen'
       OnClick = btnCancelClick
       TabOrder = 1
     end
     object btnOpenOut: TButton
-      Left = 240
+      Left = 216
       Height = 32
       Top = 8
-      Width = 140
+      Width = 110
       Caption = 'Ordner '#246'ffnen'
+      Hint = 'Ordner mit den fertigen Stem-Dateien im Explorer '#246'ffnen (zum Hineinziehen in Traktor)'
       OnClick = btnOpenOutClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
     end
-    object pbFile: TProgressBar
-      Left = 392
-      Height = 14
-      Top = 6
-      Width = 460
-      Anchors = [akTop, akLeft, akRight]
-      Smooth = True
+    object btnListen: TButton
+      Left = 330
+      Height = 32
+      Top = 8
+      Width = 90
+      Caption = 'Anh'#246'ren'
+      Hint = 'Fertige Stem-Datei im StemPlayer anh'#246'ren (oder Doppelklick in der Liste)'
+      OnClick = btnListenClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
+    object pbFile: TProgressBar
+      Left = 432
+      Height = 14
+      Top = 6
+      Width = 420
+      Anchors = [akTop, akLeft, akRight]
+      Smooth = True
+      TabOrder = 4
+    end
     object lblFileTime: TLabel
-      Left = 392
+      Left = 432
       Height = 15
       Top = 22
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       ParentColor = False
     end
     object pbTotal: TProgressBar
-      Left = 392
+      Left = 432
       Height = 14
       Top = 42
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       Smooth = True
-      TabOrder = 4
+      TabOrder = 5
     end
     object lblTotal: TLabel
-      Left = 392
+      Left = 432
       Height = 15
       Top = 58
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       ParentColor = False
@@ -478,10 +494,21 @@ object frmMain: TfrmMain
     object lblStage: TLabel
       Left = 8
       Height = 15
-      Top = 48
-      Width = 372
+      Top = 43
+      Width = 412
       AutoSize = False
       ParentColor = False
+    end
+    object chkOpenWhenDone: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 60
+      Width = 412
+      Caption = 'Ordner nach der Umwandlung '#246'ffnen'
+      Hint = 'Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
     end
   end
   object splLog: TSplitter

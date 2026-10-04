@@ -13,6 +13,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 ## 🧪 Speedy testet
 
+- [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ und Doppelklick in der Liste öffnen sie im StemPlayer.
 - [ ] **Club-Pegel und Bass-Fix:** Testversion umwandeln lassen (beide Häkchen sind an) und in Traktor anhören: grosse Wellenformen? Bass voller? Mit und ohne Häkchen vergleichen.
 - [ ] **StemMaker lässt sich nach der Konvertierung nicht beenden:** Testversion `Temp/StemMaker/1.6.1-test/StemMaker.exe` ausprobieren: Dateien hinzufügen, umwandeln, Fenster schliessen. Es muss sofort zugehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
@@ -28,16 +29,16 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 Reihenfolge = Vorschlag, Speedy kann umstellen.
 
-1. [ ] **StemPlayer in StemMaker einbinden:** Knopf „Anhören“ im Hauptfenster, öffnet die fertige Stem-Datei in `AddOns\StemPlayer.exe`.
-2. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
-3. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
-4. [ ] **1.7: Update-Prüfung beim Start** über `update.json` (Details in der [ROADMAP](ROADMAP.md)).
-5. [ ] **1.7: feste ffmpeg-Version + SHA-256-Prüfsummen** für alle Downloads, Download-Adressen in `update.json`.
-6. [ ] **1.7: THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
+1. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
+2. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
+3. [ ] **1.7: Update-Prüfung beim Start** über `update.json` (Details in der [ROADMAP](ROADMAP.md)).
+4. [ ] **1.7: feste ffmpeg-Version + SHA-256-Prüfsummen** für alle Downloads, Download-Adressen in `update.json`.
+5. [ ] **1.7: THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
+6. [ ] **1.7: Erststart-Dialog** mit Haftungsausschluss und Lizenzhinweis (Häkchen + Bestätigen), gebunden an die PC-Kennung.
 7. [ ] **Beta-Hinweis** oben in README und LIESMICH entfernen (Traktor-Test ist erledigt).
 
 Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur einmal um 5 s (schon seit 1.1).
 
 ## 🔀 Offene Pull Requests
 
-- Club-Pegel und Bass-Fix (Testversion, Speedy hört rein).
+- Anhören im StemPlayer und Ordner öffnen nach der Umwandlung (Testversion, Speedy testet).

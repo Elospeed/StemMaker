@@ -6,13 +6,13 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 3. Oktober 2026
+Zuletzt aktualisiert: 4. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
-- **Nur ein StemMaker gleichzeitig** – ein zweiter Start zeigt einen Hinweis und holt das offene Fenster nach vorne (PR #7, unter Windows getestet, wartet auf Merge).
+- **StemPlayer aus StemMaker starten und Ordner öffnen** – Knopf „Anhören“, Doppelklick in der Liste, Explorer mit der fertigen Datei nach der Umwandlung (Testversion, Speedy testet).
 
 ## 📋 Geplant für Version 1.7
 
@@ -21,10 +21,10 @@ Zuletzt aktualisiert: 3. Oktober 2026
 - **SHA-256-Prüfsummen** für alle Downloads (ffmpeg, Modelle, Updates).
 - **Download-Adressen in `update.json`** – zieht eine Datei um, muss nur diese Datei auf GitHub geändert werden.
 - **THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
+- **Erststart-Dialog** mit Haftungsausschluss und Lizenzhinweis (MIT, demucs, ffmpeg, Modelle). Häkchen setzen und bestätigen, gebunden an die PC-Kennung: Wird der Ordner auf einen anderen PC kopiert, kommt die Frage erneut (kein Kopierschutz).
 
 ## 📋 Geplant für den StemPlayer
 
-- Knopf „Anhören“ direkt in StemMaker (StemPlayer 1.2 kommt mit der nächsten StemMaker-Version mit).
 - Deutsch/Englisch über `lang\` wie StemMaker.
 - Einstellungen in `StemMaker.ini` (wie StemCLI).
 - Saubere Darstellung bei hoher Bildschirm-Skalierung (High-DPI).
