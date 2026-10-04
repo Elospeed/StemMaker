@@ -56,6 +56,9 @@ type
   { Ergebnis einer Längen-Abfrage (läuft im Hauptthread) }
   TDurationEvent = procedure(const Path: string; DurMS: Int64) of object;
 
+  { fragt während der Längen-Abfrage: aufhören? (True = ffmpeg beenden) }
+  TProbeAbort = function: Boolean of object;
+
   { fragt die Länge mehrerer Dateien nacheinander bei ffmpeg ab }
   TDurationProber = class(TThread)
   private
@@ -65,6 +68,7 @@ type
     FResPath: string;
     FResDur : Int64;
     procedure DoResult;
+    function IsTerminated: Boolean;
   protected
     procedure Execute; override;
   public
@@ -79,8 +83,10 @@ procedure QueueSave(const Entries: TQueueEntries);
 function QueueLoad: TQueueEntries;
 procedure QueueDelete;
 
-{ Länge einer Datei in ms über ffmpeg (0 = unbekannt). Blockiert kurz. }
-function ProbeDurationMS(const FFmpegExe, FileName: string): Int64;
+{ Länge einer Datei in ms über ffmpeg (0 = unbekannt). Blockiert kurz.
+  Abort (optional) wird laufend gefragt - True beendet ffmpeg sofort. }
+function ProbeDurationMS(const FFmpegExe, FileName: string;
+  Abort: TProbeAbort = nil): Int64;
 
 { gelerntes Tempo: Sekunden Rechenzeit pro Minute Musik (0 = unbekannt) }
 function SpeedLoad(const IniName: string; Model: TStemModel): Double;
@@ -180,10 +186,17 @@ end;
   endet mit Fehlercode - das ist hier normal. Uns interessiert nur die
   Zeile "Duration: 00:05:12.34".
   --------------------------------------------------------------------------- }
-function ProbeDurationMS(const FFmpegExe, FileName: string): Int64;
+function ProbeDurationMS(const FFmpegExe, FileName: string;
+  Abort: TProbeAbort): Int64;
+const
+  PROBE_TIMEOUT_MS = 30000;         // länger braucht ffmpeg -i nie - sonst hängt etwas
 var
   P: TProcessUTF8;                  // UTF8-Variante: Umlaute im Pfad (Tiësto)
   Outp: TStringList;
+  Mem: TMemoryStream;
+  Buf: array[0..4095] of Byte;
+  N: LongInt;
+  Start: QWord;
   S: string;
   I, K: Integer;
   H, M: Integer;
@@ -194,16 +207,59 @@ begin
   if not FileExists(FFmpegExe) then Exit;
   P := TProcessUTF8.Create(nil);
   Outp := TStringList.Create;
+  Mem := TMemoryStream.Create;
   try
     P.Executable := FFmpegExe;
     P.Parameters.Add('-hide_banner');
     P.Parameters.Add('-nostdin');
     P.Parameters.Add('-i');
     P.Parameters.Add(FileName);
-    P.Options := [poUsePipes, poStderrToOutPut, poNoConsole, poWaitOnExit];
+    { WICHTIG: NICHT poWaitOnExit zusammen mit poUsePipes!
+      Dann wartet Execute, bis ffmpeg fertig ist - ffmpeg wird aber nie
+      fertig, wenn seine Ausgabe nicht in die Leitung (Pipe, nur wenige KB)
+      passt und niemand sie leert. Das passiert bei MP3s mit vielen Tags
+      (lange Kommentare, Liedtexte, viele Kapitel). Folge in 1.6: Die
+      Längen-Abfrage hing für immer, und beim Beenden wartete StemMaker
+      darauf -> "Keine Rückmeldung". Deshalb lesen wir die Ausgabe hier
+      laufend selbst (wie in uStemJob) und brechen notfalls ab. }
+    P.Options := [poUsePipes, poStderrToOutPut, poNoConsole];
+    P.ShowWindow := swoHide;
     try
       P.Execute;
-      Outp.LoadFromStream(P.Output);
+      Start := GetTickCount64;
+      while True do
+      begin
+        N := P.Output.NumBytesAvailable;
+        if N > 0 then
+        begin
+          if N > SizeOf(Buf) then N := SizeOf(Buf);
+          N := P.Output.Read(Buf, N);
+          Mem.WriteBuffer(Buf, N);
+        end
+        else if not P.Running then
+          Break                       // ffmpeg ist fertig
+        else
+          Sleep(20);                  // kurz warten, CPU schonen
+        { Programm wird beendet oder ffmpeg hängt -> hart abbrechen }
+        if (Assigned(Abort) and Abort()) or
+           (GetTickCount64 - Start > PROBE_TIMEOUT_MS) then
+        begin
+          P.Terminate(1);
+          Exit;                       // Länge bleibt unbekannt (0)
+        end;
+      end;
+      { was noch in der Leitung steckt, auch noch lesen }
+      repeat
+        N := P.Output.NumBytesAvailable;
+        if N > 0 then
+        begin
+          if N > SizeOf(Buf) then N := SizeOf(Buf);
+          N := P.Output.Read(Buf, N);
+          Mem.WriteBuffer(Buf, N);
+        end;
+      until N <= 0;
+      Mem.Position := 0;
+      Outp.LoadFromStream(Mem);
     except
       Exit;
     end;
@@ -221,6 +277,7 @@ begin
       Break;
     end;
   finally
+    Mem.Free;
     Outp.Free;
     P.Free;
   end;
@@ -252,6 +309,12 @@ begin
     FOnResult(FResPath, FResDur);
 end;
 
+{ für ProbeDurationMS: soll die Abfrage aufhören? (StopProbe beim Beenden) }
+function TDurationProber.IsTerminated: Boolean;
+begin
+  Result := Terminated;
+end;
+
 procedure TDurationProber.Execute;
 var
   I: Integer;
@@ -260,7 +323,7 @@ begin
   begin
     if Terminated then Exit;
     FResPath := FPaths[I];
-    FResDur := ProbeDurationMS(FFFmpeg, FPaths[I]);
+    FResDur := ProbeDurationMS(FFFmpeg, FPaths[I], @IsTerminated);
     if Terminated then Exit;
     Synchronize(@DoResult);
   end;

@@ -10,6 +10,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## Unveröffentlicht
 
 ### StemMaker (kommt mit der nächsten Version)
+- StemMaker liess sich manchmal nicht beenden („Keine Rückmeldung“). Ursache: Die Längen-Abfrage im Hintergrund (ffmpeg) konnte bei MP3s mit vielen Tags für immer hängen, und beim Schliessen wartete StemMaker darauf. Jetzt wird die ffmpeg-Ausgabe laufend gelesen, die Abfrage bricht nach 30 Sekunden oder beim Schliessen sofort ab.
 - Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei). Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert (PR #7).
 - Traktor-Pro-4-Test erledigt (Speedy, 3. Oktober 2026): Stem-Dateien aus StemMaker spielen in Traktor.
 - Log pro Datei: Dateigröße, Größe der fertigen Stem-Datei und Tempo in „Sekunden pro Minute Musik“ mit Modell. Die Zusammenfassung zeigt das Tempo über alle Dateien.

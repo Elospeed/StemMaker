@@ -13,6 +13,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 ## 🧪 Speedy testet
 
+- [ ] **StemMaker lässt sich nach der Konvertierung nicht beenden:** Testversion `Temp/StemMaker/1.6.1-test/StemMaker.exe` ausprobieren: Dateien hinzufügen, umwandeln, Fenster schliessen. Es muss sofort zugehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
 
@@ -38,4 +39,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- PR #8: Log und `logs\statistik.csv` (Dateigröße, Länge, Tempo, Lautheit pro Datei) – von Speedy unter Windows getestet, bereit zum Mergen.
+- PR #9: Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
