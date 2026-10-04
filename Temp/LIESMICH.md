@@ -7,8 +7,13 @@ Aufbau: `Temp/<Anwendung>/<Version>/`
 | Ordner | Inhalt |
 |---|---|
 | `StemPlayer/1.2/` | StemPlayer 1.2 mit neuem Design „Traktor Dark“ (PR #2) |
+| `StemMaker/1.7-statistik/` | StemMaker 1.6 + Sperre gegen zweiten Start + Log-Statistik (Dateigröße, Tempo, Lautheit, `logs\statistik.csv`) |
 | `StemMaker/1.6-Test/` | StemMaker 1.6 mit Sperre gegen einen zweiten gleichzeitigen Start |
 | `StemMaker/1.6.1-test/` | StemMaker 1.6 mit Fehlerbehebung: lässt sich wieder beenden (Längen-Abfrage hing) |
+
+## StemMaker-Testversion
+
+`StemMaker.exe` über die vorhandene `StemMaker.exe` einer 1.6-Installation kopieren (vorher die alte sichern). Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten.
 
 ## StemPlayer testen
 

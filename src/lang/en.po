@@ -5,7 +5,7 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
-#: umain.pas:1422
+#: umain.pas:1427
 msgid "                   vorhanden: %s"
 msgstr "                      installed: %s"
 
@@ -21,7 +21,7 @@ msgstr "        [--no-awake]  (allow the PC to go to sleep while working)"
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr "        [-t parts] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 
-#: umain.pas:1426
+#: umain.pas:1431
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  WARNING           : The PC was asleep for approx. %s - the times above are too long by this amount."
 
@@ -37,7 +37,7 @@ msgstr "  Files             : %d  (OK %d, skipped %d, errors %d)"
 msgid "  Dauer: %s"
 msgstr "  Duration: %s"
 
-#: umain.pas:1423
+#: umain.pas:1428
 msgid "  Energie        : %s"
 msgstr "  Power             : %s"
 
@@ -45,7 +45,7 @@ msgstr "  Power             : %s"
 msgid "  Fehler: %s"
 msgstr "  Error: %s"
 
-#: umain.pas:1414
+#: umain.pas:1419
 msgid "  Format         : %s"
 msgstr "  Format            : %s"
 
@@ -53,7 +53,7 @@ msgstr "  Format            : %s"
 msgid "  Gesamtzeit     : %s"
 msgstr "  Total time        : %s"
 
-#: umain.pas:1421
+#: umain.pas:1426
 msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
 msgstr "  Graphics card     : not used (demucs.cpp only uses the CPU)"
 
@@ -61,19 +61,19 @@ msgstr "  Graphics card     : not used (demucs.cpp only uses the CPU)"
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr "  NO stem metadata block found - not a valid stem file"
 
-#: umain.pas:1413
+#: umain.pas:1418
 msgid "  Modell         : %s"
 msgstr "  Model             : %s"
 
-#: umain.pas:1419
+#: umain.pas:1424
 msgid "  RAM demucs     : max. %d MB  (Gesamt-RAM %.1f GB)"
 msgstr "  RAM demucs        : max. %d MB  (total RAM %.1f GB)"
 
-#: umain.pas:1415
+#: umain.pas:1420
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  Computing power   : %d parts x %d cores = %d of %d physical cores (%d logical), demucs version %s"
 
-#: umain.pas:1429
+#: umain.pas:1434
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  Sleep             : none during the conversion"
 
@@ -85,7 +85,11 @@ msgstr "  Average per track : %s  (successful tracks only)"
 msgid "  Stem-Metadaten: %s"
 msgstr "  Stem metadata: %s"
 
-#: umain.pas:1711
+#: umain.pas:1416
+msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
+msgstr "  Speed             : %.1f s per minute of music (statistics: logs\\statistik.csv)"
+
+#: umain.pas:1716
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d lengths still unknown"
 
@@ -101,15 +105,15 @@ msgstr " [timeout]"
 msgid "%d Dateien OK"
 msgstr "%d files OK"
 
-#: umain.pas:1583
+#: umain.pas:1588
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "%d files from the saved list no longer exist - left out."
 
-#: umain.pas:1691
+#: umain.pas:1696
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d files pending - reading lengths ..."
 
-#: umain.pas:1697
+#: umain.pas:1702
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d files pending, %s of music - approx. %s"
 
@@ -153,11 +157,11 @@ msgstr "Starting %s ..."
 msgid "%s wurde nicht gefunden."
 msgstr "%s was not found."
 
-#: umain.pas:1702
+#: umain.pas:1707
 msgid "(Tempo dieses PCs)"
 msgstr "(this PC's speed)"
 
-#: umain.pas:1707
+#: umain.pas:1712
 msgid "(grob geschätzt)"
 msgstr "(rough estimate)"
 
@@ -185,7 +189,7 @@ msgstr ", power plan %s -> %s (restored)"
 msgid ", ohne Schlafsperre"
 msgstr ", PC not kept awake"
 
-#: ustemjob.pas:1002
+#: ustemjob.pas:1097
 msgid "--- letzte Ausgabe ---"
 msgstr "--- last output ---"
 
@@ -229,7 +233,7 @@ msgstr "AVX (medium version)"
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (fast version)"
 
-#: uinit.pas:477 umain.pas:1762 umain.lfm:407
+#: uinit.pas:477 umain.pas:1767 umain.lfm:407
 msgid "Abbrechen"
 msgstr "Cancel"
 
@@ -265,11 +269,11 @@ msgstr "All files"
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "All files in the list are already done. Convert them again?"
 
-#: umain.pas:1686
+#: umain.pas:1691
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "All files in the list are done."
 
-#: umain.pas:1731 umain.pas:1757
+#: umain.pas:1736 umain.pas:1762
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "All files are done. The PC will shut down in %d seconds."
 
@@ -297,7 +301,7 @@ msgstr "Usage: StemCLI <file|folder> [...] [-o outputfolder] [-m ht|ft|v3]"
 msgid "Ausbalanciert"
 msgstr "Balanced"
 
-#: ustemjob.pas:1050
+#: ustemjob.pas:1159
 msgid "Ausgabeordner kann nicht erstellt werden"
 msgstr "Cannot create output folder"
 
@@ -341,7 +345,7 @@ msgstr "Best power efficiency"
 msgid "Beste Leistung"
 msgstr "Best performance"
 
-#: ustemjob.pas:1171
+#: ustemjob.pas:1309
 msgid "Bestehende Zieldatei kann nicht ersetzt werden"
 msgstr "Cannot replace existing target file"
 
@@ -365,7 +369,7 @@ msgstr "File"
 msgid "Datei kann nicht gespeichert werden: %s"
 msgstr "File cannot be saved: %s"
 
-#: ustemjob.pas:1037
+#: ustemjob.pas:1143
 msgid "Datei nicht gefunden: %s"
 msgstr "File not found: %s"
 
@@ -377,7 +381,11 @@ msgstr "File:  elapsed %s   |   remaining %s"
 msgid "Dateien hinzufügen..."
 msgstr "Add files..."
 
-#: ustemjob.pas:1066
+#: ustemjob.pas:1156
+msgid "Dateigröße: %.1f MB"
+msgstr "File size: %.1f MB"
+
+#: ustemjob.pas:1175
 msgid "Dekodieren"
 msgstr "Decoding"
 
@@ -401,7 +409,7 @@ msgstr "The list is empty - add some files first."
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "The language will change the next time you start StemMaker."
 
-#: umain.pas:1581
+#: umain.pas:1586
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "The file that was being processed was interrupted - it will be redone when you click \"Start\"."
 
@@ -453,7 +461,7 @@ msgstr "Remove"
 msgid "Entpacken fehlgeschlagen"
 msgstr "Unpacking failed"
 
-#: ustemjob.pas:1164
+#: ustemjob.pas:1273
 msgid "Ergebnis hat nicht 5 Audiospuren"
 msgstr "Result does not have 5 audio tracks"
 
@@ -477,11 +485,11 @@ msgstr "An unexpected error occurred:"
 msgid "FEHLER im Hintergrund: %s (Details im Log)"
 msgstr "ERROR in background: %s (details in the log)"
 
-#: ustemjob.pas:1190
+#: ustemjob.pas:1341
 msgid "FEHLER: "
 msgstr "ERROR: "
 
-#: umain.pas:881 umain.pas:1553
+#: umain.pas:881 umain.pas:1558
 msgid "Fehler"
 msgstr "Error"
 
@@ -489,7 +497,7 @@ msgstr "Error"
 msgid "Fehlt: %s"
 msgstr "Missing: %s"
 
-#: ustemjob.pas:1176
+#: ustemjob.pas:1314
 msgid "Fertig"
 msgstr "Done"
 
@@ -513,11 +521,11 @@ msgstr "Some files for \"%s\" are still missing."
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "Total (file %d of %d):  elapsed %s   |   remaining %s"
 
-#: umain.pas:1703
+#: umain.pas:1708
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "Estimated with the speed measured on this PC."
 
-#: umain.pas:1708
+#: umain.pas:1713
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "Rough estimate - after the first finished track StemMaker knows the speed of this PC."
 
@@ -552,6 +560,10 @@ msgstr "Note: The PC was asleep for about %d min."
 #: umain.pas:509
 msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Note: The last run ended unexpectedly - details in the log with \"_ABSTURZ\" in its name (Info -> Open logs folder)."
+
+#: ustemjob.pas:1301
+msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
+msgstr "Note: true peak above 0 dBFS - the master track may clip slightly during playback"
 
 #: upower.pas:245
 msgid "Höchstleistung"
@@ -589,7 +601,7 @@ msgstr "Donate now"
 msgid "Kann %s nicht schreiben"
 msgstr "Cannot write %s"
 
-#: ustemjob.pas:1174
+#: ustemjob.pas:1312
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "Cannot write target file: %s"
 
@@ -609,6 +621,22 @@ msgstr "Copied ✓"
 msgid "Lade %s  (%d von %d)"
 msgstr "Downloading %s  (%d of %d)"
 
+#: ustemjob.pas:1299
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU"
+msgstr "Master loudness: %.1f LUFS, range %.1f LU"
+
+#: ustemjob.pas:1296
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS"
+msgstr "Master loudness: %.1f LUFS, range %.1f LU, true peak %.1f dBFS"
+
+#: ustemjob.pas:1290
+msgid "Lautheit konnte nicht gemessen werden: %s"
+msgstr "Loudness could not be measured: %s"
+
+#: ustemjob.pas:1280
+msgid "Lautheit messen"
+msgstr "Measuring loudness"
+
 #: udownload.pas:181
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr "Read error during download (error %d)"
@@ -617,7 +645,7 @@ msgstr "Read error during download (error %d)"
 msgid "Liste leeren"
 msgstr "Clear list"
 
-#: umain.pas:1578
+#: umain.pas:1583
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Restored the list from last time: %d files, %d of them still pending."
 
@@ -629,7 +657,7 @@ msgstr "Copy log"
 msgid "Logs-Ordner öffnen"
 msgstr "Open logs folder"
 
-#: ustemjob.pas:1080
+#: ustemjob.pas:1189
 msgid "Länge: %d:%.2d min"
 msgstr "Length: %d:%.2d min"
 
@@ -641,7 +669,7 @@ msgstr "At least one check failed (red). Hover the mouse over the line to see de
 msgid "Modell %s"
 msgstr "Model %s"
 
-#: ustemjob.pas:661
+#: ustemjob.pas:669
 msgid "Modell fehlt: %s"
 msgstr "Model missing: %s"
 
@@ -697,11 +725,11 @@ msgstr "Problem found"
 msgid "Prozessor"
 msgstr "Processor"
 
-#: ustemjob.pas:1101
+#: ustemjob.pas:1210
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s"
 msgstr "Source: %s -> stem file AAC %d kbit/s"
 
-#: ustemjob.pas:1098
+#: ustemjob.pas:1207
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "Source: %s -> stem file AAC %d kbit/s (automatic)"
 
@@ -745,11 +773,11 @@ msgstr "Stem   : "
 msgid "Stem prüfen..."
 msgstr "Check stem..."
 
-#: ustemjob.pas:1044
+#: ustemjob.pas:1150
 msgid "Stem-Datei existiert schon"
 msgstr "Stem file already exists"
 
-#: ustemjob.pas:1127
+#: ustemjob.pas:1236
 msgid "Stem-Datei kodieren"
 msgstr "Encoding stem file"
 
@@ -757,15 +785,23 @@ msgstr "Encoding stem file"
 msgid "Stem-Datei prüfen"
 msgstr "Check stem file"
 
+#: ustemjob.pas:1325
+msgid "Stem-Datei: %.1f MB"
+msgstr "Stem file: %.1f MB"
+
+#: ustemjob.pas:1322
+msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
+msgstr "Stem file: %.1f MB, speed: %.1f s per minute of music (%s)"
+
 #: umain.pas:1156
 msgid "Stem-Dateien"
 msgstr "Stem files"
 
-#: ustemjob.pas:1159
+#: ustemjob.pas:1268
 msgid "Stem-Metadaten schreiben"
 msgstr "Writing stem metadata"
 
-#: ustemjob.pas:1161
+#: ustemjob.pas:1270
 msgid "Stem-Metadaten: %s"
 msgstr "Stem metadata: %s"
 
@@ -797,7 +833,7 @@ msgstr "StemMaker will keep running. If something no longer works properly, plea
 msgid "StemMaker und sein Quellcode sind frei für alle. Ich entwickle das Tool in meiner Freizeit."
 msgstr "StemMaker and its source code are free for everyone. I build it in my spare time."
 
-#: ustemjob.pas:1107
+#: ustemjob.pas:1216
 msgid "Stems trennen (demucs)"
 msgstr "Separating stems (demucs)"
 
@@ -813,11 +849,11 @@ msgstr "Parts:"
 msgid "Temp-Ordner"
 msgstr "Temp folder"
 
-#: ustemjob.pas:1200
+#: ustemjob.pas:1359
 msgid "Temp-Ordner behalten: %s"
 msgstr "Temp folder kept: %s"
 
-#: ustemjob.pas:1060
+#: ustemjob.pas:1169
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr "Cannot create temp folder: %s"
 
@@ -885,7 +921,7 @@ msgstr "ZIP error: %s"
 msgid "Zeigt Spuren und Stem-Metadaten einer vorhandenen .stem.mp4"
 msgstr "Shows the tracks and stem metadata of an existing .stem.mp4"
 
-#: umain.pas:879 umain.pas:1554 ustemjob.pas:1185
+#: umain.pas:879 umain.pas:1559 ustemjob.pas:1335
 msgid "abgebrochen"
 msgstr "cancelled"
 
@@ -901,19 +937,19 @@ msgstr "approx. %s"
 msgid "curl nicht gefunden"
 msgstr "curl not found"
 
-#: ustemjob.pas:1120
+#: ustemjob.pas:1229
 msgid "demucs.cpp hat %s nicht erzeugt"
 msgstr "demucs.cpp did not create %s"
 
-#: ustemjob.pas:1117
+#: ustemjob.pas:1226
 msgid "demucs.cpp ist fehlgeschlagen (Code %d)"
 msgstr "demucs.cpp failed (code %d)"
 
-#: ustemjob.pas:657
+#: ustemjob.pas:665
 msgid "demucs.cpp nicht gefunden: %s"
 msgstr "demucs.cpp not found: %s"
 
-#: ustemjob.pas:1111
+#: ustemjob.pas:1220
 msgid "demucs: %s (%s), %d Teile x je %d Kerne"
 msgstr "demucs: %s (%s), %d parts x %d cores each"
 
@@ -921,7 +957,7 @@ msgstr "demucs: %s (%s), %d parts x %d cores each"
 msgid "eigener Plan %s"
 msgstr "custom plan %s"
 
-#: umain.pas:878 umain.pas:1552
+#: umain.pas:878 umain.pas:1557
 msgid "existiert schon"
 msgstr "already exists"
 
@@ -945,27 +981,27 @@ msgstr "missing: %s - please unpack the complete StemMaker ZIP again"
 msgid "ffmpeg (neu)"
 msgstr "ffmpeg (new)"
 
-#: ustemjob.pas:1078
+#: ustemjob.pas:1187
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg could not decode the file (code %d)"
 
-#: ustemjob.pas:1156
+#: ustemjob.pas:1265
 msgid "ffmpeg konnte die Stem-Datei nicht erstellen (Code %d)"
 msgstr "ffmpeg could not create the stem file (code %d)"
 
-#: ustemjob.pas:655
+#: ustemjob.pas:663
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg not found: %s"
 
-#: ustemjob.pas:218
+#: ustemjob.pas:226
 msgid "hdemucs_mmi (Demucs v3, schneller)"
 msgstr "hdemucs_mmi (Demucs v3, faster)"
 
-#: ustemjob.pas:220
+#: ustemjob.pas:228
 msgid "htdemucs (Standard, Demucs v4)"
 msgstr "htdemucs (default, Demucs v4)"
 
-#: ustemjob.pas:217
+#: ustemjob.pas:225
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (best quality, approx. 4x slower)"
 
@@ -1013,7 +1049,7 @@ msgstr "checking ..."
 msgid "startet nicht: %s"
 msgstr "does not start: %s"
 
-#: ulog.pas:391 upower.pas:297 upower.pas:318
+#: ulog.pas:494 upower.pas:297 upower.pas:318
 msgid "unbekannt"
 msgstr "unknown"
 
@@ -1033,7 +1069,7 @@ msgstr "overwrite existing stem files"
 msgid "wartet"
 msgstr "waiting"
 
-#: umain.pas:1555
+#: umain.pas:1560
 msgid "wartet (unterbrochen)"
 msgstr "waiting (interrupted)"
 
@@ -1045,7 +1081,7 @@ msgstr "calculating ..."
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "Skipped (format not supported): %s"
 
-#: ustemjob.pas:1045
+#: ustemjob.pas:1151
 msgid "übersprungen, existiert schon: %s"
 msgstr "skipped, already exists: %s"
 

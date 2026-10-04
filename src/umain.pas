@@ -1410,6 +1410,11 @@ begin
     [FTotal, W.OKCount, W.SkipCount, W.FailCount]));
   AddLog(Format(_('  Gesamtzeit     : %s'), [FormatDuration(RunMS)]));
   AddLog(Format(_('  Schnitt/Track  : %s  (nur erfolgreiche Tracks)'), [Avg]));
+  { Tempo über alle fertigen Dateien: Rechenzeit pro Minute Musik.
+    FOKTimeMS / FOKAudioMS = Sekunden pro Sekunde Musik -> x 60 }
+  if FOKAudioMS > 0 then
+    AddLog(Format(_('  Tempo          : %.1f s pro Minute Musik (Statistik: logs\statistik.csv)'),
+      [FOKTimeMS / FOKAudioMS * 60]));
   AddLog(Format(_('  Modell         : %s'), [StemModelDisplayName(FRunSettings.Model)]));
   AddLog(Format(_('  Format         : %s'), [Fmt]));
   AddLog(Format(_('  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s'),
