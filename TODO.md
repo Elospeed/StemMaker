@@ -20,6 +20,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 ## 🧑‍⚖️ Speedy entscheidet oder macht von Hand
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
+- [ ] **Option „Bass verstärken“ einbauen?** – Tiefbass aus „Other“ in den Bass-Stem verschieben, damit der Bass wie bei Traktor voller klingt (Messung und Details in [docs/IDEEN.md](docs/IDEEN.md)).
 - [ ] **Testversionen künftig wo?** Weiter im Ordner `Temp/` im Repo (bleibt für immer im Git-Verlauf) oder als GitHub-Pre-Release (Download neben dem Code). Empfehlung: Pre-Releases.
 - [ ] **ffmpeg-Release anlegen**, sobald die feste ffmpeg-Version für 1.7 vorbereitet ist (Releases erstellt Speedy selbst).
 
@@ -39,4 +40,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- PR #9: Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
+- PR #11: Ideenliste – Bass-Fix und Trennqualität nach Vergleich mit Traktor Pro 4 (nur Doku).
