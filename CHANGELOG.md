@@ -20,6 +20,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Neu: **Lautstärke angleichen (Club-Pegel)**, standardmässig an. Alle 5 Spuren werden gemeinsam angehoben, bis die lauteste Spitze (Master, Stems und Stem-Summe) bei ca. −1 dB liegt. Kein Limiter. Leise Quellen bekommen in Traktor dadurch grosse, lesbare Wellenformen. Abschaltbar im Fenster und mit `--no-normalize` in StemCLI.
 - Neu: **Bass-Fix**, standardmässig an. Tiefbass unter 80 Hz wandert von „Other“ in den Bass-Stem (Tiefpass vorwärts und rückwärts, damit die Phase stimmt; Summe aller Stems bleibt gleich). Hintergrund: Vergleich mit Traktor Pro 4 am 4. Oktober 2026 – danach liegen Bass- und Other-Pegel wie bei Traktor. Abschaltbar im Fenster und mit `--no-bassfix`.
 
+### Projektseite
+- Neue Projektseite im Ordner `site/` (Englisch, Deutsch unter `/de/`) mit Screenshots von StemMaker und StemPlayer, Funktionen, Ablauf, ehrlichen Zeitangaben und FAQ. Mit Suchmaschinen-Grundlagen: Titel, Beschreibung, Open-Graph-Vorschaubild, `sitemap.xml`, `robots.txt`, strukturierte Daten. Wird per Workflow `.github/workflows/pages.yml` auf GitHub Pages veröffentlicht.
+
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
 - Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert; kommt so in die nächste StemMaker-Version.
