@@ -6,13 +6,15 @@ Neueste Einträge oben.
 
 ---
 
-## 1.7: Anhören im StemPlayer, Ordner öffnen (Oktober 2026)
+## 1.7: Anhören, Ordner öffnen, Erststart-Fenster (Oktober 2026)
 
 | Problem | Lösung |
 |---|---|
 | Fertige Datei im Explorer zeigen, damit man sie direkt in Traktor ziehen kann. | `explorer.exe /select,"<Datei>"` über `ShellExecuteW` (Unicode, Umlaute im Pfad). Über `TProcess` wäre das Anführungszeichen-Quoting unsicher. |
 | Wo liegt die Stem-Datei einer Zeile? Mit „Unterordner nachbauen“ hängt das vom Basisordner ab. | Der Worker gibt den genauen Namen nach jeder Datei mit (unsichtbare Spalte 4 der Liste). Fehlt er (Liste vom letzten Mal), wird er wie im Worker aus den Einstellungen berechnet. |
 | StemPlayer starten, ohne dass StemMaker hängt. | `TProcessUTF8` ohne `poWaitOnExit` und ohne Pipes, danach sofort freigeben – der Player läuft unabhängig weiter. |
+| Erststart-Bestätigung pro PC, ohne die Windows-Nummer selbst zu speichern. | `MachineGuid` aus `HKLM\SOFTWARE\Microsoft\Cryptography` (mit `KEY_WOW64_64KEY`), gespeichert wird nur SHA-1 von `Elospeed.StemMaker:` + Nummer (`uLicense`). Text ohne Oberfläche in `uLicense`, Fenster in `uLicenseUI`, damit StemCLI ohne LCL auskommt. |
+| StemCLI darf in Batch-Dateien nicht auf eine Eingabe warten. | Keine Rückfrage per Tastatur: Text zeigen, Rückgabewert 3, einmal `--accept`. |
 | Das Release-ZIP 1.6 enthielt `AddOns\StemPlayer.exe` noch nicht. | Ab 1.7 muss der StemPlayer ins ZIP, sonst meldet „Anhören“ nur „StemPlayer nicht gefunden“. |
 
 ---

@@ -9,19 +9,23 @@ msgstr ""
 msgid "                   vorhanden: %s"
 msgstr ""
 
-#: stemcli.lpr:194
+#: stemcli.lpr:222
+msgid "        StemCLI --accept  (Haftungsausschluss/Lizenz bestätigen, einmal pro PC)"
+msgstr ""
+
+#: stemcli.lpr:221
 msgid "        StemCLI --check datei.stem.mp4"
 msgstr ""
 
-#: stemcli.lpr:192
+#: stemcli.lpr:219
 msgid "        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)"
 msgstr ""
 
-#: stemcli.lpr:193
+#: stemcli.lpr:220
 msgid "        [--no-normalize] [--no-bassfix]  (Klang-Optionen ausschalten)"
 msgstr ""
 
-#: stemcli.lpr:191
+#: stemcli.lpr:218
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr ""
 
@@ -157,7 +161,7 @@ msgstr ""
 msgid "%s wird gestartet ..."
 msgstr ""
 
-#: uinfo.pas:107
+#: uinfo.pas:143 uinfo.pas:176
 msgid "%s wurde nicht gefunden."
 msgstr ""
 
@@ -191,6 +195,18 @@ msgstr ""
 
 #: upower.pas:534
 msgid ", ohne Schlafsperre"
+msgstr ""
+
+#: ulicense.pas:160
+msgid "- Demucs-Modelle von Meta AI Research - werden von der Originalquelle heruntergeladen, nicht mit StemMaker verteilt. Die Lizenz der trainierten Modelle ist nicht abschliessend geklärt (ursprünglich für Forschungszwecke), deshalb nur für nicht-kommerzielle Nutzung gedacht."
+msgstr ""
+
+#: ulicense.pas:159
+msgid "- FFmpeg (LGPL) - wird beim ersten Start heruntergeladen"
+msgstr ""
+
+#: ulicense.pas:158
+msgid "- demucs.cpp von Sevag Hanssian (MIT) - die Trenn-Programme in tools\\"
 msgstr ""
 
 #: ustemjob.pas:1197
@@ -257,7 +273,7 @@ msgstr ""
 msgid "Akku (%d %%)"
 msgstr ""
 
-#: uinfo.pas:181
+#: uinfo.pas:218
 msgid "Aktuelles Log: %s"
 msgstr ""
 
@@ -281,12 +297,20 @@ msgstr ""
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr ""
 
+#: ulicense.pas:164
+msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
+msgstr ""
+
 #: uinit.pas:746
 msgid "Alles bereit"
 msgstr ""
 
 #: umain.lfm:451
 msgid "Anhören"
+msgstr ""
+
+#: uinfo.pas:296
+msgid "Anleitung"
 msgstr ""
 
 #: umain.lfm:81
@@ -301,7 +325,7 @@ msgstr ""
 msgid "Audiodateien wählen"
 msgstr ""
 
-#: stemcli.lpr:190
+#: stemcli.lpr:217
 msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
 msgstr ""
 
@@ -341,7 +365,7 @@ msgstr ""
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr ""
 
-#: uinit.pas:481
+#: uinit.pas:481 ulicenseui.pas:89
 msgid "Beenden"
 msgstr ""
 
@@ -369,8 +393,16 @@ msgstr ""
 msgid "Bestehende Zieldatei kann nicht ersetzt werden"
 msgstr ""
 
+#: stemcli.lpr:135
+msgid "Bestätigt - StemCLI ist auf diesem PC freigegeben."
+msgstr ""
+
 #: umain.pas:1416
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
+msgstr ""
+
+#: ulicense.pas:135
+msgid "Bitte vor der ersten Benutzung lesen"
 msgstr ""
 
 #: uinit.pas:962
@@ -413,7 +445,7 @@ msgstr ""
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
 msgstr ""
 
-#: uinfo.pas:109
+#: uinfo.pas:145
 msgid "Die Anleitung liegt normalerweise im StemMaker-Ordner neben StemMaker.exe. Bitte das ZIP komplett entpacken."
 msgstr ""
 
@@ -429,12 +461,16 @@ msgstr ""
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr ""
 
-#: uinfo.pas:276
+#: uinfo.pas:331
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr ""
 
 #: umain.pas:1793
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
+msgstr ""
+
+#: ulicense.pas:170
+msgid "Diese Bestätigung gilt für diesen PC. Wird der StemMaker-Ordner auf einen anderen PC kopiert, kommt diese Frage dort noch einmal."
 msgstr ""
 
 #: uinit.pas:764
@@ -465,6 +501,14 @@ msgstr ""
 msgid "Einstellungen"
 msgstr ""
 
+#: ulicenseui.pas:97
+msgid "Einverstanden - StemMaker starten"
+msgstr ""
+
+#: stemcli.lpr:129
+msgid "Einverstanden? Dann StemCLI einmal mit --accept aufrufen (oder StemMaker.exe starten und dort bestätigen)."
+msgstr ""
+
 #: upower.pas:243
 msgid "Energiesparmodus"
 msgstr ""
@@ -473,7 +517,7 @@ msgstr ""
 msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
 msgstr ""
 
-#: stemcli.lpr:204
+#: stemcli.lpr:232
 msgid "Energiesparplan vorübergehend: %s -> %s"
 msgstr ""
 
@@ -529,7 +573,7 @@ msgstr ""
 msgid "Fertig - Gesamtzeit %s"
 msgstr ""
 
-#: stemcli.lpr:232
+#: stemcli.lpr:260
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
 msgstr ""
 
@@ -553,6 +597,10 @@ msgstr ""
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr ""
 
+#: ulicense.pas:143
+msgid "HAFTUNGSAUSSCHLUSS"
+msgstr ""
+
 #: umain.pas:1586
 msgid "Herunterfahren abgebrochen."
 msgstr ""
@@ -573,11 +621,11 @@ msgstr ""
 msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
 msgstr ""
 
-#: stemcli.lpr:201
+#: stemcli.lpr:229
 msgid "Hinweis: Der PC läuft auf Akku - am Netzteil geht es schneller."
 msgstr ""
 
-#: stemcli.lpr:230
+#: stemcli.lpr:258
 msgid "Hinweis: Der PC war ca. %d min im Ruhezustand."
 msgstr ""
 
@@ -593,7 +641,11 @@ msgstr ""
 msgid "Höchstleistung"
 msgstr ""
 
-#: uinfo.pas:154 umain.lfm:80
+#: ulicenseui.pas:81
+msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
+msgstr ""
+
+#: uinfo.pas:191 umain.lfm:80
 msgid "Info"
 msgstr ""
 
@@ -617,7 +669,7 @@ msgstr ""
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr ""
 
-#: udonate.pas:128 uinfo.pas:209
+#: udonate.pas:128 uinfo.pas:246
 msgid "Jetzt spenden"
 msgstr ""
 
@@ -639,6 +691,10 @@ msgstr ""
 
 #: umain.pas:597
 msgid "Kopiert ✓"
+msgstr ""
+
+#: ulicense.pas:155
+msgid "LIZENZEN"
 msgstr ""
 
 #: uinit.pas:847
@@ -689,11 +745,15 @@ msgstr ""
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr ""
 
+#: uinfo.pas:306
+msgid "Lizenzen"
+msgstr ""
+
 #: umain.pas:600 umain.lfm:90
 msgid "Log kopieren"
 msgstr ""
 
-#: uinfo.pas:203
+#: uinfo.pas:240
 msgid "Logs-Ordner öffnen"
 msgstr ""
 
@@ -793,7 +853,11 @@ msgstr ""
 msgid "RAM knapp!"
 msgstr ""
 
-#: uinfo.pas:196
+#: ulicense.pas:149
+msgid "RECHTE AN DER MUSIK"
+msgstr ""
+
+#: uinfo.pas:233
 msgid "Schließen"
 msgstr ""
 
@@ -801,11 +865,11 @@ msgstr ""
 msgid "Server meldet HTTP %d"
 msgstr ""
 
-#: uinfo.pas:229
+#: uinfo.pas:266
 msgid "Sprache:"
 msgstr ""
 
-#: stemcli.lpr:163
+#: stemcli.lpr:190
 msgid "Spuren : "
 msgstr ""
 
@@ -821,7 +885,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: stemcli.lpr:164
+#: stemcli.lpr:191
 msgid "Stem   : "
 msgstr ""
 
@@ -861,12 +925,16 @@ msgstr ""
 msgid "Stem-Metadaten: %s"
 msgstr ""
 
-#: stemcli.lpr:189
+#: stemcli.lpr:216
 msgid "StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)"
 msgstr ""
 
 #: umain.lfm:7
 msgid "StemMaker"
+msgstr ""
+
+#: ulicense.pas:156
+msgid "StemMaker ist Open Source unter der MIT-Lizenz (© 2026 Elospeed). Fremde Bestandteile:"
 msgstr ""
 
 #: usingleinstance.pas:203
@@ -887,6 +955,10 @@ msgstr ""
 
 #: udonate.pas:100
 msgid "StemMaker und sein Quellcode sind frei für alle. Ich entwickle das Tool in meiner Freizeit."
+msgstr ""
+
+#: ulicense.pas:144
+msgid "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an."
 msgstr ""
 
 #: umain.lfm:452
@@ -937,6 +1009,10 @@ msgstr ""
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr ""
 
+#: ulicense.pas:167
+msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
+msgstr ""
+
 #: umain.lfm:176
 msgid "Trenn-Modell:"
 msgstr ""
@@ -963,6 +1039,10 @@ msgstr ""
 
 #: umain.lfm:356
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus.\nDanach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
+msgstr ""
+
+#: ulicense.pas:150
+msgid "Wandle nur Musik um, an der du die nötigen Rechte hast, z. B. selbst gekaufte Titel für den eigenen Gebrauch. Für das Einhalten von Urheberrecht und den Nutzungsbedingungen von Shops und Streaming-Diensten bist du selbst verantwortlich."
 msgstr ""
 
 #: uinit.pas:451
@@ -1129,7 +1209,7 @@ msgstr ""
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr ""
 
-#: uinfo.pas:179
+#: uinfo.pas:216
 msgid "von %s  ·  Traktor-Stem-Dateien aus MP3  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr ""
 

@@ -22,6 +22,8 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Neu: **Anhören** – startet `AddOns\StemPlayer.exe`, der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei. Doppelklick auf eine fertige Datei in der Liste öffnet genau diese Datei im Player.
 - Neu: **Ordner nach der Umwandlung öffnen**, standardmässig an. Der Explorer geht auf und markiert die zuletzt fertige Stem-Datei, so kann man sie direkt in Traktor ziehen. Nicht, wenn danach heruntergefahren wird.
 - „Ordner öffnen“ zeigt bei markierter Zeile genau deren Stem-Datei im Explorer.
+- Neu: **Erststart-Fenster** mit Haftungsausschluss, Hinweis zu den Rechten an der Musik und Lizenzhinweisen (Deutsch/Englisch). Häkchen setzen und bestätigen, sonst startet StemMaker nicht. Gilt pro PC (Hash der Windows-Installationsnummer in `StemMaker.ini`); wird der Ordner auf einen anderen PC kopiert, kommt die Frage erneut. StemCLI verlangt dafür einmal `--accept`.
+- Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
 
 ### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
 - Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).
@@ -39,7 +41,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - `TODO.md`: kurze Liste, was als Nächstes getestet, entschieden oder gebaut wird.
 - `ROADMAP.md` und `CHANGELOG.md` angelegt (PR #3).
 - Ordner `Temp/` für Testversionen, darin `StemPlayer/1.2/StemPlayer.exe` (PR #4).
-- README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch).
+- README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch). Am 4. Oktober 2026 wieder entfernt, der Test ist erledigt.
 - Entwicklungslog und Ideen-Liste unter `docs/`.
 - Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
 - Sprach-Links oben in README und LIESMICH.

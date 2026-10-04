@@ -2,8 +2,6 @@
 
 **by Elospeed**
 
-> ⚠️ **Beta:** Die Kompatibilität mit Traktor Pro 4 wird noch getestet. Probleme bitte über [Issues](https://github.com/Elospeed/StemMaker/issues) melden.
-
 🇬🇧 **English version:** [README.md](README.md)
 
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
@@ -22,7 +20,9 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 1. ZIP entpacken, z. B. nach `C:\Tools\StemMaker`.
 2. `StemMaker.exe` starten. Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
 
-Beim Start öffnet sich zuerst das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, ffmpeg, demucs, Modell und Temp-Ordner.
+**Beim ersten Start auf einem PC** zeigt ein Fenster den Haftungsausschluss und die Lizenzhinweise. Häkchen setzen und **„Einverstanden - StemMaker starten“** klicken. Das kommt einmal pro PC: Wird der StemMaker-Ordner auf einen anderen PC kopiert, fragt er dort noch einmal (kein Kopierschutz, Kopieren ist nach der MIT-Lizenz erlaubt). `AddOns\StemCLI.exe` will dieselbe Bestätigung einmal mit `--accept`. Den Text findest du jederzeit wieder unter **Info → Lizenzen**.
+
+Danach öffnet sich das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, ffmpeg, demucs, Modell und Temp-Ordner.
 - **Alles grün:** Nach knapp einer Sekunde geht das Hauptfenster von selbst auf.
 - **Beim allerersten Start** fehlen ffmpeg (ca. 170 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Danach wird neu geprüft, und StemMaker startet.
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
@@ -245,3 +245,4 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
 - Traktor und STEMS sind Marken von Native Instruments; StemMaker ist kein Produkt von Native Instruments.
 - Vollständige Liste aller Bestandteile, Autoren und Lizenzen: **`THIRD-PARTY-NOTICES.md`**.
 - Nur für Material verwenden, für das du die Rechte hast.
+- **Haftungsausschluss:** StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt („wie besehen“), Benutzung auf eigenes Risiko. Der ganze Text erscheint beim ersten Start und unter Info → Lizenzen.

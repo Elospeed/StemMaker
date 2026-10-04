@@ -13,6 +13,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 ## 🧪 Speedy testet
 
+- [ ] **Erststart-Fenster und Info → Lizenzen (1.7):** Mit derselben Testversion `1.7-anhoeren` kommt beim ersten Start das Fenster mit Haftungsausschluss und Lizenzhinweisen. Text lesen (passt er so?), Häkchen, bestätigen. Beim nächsten Start darf es nicht mehr kommen. Unter Info gibt es jetzt den Reiter „Lizenzen“.
 - [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ startet den StemPlayer mit dem Öffnen-Dialog in diesem Ordner, Doppelklick in der Liste öffnet die Datei direkt. Dafür den neuen StemPlayer 1.3 aus `Temp/StemPlayer/1.3/` nach `AddOns\` kopieren.
 - [ ] **Club-Pegel und Bass-Fix:** Testversion umwandeln lassen (beide Häkchen sind an) und in Traktor anhören: grosse Wellenformen? Bass voller? Mit und ohne Häkchen vergleichen.
 - [ ] **StemMaker lässt sich nach der Konvertierung nicht beenden:** Testversion `Temp/StemMaker/1.6.1-test/StemMaker.exe` ausprobieren: Dateien hinzufügen, umwandeln, Fenster schliessen. Es muss sofort zugehen.
@@ -33,9 +34,6 @@ Reihenfolge = Vorschlag, Speedy kann umstellen.
 2. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
 3. [ ] **1.7: Update-Prüfung beim Start** über `update.json` (Details in der [ROADMAP](ROADMAP.md)).
 4. [ ] **1.7: feste ffmpeg-Version + SHA-256-Prüfsummen** für alle Downloads, Download-Adressen in `update.json`.
-5. [ ] **1.7: THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
-6. [ ] **1.7: Erststart-Dialog** mit Haftungsausschluss und Lizenzhinweis (Häkchen + Bestätigen), gebunden an die PC-Kennung.
-7. [ ] **Beta-Hinweis** oben in README und LIESMICH entfernen (Traktor-Test ist erledigt).
 
 Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur einmal um 5 s (schon seit 1.1).
 
