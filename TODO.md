@@ -13,7 +13,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 ## 🧪 Speedy testet
 
-- [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ und Doppelklick in der Liste öffnen sie im StemPlayer.
+- [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ startet den StemPlayer mit dem Öffnen-Dialog in diesem Ordner, Doppelklick in der Liste öffnet die Datei direkt. Dafür den neuen StemPlayer 1.3 aus `Temp/StemPlayer/1.3/` nach `AddOns\` kopieren.
 - [ ] **Club-Pegel und Bass-Fix:** Testversion umwandeln lassen (beide Häkchen sind an) und in Traktor anhören: grosse Wellenformen? Bass voller? Mit und ohne Häkchen vergleichen.
 - [ ] **StemMaker lässt sich nach der Konvertierung nicht beenden:** Testversion `Temp/StemMaker/1.6.1-test/StemMaker.exe` ausprobieren: Dateien hinzufügen, umwandeln, Fenster schliessen. Es muss sofort zugehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.

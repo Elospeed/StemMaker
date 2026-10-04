@@ -449,7 +449,7 @@ object frmMain: TfrmMain
       Top = 8
       Width = 90
       Caption = 'Anh'#246'ren'
-      Hint = 'Fertige Stem-Datei im StemPlayer anh'#246'ren (oder Doppelklick in der Liste)'
+      Hint = 'StemPlayer im Ordner der zuletzt umgewandelten Datei '#246'ffnen (eine bestimmte Datei: Doppelklick in der Liste)'
       OnClick = btnListenClick
       ParentShowHint = False
       ShowHint = True

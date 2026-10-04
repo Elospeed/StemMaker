@@ -192,7 +192,6 @@ type
     FUserCancelled: Boolean;       // Benutzer hat "Abbrechen" gedrückt
     FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
     function ItemOutFile(Index: Integer): string;
-    function ListenIndex: Integer;
     procedure OpenInPlayer(const StemFile: string);
     procedure ShowInExplorer(const FileName: string);
     procedure UpdateTimes;
@@ -1254,28 +1253,9 @@ begin
   Item.SubItems[4] := FileName;
 end;
 
-{ Welche Zeile soll "Anhören" nehmen?
-  Die markierte Zeile - sonst die zuletzt fertig gewordene Datei,
-  sonst die unterste Zeile, deren Stem-Datei es gibt. -1 = keine. }
-function TfrmMain.ListenIndex: Integer;
-var
-  I: Integer;
-begin
-  if lvFiles.Selected <> nil then
-    Exit(lvFiles.Selected.Index);
-  if FLastOutFile <> '' then
-    for I := 0 to lvFiles.Items.Count - 1 do
-      if SameFileName(ItemOutFile(I), FLastOutFile) then
-        Exit(I);
-  for I := lvFiles.Items.Count - 1 downto 0 do
-    if FileExists(ItemOutFile(I)) then
-      Exit(I);
-  Result := -1;
-end;
-
 { StemPlayer (AddOns\StemPlayer.exe) starten, auf Wunsch gleich mit einer
-  Datei. StemMaker wartet NICHT auf den Player - beide laufen unabhängig
-  weiter (auch während einer Umwandlung). }
+  Datei oder einem Ordner. StemMaker wartet NICHT auf den Player - beide
+  laufen unabhängig weiter (auch während einer Umwandlung). }
 procedure TfrmMain.OpenInPlayer(const StemFile: string);
 var
   Exe: string;
@@ -1293,7 +1273,7 @@ begin
     P.Executable := Exe;
     P.CurrentDirectory := ExtractFilePath(Exe);
     if StemFile <> '' then
-      P.Parameters.Add(StemFile);
+      P.Parameters.Add(StemFile);  // Datei oder Ordner
     P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
     try
       P.Execute;
@@ -1350,23 +1330,42 @@ begin
     OpenDocument(ExtractFilePath(lvFiles.Items[0].SubItems[1]));
 end;
 
-{ "Anhören": Stem-Datei der markierten (bzw. zuletzt fertigen) Zeile im
-  StemPlayer öffnen. Gibt es noch keine, startet der Player leer - dort
-  kann man eine Datei hineinziehen. }
+{ "Anhören": StemPlayer starten, der Öffnen-Dialog zeigt gleich den Ordner
+  der zuletzt umgewandelten Datei (Wunsch Speedy, 04.10.2026). Eine
+  bestimmte Datei direkt öffnen: Doppelklick in der Liste.
+  Welcher Ordner: zuletzt fertige Datei dieses Durchlaufs, sonst die
+  unterste Zeile mit vorhandener Stem-Datei, sonst der Ausgabeordner. }
 procedure TfrmMain.btnListenClick(Sender: TObject);
 var
   I: Integer;
-  F: string;
+  F, Dir: string;
 begin
-  I := ListenIndex;
-  F := ItemOutFile(I);
-  if (F <> '') and not FileExists(F) then
+  Dir := '';
+  F := FLastOutFile;
+  if not FileExists(F) then
   begin
-    AddLog(Format(_('Noch keine Stem-Datei für "%s" - zuerst umwandeln. ' +
-      'Der StemPlayer startet ohne Datei.'), [lvFiles.Items[I].Caption]));
     F := '';
+    for I := lvFiles.Items.Count - 1 downto 0 do
+      if FileExists(ItemOutFile(I)) then
+      begin
+        F := ItemOutFile(I);
+        Break;
+      end;
   end;
-  OpenInPlayer(F);
+  if F <> '' then
+    Dir := ExtractFilePath(F)
+  else if (not chkBeside.Checked) and DirectoryExists(edtOut.Directory) then
+    Dir := edtOut.Directory;
+  if Dir <> '' then
+  begin
+    { Ohne "\" am Ende übergeben: "D:\Stems\" in Anführungszeichen würde
+      Windows als Zeichen " lesen. Laufwerk allein (D:\) -> "D:\." }
+    if Length(ExcludeTrailingPathDelimiter(Dir)) <= 2 then
+      Dir := IncludeTrailingPathDelimiter(Dir) + '.'
+    else
+      Dir := ExcludeTrailingPathDelimiter(Dir);
+  end;
+  OpenInPlayer(Dir);
 end;
 
 { Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
