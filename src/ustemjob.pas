@@ -108,6 +108,14 @@ type
     FSrcKbps   : Integer;          // Bitrate der Audiospur, 0 = unbekannt
     FSrcDone   : Boolean;          // True = Eingangs-Infos fertig gelesen
     FUsedKbps  : Integer;          // tatsächlich verwendete AAC-Bitrate
+    { Lautheit der Master-Spur der fertigen Stem-Datei (ffmpeg-Filter
+      ebur128, Werte aus der Zusammenfassung am Ende): }
+    FLoudScan  : Boolean;          // True = gerade läuft die Lautheits-Messung
+    FLoudI     : Double;           // Integrierte Lautheit in LUFS
+    FLoudLRA   : Double;           // Lautheitsumfang (Loudness Range) in LU
+    FTruePeak  : Double;           // True Peak in dBFS (über 0 = Übersteuerung)
+    FLoudFound : Boolean;          // True = I: wurde gefunden
+    FPeakFound : Boolean;          // True = Peak: wurde gefunden
     procedure Log(const Msg: string);
     procedure Progress(Percent: Integer; const Stage: string);
     procedure SetStage(Lo, Hi: Integer; const Name: string);
@@ -716,6 +724,27 @@ begin
   while FTail.Count > 25 do
     FTail.Delete(0);
 
+  if FLoudScan then
+  begin
+    { ---- Lautheits-Messung (ebur128-Zusammenfassung) ----
+      ffmpeg schreibt am Ende z.B.:
+          I:         -9.1 LUFS
+          LRA:        5.3 LU
+          Peak:       0.4 dBFS
+      Die Zahl steht zwischen dem ":" und der Einheit. Der Punkt ist bei
+      ffmpeg immer der Dezimaltrenner. }
+    FS := DefaultFormatSettings;
+    FS.DecimalSeparator := '.';
+    NumStr := Trim(Line);
+    if (Copy(NumStr, 1, 2) = 'I:') and (Pos('LUFS', NumStr) > 0) then
+      FLoudFound := TryStrToFloat(Trim(Copy(NumStr, 3, Pos('LUFS', NumStr) - 3)), FLoudI, FS)
+    else if (Copy(NumStr, 1, 4) = 'LRA:') and (Pos(' LU', NumStr) > 0) then
+      TryStrToFloat(Trim(Copy(NumStr, 5, Pos(' LU', NumStr) - 5)), FLoudLRA, FS)
+    else if (Copy(NumStr, 1, 5) = 'Peak:') and (Pos('dBFS', NumStr) > 0) then
+      FPeakFound := TryStrToFloat(Trim(Copy(NumStr, 6, Pos('dBFS', NumStr) - 6)), FTruePeak, FS);
+    Exit;
+  end;
+
   if not IsDemucs then
   begin
     { ---- ffmpeg ---- }
@@ -990,6 +1019,72 @@ var
   SrcText: string;                 // Quelle als Text fürs Log, z.B. 'mp3 320 kbit/s'
   Args: TStringList;
   I, Code: Integer;
+  T0, RunMS: QWord;                // Stoppuhr für diese Datei (ms)
+  InBytes, OutBytes: Int64;        // Größe Originaldatei / fertige Stem-Datei
+  StatResult: string;              // fürs Statistik-CSV: OK / Fehler / Abbruch
+
+  { Sekunden Rechenzeit pro Minute Musik - der Vergleichswert, um Modelle
+    und PCs miteinander zu vergleichen (0 = Länge unbekannt) }
+  function SecPerAudioMin: Double;
+  begin
+    if FDurationSec > 0 then
+      Result := (RunMS / 1000) / (FDurationSec / 60)
+    else
+      Result := 0;
+  end;
+
+  { eine Zeile in logs\statistik.csv schreiben (siehe uLog.LogStatRow) }
+  procedure WriteStat;
+  const
+    { feste Kurznamen fürs CSV (nicht übersetzt, damit Auswertungen über
+      alle Sprachen gleich bleiben) }
+    MODEL_IDS: array[TStemModel] of string = ('htdemucs', 'htdemucs_ft', 'hdemucs_mmi');
+  var
+    FS: TFormatSettings;
+    Fmt: string;
+
+    { Messwert als Text, leer wenn nicht gemessen }
+    function LoudText(Found: Boolean; V: Double): string;
+    begin
+      if Found then
+        Result := FormatFloat('0.0', V, FS)
+      else
+        Result := '';
+    end;
+
+  begin
+    FS := DefaultFormatSettings;
+    FS.DecimalSeparator := ',';      // Dezimal-Komma fürs deutsche Excel
+    if FSettings.Codec = scALAC then
+      Fmt := 'ALAC'
+    else
+      Fmt := Format('AAC %d', [FUsedKbps]);
+    LogStatRow(
+      ['Datum', 'Datei', 'Endung', 'Groesse_MB', 'Laenge_s', 'Quelle',
+       'Quelle_kbps', 'Modell', 'Teile', 'Kerne_je_Teil', 'Stem_Format',
+       'Stem_MB', 'Umwandlung_s', 's_pro_Audiominute', 'RAM_Spitze_MB',
+       'LUFS', 'LRA_LU', 'TruePeak_dBFS', 'CPU', 'Ergebnis'],
+      [FormatDateTime('yyyy-mm-dd hh:nn:ss', Now),
+       ExtractFileName(InputFile),
+       LowerCase(ExtractFileExt(InputFile)),
+       FormatFloat('0.00', InBytes / 1048576, FS),
+       FormatFloat('0.0', FDurationSec, FS),
+       FSrcCodec,
+       IntToStr(FSrcKbps),
+       MODEL_IDS[FSettings.Model],
+       IntToStr(FSettings.Threads),
+       IntToStr(OmpThreads),
+       Fmt,
+       FormatFloat('0.00', OutBytes / 1048576, FS),
+       FormatFloat('0.0', RunMS / 1000, FS),
+       FormatFloat('0.0', SecPerAudioMin, FS),
+       IntToStr(FPeakMemMB),
+       LoudText(FLoudFound, FLoudI),
+       LoudText(FLoudFound, FLoudLRA),
+       LoudText(FPeakFound, FTruePeak),
+       SysCPUName,
+       StatResult]);
+  end;
 
   { Fehler auslösen und dabei die letzten Ausgabezeilen des Programms
     anhängen - die sagen meistens, was schief ging }
@@ -1026,8 +1121,19 @@ begin
   FSrcKbps := 0;
   FSrcDone := False;
   FUsedKbps := 0;
+  FLoudScan := False;
+  FLoudFound := False;
+  FPeakFound := False;
+  FLoudI := 0;
+  FLoudLRA := 0;
+  FTruePeak := 0;
   OutFile := StemOutputName(InputFile, FSettings.OutputDir);
   WorkDir := '';
+  T0 := GetTickCount64;
+  RunMS := 0;
+  InBytes := 0;
+  OutBytes := 0;
+  StatResult := '';
   Log('== ' + ExtractFileName(InputFile));
   Args := TStringList.Create;
   try
@@ -1045,6 +1151,9 @@ begin
         Log('  ' + Format(_('übersprungen, existiert schon: %s'), [OutFile]));
         Exit;
       end;
+      { Dateigröße fürs Log und die Statistik (Länge kommt nach dem Dekodieren) }
+      InBytes := FileSizeUtf8(InputFile);
+      Log('  ' + Format(_('Dateigröße: %.1f MB'), [InBytes / 1048576]));
       if (FSettings.OutputDir <> '') and not DirectoryExists(FSettings.OutputDir) then
         if not ForceDirectories(FSettings.OutputDir) then
           raise Exception.Create(_('Ausgabeordner kann nicht erstellt werden'));
@@ -1163,6 +1272,35 @@ begin
       if CountTracks(TmpMp4) <> 5 then
         raise Exception.Create(_('Ergebnis hat nicht 5 Audiospuren'));
 
+      { ---- Lautheit der Master-Spur messen -----------------------------
+        Nur zur Info (Log + Statistik), die Datei wird NICHT verändert.
+        Gemessen wird die fertige AAC/ALAC-Spur, weil AAC-Kodieren die
+        Spitzen leicht anheben kann (True Peak über 0 dBFS = Übersteuerung).
+        Schlägt die Messung fehl, ist das kein Fehler der Umwandlung. }
+      SetStage(99, 99, _('Lautheit messen'));
+      FLoudScan := True;
+      try
+        RunTool(FSettings.FFmpegExe, ['-hide_banner', '-nostdin', '-nostats',
+          '-i', TmpMp4, '-map', '0:a:0',
+          '-af', 'ebur128=peak=true:framelog=quiet',
+          '-f', 'null', '-'], False);
+      except
+        on E: EStemCancelled do raise;
+        on E: Exception do
+          Log('  ' + Format(_('Lautheit konnte nicht gemessen werden: %s'), [E.Message]));
+      end;
+      FLoudScan := False;
+      if FLoudFound then
+      begin
+        if FPeakFound then
+          Log('  ' + Format(_('Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS'),
+            [FLoudI, FLoudLRA, FTruePeak]))
+        else
+          Log('  ' + Format(_('Lautheit Master: %.1f LUFS, Umfang %.1f LU'), [FLoudI, FLoudLRA]));
+        if FPeakFound and (FTruePeak > 0) then
+          Log('  ' + _('Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern'));
+      end;
+
       { ---- 5. an den Zielort verschieben --------------------------------
         RenameFile klappt nur auf dem gleichen Laufwerk. Liegt das Ziel auf
         einem anderen Laufwerk (z.B. D:), wird stattdessen kopiert. }
@@ -1175,6 +1313,17 @@ begin
 
       Progress(100, _('Fertig'));
       Log('  -> ' + OutFile);
+      { Kennzahlen dieser Datei: Größe der Stem-Datei und Tempo.
+        "s pro Audiominute" ist unabhängig von der Song-Länge und taugt
+        darum zum Vergleichen (Modelle, PCs, Einstellungen). }
+      OutBytes := FileSizeUtf8(OutFile);
+      RunMS := GetTickCount64 - T0;
+      if FDurationSec > 0 then
+        Log('  ' + Format(_('Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)'),
+          [OutBytes / 1048576, SecPerAudioMin, StemModelDisplayName(FSettings.Model)]))
+      else
+        Log('  ' + Format(_('Stem-Datei: %.1f MB'), [OutBytes / 1048576]));
+      StatResult := 'OK';
       Result := True;
     except
       on E: EStemCancelled do
@@ -1182,11 +1331,13 @@ begin
         { ErrMsg bleibt absichtlich deutsch: uMain erkennt den Abbruch
           an genau diesem Text (Err = 'Abgebrochen') }
         ErrMsg := 'Abgebrochen';
+        StatResult := 'Abbruch';
         Log('  ' + _('abgebrochen'));
       end;
       on E: Exception do
       begin
         ErrMsg := E.Message;
+        StatResult := 'Fehler';
         Log('  ' + _('FEHLER: ') + E.Message);
         LogMarkError;
       end;
@@ -1194,6 +1345,14 @@ begin
   finally
     { aufräumen - passiert IMMER, auch nach Fehler oder Abbruch }
     Args.Free;
+    { Statistik-Zeile (übersprungene Dateien zählen nicht - da wurde nichts
+      gerechnet) }
+    if StatResult <> '' then
+    begin
+      if RunMS = 0 then
+        RunMS := GetTickCount64 - T0;
+      WriteStat;
+    end;
     if (WorkDir <> '') and DirectoryExists(WorkDir) then
     begin
       if FSettings.KeepTemp then

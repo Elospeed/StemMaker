@@ -7,7 +7,7 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 3. Oktober 2026
+Zuletzt aktualisiert: 4. Oktober 2026
 
 ---
 
@@ -38,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- PR #7: Nur ein StemMaker gleichzeitig – von Speedy unter Windows getestet, bereit zum Mergen.
+- PR #8: Log und `logs\statistik.csv` (Dateigröße, Länge, Tempo, Lautheit pro Datei) – von Speedy unter Windows getestet, bereit zum Mergen.

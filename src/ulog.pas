@@ -67,6 +67,12 @@ function LogFileName: string;
 { Liste der Abstürze, die beim Start gefunden wurden (für einen Hinweis) }
 function LogCrashesFound: Integer;
 
+{ ---- Statistik (logs\statistik.csv) ----
+  Eine Zeile pro umgewandelter Datei, zum Auswerten in Excel/LibreOffice.
+  Header = Spaltennamen (wird nur in eine neue Datei geschrieben),
+  Fields = die Werte dieser Datei. Ohne LogInit passiert nichts. }
+procedure LogStatRow(const Header, Fields: array of string);
+
 { Aufrufkette der aktuellen Exception als Text (für eigene try/except) }
 function ExceptionStackText: string;
 
@@ -218,6 +224,103 @@ begin
       GStream.WriteBuffer(T[1], Length(T));
     except
       { z.B. Datenträger voll - ignorieren }
+    end;
+  finally
+    LeaveCriticalSection(GLock);
+  end;
+end;
+
+{ ---------------------------------------------------------------------------
+  Statistik-Datei logs\statistik.csv
+  Bleibt über alle Programmstarts erhalten (wird nicht aufgeräumt) und
+  wächst pro Datei um eine Zeile - so kann man später auswerten, wie lange
+  welches Modell auf welchem PC für wie viel Musik braucht.
+  Format: Trennzeichen ";" und Dezimal-Komma -> lässt sich im deutschen
+  Excel per Doppelklick öffnen. UTF-8 mit BOM, damit Umlaute stimmen.
+  --------------------------------------------------------------------------- }
+procedure LogStatRow(const Header, Fields: array of string);
+const
+  BOM = #$EF#$BB#$BF;              // UTF-8-Kennung am Dateianfang (für Excel)
+
+  { Feld für CSV vorbereiten: enthält es ; oder " -> in "..." einpacken }
+  function CsvField(const F: string): string;
+  begin
+    if (Pos(';', F) > 0) or (Pos('"', F) > 0) then
+      Result := '"' + StringReplace(F, '"', '""', [rfReplaceAll]) + '"'
+    else
+      Result := F;
+  end;
+
+  function CsvLine(const A: array of string): string;
+  var
+    I: Integer;
+  begin
+    Result := '';
+    for I := 0 to High(A) do
+    begin
+      if I > 0 then Result := Result + ';';
+      Result := Result + CsvField(A[I]);
+    end;
+    Result := Result + LineEnding;
+  end;
+
+  { erste Zeile einer vorhandenen Datei (ohne BOM), '' wenn nicht lesbar }
+  function FirstLine(const FileName: string): string;
+  var
+    L: TStringList;
+  begin
+    Result := '';
+    L := TStringList.Create;
+    try
+      try
+        L.LoadFromFile(FileName);
+        if L.Count > 0 then
+          Result := L[0];
+        if Copy(Result, 1, 3) = BOM then
+          Delete(Result, 1, 3);
+      except
+        Result := '';
+      end;
+    finally
+      L.Free;
+    end;
+  end;
+
+var
+  FN, T, Head: string;
+  St: TFileStream;
+begin
+  if GStream = nil then Exit;       // nur in StemMaker (nicht in StemCLI)
+  FN := LogDir + 'statistik.csv';
+  Head := CsvLine(Header);
+  EnterCriticalSection(GLock);
+  try
+    try
+      { Haben sich die Spalten geändert (neue StemMaker-Version)? Dann die
+        alte Datei umbenennen und neu anfangen - sonst passen die Spalten
+        in Excel nicht mehr zusammen. }
+      if FileExistsUTF8(FN) and (FirstLine(FN) + LineEnding <> Head) then
+        RenameFile(FN, LogDir + 'statistik_bis_' +
+          FormatDateTime('yyyy-mm-dd_hh-nn-ss', Now) + '.csv');
+      if FileExistsUTF8(FN) then
+      begin
+        St := TFileStream.Create(FN, fmOpenReadWrite or fmShareDenyNone);
+        St.Seek(0, soEnd);
+        T := '';
+      end
+      else
+      begin
+        St := TFileStream.Create(FN, fmCreate or fmShareDenyNone);
+        T := BOM + Head;
+      end;
+      try
+        T := T + CsvLine(Fields);
+        St.WriteBuffer(T[1], Length(T));
+      finally
+        St.Free;
+      end;
+    except
+      { z.B. Datei gerade in Excel geöffnet - dann fehlt diese Zeile eben }
     end;
   finally
     LeaveCriticalSection(GLock);
