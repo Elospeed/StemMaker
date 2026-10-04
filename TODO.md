@@ -7,13 +7,12 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 3. Oktober 2026
+Zuletzt aktualisiert: 4. Oktober 2026
 
 ---
 
 ## 🧪 Speedy testet
 
-- [ ] **Testversion mit Statistik:** [`Temp/StemMaker/1.7-statistik/StemMaker.exe`](Temp/StemMaker/1.7-statistik/StemMaker.exe) in den StemMaker-Ordner kopieren, ein paar Songs umwandeln, dann `logs\statistik.csv` in Excel öffnen und das Log ansehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
 
@@ -39,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Log und `logs\statistik.csv`: Dateigröße, Länge, Tempo und Lautheit pro Datei (PR #8).
+- PR #8: Log und `logs\statistik.csv` (Dateigröße, Länge, Tempo, Lautheit pro Datei) – von Speedy unter Windows getestet, bereit zum Mergen.
