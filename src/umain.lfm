@@ -131,12 +131,12 @@ object frmMain: TfrmMain
   end
   object gbSettings: TGroupBox
     Left = 0
-    Height = 206
-    Top = 294
+    Height = 234
+    Top = 266
     Width = 860
     Align = alBottom
     Caption = 'Einstellungen'
-    ClientHeight = 186
+    ClientHeight = 214
     ClientWidth = 856
     TabOrder = 2
     object lblOut: TLabel
@@ -376,6 +376,28 @@ object frmMain: TfrmMain
       ShowHint = True
       Hint = 'Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar).'
       TabOrder = 13
+    end
+    object chkNormalize: TCheckBox
+      Left = 120
+      Height = 19
+      Top = 191
+      Width = 330
+      Caption = 'Lautst'#228'rke angleichen (Club-Pegel)'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).'#13#10'Alle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.'#13#10'Laute Club-Tracks '#228'ndern sich kaum. Vorteil in Traktor: gr'#246#223'ere, besser lesbare Wellenformen.'
+      TabOrder = 14
+    end
+    object chkBassFix: TCheckBox
+      Left = 470
+      Height = 19
+      Top = 191
+      Width = 380
+      Caption = 'Bass-Fix: Tiefbass von Other nach Bass'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Der Tiefbass unter 80 Hz, den die Trennung im Stem "Other" l'#228'sst, wird in den Bass-Stem verschoben.'#13#10'Der Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unver'#228'ndert.'
+      TabOrder = 15
     end
   end
   object pnlRun: TPanel
