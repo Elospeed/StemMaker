@@ -108,6 +108,8 @@ type
     chkKeepAwake: TCheckBox;
     chkKeepTree: TCheckBox;
     chkShutdown: TCheckBox;
+    chkNormalize: TCheckBox;
+    chkBassFix: TCheckBox;
     lblCores: TLabel;
     clr1: TColorButton;
     clr2: TColorButton;
@@ -632,6 +634,9 @@ begin
     chkOverwrite.Checked := Ini.ReadBool('Main', 'Overwrite', False);
     chkKeepTree.Checked := Ini.ReadBool('Main', 'KeepTree', True);
     chkKeepAwake.Checked := Ini.ReadBool('Main', 'KeepAwake', True);
+    { Klang-Optionen (ab 1.7), Standard an }
+    chkNormalize.Checked := Ini.ReadBool('Main', 'Normalize', D.Normalize);
+    chkBassFix.Checked := Ini.ReadBool('Main', 'BassFix', D.BassFix);
     for I := 0 to 3 do
     begin
       Edits[I].Text := Ini.ReadString('Stems', 'Name' + IntToStr(I + 1), D.Stems[I].Name);
@@ -672,6 +677,8 @@ begin
       Ini.WriteBool('Main', 'Overwrite', chkOverwrite.Checked);
       Ini.WriteBool('Main', 'KeepTree', chkKeepTree.Checked);
       Ini.WriteBool('Main', 'KeepAwake', chkKeepAwake.Checked);
+      Ini.WriteBool('Main', 'Normalize', chkNormalize.Checked);
+      Ini.WriteBool('Main', 'BassFix', chkBassFix.Checked);
       for I := 0 to 3 do
       begin
         Ini.WriteString('Stems', 'Name' + IntToStr(I + 1), S.Stems[I].Name);
@@ -714,6 +721,8 @@ begin
     begin Result.Codec := scAAC; Result.AACBitrate := 320; Result.AACAuto := True; end;
   end;
   Result.Overwrite := chkOverwrite.Checked;
+  Result.Normalize := chkNormalize.Checked;
+  Result.BassFix := chkBassFix.Checked;
   Result.Stems[0].Name := Trim(edtStem1.Text); Result.Stems[0].Color := ColorToHex(clr1.ButtonColor);
   Result.Stems[1].Name := Trim(edtStem2.Text); Result.Stems[1].Color := ColorToHex(clr2.ButtonColor);
   Result.Stems[2].Name := Trim(edtStem3.Text); Result.Stems[2].Color := ColorToHex(clr3.ButtonColor);

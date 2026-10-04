@@ -138,6 +138,8 @@ The graphics card is only listed. demucs.cpp computes on the CPU only.
 | Parts / Auto | How many parts of the song are separated in parallel. **Auto** (default) recalculates on every start: as many parts as the processor has physical cores, at most 4 – and only as many as the RAM can handle (each part needs a good 2 GB, so with 8 GB RAM at most 2). Each part also uses additional cores; this is distributed automatically. Without the tick, the number you set applies. |
 | Audio format | **AAC automatic** (default): the stem file gets the bitrate of the source, e.g. MP3 256 → AAC 256, MP3 320 → AAC 320. Going higher gains nothing; it can never be better than the source. Sources below 192 kbit/s get 192, so nothing extra is lost when re-encoding. Lossless sources (WAV/FLAC) get 320. **AAC 256**: NI standard, fixed. **AAC 320**: fixed. **ALAC**: lossless, very large, only worthwhile for WAV/FLAC sources. The log shows per file e.g. "Source: mp3 320 kbit/s → stem file AAC 320 kbit/s". |
 | Stem names/colors | How the stems appear in Traktor. The defaults use the same colors as Stemgen. |
+| Normalize loudness (club level) | On by default. Quiet files are raised until the loudest point is just below 0 dB (about −1 dB). All 5 tracks get the same value, no limiter – the dynamics stay as in the original. Loud club tracks hardly change. Benefit: in Traktor the stem waveforms are big and easy to read (Autogain only raises playback, not the display). The log shows e.g. "Normalize loudness: +11.6 dB". |
+| Bass fix | On by default. The low bass below 80 Hz that the separation leaves in the "Other" stem is moved to the Bass stem. The Bass stem sounds fuller, like Traktor's own stems; all stems together sound unchanged. Skipped for files over 20 minutes (DJ mixes), because it needs the whole track in memory. |
 | Keep the PC awake during conversion | On by default. During conversion the PC won't go to sleep (the screen may turn off). If Windows is set to the **Power saver** plan (or, on Windows 11, the power mode is "Best power efficiency"), it switches to more performance for the duration of the conversion. Afterwards everything is back to how it was, even after a crash: in that case StemMaker restores the old power plan on the next start. "Balanced" is left untouched. |
 
 ### Command line (AddOns\StemCLI.exe)
@@ -148,7 +150,7 @@ AddOns\StemCLI.exe "D:\Music\New" -o "D:\Music\Stems" -m ht -t 4
 AddOns\StemCLI.exe track.mp3 -f alac --overwrite
 AddOns\StemCLI.exe --check "track.stem.mp4"
 ```
-Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
+Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--no-normalize` (don't normalize loudness), `--no-bassfix` (no bass fix), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
 Most people won't need this: the main window handles whole folders, the queue and overnight runs. StemCLI is meant for automation (batch files, Windows Task Scheduler). It uses the same tools, models, language and settings (`StemMaker.ini`) as the main program and doesn't download anything itself; StemMaker.exe must have run once beforehand.
 
 ### Test player (AddOns\StemPlayer.exe)

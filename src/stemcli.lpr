@@ -24,6 +24,8 @@
     -b <kbit>        AAC-Bitrate (Standard 256)
     --overwrite      vorhandene *.stem.mp4 überschreiben
     --keep           Temp-Ordner behalten (zur Fehlersuche)
+    --no-normalize   Lautstärke NICHT angleichen (Standard: Club-Pegel)
+    --no-bassfix     Tiefbass NICHT von Other nach Bass verschieben
     --check <Datei>  nur prüfen: Spuren + Stem-Infos einer *.stem.mp4 zeigen
     --ffmpeg <exe> / --demucs <Ordner> / --models <Ordner>
                      andere Werkzeug-Pfade
@@ -151,6 +153,8 @@ begin
       else if (A = '--models') and (I < ParamCount) then begin Inc(I); S.ModelsDir := ParamStr(I); end
       else if A = '--overwrite' then S.Overwrite := True
       else if A = '--keep' then S.KeepTemp := True
+      else if A = '--no-normalize' then S.Normalize := False
+      else if A = '--no-bassfix' then S.BassFix := False
       else if A = '--no-awake' then KeepAwake := False
       else if (A = '--check') and (I < ParamCount) then
       begin
@@ -186,6 +190,7 @@ begin
       WriteLn(_('Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]'));
       WriteLn(_('        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]'));
       WriteLn(_('        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)'));
+      WriteLn(_('        [--no-normalize] [--no-bassfix]  (Klang-Optionen ausschalten)'));
       WriteLn(_('        StemCLI --check datei.stem.mp4'));
       Halt(1);
     end;
