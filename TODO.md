@@ -40,4 +40,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - PR #9: Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
-- PR „Idee Pegel-AddOn“: nur Eintrag in docs/IDEEN.md und ROADMAP – kann direkt gemergt werden.
+- PR #10 „Idee Pegel-AddOn“: nur Eintrag in docs/IDEEN.md und ROADMAP – kann direkt gemergt werden.
