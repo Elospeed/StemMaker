@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
-  uPower, uLang, uLangUI, uQueue, Process, UTF8Process;
+  uPower, uLang, uLangUI, uQueue, Process, UTF8Process, uUpdate, uUpdateUI;
 
 const
   APP_VERSION = '1.6';
@@ -191,6 +191,10 @@ type
     FCurIndex  : Integer;          // Zeile der Datei, die gerade läuft
     FUserCancelled: Boolean;       // Benutzer hat "Abbrechen" gedrückt
     FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
+    FUpdate    : TUpdateInfo;      // gefundenes Update (ohne ModelHashes)
+    FHasUpdate : Boolean;          // ... wartet darauf, angeboten zu werden
+    procedure UpdateFound(const Info: TUpdateInfo);
+    procedure OfferUpdate(Data: PtrInt);
     function ItemOutFile(Index: Integer): string;
     procedure OpenInPlayer(const StemFile: string);
     procedure ShowInExplorer(const FileName: string);
@@ -547,10 +551,39 @@ begin
   for I := 1 to ParamCount do
     if FileExists(ParamStr(I)) or DirectoryExists(ParamStr(I)) then
       AddInput(ParamStr(I));
+
+  { Update-Prüfung im Hintergrund (max. 5 s, abschaltbar, siehe uUpdateUI) }
+  StartUpdateCheck(APP_VERSION, @UpdateFound);
+end;
+
+{ ---------------------------------------------------------------------------
+  Update gefunden (aus uUpdateUI, im Hauptthread). Nie während einer
+  Umwandlung anbieten - dann erst in WorkerDone.
+  --------------------------------------------------------------------------- }
+procedure TfrmMain.UpdateFound(const Info: TUpdateInfo);
+begin
+  FUpdate := Info;
+  FUpdate.ModelHashes := nil;      // gehört uUpdateUI und wird dort freigegeben
+  FHasUpdate := True;
+  if FWorker = nil then
+    Application.QueueAsyncCall(@OfferUpdate, 0)
+  else
+    AddLog(Format(_('StemMaker %s ist verfügbar - das Update wird nach der ' +
+      'Umwandlung angeboten.'), [Info.Version]));
+end;
+
+procedure TfrmMain.OfferUpdate(Data: PtrInt);
+begin
+  if (not FHasUpdate) or (FWorker <> nil) then
+    Exit;
+  FHasUpdate := False;
+  if ShowUpdateDialog(FUpdate, APP_VERSION) then
+    Close;                         // neuer StemMaker wartet schon (--nach-update)
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
+  CancelUpdateCheck;
   StopProbe;
   SaveQueueNow;      // letzter Stand der Liste
   EndPower;          // falls noch etwas umgestellt ist: zurückstellen
@@ -1555,7 +1588,10 @@ begin
   begin
     chkShutdown.Checked := False;
     Application.QueueAsyncCall(@AskShutdown, 0);
-  end;
+  end
+  else if FHasUpdate then
+    { Update kam während der Umwandlung - jetzt anbieten }
+    Application.QueueAsyncCall(@OfferUpdate, 0);
 end;
 
 procedure TfrmMain.AskShutdown(Data: PtrInt);

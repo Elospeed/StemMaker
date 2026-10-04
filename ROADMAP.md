@@ -13,14 +13,12 @@ Zuletzt aktualisiert: 4. Oktober 2026
 ## 🔨 In Arbeit
 
 - **StemPlayer aus StemMaker starten und Ordner öffnen** – Knopf „Anhören“, Doppelklick in der Liste, Explorer mit der fertigen Datei nach der Umwandlung (Testversion, Speedy testet).
+- **Update-Prüfung über `update.json`, feste ffmpeg-Version, SHA-256 für alle Downloads** (gebaut, wartet auf das ffmpeg-Release).
 - **Erststart-Fenster** (Haftungsausschluss, Lizenzen, einmal pro PC) und **Info → Lizenzen** (Testversion, Speedy testet).
 
 ## 📋 Geplant für Version 1.7
 
-- **Update-Prüfung beim Start** – liest `update.json` aus dem Repository (max. 5 s, abschaltbar). Dialog „Jetzt / Später / Version überspringen“, Download mit Prüfsumme, laufende Exe wird zu `.exe.old`. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Konvertierung.
-- **Feste ffmpeg-Version** als eigene Release im Repository (mit Lizenztext und Quellcode, LGPL) statt täglich „latest“.
-- **SHA-256-Prüfsummen** für alle Downloads (ffmpeg, Modelle, Updates).
-- **Download-Adressen in `update.json`** – zieht eine Datei um, muss nur diese Datei auf GitHub geändert werden.
+Alles gebaut, siehe „In Arbeit“. Offen sind nur noch die Releases (ffmpeg, dann 1.7) von Speedy.
 
 ## 📋 Geplant für den StemPlayer
 

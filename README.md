@@ -26,8 +26,10 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 
 Then the **startup check window** opens. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
 - **All green:** The main window opens by itself after about a second.
-- **On the very first start** ffmpeg (approx. 170 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. StemMaker then checks again and starts.
+- **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
+
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. Turn it off with the checkbox in the update window or `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
@@ -186,9 +188,14 @@ DemucsDir=...                                ; different folder for demucs
 ModelsDir=D:\Models                          ; store models elsewhere
 
 [Download]
-FFmpegZipURL=https://...                     ; in case a download source moves
-ModelBaseURL=https://...
+FFmpegZipURL=https://...                     ; your own ffmpeg source (no checksum then)
+ModelBaseURL=https://...                     ; your own model source
+
+[Update]
+AutoCheck=0                                  ; don't check for updates at startup
 ```
+
+Normally the download addresses come from [`update.json`](update.json) in this repository (fixed ffmpeg version, checksums). If a file moves, only that file has to change on GitHub.
 
 ## Problems?
 
@@ -242,7 +249,7 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 - StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
 - [demucs.cpp](https://github.com/sevagh/demucs.cpp) by Sevag Hanssian (MIT) – the separation programs shipped in `tools\`.
 - The [Demucs](https://github.com/facebookresearch/demucs) models are by Alexandre Défossez et al. / Meta AI. They are downloaded from their original location and not redistributed by StemMaker – see the licensing note in `THIRD-PARTY-NOTICES.md`.
-- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start; Windows builds by BtbN).
+- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start from this repository's releases; unmodified Windows build by BtbN, version pinned in `update.json`).
 - Approach and metadata values based on [Stemgen](https://github.com/axeldelafosse/stemgen) by axeldelafosse (MIT).
 - Traktor and STEMS are trademarks of Native Instruments; StemMaker is not affiliated with Native Instruments.
 - Full list of all components, authors and licenses: **`THIRD-PARTY-NOTICES.md`**.

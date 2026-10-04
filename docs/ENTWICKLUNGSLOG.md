@@ -6,7 +6,7 @@ Neueste Einträge oben.
 
 ---
 
-## 1.7: Anhören, Ordner öffnen, Erststart-Fenster (Oktober 2026)
+## 1.7: Anhören, Ordner öffnen, Erststart-Fenster, Updates (Oktober 2026)
 
 | Problem | Lösung |
 |---|---|
@@ -15,6 +15,11 @@ Neueste Einträge oben.
 | StemPlayer starten, ohne dass StemMaker hängt. | `TProcessUTF8` ohne `poWaitOnExit` und ohne Pipes, danach sofort freigeben – der Player läuft unabhängig weiter. |
 | Erststart-Bestätigung pro PC, ohne die Windows-Nummer selbst zu speichern. | `MachineGuid` aus `HKLM\SOFTWARE\Microsoft\Cryptography` (mit `KEY_WOW64_64KEY`), gespeichert wird nur SHA-1 von `Elospeed.StemMaker:` + Nummer (`uLicense`). Text ohne Oberfläche in `uLicense`, Fenster in `uLicenseUI`, damit StemCLI ohne LCL auskommt. |
 | StemCLI darf in Batch-Dateien nicht auf eine Eingabe warten. | Keine Rückfrage per Tastatur: Text zeigen, Rückgabewert 3, einmal `--accept`. |
+| Free Pascal 3.2 hat kein SHA-256. | Windows-Krypto `bcrypt.dll` (CNG) direkt aufrufen, in 1-MB-Stücken (`FileSHA256` in `udownload.pas`). |
+| Laufende `StemMaker.exe` lässt sich beim Update nicht überschreiben. | Umbenennen geht: `StemMaker.exe` → `.exe.old`, neue hinlegen, der nächste Start löscht `*.old`. |
+| Neustart nach dem Update scheiterte an der Sperre „nur ein StemMaker“. | Der neue StemMaker bekommt `--nach-update` und wartet bis zu 15 s, bis der alte seine Sperre (Mutex) freigibt. |
+| Update-Prüfung darf den Start nicht bremsen. | Eigener Thread, WinINet-Zeitlimits 5 s; Ergebnis kommt per `OnTerminate` im Hauptthread an. Läuft gerade eine Umwandlung, wird das Update erst danach angeboten. |
+| BtbN-ZIP „latest“ ändert sich täglich und ist 171 MB gross. | Eigenes Release `ffmpeg-9.0.2` mit nur `ffmpeg.exe` + Lizenz + Quellcode-Hinweis (56 MB), Prüfsumme in `update.json`. |
 | Das Release-ZIP 1.6 enthielt `AddOns\StemPlayer.exe` noch nicht. | Ab 1.7 muss der StemPlayer ins ZIP, sonst meldet „Anhören“ nur „StemPlayer nicht gefunden“. |
 
 ---

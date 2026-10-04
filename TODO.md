@@ -13,6 +13,7 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 ## 🧪 Speedy testet
 
+- [ ] **Update-Prüfung (1.7):** kann erst nach dem Release 1.7 echt getestet werden (dann bietet 1.7 nichts an, erst 1.7.1 wieder). Unter Wine mit einem Test-Server geprüft: Download, Prüfsumme, Austausch der Exe und Neustart klappen.
 - [ ] **Erststart-Fenster und Info → Lizenzen (1.7):** Mit derselben Testversion `1.7-anhoeren` kommt beim ersten Start das Fenster mit Haftungsausschluss und Lizenzhinweisen. Text lesen (passt er so?), Häkchen, bestätigen. Beim nächsten Start darf es nicht mehr kommen. Unter Info gibt es jetzt den Reiter „Lizenzen“.
 - [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ startet den StemPlayer mit dem Öffnen-Dialog in diesem Ordner, Doppelklick in der Liste öffnet die Datei direkt. Dafür den neuen StemPlayer 1.3 aus `Temp/StemPlayer/1.3/` nach `AddOns\` kopieren.
 - [ ] **Club-Pegel und Bass-Fix:** Testversion umwandeln lassen (beide Häkchen sind an) und in Traktor anhören: grosse Wellenformen? Bass voller? Mit und ohne Häkchen vergleichen.
@@ -24,7 +25,9 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
 - [ ] **Testversionen künftig wo?** Weiter im Ordner `Temp/` im Repo (bleibt für immer im Git-Verlauf) oder als GitHub-Pre-Release (Download neben dem Code). Empfehlung: Pre-Releases.
-- [ ] **ffmpeg-Release anlegen**, sobald die feste ffmpeg-Version für 1.7 vorbereitet ist (Releases erstellt Speedy selbst).
+- [ ] **ffmpeg-Release anlegen** (vorbereitet): Release mit Tag `ffmpeg-9.0.2` erstellen und `ffmpeg-9.0.2-win64-lgpl.zip` aus dem Projektordner `ffmpeg-release/` anhängen, dazu den Quellcode `https://github.com/FFmpeg/FFmpeg/archive/46d8f462ee.tar.gz`. Details in [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md).
+- [ ] **Prüfsummen der Modelle schicken:** im StemMaker-Ordner in PowerShell `Get-FileHash .\models\*.bin` ausführen und das Ergebnis schicken. Kommt dann in `update.json`.
+- [ ] **Beim Release 1.7:** `AddOns\StemPlayer.exe` (1.3) mit ins ZIP. Danach `update.json` auf 1.7 stellen (siehe [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md)).
 
 ## 🔨 Elospeed baut als Nächstes
 
@@ -32,8 +35,6 @@ Reihenfolge = Vorschlag, Speedy kann umstellen.
 
 1. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
 2. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
-3. [ ] **1.7: Update-Prüfung beim Start** über `update.json` (Details in der [ROADMAP](ROADMAP.md)).
-4. [ ] **1.7: feste ffmpeg-Version + SHA-256-Prüfsummen** für alle Downloads, Download-Adressen in `update.json`.
 
 Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur einmal um 5 s (schon seit 1.1).
 

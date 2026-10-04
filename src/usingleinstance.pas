@@ -185,6 +185,10 @@ begin
 end;
 
 function SingleInstanceCheck(const IniName: string): Boolean;
+{$IFDEF WINDOWS}
+var
+  W: Integer;
+{$ENDIF}
 begin
   Result := True;
   {$IFDEF WINDOWS}
@@ -193,6 +197,22 @@ begin
     Exit;            // Sperre geht nicht (sehr selten) -> lieber normal starten
   if GetLastError <> ERROR_ALREADY_EXISTS then
     Exit;            // wir sind der Erste
+
+  { Neustart nach einem Update (Parameter --nach-update): Der alte StemMaker
+    beendet sich gerade erst. Bis zu 15 s warten, bis seine Sperre weg ist. }
+  if Application.HasOption('nach-update') then
+  begin
+    W := 0;
+    while W < 15000 do
+    begin
+      CloseHandle(GMutex);
+      Sleep(250);
+      Inc(W, 250);
+      GMutex := CreateMutexW(nil, False, PWideChar(WideString(MUTEX_NAME)));
+      if GMutex = 0 then Exit;
+      if GetLastError <> ERROR_ALREADY_EXISTS then Exit;
+    end;
+  end;
 
   { es läuft schon ein StemMaker }
   Result := False;

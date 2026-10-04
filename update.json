@@ -1,0 +1,28 @@
+{
+  "_info": "Wird von StemMaker beim Start gelesen (ab 1.7). Aufbau und Pflege: docs/UPDATE-JSON.md",
+  "version": "1.6",
+  "date": "2026-10-02",
+  "page": "https://github.com/Elospeed/StemMaker/releases/latest",
+  "notes_de": "Erste öffentliche Version.",
+  "notes_en": "First public version.",
+  "zip_url": "https://github.com/Elospeed/StemMaker/releases/download/v1.6/StemMaker-1.6.zip",
+  "zip_sha256": "c132c8c77d89ce0191edd6d5319cdb0a871c6b45dcca6ee9ce1654e1bc95432f",
+  "ffmpeg": {
+    "version": "9.0.2",
+    "url": "https://github.com/Elospeed/StemMaker/releases/download/ffmpeg-9.0.2/ffmpeg-9.0.2-win64-lgpl.zip",
+    "sha256": "d350ded1fd523fdae90064c11b954497d2ba8f9ef3b10a2447f6717acc210af0",
+    "entry": "ffmpeg.exe",
+    "size_mb": 56
+  },
+  "models": {
+    "base_url": "https://huggingface.co/datasets/Retrobear/demucs.cpp/resolve/main/",
+    "sha256": {
+      "ggml-model-htdemucs-4s-f16.bin": "",
+      "ggml-model-hdemucs_mmi-v3-f16.bin": "",
+      "ggml-model-htdemucs_ft_drums-4s-f16.bin": "",
+      "ggml-model-htdemucs_ft_bass-4s-f16.bin": "",
+      "ggml-model-htdemucs_ft_other-4s-f16.bin": "",
+      "ggml-model-htdemucs_ft_vocals-4s-f16.bin": ""
+    }
+  }
+}
