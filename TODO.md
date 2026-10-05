@@ -39,4 +39,5 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Anhören im StemPlayer und Ordner öffnen nach der Umwandlung (Testversion, Speedy testet).
+- Version 1.7 (#13): Anhören, Ordner öffnen, Erststart-Fenster, Update-Prüfung, feste ffmpeg, SHA-256 (Testversion, Speedy testet).
+- Club-Pegel und Bass-Fix (Testversion, Speedy hört rein).
