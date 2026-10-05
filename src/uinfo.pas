@@ -9,7 +9,10 @@
 
   Das Info-Fenster (Button "Info" oben links im Hauptfenster):
     - oben: Programmname, Version, Autor, Build-Datum, aktuelle Log-Datei
-    - Mitte: der Inhalt von LIESMICH.md bzw. README.md (Anleitung)
+    - Mitte, zwei Reiter:
+        "Anleitung": der Inhalt von LIESMICH.md bzw. README.md
+        "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
+                     THIRD-PARTY-NOTICES.md (ab 1.7)
     - unten: "Logs-Ordner öffnen", "Jetzt spenden", Sprachauswahl,
       "Schließen"
 
@@ -31,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  LCLIntf, uDonate, uLog;
+  ComCtrls, LCLIntf, uDonate, uLog;
 
 { Info-Fenster anzeigen. Version/Autor kommen vom Hauptfenster. }
 procedure ShowInfoDialog(const Version, Author: string);
@@ -39,7 +42,7 @@ procedure ShowInfoDialog(const Version, Author: string);
 implementation
 
 uses
-  Dialogs, uStemJob, uLang, uLangUI;
+  Dialogs, uStemJob, uLang, uLangUI, uLicense;
 
 type
   TfrmInfo = class(TForm)
@@ -77,43 +80,21 @@ begin
   Result := StringReplace(Result, '>', '', [rfReplaceAll]);
 end;
 
-{ Anleitung laden (deutsch: LIESMICH.md, sonst README.md) und für die
-  Anzeige etwas vereinfachen:
+{ Eine Markdown-Datei für die Anzeige etwas vereinfachen:
   Markdown-Zeichen wie **fett** oder `Code` sehen im normalen Textfeld
   störend aus und werden entfernt. Überschriften (# ...) bekommen eine
   Linie darunter, damit man sie erkennt. }
-function LoadReadme: string;
+function MarkdownToText(const FullName: string): string;
 var
   L: TStringList;
   I: Integer;
   S, Title: string;
   Res: TStringList;
-  FileName: string;     // welche Anleitung gelesen wird (ohne Pfad)
 begin
-  Result := '';
-  { Dateiname je nach Sprache wählen: Deutsch -> LIESMICH.md,
-    alle anderen -> README.md. Gibt es keine README.md, wird die
-    deutsche Anleitung als Rückfall genommen (besser als gar nichts). }
-  if LangCode = 'de' then
-    FileName := 'LIESMICH.md'
-  else
-  begin
-    FileName := 'README.md';
-    if not FileExists(ExtractFilePath(ParamStr(0)) + FileName) then
-      FileName := 'LIESMICH.md';
-  end;
-  if not FileExists(ExtractFilePath(ParamStr(0)) + FileName) then
-  begin
-    Result := Format(_('%s wurde nicht gefunden.'), [FileName]) +
-      LineEnding + LineEnding +
-      _('Die Anleitung liegt normalerweise im StemMaker-Ordner neben ' +
-      'StemMaker.exe. Bitte das ZIP komplett entpacken.');
-    Exit;
-  end;
   L := TStringList.Create;
   Res := TStringList.Create;
   try
-    L.LoadFromFile(ExtractFilePath(ParamStr(0)) + FileName);
+    L.LoadFromFile(FullName);
     for I := 0 to L.Count - 1 do
     begin
       S := L[I];
@@ -141,10 +122,66 @@ begin
   end;
 end;
 
+{ Anleitung laden (deutsch: LIESMICH.md, sonst README.md) }
+function LoadReadme: string;
+var
+  FileName: string;     // welche Anleitung gelesen wird (ohne Pfad)
+begin
+  { Dateiname je nach Sprache wählen: Deutsch -> LIESMICH.md,
+    alle anderen -> README.md. Gibt es keine README.md, wird die
+    deutsche Anleitung als Rückfall genommen (besser als gar nichts). }
+  if LangCode = 'de' then
+    FileName := 'LIESMICH.md'
+  else
+  begin
+    FileName := 'README.md';
+    if not FileExists(ExtractFilePath(ParamStr(0)) + FileName) then
+      FileName := 'LIESMICH.md';
+  end;
+  if not FileExists(ExtractFilePath(ParamStr(0)) + FileName) then
+  begin
+    Result := Format(_('%s wurde nicht gefunden.'), [FileName]) +
+      LineEnding + LineEnding +
+      _('Die Anleitung liegt normalerweise im StemMaker-Ordner neben ' +
+      'StemMaker.exe. Bitte das ZIP komplett entpacken.');
+    Exit;
+  end;
+  Result := MarkdownToText(ExtractFilePath(ParamStr(0)) + FileName);
+end;
+
+{ Reiter "Lizenzen": Haftungsausschluss (gleicher Text wie beim ersten
+  Start), danach LICENSE und THIRD-PARTY-NOTICES.md aus dem Programmordner.
+  Die zwei Dateien gibt es nur auf Englisch (rechtlich massgebend). }
+function LoadLicenses: string;
+var
+  Dir: string;
+  L: TStringList;
+begin
+  Dir := ExtractFilePath(ParamStr(0));
+  Result := TermsText + LineEnding + LineEnding;
+  if FileExists(Dir + 'LICENSE') then
+  begin
+    L := TStringList.Create;
+    try
+      L.LoadFromFile(Dir + 'LICENSE');
+      Result := Result + 'LICENSE' + LineEnding + '-----------' + LineEnding +
+        L.Text + LineEnding;
+    finally
+      L.Free;
+    end;
+  end;
+  if FileExists(Dir + 'THIRD-PARTY-NOTICES.md') then
+    Result := Result + MarkdownToText(Dir + 'THIRD-PARTY-NOTICES.md')
+  else
+    Result := Result + Format(_('%s wurde nicht gefunden.'), ['THIRD-PARTY-NOTICES.md']);
+end;
+
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
   lblTitle, lblSub: TLabel;
-  memText: TMemo;
+  memText, memLic: TMemo;
+  pcText: TPageControl;
+  tsHelp, tsLic: TTabSheet;
   pnlBottom: TPanel;
   btnDonate, btnLogs, btnClose: TButton;
   lblLang: TLabel;
@@ -248,16 +285,34 @@ begin
     schon beim Öffnen des Fensters }
   cbLang.OnChange := @cbLangChange;
 
-  { --- Anleitung --- }
+  { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
+  pcText := TPageControl.Create(Self);
+  pcText.Parent := Self;
+  pcText.Align := alClient;
+  pcText.BorderSpacing.Left := 10;
+  pcText.BorderSpacing.Right := 10;
+
+  tsHelp := pcText.AddTabSheet;
+  tsHelp.Caption := _('Anleitung');
   memText := TMemo.Create(Self);
-  memText.Parent := Self;
+  memText.Parent := tsHelp;
   memText.Align := alClient;
-  memText.BorderSpacing.Left := 10;
-  memText.BorderSpacing.Right := 10;
   memText.ReadOnly := True;
   memText.ScrollBars := ssAutoVertical;
   memText.WordWrap := True;
   memText.Text := LoadReadme;
+
+  tsLic := pcText.AddTabSheet;
+  tsLic.Caption := _('Lizenzen');
+  memLic := TMemo.Create(Self);
+  memLic.Parent := tsLic;
+  memLic.Align := alClient;
+  memLic.ReadOnly := True;
+  memLic.ScrollBars := ssAutoVertical;
+  memLic.WordWrap := True;
+  memLic.Text := LoadLicenses;
+
+  pcText.ActivePage := tsHelp;
 end;
 
 destructor TfrmInfo.Destroy;

@@ -78,6 +78,9 @@ type
     Stems       : TStemInfoArray;   // Namen + Farben der 4 Stems
     Overwrite   : Boolean;  // vorhandene *.stem.mp4 überschreiben?
     KeepTemp    : Boolean;  // Temp-Ordner behalten (zur Fehlersuche)
+    Normalize   : Boolean;  // Lautstärke angleichen: alle 5 Spuren gleich
+                            // anheben, bis die Spitze bei ca. -1 dB liegt
+    BassFix     : Boolean;  // Tiefbass unter 80 Hz von "Other" in "Bass"
   end;
 
   { eigene Exception-Klasse, damit "Abbrechen" kein Fehler ist }
@@ -116,6 +119,10 @@ type
     FTruePeak  : Double;           // True Peak in dBFS (über 0 = Übersteuerung)
     FLoudFound : Boolean;          // True = I: wurde gefunden
     FPeakFound : Boolean;          // True = Peak: wurde gefunden
+    { Pegel-Messung für "Lautstärke angleichen" (ffmpeg-Filter astats): }
+    FLevelScan : Boolean;          // True = gerade läuft die Pegel-Messung
+    FMaxPeak   : Double;           // höchste Spitze aller Spuren in dBFS
+    FMaxFound  : Boolean;          // True = mindestens ein Wert gefunden
     procedure Log(const Msg: string);
     procedure Progress(Percent: Integer; const Stage: string);
     procedure SetStage(Lo, Hi: Integer; const Name: string);
@@ -218,6 +225,68 @@ const
     'target_0_drums.wav', 'target_1_bass.wav',
     'target_2_other.wav', 'target_3_vocals.wav');
 
+  { ---- Klang-Optionen (siehe StemFilter und TStemJob.Run) ---- }
+  { Bass-Fix: bis zu dieser Frequenz wandert der Tiefbass von "Other" nach
+    "Bass". Gemessen am 4.10.2026 gegen Traktor Pro 4: Traktor legt den
+    Tiefbass in den Bass-Stem, demucs lässt einen Rest in "Other". }
+  BASSFIX_HZ = '80';
+  { Der Tiefpass läuft vorwärts UND rückwärts (siehe StemFilter). Dafür
+    hält ffmpeg die ganze Spur im Speicher - bei sehr langen Dateien (DJ-Mixe)
+    wird der Bass-Fix deshalb ausgelassen. 20 min = ca. 1 GB RAM. }
+  BASSFIX_MAX_SEC = 20 * 60;
+  { Lautstärke angleichen: Ziel für die höchste Sample-Spitze aller Spuren.
+    AAC hebt Spitzen beim Kodieren leicht an - mit -1,5 dB landet der
+    True Peak der fertigen Datei bei ungefähr -1 dB. }
+  NORM_TARGET_DB = -1.5;
+  { höchstens so viel anheben (fast stille Dateien nicht ins Rauschen ziehen) }
+  NORM_MAX_GAIN_DB = 24.0;
+  { kleinere Änderungen lohnen das Neuberechnen nicht }
+  NORM_MIN_GAIN_DB = 0.1;
+  { astats: nur die Gesamt-Spitze ausgeben (eine Zeile pro Spur) }
+  ASTATS_PEAK = 'astats=measure_perchannel=none:measure_overall=Peak_level';
+
+{ Baut den ffmpeg-Filter für die 4 Stems.
+    InL  = Eingänge in der Reihenfolge Drums, Bass, Other, Vocals, z.B. '[2:a]'
+    OutL = Namen der Ausgänge, z.B. '[a1]'
+    Tail = Filter, der an jede Spur angehängt wird (z.B. ',volume=11.6dB'),
+           leer = nichts
+  Jede Spur wird zuerst in Gleitkomma umgewandelt (aformat=...flt). So kann
+  beim Rechnen nichts abgeschnitten werden.
+
+  Bass-Fix (wenn BassFix = True):
+    tief  = Other durch einen Tiefpass (2x lowpass = steile Flanke, 80 Hz)
+    Other = Other - tief      (pan: c0=c0-c2 heißt linker Kanal minus
+    Bass  = Bass  + tief       linker Kanal des zweiten Eingangs)
+  Wichtig: Ein normaler Tiefpass verschiebt die Phase, dann passt "tief"
+  nicht mehr zum Bass in Other - Abziehen würde den Rest sogar lauter
+  machen (getestet). Darum läuft der Tiefpass einmal vorwärts und einmal
+  rückwärts (areverse), so heben sich die Verschiebungen auf.
+  Was Other verliert, bekommt Bass genau dazu - die Summe aller Stems
+  bleibt also exakt gleich. amerge legt die zwei Stereo-Eingänge zu
+  4 Kanälen zusammen (c0/c1 = erster, c2/c3 = zweiter Eingang). }
+function StemFilter(const InL, OutL: array of string; const Tail: string;
+  BassFix: Boolean): string;
+const
+  FLT = 'aformat=sample_fmts=flt';
+begin
+  Result :=
+    InL[0] + FLT + Tail + OutL[0] + ';' +
+    InL[3] + FLT + Tail + OutL[3] + ';';
+  if BassFix then
+    Result := Result +
+      InL[2] + FLT + ',asplit=2[bfo1][bfo2];' +
+      '[bfo1]lowpass=f=' + BASSFIX_HZ + ',lowpass=f=' + BASSFIX_HZ +
+        ',areverse,lowpass=f=' + BASSFIX_HZ + ',lowpass=f=' + BASSFIX_HZ +
+        ',areverse,asplit=2[bfl1][bfl2];' +
+      '[bfo2][bfl1]amerge=inputs=2,pan=stereo|c0=c0-c2|c1=c1-c3' + Tail + OutL[2] + ';' +
+      InL[1] + FLT + '[bfb];' +
+      '[bfb][bfl2]amerge=inputs=2,pan=stereo|c0=c0+c2|c1=c1+c3' + Tail + OutL[1]
+  else
+    Result := Result +
+      InL[1] + FLT + Tail + OutL[1] + ';' +
+      InL[2] + FLT + Tail + OutL[2];
+end;
+
 function StemModelDisplayName(M: TStemModel): string;
 begin
   { gleiche Texte wie in StemModelNames, aber übersetzbar }
@@ -268,6 +337,8 @@ begin
   Result.Stems      := DefaultStemInfo;
   Result.Overwrite  := False;
   Result.KeepTemp   := False;
+  Result.Normalize  := True;           // Standard: Club-Pegel
+  Result.BassFix    := True;           // Standard: Bass-Fix an
 end;
 
 function StemOutputName(const InputFile, OutputDir: string): string;
@@ -313,6 +384,9 @@ begin
     M := Ini.ReadInteger('Main', 'Model', Ord(S.Model));
     if (M >= Ord(Low(TStemModel))) and (M <= Ord(High(TStemModel))) then
       S.Model := TStemModel(M);
+    { Klang-Optionen aus dem Hauptfenster - so macht StemCLI dasselbe }
+    S.Normalize := Ini.ReadBool('Main', 'Normalize', S.Normalize);
+    S.BassFix := Ini.ReadBool('Main', 'BassFix', S.BassFix);
   finally
     Ini.Free;
   end;
@@ -745,6 +819,28 @@ begin
     Exit;
   end;
 
+  if FLevelScan then
+  begin
+    { ---- Pegel-Messung (astats) ----
+      ffmpeg schreibt am Ende für jede gemessene Spur z.B.:
+          [Parsed_astats_3 @ 0000...] Peak level dB: -13.497830
+      Wir merken uns den höchsten Wert über alle Spuren. Stille Spuren
+      melden "-inf" - das lässt TryStrToFloat einfach durchfallen. }
+    P := Pos('Peak level dB:', Line);
+    if P > 0 then
+    begin
+      FS := DefaultFormatSettings;
+      FS.DecimalSeparator := '.';
+      if TryStrToFloat(Trim(Copy(Line, P + 14, MaxInt)), Sec, FS) then
+        if (not FMaxFound) or (Sec > FMaxPeak) then
+        begin
+          FMaxPeak := Sec;
+          FMaxFound := True;
+        end;
+    end;
+    Exit;
+  end;
+
   if not IsDemucs then
   begin
     { ---- ffmpeg ---- }
@@ -1022,6 +1118,10 @@ var
   T0, RunMS: QWord;                // Stoppuhr für diese Datei (ms)
   InBytes, OutBytes: Int64;        // Größe Originaldatei / fertige Stem-Datei
   StatResult: string;              // fürs Statistik-CSV: OK / Fehler / Abbruch
+  GainDb: Double;                  // Lautstärke angleichen: Änderung in dB
+  DoBassFix: Boolean;              // Bass-Fix für diese Datei wirklich machen
+  Tail, Graph: string;             // ffmpeg-Filter für Klang-Optionen
+  DotFS: TFormatSettings;          // Zahlen für ffmpeg immer mit Punkt
 
   { Sekunden Rechenzeit pro Minute Musik - der Vergleichswert, um Modelle
     und PCs miteinander zu vergleichen (0 = Länge unbekannt) }
@@ -1127,6 +1227,13 @@ begin
   FLoudI := 0;
   FLoudLRA := 0;
   FTruePeak := 0;
+  FLevelScan := False;
+  FMaxFound := False;
+  FMaxPeak := 0;
+  GainDb := 0;
+  DoBassFix := False;
+  DotFS := DefaultFormatSettings;
+  DotFS.DecimalSeparator := '.';
   OutFile := StemOutputName(InputFile, FSettings.OutputDir);
   WorkDir := '';
   T0 := GetTickCount64;
@@ -1228,12 +1335,64 @@ begin
         if not FileExists(StemDir + PathDelim + STEM_WAVS[I]) then
           Fail(Format(_('demucs.cpp hat %s nicht erzeugt'), [STEM_WAVS[I]]));
 
+      DoBassFix := FSettings.BassFix and (FDurationSec > 0) and
+        (FDurationSec <= BASSFIX_MAX_SEC);
+      if DoBassFix then
+        Log('  ' + Format(_('Bass-Fix: Tiefbass unter %s Hz von Other nach Bass'), [BASSFIX_HZ]))
+      else if FSettings.BassFix then
+        Log('  ' + _('Bass-Fix ausgelassen: Datei zu lang (über 20 min) oder Länge unbekannt'));
+
+      { ---- 2b. Lautstärke angleichen: Pegel messen ----------------------
+        Gemessen wird die höchste Spitze von Master, den 4 Stems (schon mit
+        Bass-Fix) und der Summe der 4 Stems - so spielt Traktor sie ab.
+        Alle 5 Spuren bekommen danach DENSELBEN Wert, damit Master und
+        Stems gleich laut bleiben. Kein Limiter: die Dynamik bleibt wie im
+        Original. Laute Club-Tracks ändern sich kaum, leise werden auf
+        Club-Pegel gebracht. Schlägt die Messung fehl, bleibt der Pegel
+        einfach wie er ist. }
+      if FSettings.Normalize then
+      begin
+        SetStage(90, 91, _('Pegel messen'));
+        Graph := StemFilter(['[1:a]', '[2:a]', '[3:a]', '[4:a]'],
+          ['[s0]', '[s1]', '[s2]', '[s3]'], '', DoBassFix) + ';' +
+          '[0:a]' + ASTATS_PEAK + ',anullsink;';
+        for I := 0 to 3 do
+          Graph := Graph + Format('[s%d]asplit=2[m%d][n%d];[m%d]%s,anullsink;',
+            [I, I, I, I, ASTATS_PEAK]);
+        Graph := Graph + '[n0][n1][n2][n3]amerge=inputs=4,' +
+          'pan=stereo|c0=c0+c2+c4+c6|c1=c1+c3+c5+c7,' + ASTATS_PEAK + '[sum]';
+        Args.Clear;
+        Args.AddStrings(['-hide_banner', '-nostdin', '-y', '-i', MixWav]);
+        for I := 0 to 3 do
+          Args.AddStrings(['-i', StemDir + PathDelim + STEM_WAVS[I]]);
+        Args.AddStrings(['-filter_complex', Graph, '-map', '[sum]', '-f', 'null', '-']);
+        FLevelScan := True;
+        try
+          Code := RunTool(FSettings.FFmpegExe, ArgsArray, False);
+        finally
+          FLevelScan := False;
+        end;
+        if (Code = 0) and FMaxFound then
+        begin
+          GainDb := NORM_TARGET_DB - FMaxPeak;
+          if GainDb > NORM_MAX_GAIN_DB then
+            GainDb := NORM_MAX_GAIN_DB;
+          if Abs(GainDb) < NORM_MIN_GAIN_DB then
+            GainDb := 0;
+          { FormatFloat statt Format: Format kennt kein "+" vor der Zahl }
+          Log('  ' + Format(_('Lautstärke angleichen: %s dB (höchste Spitze vorher %.1f dBFS)'),
+            [FormatFloat('+0.0;-0.0;0.0', GainDb), FMaxPeak]));
+        end
+        else
+          Log('  ' + _('Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert'));
+      end;
+
       { ---- 3. MP4 mit 5 Audiospuren bauen -------------------------------
         Eingänge für ffmpeg:
           0 = Originaldatei  (nur für Tags und Cover)
           1 = mix.wav        (Master = Spur 1)
           2..5 = die 4 Stems (Spur 2..5) }
-      SetStage(90, 98, _('Stem-Datei kodieren'));
+      SetStage(91, 98, _('Stem-Datei kodieren'));
       Args.Clear;
       Args.AddStrings(['-hide_banner', '-nostdin', '-y',
         '-i', InputFile,
@@ -1241,8 +1400,25 @@ begin
       for I := 0 to 3 do
         Args.AddStrings(['-i', StemDir + PathDelim + STEM_WAVS[I]]);
       { welche Eingänge in welcher Reihenfolge in die Datei kommen }
-      Args.AddStrings(['-map', '1:a:0', '-map', '2:a:0', '-map', '3:a:0',
-        '-map', '4:a:0', '-map', '5:a:0',
+      if DoBassFix or (GainDb <> 0) then
+      begin
+        { mit Klang-Optionen: die Spuren laufen durch den Filter
+          (Bass-Fix und/oder gemeinsame Lautstärke-Änderung) }
+        if GainDb <> 0 then
+          Tail := ',volume=' + FormatFloat('0.00', GainDb, DotFS) + 'dB'
+        else
+          Tail := '';
+        Graph := '[1:a]aformat=sample_fmts=flt' + Tail + '[a0];' +
+          StemFilter(['[2:a]', '[3:a]', '[4:a]', '[5:a]'],
+            ['[a1]', '[a2]', '[a3]', '[a4]'], Tail, DoBassFix);
+        Args.AddStrings(['-filter_complex', Graph,
+          '-map', '[a0]', '-map', '[a1]', '-map', '[a2]',
+          '-map', '[a3]', '-map', '[a4]']);
+      end
+      else
+        Args.AddStrings(['-map', '1:a:0', '-map', '2:a:0', '-map', '3:a:0',
+          '-map', '4:a:0', '-map', '5:a:0']);
+      Args.AddStrings([
         '-map', '0:v:0?',                   // Cover, falls vorhanden ("?" = optional)
         '-c:v', 'copy', '-disposition:v:0', 'attached_pic']);
       { Audio-Format }

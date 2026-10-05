@@ -2,8 +2,6 @@
 
 **by Elospeed**
 
-> ⚠️ **Beta:** Compatibility with Traktor Pro 4 is still being tested. Please report problems via [Issues](https://github.com/Elospeed/StemMaker/issues).
-
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
@@ -24,10 +22,14 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
 2. Run `StemMaker.exe`. If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
-On startup the **startup check window** opens first. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
+**On the first start on a PC** a window shows the disclaimer and the license notes. Tick the box and click **"I agree - start StemMaker"**. This is asked once per PC: if you copy the StemMaker folder to another PC, it asks again there (this is not copy protection, copying is allowed under the MIT License). `AddOns\StemCLI.exe` asks for the same confirmation once with `--accept`. You can read the text again any time under **Info → Licenses**.
+
+Then the **startup check window** opens. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
 - **All green:** The main window opens by itself after about a second.
-- **On the very first start** ffmpeg (approx. 170 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. StemMaker then checks again and starts.
+- **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
+
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. Turn it off with the checkbox in the update window or `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
@@ -138,6 +140,8 @@ The graphics card is only listed. demucs.cpp computes on the CPU only.
 | Parts / Auto | How many parts of the song are separated in parallel. **Auto** (default) recalculates on every start: as many parts as the processor has physical cores, at most 4 – and only as many as the RAM can handle (each part needs a good 2 GB, so with 8 GB RAM at most 2). Each part also uses additional cores; this is distributed automatically. Without the tick, the number you set applies. |
 | Audio format | **AAC automatic** (default): the stem file gets the bitrate of the source, e.g. MP3 256 → AAC 256, MP3 320 → AAC 320. Going higher gains nothing; it can never be better than the source. Sources below 192 kbit/s get 192, so nothing extra is lost when re-encoding. Lossless sources (WAV/FLAC) get 320. **AAC 256**: NI standard, fixed. **AAC 320**: fixed. **ALAC**: lossless, very large, only worthwhile for WAV/FLAC sources. The log shows per file e.g. "Source: mp3 320 kbit/s → stem file AAC 320 kbit/s". |
 | Stem names/colors | How the stems appear in Traktor. The defaults use the same colors as Stemgen. |
+| Normalize loudness (club level) | On by default. Quiet files are raised until the loudest point is just below 0 dB (about −1 dB). All 5 tracks get the same value, no limiter – the dynamics stay as in the original. Loud club tracks hardly change. Benefit: in Traktor the stem waveforms are big and easy to read (Autogain only raises playback, not the display). The log shows e.g. "Normalize loudness: +11.6 dB". |
+| Bass fix | On by default. The low bass below 80 Hz that the separation leaves in the "Other" stem is moved to the Bass stem. The Bass stem sounds fuller, like Traktor's own stems; all stems together sound unchanged. Skipped for files over 20 minutes (DJ mixes), because it needs the whole track in memory. |
 | Keep the PC awake during conversion | On by default. During conversion the PC won't go to sleep (the screen may turn off). If Windows is set to the **Power saver** plan (or, on Windows 11, the power mode is "Best power efficiency"), it switches to more performance for the duration of the conversion. Afterwards everything is back to how it was, even after a crash: in that case StemMaker restores the old power plan on the next start. "Balanced" is left untouched. |
 
 ### Command line (AddOns\StemCLI.exe)
@@ -148,12 +152,12 @@ AddOns\StemCLI.exe "D:\Music\New" -o "D:\Music\Stems" -m ht -t 4
 AddOns\StemCLI.exe track.mp3 -f alac --overwrite
 AddOns\StemCLI.exe --check "track.stem.mp4"
 ```
-Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
+Options: `-o folder`, `-m ht|ft|v3`, `-t parts`, `-f aac|alac`, `-b auto|kbit` (default auto), `--overwrite`, `--keep` (keep temp folder), `--no-awake` (PC may go to sleep), `--no-normalize` (don't normalize loudness), `--no-bassfix` (no bass fix), `--ffmpeg exe`, `--demucs folder`, `--models folder`.
 Most people won't need this: the main window handles whole folders, the queue and overnight runs. StemCLI is meant for automation (batch files, Windows Task Scheduler). It uses the same tools, models, language and settings (`StemMaker.ini`) as the main program and doesn't download anything itself; StemMaker.exe must have run once beforehand.
 
 ### Test player (AddOns\StemPlayer.exe)
 
-Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with **Listen** (opens the file dialog in the folder of the last converted file) or double-click a finished file in the list, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
 
 ## Processing time
 
@@ -184,9 +188,14 @@ DemucsDir=...                                ; different folder for demucs
 ModelsDir=D:\Models                          ; store models elsewhere
 
 [Download]
-FFmpegZipURL=https://...                     ; in case a download source moves
-ModelBaseURL=https://...
+FFmpegZipURL=https://...                     ; your own ffmpeg source (no checksum then)
+ModelBaseURL=https://...                     ; your own model source
+
+[Update]
+AutoCheck=0                                  ; don't check for updates at startup
 ```
+
+Normally the download addresses come from [`update.json`](update.json) in this repository (fixed ffmpeg version, checksums). If a file moves, only that file has to change on GitHub.
 
 ## Problems?
 
@@ -240,8 +249,9 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 - StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
 - [demucs.cpp](https://github.com/sevagh/demucs.cpp) by Sevag Hanssian (MIT) – the separation programs shipped in `tools\`.
 - The [Demucs](https://github.com/facebookresearch/demucs) models are by Alexandre Défossez et al. / Meta AI. They are downloaded from their original location and not redistributed by StemMaker – see the licensing note in `THIRD-PARTY-NOTICES.md`.
-- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start; Windows builds by BtbN).
+- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start from this repository's releases; unmodified Windows build by BtbN, version pinned in `update.json`).
 - Approach and metadata values based on [Stemgen](https://github.com/axeldelafosse/stemgen) by axeldelafosse (MIT).
 - Traktor and STEMS are trademarks of Native Instruments; StemMaker is not affiliated with Native Instruments.
 - Full list of all components, authors and licenses: **`THIRD-PARTY-NOTICES.md`**.
 - Only use with material you have the rights to.
+- **Disclaimer:** StemMaker is provided free of charge and without any warranty ("as is"); use at your own risk. The full text is shown on first start and under Info → Licenses.

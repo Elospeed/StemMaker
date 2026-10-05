@@ -127,16 +127,17 @@ object frmMain: TfrmMain
     ReadOnly = True
     RowSelect = True
     TabOrder = 1
+    OnDblClick = lvFilesDblClick
     ViewStyle = vsReport
   end
   object gbSettings: TGroupBox
     Left = 0
-    Height = 206
-    Top = 294
+    Height = 234
+    Top = 266
     Width = 860
     Align = alBottom
     Caption = 'Einstellungen'
-    ClientHeight = 186
+    ClientHeight = 214
     ClientWidth = 856
     TabOrder = 2
     object lblOut: TLabel
@@ -377,6 +378,28 @@ object frmMain: TfrmMain
       Hint = 'Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar).'
       TabOrder = 13
     end
+    object chkNormalize: TCheckBox
+      Left = 120
+      Height = 19
+      Top = 191
+      Width = 330
+      Caption = 'Lautst'#228'rke angleichen (Club-Pegel)'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).'#13#10'Alle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.'#13#10'Laute Club-Tracks '#228'ndern sich kaum. Vorteil in Traktor: gr'#246#223'ere, besser lesbare Wellenformen.'
+      TabOrder = 14
+    end
+    object chkBassFix: TCheckBox
+      Left = 470
+      Height = 19
+      Top = 191
+      Width = 380
+      Caption = 'Bass-Fix: Tiefbass von Other nach Bass'
+      ParentShowHint = False
+      ShowHint = True
+      Hint = 'Der Tiefbass unter 80 Hz, den die Trennung im Stem "Other" l'#228'sst, wird in den Bass-Stem verschoben.'#13#10'Der Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unver'#228'ndert.'
+      TabOrder = 15
+    end
   end
   object pnlRun: TPanel
     Left = 0
@@ -392,7 +415,7 @@ object frmMain: TfrmMain
       Left = 8
       Height = 32
       Top = 8
-      Width = 110
+      Width = 100
       Caption = 'Start'
       Font.Style = [fsBold]
       OnClick = btnStartClick
@@ -400,55 +423,70 @@ object frmMain: TfrmMain
       TabOrder = 0
     end
     object btnCancel: TButton
-      Left = 124
+      Left = 112
       Height = 32
       Top = 8
-      Width = 110
+      Width = 100
       Caption = 'Abbrechen'
       OnClick = btnCancelClick
       TabOrder = 1
     end
     object btnOpenOut: TButton
-      Left = 240
+      Left = 216
       Height = 32
       Top = 8
-      Width = 140
+      Width = 110
       Caption = 'Ordner '#246'ffnen'
+      Hint = 'Ordner mit den fertigen Stem-Dateien im Explorer '#246'ffnen (zum Hineinziehen in Traktor)'
       OnClick = btnOpenOutClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
     end
-    object pbFile: TProgressBar
-      Left = 392
-      Height = 14
-      Top = 6
-      Width = 460
-      Anchors = [akTop, akLeft, akRight]
-      Smooth = True
+    object btnListen: TButton
+      Left = 330
+      Height = 32
+      Top = 8
+      Width = 90
+      Caption = 'Anh'#246'ren'
+      Hint = 'StemPlayer im Ordner der zuletzt umgewandelten Datei '#246'ffnen (eine bestimmte Datei: Doppelklick in der Liste)'
+      OnClick = btnListenClick
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
+    object pbFile: TProgressBar
+      Left = 432
+      Height = 14
+      Top = 6
+      Width = 420
+      Anchors = [akTop, akLeft, akRight]
+      Smooth = True
+      TabOrder = 4
+    end
     object lblFileTime: TLabel
-      Left = 392
+      Left = 432
       Height = 15
       Top = 22
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       ParentColor = False
     end
     object pbTotal: TProgressBar
-      Left = 392
+      Left = 432
       Height = 14
       Top = 42
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       Smooth = True
-      TabOrder = 4
+      TabOrder = 5
     end
     object lblTotal: TLabel
-      Left = 392
+      Left = 432
       Height = 15
       Top = 58
-      Width = 460
+      Width = 420
       Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       ParentColor = False
@@ -456,10 +494,21 @@ object frmMain: TfrmMain
     object lblStage: TLabel
       Left = 8
       Height = 15
-      Top = 48
-      Width = 372
+      Top = 43
+      Width = 412
       AutoSize = False
       ParentColor = False
+    end
+    object chkOpenWhenDone: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 60
+      Width = 412
+      Caption = 'Ordner nach der Umwandlung '#246'ffnen'
+      Hint = 'Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
     end
   end
   object splLog: TSplitter

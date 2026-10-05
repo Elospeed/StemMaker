@@ -7,12 +7,16 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 4. Oktober 2026
+Zuletzt aktualisiert: 5. Oktober 2026
 
 ---
 
 ## 🧪 Speedy testet
 
+- [ ] **Update-Prüfung (1.7):** kann erst nach dem Release 1.7 echt getestet werden (dann bietet 1.7 nichts an, erst 1.7.1 wieder). Unter Wine mit einem Test-Server geprüft: Download, Prüfsumme, Austausch der Exe und Neustart klappen.
+- [ ] **Erststart-Fenster und Info → Lizenzen (1.7):** Mit derselben Testversion `1.7-anhoeren` kommt beim ersten Start das Fenster mit Haftungsausschluss und Lizenzhinweisen. Text lesen (passt er so?), Häkchen, bestätigen. Beim nächsten Start darf es nicht mehr kommen. Unter Info gibt es jetzt den Reiter „Lizenzen“.
+- [ ] **Anhören und Ordner öffnen (1.7):** Testversion `Temp/StemMaker/1.7-anhoeren/StemMaker.exe` in den StemMaker-Ordner kopieren (neben die alte Exe, `AddOns\StemPlayer.exe` muss da sein). Eine Datei umwandeln: Danach geht der Explorer mit der fertigen Datei markiert auf. „Anhören“ startet den StemPlayer mit dem Öffnen-Dialog in diesem Ordner, Doppelklick in der Liste öffnet die Datei direkt. Dafür den neuen StemPlayer 1.3 aus `Temp/StemPlayer/1.3/` nach `AddOns\` kopieren.
+- [ ] **Club-Pegel und Bass-Fix:** Testversion umwandeln lassen (beide Häkchen sind an) und in Traktor anhören: grosse Wellenformen? Bass voller? Mit und ohne Häkchen vergleichen.
 - [ ] **StemMaker lässt sich nach der Konvertierung nicht beenden:** Testversion `Temp/StemMaker/1.6.1-test/StemMaker.exe` ausprobieren: Dateien hinzufügen, umwandeln, Fenster schliessen. Es muss sofort zugehen.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
@@ -21,23 +25,19 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
 - [ ] **Testversionen künftig wo?** Weiter im Ordner `Temp/` im Repo (bleibt für immer im Git-Verlauf) oder als GitHub-Pre-Release (Download neben dem Code). Empfehlung: Pre-Releases.
-- [ ] **ffmpeg-Release anlegen**, sobald die feste ffmpeg-Version für 1.7 vorbereitet ist (Releases erstellt Speedy selbst).
+- [ ] **Prüfsummen der htdemucs_ft-Modelle** (ohne Eile): v4 und v3 stehen in `update.json`. Die vier ft-Dateien fehlen noch, weil sie auf Speedys PC nicht geladen sind. Wer sie hat: Prüfsummen schicken, dann kommen sie dazu.
+- [ ] **Beim Release 1.7:** `AddOns\StemPlayer.exe` (1.3) mit ins ZIP. Danach `update.json` auf 1.7 stellen (siehe [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md)).
 
 ## 🔨 Elospeed baut als Nächstes
 
 Reihenfolge = Vorschlag, Speedy kann umstellen.
 
-1. [ ] **StemPlayer in StemMaker einbinden:** Knopf „Anhören“ im Hauptfenster, öffnet die fertige Stem-Datei in `AddOns\StemPlayer.exe`.
-2. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
-3. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
-4. [ ] **1.7: Update-Prüfung beim Start** über `update.json` (Details in der [ROADMAP](ROADMAP.md)).
-5. [ ] **1.7: feste ffmpeg-Version + SHA-256-Prüfsummen** für alle Downloads, Download-Adressen in `update.json`.
-6. [ ] **1.7: THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
-7. [ ] **Beta-Hinweis** oben in README und LIESMICH entfernen (Traktor-Test ist erledigt).
+1. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
+2. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
 
 Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur einmal um 5 s (schon seit 1.1).
 
 ## 🔀 Offene Pull Requests
 
-- PR #9: Hänger beim Beenden (Längen-Abfrage mit ffmpeg) – wartet auf Speedys Test.
-- PR #10 „Idee Pegel-AddOn“: nur Eintrag in docs/IDEEN.md und ROADMAP – kann direkt gemergt werden.
+- Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
+- Idee: Pegel-AddOn wie MP3Gain (nur Doku).

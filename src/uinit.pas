@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls,
   Dialogs, LazFileUtils, FileUtil, UTF8Process, Process, IniFiles,
-  uStemJob, uDownload, uLog;
+  uStemJob, uDownload, uLog, uUpdate;
 
 { Zeigt das Prüffenster an.
   Model     = dieses Modell muss vorhanden sein (wird sonst angeboten)
@@ -59,7 +59,7 @@ const
   DEF_FFMPEG_ZIP_URL = 'https://github.com/BtbN/FFmpeg-Builds/releases/download/' +
                        'latest/ffmpeg-master-latest-win64-lgpl.zip';
   DEF_MODEL_BASE_URL = 'https://huggingface.co/datasets/Retrobear/demucs.cpp/resolve/main/';
-  FFMPEG_MB = 170;                      // ungefähre Downloadgröße für die Anzeige
+  FFMPEG_MB = 60;                       // ungefähre Downloadgröße für die Anzeige (feste Version aus update.json)
   MIN_MODEL_SIZE = 40 * 1024 * 1024;    // echte Modelle sind 53..160 MB groß
 
   { Zeilennummern der Prüfliste }
@@ -82,6 +82,8 @@ type
     ZipEntry: string;   // leer = direkt speichern; sonst diese Datei aus dem ZIP holen
     Caption : string;   // Anzeigename
     SizeMB  : Integer;  // ungefähre Größe für die Anzeige
+    IniKey  : string;   // 'FFmpegZipURL' / 'ModelBaseURL': Adresse aus update.json,
+                        // ausser sie ist in der INI fest eingetragen
   end;
 
   TfrmInit = class;
@@ -126,7 +128,8 @@ type
     FThread: TDlThread;            // läuft gerade ein Download?
     function AddRow(const ATitle: string): Integer;
     procedure SetRow(I: Integer; State: TCheckState; const ADetail: string);
-    procedure AddJob(const URL, Dest, ZipEntry, ACaption: string; SizeMB: Integer);
+    procedure AddJob(const URL, Dest, ZipEntry, ACaption: string; SizeMB: Integer;
+      const IniKey: string = '');
     procedure RunChecks;
     procedure ShowResult;
     procedure SetBusy(Busy: Boolean);
@@ -168,6 +171,23 @@ begin
     Result := Trim(Ini.ReadString('Download', Key, Default));
     if Result = '' then
       Result := Default;
+  finally
+    Ini.Free;
+  end;
+end;
+
+{ Ist die Adresse in StemMaker.ini fest eingetragen? Dann hat sie Vorrang
+  vor update.json (für Leute mit eigener Quelle). }
+function DownloadURLFromIni(const Key: string): Boolean;
+var
+  Ini: TIniFile;
+begin
+  Result := False;
+  if (Key = '') or not FileExists(StemIniFileName) then
+    Exit;
+  Ini := TIniFile.Create(StemIniFileName);
+  try
+    Result := Trim(Ini.ReadString('Download', Key, '')) <> '';
   finally
     Ini.Free;
   end;
@@ -367,9 +387,20 @@ end;
 procedure TDlThread.Execute;
 var
   I: Integer;
-  Target, E: string;
+  Target, E, Hash, Got: string;
+  Info: TUpdateInfo;
+  HaveInfo: Boolean;
 begin
   ErrMsg := '';
+  { Zuerst update.json holen (max. 5 s): Dort stehen die festen Download-
+    Adressen und die SHA-256-Prüfsummen. Klappt das nicht (offline, GitHub
+    gestört), wird mit den eingebauten Adressen geladen - ohne Prüfsumme. }
+  HaveInfo := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, E);
+  if HaveInfo then
+    LogLine(Format('update.json gelesen (Version %s, ffmpeg %s)', [Info.Version, Info.FFmpegVer]))
+  else
+    LogLine('update.json nicht erreichbar (' + E + ') - eingebaute Download-Adressen, ohne Prüfsumme');
+  try
   for I := 0 to High(FJobs) do
   begin
     if Terminated then
@@ -377,8 +408,31 @@ begin
       ErrMsg := _('Abgebrochen');
       Exit;
     end;
+    { Adresse und Prüfsumme aus update.json übernehmen }
+    Hash := '';
+    if HaveInfo then
+    begin
+      if FJobs[I].IniKey = 'FFmpegZipURL' then
+      begin
+        if (Info.FFmpegURL <> '') and not DownloadURLFromIni('FFmpegZipURL') then
+        begin
+          FJobs[I].URL := Info.FFmpegURL;
+          FJobs[I].ZipEntry := Info.FFmpegEntry;
+          Hash := Info.FFmpegSHA256;
+          if Info.FFmpegMB > 0 then FJobs[I].SizeMB := Info.FFmpegMB;
+        end;
+      end
+      else if FJobs[I].IniKey = 'ModelBaseURL' then
+      begin
+        if (Info.ModelBaseURL <> '') and not DownloadURLFromIni('ModelBaseURL') then
+          FJobs[I].URL := IncludeTrailingURLDelim(Info.ModelBaseURL) +
+            ExtractFileName(FJobs[I].Dest);
+        Hash := ModelHash(Info, FJobs[I].Dest);
+      end;
+    end;
     FIndex := I;
     Synchronize(@SyncJobStart);
+    LogLine('Download: ' + FJobs[I].URL);
     ForceDirectories(ExtractFilePath(FJobs[I].Dest));   // tools\ bzw. models\
     if FJobs[I].ZipEntry <> '' then
       Target := GetTempDir(False) + 'stemmaker_download.zip'
@@ -389,6 +443,20 @@ begin
       ErrMsg := FJobs[I].Caption + ': ' + E;
       Exit;
     end;
+    { Prüfsumme kontrollieren (wenn update.json eine kennt) }
+    if Hash <> '' then
+    begin
+      Got := FileSHA256(Target);
+      if not SameText(Got, Hash) then
+      begin
+        LogLine(Format('Prüfsumme falsch: %s  erwartet %s  erhalten %s', [Target, Hash, Got]));
+        SysUtils.DeleteFile(Target);
+        ErrMsg := FJobs[I].Caption + ': ' + _('Prüfsumme (SHA-256) stimmt nicht - ' +
+          'die Datei wurde verworfen. Bitte später nochmals versuchen.');
+        Exit;
+      end;
+      LogLine('Prüfsumme OK (SHA-256): ' + ExtractFileName(FJobs[I].Dest));
+    end;
     if FJobs[I].ZipEntry <> '' then
     begin
       if not ExtractSingleFromZip(Target, FJobs[I].ZipEntry, FJobs[I].Dest, E) then
@@ -397,6 +465,9 @@ begin
       if ErrMsg <> '' then
         Exit;
     end;
+  end;
+  finally
+    FreeUpdateInfo(Info);
   end;
 end;
 
@@ -548,7 +619,8 @@ begin
 end;
 
 { merkt sich einen Download-Auftrag }
-procedure TfrmInit.AddJob(const URL, Dest, ZipEntry, ACaption: string; SizeMB: Integer);
+procedure TfrmInit.AddJob(const URL, Dest, ZipEntry, ACaption: string; SizeMB: Integer;
+  const IniKey: string);
 var
   N: Integer;
 begin
@@ -559,6 +631,7 @@ begin
   FJobs[N].ZipEntry := ZipEntry;
   FJobs[N].Caption := ACaption;
   FJobs[N].SizeMB := SizeMB;
+  FJobs[N].IniKey := IniKey;
 end;
 
 { ---------------------------------------------------------------------------
@@ -604,7 +677,7 @@ begin
     {$IFDEF WINDOWS}
     SetRow(ROW_FFMPEG, csFail, Format(_('fehlt - wird heruntergeladen (ca. %d MB)'), [FFMPEG_MB]));
     AddJob(DownloadURL('FFmpegZipURL', DEF_FFMPEG_ZIP_URL), FSettings.FFmpegExe,
-      'ffmpeg.exe', 'ffmpeg', FFMPEG_MB);
+      'ffmpeg.exe', 'ffmpeg', FFMPEG_MB, 'FFmpegZipURL');
     {$ELSE}
     SetRow(ROW_FFMPEG, csFail, Format(_('fehlt: %s'), [FSettings.FFmpegExe]));
     FFatal := True;
@@ -625,7 +698,7 @@ begin
     SetRow(ROW_FFMPEG, csFail, Format(_('startet nicht: %s'), [FirstLine(Outp)]));
     {$IFDEF WINDOWS}
     AddJob(DownloadURL('FFmpegZipURL', DEF_FFMPEG_ZIP_URL), FSettings.FFmpegExe,
-      'ffmpeg.exe', _('ffmpeg (neu)'), FFMPEG_MB);
+      'ffmpeg.exe', _('ffmpeg (neu)'), FFMPEG_MB, 'FFmpegZipURL');
     {$ELSE}
     FFatal := True;
     {$ENDIF}
@@ -670,7 +743,7 @@ begin
       { fehlt oder kaputt -> Download-Auftrag }
       AddJob(IncludeTrailingURLDelim(DownloadURL('ModelBaseURL', DEF_MODEL_BASE_URL)) +
         ExtractFileName(Files[I]), Files[I], '',
-        ExtractFileName(Files[I]), ModelSizeMB(FSettings.Model));
+        ExtractFileName(Files[I]), ModelSizeMB(FSettings.Model), 'ModelBaseURL');
       Inc(MissingMB, ModelSizeMB(FSettings.Model));
       if Detail = '' then Detail := T;
     end;

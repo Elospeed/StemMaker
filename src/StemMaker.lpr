@@ -7,7 +7,8 @@
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
-    0. Log starten, Spendenfenster zeigen (abschaltbar)
+    0. Log starten, Sprache, Haftungsausschluss/Lizenz bestätigen
+       (einmal pro PC), Spendenfenster zeigen (abschaltbar)
     1. Einstellungen lesen (welches Modell ist gewählt?)
     2. Startfenster mit den Prüfungen zeigen (uInit).
        Fehlt etwas, wird es dort heruntergeladen.
@@ -23,6 +24,10 @@
     uLog       Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos
     uLogUI     fängt unerwartete Fehler ab und schreibt sie ins Log
     uDonate    Spendenfenster vor dem Start
+    uLicense   Haftungsausschluss/Lizenz: Text, PC-Kennung, INI (ohne Oberfläche)
+    uLicenseUI Fenster dazu (einmal pro PC bestätigen)
+    uUpdate    update.json lesen, Prüfsummen, Update installieren (ohne Oberfläche)
+    uUpdateUI  Update-Prüfung beim Start und Update-Fenster
     uInfo      Info-Fenster (Anleitung, Version, Spenden, Logs)
     uPower     PC wach halten, Energiesparplan, Akku, Standby-Erkennung
     uSingleInstance  nur ein StemMaker gleichzeitig (Sperre beim Start)
@@ -37,7 +42,7 @@ uses
   {$ENDIF}
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
-  uPower, uLang, uLangUI, uSingleInstance;
+  uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -76,6 +81,17 @@ begin
   { 0a2. Sprache: beim allerersten Start fragen, sonst aus der INI }
   LangInitInteractive(StemIniFileName);
   LogLine('  Sprache        : ' + LangCode);
+
+  { 0a3. Haftungsausschluss und Lizenzhinweise: einmal pro PC bestätigen
+         (siehe uLicense). Abgelehnt -> StemMaker startet nicht. }
+  if not EnsureTermsAccepted(StemIniFileName) then
+  begin
+    LogClose;
+    Exit;
+  end;
+
+  { 0a4. Reste eines Updates (*.old) wegräumen }
+  CleanupOldFiles(AppBaseDir);
 
   { 0a. Hat ein abgestürzter Lauf den Energiesparplan umgestellt und
         konnte ihn nicht mehr zurückstellen? Dann jetzt nachholen. }
