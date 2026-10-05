@@ -28,9 +28,10 @@ It builds on the work of the people and projects listed below. Thank you!
 
 ### FFmpeg – decoding and encoding (`tools\ffmpeg.exe`)
 - © the **FFmpeg developers** – https://ffmpeg.org
-- License: **LGPL 2.1 or later** (StemMaker downloads the LGPL build).
+- License: **LGPL** (StemMaker downloads the LGPL build; it is configured with `--enable-version3`, so LGPL version 3 applies).
 - Windows builds by **BtbN** – https://github.com/BtbN/FFmpeg-Builds
-- FFmpeg runs as a separate program; StemMaker does not link against it. Source code for the exact build is available from the BtbN release page (and will be attached to any FFmpeg build distributed through this repository's releases).
+- From version 1.7 StemMaker downloads a fixed, unmodified copy of such a build from this repository's releases (tag `ffmpeg-<version>`), checked with the SHA-256 checksum in `update.json`. The ZIP contains `ffmpeg.exe`, the license text and `QUELLCODE-SOURCE.txt` with the exact FFmpeg commit and links to the source code and the build scripts.
+- FFmpeg runs as a separate program; StemMaker does not link against it.
 
 ### Demucs separation models (`models\*.bin`)
 - **Demucs / Hybrid Transformer Demucs** by **Alexandre Défossez** et al., Meta AI Research – https://github.com/facebookresearch/demucs

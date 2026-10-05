@@ -19,6 +19,16 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Log-Statistik und Lautheit am 3. Oktober 2026 von Speedy unter Windows getestet (i5-2500, v3, 8-min-Track): alle Werte im Log und in `statistik.csv` stimmen (PR #8).
 - Neu: **Lautstärke angleichen (Club-Pegel)**, standardmässig an. Alle 5 Spuren werden gemeinsam angehoben, bis die lauteste Spitze (Master, Stems und Stem-Summe) bei ca. −1 dB liegt. Kein Limiter. Leise Quellen bekommen in Traktor dadurch grosse, lesbare Wellenformen. Abschaltbar im Fenster und mit `--no-normalize` in StemCLI.
 - Neu: **Bass-Fix**, standardmässig an. Tiefbass unter 80 Hz wandert von „Other“ in den Bass-Stem (Tiefpass vorwärts und rückwärts, damit die Phase stimmt; Summe aller Stems bleibt gleich). Hintergrund: Vergleich mit Traktor Pro 4 am 4. Oktober 2026 – danach liegen Bass- und Other-Pegel wie bei Traktor. Abschaltbar im Fenster und mit `--no-bassfix`.
+- Neu: **Anhören** – startet `AddOns\StemPlayer.exe`, der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei. Doppelklick auf eine fertige Datei in der Liste öffnet genau diese Datei im Player.
+- Neu: **Ordner nach der Umwandlung öffnen**, standardmässig an. Der Explorer geht auf und markiert die zuletzt fertige Stem-Datei, so kann man sie direkt in Traktor ziehen. Nicht, wenn danach heruntergefahren wird.
+- „Ordner öffnen“ zeigt bei markierter Zeile genau deren Stem-Datei im Explorer.
+- Neu: **Erststart-Fenster** mit Haftungsausschluss, Hinweis zu den Rechten an der Musik und Lizenzhinweisen (Deutsch/Englisch). Häkchen setzen und bestätigen, sonst startet StemMaker nicht. Gilt pro PC (Hash der Windows-Installationsnummer in `StemMaker.ini`); wird der Ordner auf einen anderen PC kopiert, kommt die Frage erneut. StemCLI verlangt dafür einmal `--accept`.
+- Neu: **Update-Prüfung beim Start** über `update.json` im Repository (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update-ZIP wird mit SHA-256 geprüft, die laufende Exe wird zu `.exe.old` und beim nächsten Start weggeräumt. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
+- **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle werden geprüft, sobald ihre Prüfsummen in `update.json` stehen. Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
+- Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
+
+### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
+- Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).
 
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
@@ -33,7 +43,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - `TODO.md`: kurze Liste, was als Nächstes getestet, entschieden oder gebaut wird.
 - `ROADMAP.md` und `CHANGELOG.md` angelegt (PR #3).
 - Ordner `Temp/` für Testversionen, darin `StemPlayer/1.2/StemPlayer.exe` (PR #4).
-- README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch).
+- README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch). Am 4. Oktober 2026 wieder entfernt, der Test ist erledigt.
 - Entwicklungslog und Ideen-Liste unter `docs/`.
 - Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
 - Sprach-Links oben in README und LIESMICH.

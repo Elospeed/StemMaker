@@ -53,6 +53,8 @@
     1.2  (03.10.2026)  Neues Design "Traktor Dark": selbst gezeichnete Buttons,
                        Fader, Positionsleiste und LED-Meter (djcontrols.pas).
                        Bedienung und Funktion unverändert.
+    1.3  (04.10.2026)  Ordner als Parameter: der Öffnen-Dialog startet gleich
+                       in diesem Ordner (Knopf "Anhören" in StemMaker).
   ============================================================================ }
 unit playerform;
 
@@ -67,7 +69,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.2';
+  APP_VER   = '1.3';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -193,6 +195,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormShow(Sender: TObject);
+    procedure OpenDialogLater(Data: PtrInt);
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -526,7 +529,20 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
   { Datei als Kommandozeilen-Parameter? (z.B. aus StemMaker oder "Öffnen mit") }
   if (ParamCount >= 1) and FileExists(ParamStr(1)) and (FFileName = '') then
-    LoadFile(ParamStr(1));
+    LoadFile(ParamStr(1))
+  { Ordner als Parameter? (Knopf "Anhören" in StemMaker: Ordner der zuletzt
+    umgewandelten Datei) -> Öffnen-Dialog gleich dort zeigen. Erst kurz
+    danach über die Nachrichtenschlange, damit das Fenster schon sichtbar ist. }
+  else if (ParamCount >= 1) and DirectoryExists(ParamStr(1)) and (FFileName = '') then
+  begin
+    OpenDlg.InitialDir := ParamStr(1);
+    Application.QueueAsyncCall(@OpenDialogLater, 0);
+  end;
+end;
+
+procedure TMainForm.OpenDialogLater(Data: PtrInt);
+begin
+  BtnOpenClick(nil);
 end;
 
 { ============================================================================

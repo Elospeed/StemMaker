@@ -15,6 +15,8 @@ BEDIENUNG
   Datei öffnen, auf das Fenster ziehen oder als Parameter übergeben:
       StemPlayer.exe "C:\Musik\Track.stem.mp4"
   Die Wiedergabe startet nach dem Laden automatisch.
+  Ist der Parameter ein Ordner, startet der Öffnen-Dialog gleich dort:
+      StemPlayer.exe "C:\Musik\Stems"
 
   Leertaste      Play / Pause
   1 .. 4         Stem stumm an/aus

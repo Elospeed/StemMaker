@@ -6,25 +6,22 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 3. Oktober 2026
+Zuletzt aktualisiert: 4. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
-- **Nur ein StemMaker gleichzeitig** – ein zweiter Start zeigt einen Hinweis und holt das offene Fenster nach vorne (PR #7, unter Windows getestet, wartet auf Merge).
+- **StemPlayer aus StemMaker starten und Ordner öffnen** – Knopf „Anhören“, Doppelklick in der Liste, Explorer mit der fertigen Datei nach der Umwandlung (Testversion, Speedy testet).
+- **Update-Prüfung über `update.json`, feste ffmpeg-Version, SHA-256 für alle Downloads** (gebaut, ffmpeg-Release ist online).
+- **Erststart-Fenster** (Haftungsausschluss, Lizenzen, einmal pro PC) und **Info → Lizenzen** (Testversion, Speedy testet).
 
 ## 📋 Geplant für Version 1.7
 
-- **Update-Prüfung beim Start** – liest `update.json` aus dem Repository (max. 5 s, abschaltbar). Dialog „Jetzt / Später / Version überspringen“, Download mit Prüfsumme, laufende Exe wird zu `.exe.old`. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Konvertierung.
-- **Feste ffmpeg-Version** als eigene Release im Repository (mit Lizenztext und Quellcode, LGPL) statt täglich „latest“.
-- **SHA-256-Prüfsummen** für alle Downloads (ffmpeg, Modelle, Updates).
-- **Download-Adressen in `update.json`** – zieht eine Datei um, muss nur diese Datei auf GitHub geändert werden.
-- **THIRD-PARTY-NOTICES im Info-Fenster** anzeigen.
+Alles gebaut, siehe „In Arbeit“. Offen ist nur noch das Release 1.7 von Speedy (ffmpeg-Release ist seit 5. Oktober 2026 online).
 
 ## 📋 Geplant für den StemPlayer
 
-- Knopf „Anhören“ direkt in StemMaker (StemPlayer 1.2 kommt mit der nächsten StemMaker-Version mit).
 - Deutsch/Englisch über `lang\` wie StemMaker.
 - Einstellungen in `StemMaker.ini` (wie StemCLI).
 - Saubere Darstellung bei hoher Bildschirm-Skalierung (High-DPI).
