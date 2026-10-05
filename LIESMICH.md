@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.6
+# Elospeed StemMaker 1.7
 
 **by Elospeed**
 
@@ -47,7 +47,7 @@ Windows merkt sich das, das Fenster kommt pro Programm nur einmal.
 
 **Download prüfen?**
 - ZIP oder exe bei [VirusTotal](https://www.virustotal.com) hochladen. Einzelne Treffer von wenig bekannten Scannern sind bei unsignierten Programmen häufig und meist Fehlalarme.
-- Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.6.zip` (Dateinamen anpassen).
+- Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.7.zip` (Dateinamen anpassen).
 - Der komplette Quellcode liegt in diesem Repository. Du kannst StemMaker selbst kompilieren (siehe [Selber kompilieren](#selber-kompilieren)).
 
 ## Spenden
