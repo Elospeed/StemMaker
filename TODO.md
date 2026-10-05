@@ -39,6 +39,5 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Version 1.7 (#13): Anhören, Ordner öffnen, Erststart-Fenster, Update-Prüfung, feste ffmpeg, SHA-256 (Testversion, Speedy testet).
-- Club-Pegel und Bass-Fix (Testversion, Speedy hört rein).
-- Ideen-Liste: Namenskonvention für Variablen (nur Doku, kann jederzeit gemergt werden).
+- Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
+- Idee: Pegel-AddOn wie MP3Gain (nur Doku).
