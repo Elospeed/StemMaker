@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : StemMaker.lpr  (Hauptprogramm)
-  Version : 1.6
+  Version : 1.7
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.

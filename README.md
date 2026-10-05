@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.6
+# Elospeed StemMaker 1.7
 
 **by Elospeed**
 
@@ -49,7 +49,7 @@ Windows remembers this, so the window only appears once per program.
 
 **Want to check the download?**
 - Upload the ZIP or the exe to [VirusTotal](https://www.virustotal.com). Single hits from little-known scanners are common with unsigned programs and are usually false alarms.
-- If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.6.zip` (adjust the file name).
+- If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.7.zip` (adjust the file name).
 - The full source code is in this repository. You can build StemMaker yourself (see [Build it yourself](#build-it-yourself)).
 
 ## Donations

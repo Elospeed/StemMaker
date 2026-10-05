@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : umain.pas  (Unit uMain, Hauptfenster; Layout in umain.lfm)
-  Version : 1.6
+  Version : 1.7
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -37,7 +37,7 @@ uses
   uPower, uLang, uLangUI, uQueue, Process, UTF8Process, uUpdate, uUpdateUI;
 
 const
-  APP_VERSION = '1.6';
+  APP_VERSION = '1.7';
   APP_AUTHOR  = 'Elospeed';
 
 type
