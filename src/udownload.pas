@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : udownload.pas  (Unit uDownload)
-  Version : 1.6
+  Version : 1.7
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -31,6 +31,15 @@
 
   ffmpeg gibt es nur als ZIP-Archiv. Mit der Pascal-Unit 'zipper' (gehört
   zu Free Pascal) holen wir daraus nur die eine Datei ffmpeg.exe heraus.
+  Für Updates (ab 1.7) wird ein ganzes ZIP in einen Ordner entpackt.
+
+  PRÜFSUMMEN (ab 1.7)
+
+  FileSHA256 rechnet die SHA-256-Prüfsumme einer Datei über die in
+  Windows eingebaute Krypto-Schnittstelle (bcrypt.dll, ab Windows Vista).
+  Free Pascal 3.2 hat selbst kein SHA-256. Stimmt die Prüfsumme nicht mit
+  der aus update.json überein, wird die Datei verworfen - so landet weder
+  eine kaputte noch eine ausgetauschte Datei im StemMaker-Ordner.
   ============================================================================ }
 unit uDownload;
 
@@ -52,6 +61,16 @@ type
   Rückgabe False = Fehler oder Abbruch, der Grund steht in ErrMsg. }
 function HttpDownload(const URL, DestFile: string; OnProgress: TDlProgressEvent;
   IsCancelled: TDlCancelQuery; out ErrMsg: string): Boolean;
+
+{ Kleine Textdatei (z.B. update.json) holen, höchstens 1 MB.
+  TimeoutMS gilt für Verbindungsaufbau und jedes Warten auf Daten. }
+function HttpGetText(const URL: string; TimeoutMS: Integer; out Text, ErrMsg: string): Boolean;
+
+{ SHA-256 einer Datei als 64 Zeichen hex (klein). '' bei Fehler. }
+function FileSHA256(const FileName: string): string;
+
+{ Ganzes ZIP nach DestDir entpacken (DestDir wird angelegt). }
+function ExtractZipAll(const ZipFile, DestDir: string; out ErrMsg: string): Boolean;
 
 { Holt aus einem ZIP die erste Datei mit dem Namen EntryFileName heraus
   (egal in welchem Unterordner des ZIPs) und speichert sie als DestFile. }
@@ -96,6 +115,34 @@ function InternetCloseHandle(hInternet: HINTERNET): BOOL;
 function HttpQueryInfoW(hRequest: HINTERNET; dwInfoLevel: DWORD; lpBuffer: Pointer;
   var lpdwBufferLength: DWORD; var lpdwIndex: DWORD): BOOL;
   stdcall; external 'wininet.dll';
+function InternetSetOptionW(hInternet: HINTERNET; dwOption: DWORD;
+  lpBuffer: Pointer; dwBufferLength: DWORD): BOOL;
+  stdcall; external 'wininet.dll';
+
+const
+  INTERNET_OPTION_CONNECT_TIMEOUT = 2;
+  INTERNET_OPTION_SEND_TIMEOUT    = 5;
+  INTERNET_OPTION_RECEIVE_TIMEOUT = 6;
+
+{ ---------------------------------------------------------------------------
+  bcrypt.dll (Windows-Krypto, "CNG") - nur das, was für SHA-256 nötig ist
+  --------------------------------------------------------------------------- }
+type
+  BCRYPT_HANDLE = Pointer;
+
+function BCryptOpenAlgorithmProvider(out phAlgorithm: BCRYPT_HANDLE;
+  pszAlgId, pszImplementation: PWideChar; dwFlags: ULONG): LongInt;
+  stdcall; external 'bcrypt.dll';
+function BCryptCloseAlgorithmProvider(hAlgorithm: BCRYPT_HANDLE; dwFlags: ULONG): LongInt;
+  stdcall; external 'bcrypt.dll';
+function BCryptCreateHash(hAlgorithm: BCRYPT_HANDLE; out phHash: BCRYPT_HANDLE;
+  pbHashObject: Pointer; cbHashObject: ULONG; pbSecret: Pointer; cbSecret: ULONG;
+  dwFlags: ULONG): LongInt; stdcall; external 'bcrypt.dll';
+function BCryptHashData(hHash: BCRYPT_HANDLE; pbInput: Pointer; cbInput: ULONG;
+  dwFlags: ULONG): LongInt; stdcall; external 'bcrypt.dll';
+function BCryptFinishHash(hHash: BCRYPT_HANDLE; pbOutput: Pointer; cbOutput: ULONG;
+  dwFlags: ULONG): LongInt; stdcall; external 'bcrypt.dll';
+function BCryptDestroyHash(hHash: BCRYPT_HANDLE): LongInt; stdcall; external 'bcrypt.dll';
 
 { Fragt eine Zahl aus der Server-Antwort ab (Status-Code, Dateigröße) }
 function QueryNumber(hReq: HINTERNET; Level: DWORD; out Value: Int64): Boolean;
@@ -137,7 +184,7 @@ begin
   PartFile := DestFile + '.part';
 
   { 1. Sitzung öffnen }
-  hNet := InternetOpenW('StemMaker/1.6', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  hNet := InternetOpenW('StemMaker/1.7', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hNet = nil then
   begin
     ErrMsg := _('Internet-Zugriff nicht möglich (WinINet)');
@@ -224,6 +271,75 @@ begin
     ErrMsg := Format(_('Datei kann nicht gespeichert werden: %s'), [DestFile]);
 end;
 
+{ Kleine Textdatei über WinINet holen - mit Zeitlimit, ohne .part-Datei }
+function HttpGetTextWinInet(const URL: string; TimeoutMS: Integer;
+  out Text, ErrMsg: string): Boolean;
+var
+  hNet, hUrl: HINTERNET;
+  WURL: UnicodeString;
+  Status: Int64;
+  Buf: array[0..8191] of Byte;
+  Got: DWORD;
+  T: DWORD;
+  MS: TMemoryStream;
+begin
+  Result := False;
+  Text := '';
+  ErrMsg := '';
+  hNet := InternetOpenW('StemMaker', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  if hNet = nil then
+  begin
+    ErrMsg := _('Internet-Zugriff nicht möglich (WinINet)');
+    Exit;
+  end;
+  MS := TMemoryStream.Create;
+  try
+    T := TimeoutMS;
+    InternetSetOptionW(hNet, INTERNET_OPTION_CONNECT_TIMEOUT, @T, SizeOf(T));
+    InternetSetOptionW(hNet, INTERNET_OPTION_SEND_TIMEOUT, @T, SizeOf(T));
+    InternetSetOptionW(hNet, INTERNET_OPTION_RECEIVE_TIMEOUT, @T, SizeOf(T));
+    WURL := UTF8Decode(URL);
+    hUrl := InternetOpenUrlW(hNet, PWideChar(WURL), nil, 0,
+      INTERNET_FLAG_RELOAD or INTERNET_FLAG_NO_CACHE_WRITE, 0);
+    if hUrl = nil then
+    begin
+      ErrMsg := Format(_('Verbindung fehlgeschlagen (Fehler %d)'), [GetLastError]);
+      Exit;
+    end;
+    try
+      if QueryNumber(hUrl, HTTP_QUERY_STATUS_CODE, Status) and (Status <> 200) then
+      begin
+        ErrMsg := Format(_('Server meldet HTTP %d'), [Status]);
+        Exit;
+      end;
+      repeat
+        Got := 0;
+        if not InternetReadFile(hUrl, @Buf[0], SizeOf(Buf), Got) then
+        begin
+          ErrMsg := Format(_('Lesefehler beim Download (Fehler %d)'), [GetLastError]);
+          Exit;
+        end;
+        if Got > 0 then
+          MS.WriteBuffer(Buf[0], Got);
+        if MS.Size > 1024 * 1024 then
+        begin
+          ErrMsg := 'zu gross';
+          Exit;
+        end;
+      until Got = 0;
+    finally
+      InternetCloseHandle(hUrl);
+    end;
+    SetLength(Text, MS.Size);
+    if MS.Size > 0 then
+      Move(MS.Memory^, Text[1], MS.Size);
+    Result := True;
+  finally
+    MS.Free;
+    InternetCloseHandle(hNet);
+  end;
+end;
+
 {$ENDIF}
 
 { ---------------------------------------------------------------------------
@@ -307,6 +423,115 @@ begin
   {$ELSE}
   Result := HttpDownloadCurl(URL, DestFile, OnProgress, IsCancelled, ErrMsg);
   {$ENDIF}
+end;
+
+{ ---------------------------------------------------------------------------
+  HttpGetText - kleine Textdatei holen (update.json)
+  --------------------------------------------------------------------------- }
+function HttpGetText(const URL: string; TimeoutMS: Integer; out Text, ErrMsg: string): Boolean;
+{$IFNDEF WINDOWS}
+var
+  Tmp: string;
+  L: TStringList;
+{$ENDIF}
+begin
+  {$IFDEF WINDOWS}
+  Result := HttpGetTextWinInet(URL, TimeoutMS, Text, ErrMsg);
+  {$ELSE}
+  { nur zum Testen unter Linux: über curl in eine Temp-Datei }
+  Text := '';
+  Tmp := GetTempFileName;
+  Result := HttpDownloadCurl(URL, Tmp, nil, nil, ErrMsg);
+  if Result then
+  begin
+    L := TStringList.Create;
+    try
+      L.LoadFromFile(Tmp);
+      Text := L.Text;
+    finally
+      L.Free;
+    end;
+    SysUtils.DeleteFile(Tmp);
+  end;
+  {$ENDIF}
+end;
+
+{ ---------------------------------------------------------------------------
+  FileSHA256 - Prüfsumme in 1-MB-Stücken rechnen (auch 170-MB-Dateien
+  brauchen so kaum Speicher)
+  --------------------------------------------------------------------------- }
+function FileSHA256(const FileName: string): string;
+{$IFDEF WINDOWS}
+var
+  hAlg, hHash: BCRYPT_HANDLE;
+  FS: TFileStream;
+  Buf: array of Byte;
+  N: Integer;
+  Digest: array[0..31] of Byte;
+  I: Integer;
+  OK: Boolean;
+{$ENDIF}
+begin
+  Result := '';
+  {$IFDEF WINDOWS}
+  if BCryptOpenAlgorithmProvider(hAlg, 'SHA256', nil, 0) <> 0 then
+    Exit;
+  try
+    if BCryptCreateHash(hAlg, hHash, nil, 0, nil, 0, 0) <> 0 then
+      Exit;
+    try
+      OK := True;
+      SetLength(Buf, 1024 * 1024);
+      try
+        FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+        try
+          repeat
+            N := FS.Read(Buf[0], Length(Buf));
+            if N > 0 then
+              OK := OK and (BCryptHashData(hHash, @Buf[0], N, 0) = 0);
+          until N <= 0;
+        finally
+          FS.Free;
+        end;
+      except
+        OK := False;               // Datei nicht lesbar
+      end;
+      if OK and (BCryptFinishHash(hHash, @Digest[0], SizeOf(Digest), 0) = 0) then
+        for I := 0 to High(Digest) do
+          Result := Result + LowerCase(IntToHex(Digest[I], 2));
+    finally
+      BCryptDestroyHash(hHash);
+    end;
+  finally
+    BCryptCloseAlgorithmProvider(hAlg, 0);
+  end;
+  {$ENDIF}
+end;
+
+{ ---------------------------------------------------------------------------
+  ExtractZipAll - ganzes ZIP entpacken (für Updates)
+  --------------------------------------------------------------------------- }
+function ExtractZipAll(const ZipFile, DestDir: string; out ErrMsg: string): Boolean;
+var
+  UZ: TUnZipper;
+begin
+  Result := False;
+  ErrMsg := '';
+  UZ := TUnZipper.Create;
+  try
+    try
+      ForceDirectories(DestDir);
+      UZ.FileName := ZipFile;
+      UZ.OutputPath := DestDir;
+      UZ.UnZipAllFiles;
+      Result := True;
+    except
+      on E: Exception do
+        ErrMsg := Format(_('ZIP-Fehler: %s'), [E.Message]);
+    end;
+  finally
+    UZ.Free;
+  end;
 end;
 
 { ---------------------------------------------------------------------------

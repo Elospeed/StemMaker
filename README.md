@@ -2,8 +2,6 @@
 
 **by Elospeed**
 
-> ⚠️ **Beta:** Compatibility with Traktor Pro 4 is still being tested. Please report problems via [Issues](https://github.com/Elospeed/StemMaker/issues).
-
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
@@ -24,10 +22,14 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
 2. Run `StemMaker.exe`. If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
-On startup the **startup check window** opens first. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
+**On the first start on a PC** a window shows the disclaimer and the license notes. Tick the box and click **"I agree - start StemMaker"**. This is asked once per PC: if you copy the StemMaker folder to another PC, it asks again there (this is not copy protection, copying is allowed under the MIT License). `AddOns\StemCLI.exe` asks for the same confirmation once with `--accept`. You can read the text again any time under **Info → Licenses**.
+
+Then the **startup check window** opens. It ticks off, one by one: processor, ffmpeg, demucs, model and temp folder.
 - **All green:** The main window opens by itself after about a second.
-- **On the very first start** ffmpeg (approx. 170 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. StemMaker then checks again and starts.
+- **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
+
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. Turn it off with the checkbox in the update window or `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
@@ -155,7 +157,7 @@ Most people won't need this: the main window handles whole folders, the queue an
 
 ### Test player (AddOns\StemPlayer.exe)
 
-Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with **Listen** (opens the file dialog in the folder of the last converted file) or double-click a finished file in the list, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
 
 ## Processing time
 
@@ -186,9 +188,14 @@ DemucsDir=...                                ; different folder for demucs
 ModelsDir=D:\Models                          ; store models elsewhere
 
 [Download]
-FFmpegZipURL=https://...                     ; in case a download source moves
-ModelBaseURL=https://...
+FFmpegZipURL=https://...                     ; your own ffmpeg source (no checksum then)
+ModelBaseURL=https://...                     ; your own model source
+
+[Update]
+AutoCheck=0                                  ; don't check for updates at startup
 ```
+
+Normally the download addresses come from [`update.json`](update.json) in this repository (fixed ffmpeg version, checksums). If a file moves, only that file has to change on GitHub.
 
 ## Problems?
 
@@ -242,8 +249,9 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 - StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
 - [demucs.cpp](https://github.com/sevagh/demucs.cpp) by Sevag Hanssian (MIT) – the separation programs shipped in `tools\`.
 - The [Demucs](https://github.com/facebookresearch/demucs) models are by Alexandre Défossez et al. / Meta AI. They are downloaded from their original location and not redistributed by StemMaker – see the licensing note in `THIRD-PARTY-NOTICES.md`.
-- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start; Windows builds by BtbN).
+- [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start from this repository's releases; unmodified Windows build by BtbN, version pinned in `update.json`).
 - Approach and metadata values based on [Stemgen](https://github.com/axeldelafosse/stemgen) by axeldelafosse (MIT).
 - Traktor and STEMS are trademarks of Native Instruments; StemMaker is not affiliated with Native Instruments.
 - Full list of all components, authors and licenses: **`THIRD-PARTY-NOTICES.md`**.
 - Only use with material you have the rights to.
+- **Disclaimer:** StemMaker is provided free of charge and without any warranty ("as is"); use at your own risk. The full text is shown on first start and under Info → Licenses.

@@ -27,11 +27,14 @@
     --no-normalize   Lautstärke NICHT angleichen (Standard: Club-Pegel)
     --no-bassfix     Tiefbass NICHT von Other nach Bass verschieben
     --check <Datei>  nur prüfen: Spuren + Stem-Infos einer *.stem.mp4 zeigen
+    --accept         Haftungsausschluss und Lizenzhinweise bestätigen
+                     (einmal pro PC nötig, wie im Fenster von StemMaker)
     --ffmpeg <exe> / --demucs <Ordner> / --models <Ordner>
                      andere Werkzeug-Pfade
 
   Rückgabewert (ERRORLEVEL): 0 = alles OK, 1 = falscher Aufruf,
-                             2 = mindestens eine Datei fehlgeschlagen
+                             2 = mindestens eine Datei fehlgeschlagen,
+                             3 = Haftungsausschluss noch nicht bestätigt
   ============================================================================ }
 program StemCLI;
 
@@ -40,7 +43,7 @@ program StemCLI;
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
   Classes, SysUtils, LazFileUtils, FileUtil, IniFiles, uStemMP4, uStemJob, uPower,
-  uLang;
+  uLang, uLicense;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -109,6 +112,29 @@ begin
   if LangC = '' then
     LangC := LangSystemDefault;
   LangLoad(LangC);
+
+  { Haftungsausschluss/Lizenz: einmal pro PC bestätigen (siehe uLicense).
+    Wer StemMaker.exe auf diesem PC schon bestätigt hat, wird nicht gefragt.
+    Sonst: Text zeigen und "--accept" verlangen - eine Rückfrage per
+    Tastatur würde Batch-Dateien und die Aufgabenplanung blockieren. }
+  for I := 1 to ParamCount do
+    if ParamStr(I) = '--accept' then
+      TermsSaveAccepted(StemIniFileName);
+  if not TermsAccepted(StemIniFileName) then
+  begin
+    WriteLn(TermsTitle);
+    WriteLn;
+    WriteLn(TermsText);
+    WriteLn;
+    WriteLn(_('Einverstanden? Dann StemCLI einmal mit --accept aufrufen ' +
+      '(oder StemMaker.exe starten und dort bestätigen).'));
+    Halt(3);
+  end;
+  if (ParamCount = 1) and (ParamStr(1) = '--accept') then
+  begin
+    WriteLn(_('Bestätigt - StemCLI ist auf diesem PC freigegeben.'));
+    Halt(0);
+  end;
   Files := TStringList.Create;
   Cli := TCli.Create;
   Cli.LastPct := -1;
@@ -155,6 +181,7 @@ begin
       else if A = '--keep' then S.KeepTemp := True
       else if A = '--no-normalize' then S.Normalize := False
       else if A = '--no-bassfix' then S.BassFix := False
+      else if A = '--accept' then        // schon oben ausgewertet
       else if A = '--no-awake' then KeepAwake := False
       else if (A = '--check') and (I < ParamCount) then
       begin
@@ -192,6 +219,7 @@ begin
       WriteLn(_('        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)'));
       WriteLn(_('        [--no-normalize] [--no-bassfix]  (Klang-Optionen ausschalten)'));
       WriteLn(_('        StemCLI --check datei.stem.mp4'));
+      WriteLn(_('        StemCLI --accept  (Haftungsausschluss/Lizenz bestätigen, einmal pro PC)'));
       Halt(1);
     end;
 

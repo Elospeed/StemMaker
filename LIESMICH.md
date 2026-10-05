@@ -2,8 +2,6 @@
 
 **by Elospeed**
 
-> ⚠️ **Beta:** Die Kompatibilität mit Traktor Pro 4 wird noch getestet. Probleme bitte über [Issues](https://github.com/Elospeed/StemMaker/issues) melden.
-
 🇬🇧 **English version:** [README.md](README.md)
 
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
@@ -22,10 +20,14 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 1. ZIP entpacken, z. B. nach `C:\Tools\StemMaker`.
 2. `StemMaker.exe` starten. Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
 
-Beim Start öffnet sich zuerst das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, ffmpeg, demucs, Modell und Temp-Ordner.
+**Beim ersten Start auf einem PC** zeigt ein Fenster den Haftungsausschluss und die Lizenzhinweise. Häkchen setzen und **„Einverstanden - StemMaker starten“** klicken. Das kommt einmal pro PC: Wird der StemMaker-Ordner auf einen anderen PC kopiert, fragt er dort noch einmal (kein Kopierschutz, Kopieren ist nach der MIT-Lizenz erlaubt). `AddOns\StemCLI.exe` will dieselbe Bestätigung einmal mit `--accept`. Den Text findest du jederzeit wieder unter **Info → Lizenzen**.
+
+Danach öffnet sich das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, ffmpeg, demucs, Modell und Temp-Ordner.
 - **Alles grün:** Nach knapp einer Sekunde geht das Hauptfenster von selbst auf.
-- **Beim allerersten Start** fehlen ffmpeg (ca. 170 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Danach wird neu geprüft, und StemMaker startet.
+- **Beim allerersten Start** fehlen ffmpeg (ca. 56 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Jeder Download wird mit der SHA-256-Prüfsumme aus `update.json` kontrolliert; eine kaputte oder ausgetauschte Datei wird verworfen. Danach wird neu geprüft, und StemMaker startet.
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
+
+**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Abschalten über das Häkchen im Update-Fenster oder `AutoCheck=0` (siehe unten).
 
 Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htdemucs_ft), fragt StemMaker, ob es jetzt geladen werden soll.
 
@@ -153,7 +155,7 @@ Für die meisten ist das nicht nötig: Das Hauptfenster kann ganze Ordner, Warte
 
 ### Testplayer (AddOns\StemPlayer.exe)
 
-Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
+Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit **Anhören** (der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei) oder per Doppelklick auf eine fertige Datei in der Liste. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
 
 ## Dauer
 
@@ -184,9 +186,14 @@ DemucsDir=...                                ; anderer Ordner für demucs
 ModelsDir=D:\Modelle                         ; Modelle woanders ablegen
 
 [Download]
-FFmpegZipURL=https://...                     ; falls eine Download-Quelle umzieht
-ModelBaseURL=https://...
+FFmpegZipURL=https://...                     ; eigene ffmpeg-Quelle (dann ohne Prüfsumme)
+ModelBaseURL=https://...                     ; eigene Quelle für die Modelle
+
+[Update]
+AutoCheck=0                                  ; beim Start nicht nach Updates suchen
 ```
+
+Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im Repository (feste ffmpeg-Version, Prüfsummen). Zieht eine Datei um, muss nur diese Datei auf GitHub geändert werden.
 
 ## Probleme?
 
@@ -240,8 +247,9 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
 - StemMaker: © 2026 Elospeed, MIT-Lizenz (siehe `LICENSE`).
 - [demucs.cpp](https://github.com/sevagh/demucs.cpp) von Sevag Hanssian (MIT) – die Trennprogramme in `tools\`.
 - Die [Demucs](https://github.com/facebookresearch/demucs)-Modelle stammen von Alexandre Défossez u. a. / Meta AI. Sie werden von ihrem Originalort geladen und von StemMaker nicht weiterverteilt – siehe Lizenzhinweis in `THIRD-PARTY-NOTICES.md`.
-- [FFmpeg](https://ffmpeg.org) (LGPL, wird beim ersten Start separat geladen; Windows-Builds von BtbN).
+- [FFmpeg](https://ffmpeg.org) (LGPL, wird beim ersten Start separat aus den Releases dieses Repositorys geladen; unveränderter Windows-Build von BtbN, Version fest in `update.json`).
 - Prinzip und Metadaten-Werte nach [Stemgen](https://github.com/axeldelafosse/stemgen) von axeldelafosse (MIT).
 - Traktor und STEMS sind Marken von Native Instruments; StemMaker ist kein Produkt von Native Instruments.
 - Vollständige Liste aller Bestandteile, Autoren und Lizenzen: **`THIRD-PARTY-NOTICES.md`**.
 - Nur für Material verwenden, für das du die Rechte hast.
+- **Haftungsausschluss:** StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt („wie besehen“), Benutzung auf eigenes Risiko. Der ganze Text erscheint beim ersten Start und unter Info → Lizenzen.
