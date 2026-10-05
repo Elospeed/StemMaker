@@ -25,7 +25,6 @@ Zuletzt aktualisiert: 4. Oktober 2026
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
 - [ ] **Testversionen künftig wo?** Weiter im Ordner `Temp/` im Repo (bleibt für immer im Git-Verlauf) oder als GitHub-Pre-Release (Download neben dem Code). Empfehlung: Pre-Releases.
-- [ ] **ffmpeg-Release anlegen** (vorbereitet): Release mit Tag `ffmpeg-9.0.2` erstellen und `ffmpeg-9.0.2-win64-lgpl.zip` aus dem Projektordner `ffmpeg-release/` anhängen, dazu den Quellcode `https://github.com/FFmpeg/FFmpeg/archive/46d8f462ee.tar.gz`. Details in [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md).
 - [ ] **Prüfsummen der Modelle schicken:** im StemMaker-Ordner in PowerShell `Get-FileHash .\models\*.bin` ausführen und das Ergebnis schicken. Kommt dann in `update.json`.
 - [ ] **Beim Release 1.7:** `AddOns\StemPlayer.exe` (1.3) mit ins ZIP. Danach `update.json` auf 1.7 stellen (siehe [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md)).
 
