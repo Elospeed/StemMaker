@@ -24,7 +24,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - „Ordner öffnen“ zeigt bei markierter Zeile genau deren Stem-Datei im Explorer.
 - Neu: **Erststart-Fenster** mit Haftungsausschluss, Hinweis zu den Rechten an der Musik und Lizenzhinweisen (Deutsch/Englisch). Häkchen setzen und bestätigen, sonst startet StemMaker nicht. Gilt pro PC (Hash der Windows-Installationsnummer in `StemMaker.ini`); wird der Ordner auf einen anderen PC kopiert, kommt die Frage erneut. StemCLI verlangt dafür einmal `--accept`.
 - Neu: **Update-Prüfung beim Start** über `update.json` im Repository (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update-ZIP wird mit SHA-256 geprüft, die laufende Exe wird zu `.exe.old` und beim nächsten Start weggeräumt. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
-- **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle werden geprüft, sobald ihre Prüfsummen in `update.json` stehen. Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
+- **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle v4 und v3 werden geprüft (htdemucs_ft folgt, sobald die Prüfsummen bekannt sind). Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
 - Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
 
 ### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
