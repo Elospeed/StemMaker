@@ -45,6 +45,7 @@ Zuletzt aktualisiert: 3. Oktober 2026
 - Hotcues und Beatgrid aus Traktors `collection.nml` übernehmen.
 - Grafikkarte (ONNX Runtime + DirectML) und Mel-Band RoFormer für sauberere Vocals.
 - Weitere Sprachen.
+- Namenskonvention im Quelltext (Bereich und Typ im Variablennamen), vorerst zurückgestellt (05.10.2026).
 - Code-Signing: vorerst nicht (Entscheidung 03.10.2026, Kosten lohnen sich im Anfangsstadium nicht). Stattdessen Hinweis zur Windows-Warnung in README/LIESMICH.
 
 Mehr in [docs/IDEEN.md](docs/IDEEN.md).

@@ -29,6 +29,10 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 - 🟡 **Schwester-Tool für Pioneer/Serato/Rekordbox** – einzelne Stems, Acapella/Instrumental als normale Audiodateien. Gleiche `tools\` und `models\`.
 - 🟢 **„Eigene Stems verpacken“** – vorhandene Einzelspuren (z. B. aus dem Studio) ohne Trennung zu einer Traktor-Stem-Datei zusammenbauen.
 
+## Quelltext
+
+- 🟡 **Namenskonvention für Variablen** – am Namen sofort erkennen, ob eine Variable global (`g`), Feld der Klasse (`F`), Parameter (`A`) oder lokal (`l`) ist und welchen Typ sie hat (`bo` Boolean, `i` Integer, `s` string ...), z. B. `FboCancelled`, `AsDestFile`. Dazu ein deutscher Kommentar hinter jeder Deklaration, mit Einheit (ms, LUFS, dB). Ganzer Vorschlag mit Vor- und Nachteilen: [NAMENSKONVENTION-VORSCHLAG.md](NAMENSKONVENTION-VORSCHLAG.md). Am 5. Oktober 2026 zurückgestellt: vorerst bleibt es, wie es ist. Falls umgesetzt, erst nach dem Merge von Version 1.7 (fasst fast jede Zeile an).
+
 ## Traktor-Integration
 
 - 🔴 **Hotcues und Beatgrid übernehmen** – aus Traktors `collection.nml` vom MP3 auf die Stem-Datei kopieren. Vorsicht: verändert Traktors Sammlung → vorher Sicherung, nur bei geschlossenem Traktor.

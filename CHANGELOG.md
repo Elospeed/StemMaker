@@ -9,6 +9,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### Dokumentation
+- Vorschlag für eine Namenskonvention im Quelltext (Bereich und Typ im Variablennamen) in der Ideen-Liste, vorerst zurückgestellt: [docs/NAMENSKONVENTION-VORSCHLAG.md](docs/NAMENSKONVENTION-VORSCHLAG.md).
+
 ### StemMaker (kommt mit der nächsten Version)
 - StemMaker liess sich manchmal nicht beenden („Keine Rückmeldung“). Ursache: Die Längen-Abfrage im Hintergrund (ffmpeg) konnte bei MP3s mit vielen Tags für immer hängen, und beim Schliessen wartete StemMaker darauf. Jetzt wird die ffmpeg-Ausgabe laufend gelesen, die Abfrage bricht nach 30 Sekunden oder beim Schliessen sofort ab.
 - Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei). Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert (PR #7).
