@@ -7,7 +7,7 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 4. Oktober 2026
+Zuletzt aktualisiert: 5. Oktober 2026
 
 ---
 
@@ -41,3 +41,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 - Version 1.7 (#13): Anhören, Ordner öffnen, Erststart-Fenster, Update-Prüfung, feste ffmpeg, SHA-256 (Testversion, Speedy testet).
 - Club-Pegel und Bass-Fix (Testversion, Speedy hört rein).
+- Ideen-Liste: Namenskonvention für Variablen (nur Doku, kann jederzeit gemergt werden).
