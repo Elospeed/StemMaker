@@ -41,3 +41,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Club-Pegel und Bass-Fix (Testversion, Speedy hört rein).
+- Ideen aus dem Vergleich mit StemKit in `docs/IDEEN.md` (nur Doku).
