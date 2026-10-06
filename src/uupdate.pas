@@ -125,57 +125,65 @@ begin
   Result := False;
   if not HttpGetText(UpdateJsonURL, TimeoutMS, Text, ErrMsg) then
     Exit;
+  D := nil;
+  { Alles in try/except: Ein einzelner falscher Eintrag (z.B. null statt Text)
+    darf nicht unbemerkt die ganze Prüfung abbrechen - dann steht wenigstens
+    der Grund im Log. }
   try
-    D := GetJSON(Text);
-  except
-    on E: Exception do
-    begin
-      ErrMsg := 'update.json: ' + E.Message;
-      Exit;
-    end;
-  end;
-  try
-    if not (D is TJSONObject) then
-    begin
-      ErrMsg := 'update.json: kein Objekt';
-      Exit;
-    end;
-    O := TJSONObject(D);
-    Info.Version := JStr(O, 'version');
-    Info.Date := JStr(O, 'date');
-    Info.PageURL := JStr(O, 'page');
-    { "Was ist neu" in der eingestellten Sprache, sonst Englisch, sonst Deutsch }
-    Info.Notes := JStr(O, 'notes_' + LangCode);
-    if Info.Notes = '' then Info.Notes := JStr(O, 'notes_en');
-    if Info.Notes = '' then Info.Notes := JStr(O, 'notes_de');
-    Info.ZipURL := JStr(O, 'zip_url');
-    Info.ZipSHA256 := LowerCase(JStr(O, 'zip_sha256'));
-    if O.Find('ffmpeg', F) then
-    begin
-      Info.FFmpegURL := JStr(F, 'url');
-      Info.FFmpegSHA256 := LowerCase(JStr(F, 'sha256'));
-      Info.FFmpegEntry := JStr(F, 'entry');
-      Info.FFmpegMB := F.Get('size_mb', 0);
-      Info.FFmpegVer := JStr(F, 'version');
-    end;
-    if Info.FFmpegEntry = '' then Info.FFmpegEntry := 'ffmpeg.exe';
-    if O.Find('models', M) then
-    begin
-      Info.ModelBaseURL := JStr(M, 'base_url');
-      if M.Find('sha256', H) then
+    try
+      D := GetJSON(Text);
+      if not (D is TJSONObject) then
       begin
-        Info.ModelHashes := TStringList.Create;
-        for I := 0 to H.Count - 1 do
-          if Trim(H.Items[I].AsString) <> '' then
-            Info.ModelHashes.Values[H.Names[I]] := LowerCase(Trim(H.Items[I].AsString));
+        ErrMsg := 'update.json: kein Objekt';
+        Exit;
+      end;
+      O := TJSONObject(D);
+      Info.Version := JStr(O, 'version');
+      Info.Date := JStr(O, 'date');
+      Info.PageURL := JStr(O, 'page');
+      { "Was ist neu" in der eingestellten Sprache, sonst Englisch, sonst Deutsch }
+      Info.Notes := JStr(O, 'notes_' + LangCode);
+      if Info.Notes = '' then Info.Notes := JStr(O, 'notes_en');
+      if Info.Notes = '' then Info.Notes := JStr(O, 'notes_de');
+      Info.ZipURL := JStr(O, 'zip_url');
+      Info.ZipSHA256 := LowerCase(JStr(O, 'zip_sha256'));
+      if O.Find('ffmpeg', F) then
+      begin
+        Info.FFmpegURL := JStr(F, 'url');
+        Info.FFmpegSHA256 := LowerCase(JStr(F, 'sha256'));
+        Info.FFmpegEntry := JStr(F, 'entry');
+        Info.FFmpegMB := F.Get('size_mb', 0);
+        Info.FFmpegVer := JStr(F, 'version');
+      end;
+      if Info.FFmpegEntry = '' then Info.FFmpegEntry := 'ffmpeg.exe';
+      if O.Find('models', M) then
+      begin
+        Info.ModelBaseURL := JStr(M, 'base_url');
+        if M.Find('sha256', H) then
+        begin
+          Info.ModelHashes := TStringList.Create;
+          for I := 0 to H.Count - 1 do
+            { nur Texte übernehmen - null oder Zahlen werden übersprungen }
+            if (H.Items[I].JSONType = jtString) and (Trim(H.Items[I].AsString) <> '') then
+              Info.ModelHashes.Values[H.Names[I]] := LowerCase(Trim(H.Items[I].AsString));
+        end;
+      end;
+      Info.Valid := Info.Version <> '';
+      Result := Info.Valid;
+      if not Result then
+        ErrMsg := 'update.json: "version" fehlt oder ist kein Text ' +
+          '(Version in Anführungszeichen schreiben, z.B. "1.8")';
+    except
+      on E: Exception do
+      begin
+        ErrMsg := 'update.json: ' + E.Message;
+        Result := False;
       end;
     end;
-    Info.Valid := Info.Version <> '';
-    Result := Info.Valid;
-    if not Result then
-      ErrMsg := 'update.json: "version" fehlt';
   finally
     D.Free;
+    if not Result then
+      FreeUpdateInfo(Info);
   end;
 end;
 
@@ -312,7 +320,11 @@ begin
   if DirectoryExists(Tmp) then
     DeleteDirectory(ExcludeTrailingPathDelimiter(Tmp), False);
   if not ExtractZipAll(ZipFile, Tmp, ErrMsg) then
+  begin
+    { halb entpackten Hilfsordner nicht liegen lassen }
+    DeleteDirectory(ExcludeTrailingPathDelimiter(Tmp), False);
     Exit;
+  end;
   Files := nil;
   Dirs := TStringList.Create;
   try

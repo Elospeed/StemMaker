@@ -38,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
-- Tags vollständig übernehmen: BPM, Tonart, Label und ISRC aus der Quelldatei in die Stem-Datei.
+- Update-Funktion: Fehlerkorrekturen aus dem Wine-Test (hängender Download, falsche Einträge in `update.json`).
