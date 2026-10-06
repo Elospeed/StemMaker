@@ -12,8 +12,7 @@ Zuletzt aktualisiert: 6. Oktober 2026
 
 ## 🔨 In Arbeit
 
-- **Release 1.7** – Versionsnummer gesetzt, Release-ZIP gebaut. Speedy testet das ZIP und legt das Release `v1.7` an, danach wird `update.json` auf 1.7 gestellt. Inhalt siehe [CHANGELOG](CHANGELOG.md).
-- **Automatischer Build** – GitHub Actions baut bei jedem PR und jedem Push auf `main` die Windows-Exes und legt sie als Vor-Release ab (ersetzt den Ordner `Temp/`).
+- **Release 1.7** – Versionsnummer gesetzt. Vor der Veröffentlichung kommen die Fehlerkorrekturen aus dem grossen Wine-Test dazu, danach wird die Release-ZIP neu gebaut. Speedy testet das ZIP und legt das Release `v1.7` an, danach wird `update.json` auf 1.7 gestellt. Inhalt siehe [CHANGELOG](CHANGELOG.md).
 
 ## 📋 Geplant für den StemPlayer
 

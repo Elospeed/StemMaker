@@ -6,6 +6,19 @@ Neueste Einträge oben.
 
 ---
 
+## Fehler aus dem grossen Wine-Test (Oktober 2026)
+
+Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt (Bericht im Projektordner, nicht im Repository).
+
+| Problem | Lösung |
+|---|---|
+| Flacher Ausgabeordner: `A\Intro.mp3` und `B\Intro.mp3` ergaben beide `Intro.stem.mp4`. Die zweite wurde übersprungen oder überschrieb die erste. | `UniqueStemOutputName` in `uStemJob`: sortierte Liste der schon vergebenen Namen (Gross/klein egal wie bei Windows), Doppelte bekommen ` (2)`, ` (3)`. Gerechnet wird immer über die **ganze** Liste in Listen-Reihenfolge, auch über fertige Zeilen – sonst bekäme eine Datei nach Abbrechen und Fortsetzen einen anderen Namen. Der Name geht als `TStemSettings.OutFile` an den Job. |
+| Nach einem harten Absturz rechnete demucs weiter (eigener Prozess). | Windows-Job-Objekt mit `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`, angelegt beim Programmstart; jedes Hilfsprogramm kommt nach `Execute` hinein. Das Handle wird nie geschlossen – endet StemMaker (egal wie), schliesst Windows es und beendet alle Prozesse im Job. Der StemPlayer läuft nicht über diesen Weg und bleibt offen. Schlägt das Zuordnen fehl (Windows 7 in einem fremden Job), läuft alles ohne Schutz weiter. |
+| Temp-Ordner nach Absturz blieben für immer liegen. | Jeder Arbeitsordner hat eine Sperrdatei `in-arbeit.lock`, exklusiv geöffnet solange der Job läuft. Beim Start: Lässt sich die Sperrdatei löschen, ist der Besitzer tot → Ordner weg. Ohne Sperrdatei (Temp behalten, ältere Version) erst nach 12 Stunden. So wird nie der Ordner eines gerade laufenden StemCLI gelöscht. |
+| Deutsche Rückfragen hatten „Yes/No“ und „Confirmation“. | Die Texte kommen aus der LCL-Unit `lclstrconsts` und werden nicht über unsere `lang\`-Dateien übersetzt. Bei Deutsch ersetzt `SetUnitResourceStrings('lclstrconsts', …)` in `uLangUI` die Knopf- und Titeltexte. Wirkt für das LCL-eigene Fenster und für den Windows-TaskDialog (beide holen die Texte über `GetButtonCaption`). |
+
+---
+
 ## Automatischer Build (Oktober 2026)
 
 | Problem | Lösung |
