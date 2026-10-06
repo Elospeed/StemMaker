@@ -1,0 +1,173 @@
+# Automatischer Windows-Build für StemMaker, StemCLI und StemPlayer.
+#
+# Was passiert wann:
+# - Jeder Pull Request und jeder Push auf main baut die drei Exes auf einem
+#   Windows-Rechner von GitHub. Fehler im Quelltext fallen so sofort auf.
+# - Die Exes landen als Testversion in einem Vor-Release (Pre-release):
+#     Push auf main         -> Tag "test-main"
+#     Pull Request Nr. N    -> Tag "test-pr-N" (nur PRs aus diesem Repository)
+#     Von Hand gestartet    -> Tag "test-<Branch>"
+#   Jeder neue Build ersetzt das Vor-Release mit demselben Tag. Die Download-Links
+#   bleiben also gleich, z. B.
+#   https://github.com/Elospeed/StemMaker/releases/download/test-main/StemMaker.exe
+# - Wird ein PR geschlossen oder gemerged, wird sein Vor-Release wieder gelöscht.
+#
+# Vor-Releases sind nie "neuestes Release" und haben nichts mit update.json zu tun.
+# Die Update-Prüfung in StemMaker sieht sie also nicht.
+# Details und Testanleitung: docs/TESTVERSIONEN.md
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+# Schreibrecht auf "contents" braucht es nur, um Vor-Releases anzulegen und zu löschen.
+permissions:
+  contents: write
+
+# Pro Branch bzw. PR immer nur ein Lauf; ein neuer Push bricht den alten Lauf ab.
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Lazarus-Version für den Build (FPC 3.2.2 ist dabei)
+  LAZARUS_VERSION: "3.8"
+
+jobs:
+  build:
+    # Beim Schliessen eines PRs wird nicht gebaut, nur aufgeräumt (Job "aufraeumen")
+    if: github.event.action != 'closed'
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Lazarus installieren
+        uses: gcarreno/setup-lazarus@v3
+        with:
+          lazarus-version: ${{ env.LAZARUS_VERSION }}
+          with-cache: false
+
+      - name: Exes bauen
+        run: |
+          set -e
+          # -B = alle Units des Projekts neu übersetzen (kein alter Stand aus einem Cache)
+          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi; do
+            echo "::group::$lpi"
+            lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 "$lpi"
+            echo "::endgroup::"
+          done
+
+      - name: Exes einsammeln, verkleinern und Prüfsummen bilden
+        run: |
+          set -e
+          mkdir -p ausgabe
+          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe ausgabe/
+
+          # Debug-Infos entfernen (StemMaker: ca. 29 MB -> 3,5 MB). Es fehlen dann
+          # nur die Zeilennummern im Absturz-Log. strip.exe liegt bei FPC dabei.
+          STRIP=$(find /c/lazarus -iname strip.exe 2>/dev/null | head -n 1 || true)
+          if [ -z "$STRIP" ]; then STRIP=$(command -v strip || true); fi
+          if [ -n "$STRIP" ]; then
+            echo "strip: $STRIP"
+            "$STRIP" ausgabe/*.exe
+          else
+            echo "::warning::strip.exe nicht gefunden, Exes bleiben gross"
+          fi
+
+          cd ausgabe
+          sha256sum *.exe > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          ls -l
+
+      - name: Exes als Workflow-Artefakt ablegen
+        uses: actions/upload-artifact@v4
+        with:
+          name: StemMaker-Win64-${{ github.sha }}
+          path: ausgabe/
+          retention-days: 30
+
+      - name: Tag für das Vor-Release bestimmen
+        id: tag
+        run: |
+          # Tag-Name je nach Anlass; leer = kein Vor-Release
+          TAG=""
+          case "${{ github.event_name }}" in
+            push)
+              TAG="test-main" ;;
+            pull_request)
+              # PRs aus fremden Forks haben kein Schreibrecht -> nur Artefakt
+              if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
+                TAG="test-pr-${{ github.event.pull_request.number }}"
+              fi ;;
+            workflow_dispatch)
+              # Schrägstriche und andere Sonderzeichen im Branch-Namen durch "-" ersetzen
+              TAG="test-$(echo '${{ github.ref_name }}' | tr -c 'A-Za-z0-9._\n-' '-')" ;;
+          esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Tag: ${TAG:-(keiner)}"
+
+      - name: Vor-Release veröffentlichen
+        if: steps.tag.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          # Bei PRs den echten Commit des Branches nehmen, nicht den Merge-Commit
+          COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+          ANLASS: ${{ github.event.pull_request.title || github.ref_name }}
+        run: |
+          set -e
+          BASIS="https://github.com/${{ github.repository }}/releases/download/$TAG"
+          KURZ="${COMMIT:0:7}"
+
+          # Beschreibung des Vor-Releases (Deutsch, mit direkten Links)
+          {
+            echo "**Testversion, kein offizielles Release.** Automatisch gebaut aus Commit $KURZ ($ANLASS)."
+            echo
+            echo "Direkte Links (ohne Login):"
+            echo "- [StemMaker.exe]($BASIS/StemMaker.exe)"
+            echo "- [StemCLI.exe]($BASIS/StemCLI.exe)"
+            echo "- [StemPlayer.exe]($BASIS/StemPlayer.exe) (gehört in den Ordner \`AddOns\\\`)"
+            echo "- [SHA256SUMS.txt]($BASIS/SHA256SUMS.txt)"
+            echo
+            echo "So testen: \`StemMaker.exe\` in einer bestehenden StemMaker-Installation ersetzen (alte Exe vorher umbenennen, z. B. in \`StemMaker-alt.exe\`). Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nicht signiert, Windows SmartScreen warnt deshalb: „Weitere Informationen“ → „Trotzdem ausführen“."
+            echo
+            echo "SHA-256:"
+            echo '```'
+            cat ausgabe/SHA256SUMS.txt
+            echo '```'
+          } > notizen.md
+
+          # Altes Vor-Release mit demselben Tag samt Tag löschen (falls vorhanden)
+          gh release delete "$TAG" --cleanup-tag --yes --repo "${{ github.repository }}" || true
+
+          gh release create "$TAG" ausgabe/*.exe ausgabe/SHA256SUMS.txt \
+            --repo "${{ github.repository }}" \
+            --target "$COMMIT" \
+            --prerelease \
+            --latest=false \
+            --title "Testversion $TAG ($KURZ)" \
+            --notes-file notizen.md
+
+          echo "### Testversion veröffentlicht" >> "$GITHUB_STEP_SUMMARY"
+          echo "$BASIS/StemMaker.exe" >> "$GITHUB_STEP_SUMMARY"
+
+  aufraeumen:
+    # Nach dem Schliessen oder Mergen eines PRs dessen Vor-Release entfernen
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vor-Release des PRs löschen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete "test-pr-${{ github.event.pull_request.number }}" --cleanup-tag --yes --repo "${{ github.repository }}" || true
