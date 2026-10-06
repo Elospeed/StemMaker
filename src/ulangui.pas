@@ -161,6 +161,44 @@ begin
   end;
 end;
 
+{ Die Knöpfe und Titel der Standard-Rückfragen (MessageDlg) stammen aus
+  der LCL (Unit lclstrconsts) und sind von Haus aus Englisch: "Yes/No",
+  "Confirmation", "Error". Bei Deutsch werden sie hier ersetzt - sonst
+  stünde unter einer deutschen Frage "Yes / No". }
+function GermanLCLText(Name, Value: AnsiString; Hash: Longint;
+  Arg: Pointer): AnsiString;
+var
+  P: Integer;
+begin
+  { Name kommt als "lclstrconsts.rsmbyes" - nur den Teil nach dem Punkt }
+  P := LastDelimiter('.', Name);
+  case LowerCase(Copy(Name, P + 1, MaxInt)) of
+    'rsmbyes':          Result := '&Ja';
+    'rsmbno':           Result := '&Nein';
+    'rsmbok':           Result := '&OK';
+    'rsmbcancel':       Result := 'Abbrechen';
+    'rsmbabort':        Result := 'Abbrechen';
+    'rsmbretry':        Result := '&Wiederholen';
+    'rsmbignore':       Result := '&Ignorieren';
+    'rsmball':          Result := '&Alle';
+    'rsmbnotoall':      Result := 'Alle verneinen';
+    'rsmbyestoall':     Result := '&Alle bejahen';
+    'rsmbhelp':         Result := '&Hilfe';
+    'rsmbclose':        Result := '&Schließen';
+    'rsmtwarning':      Result := 'Warnung';
+    'rsmterror':        Result := 'Fehler';
+    'rsmtinformation':  Result := 'Information';
+    'rsmtconfirmation': Result := 'Bestätigung';
+  else
+    Result := Value;                      // alles andere bleibt
+  end;
+end;
+
+procedure GermanLCLStrings;
+begin
+  SetUnitResourceStrings('lclstrconsts', @GermanLCLText, nil);
+end;
+
 procedure LangInitInteractive(const IniName: string);
 var
   Ini: TIniFile;
@@ -185,6 +223,8 @@ begin
   end;
   if not LangLoad(Code) then
     LangLoad('de');                       // Datei fehlt -> Deutsch
+  if LangCode = 'de' then
+    GermanLCLStrings;
 end;
 
 end.

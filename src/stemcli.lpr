@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : stemcli.lpr  (Programm StemCLI - Kommandozeilen-Version)
-  Version : 1.6
+  Version : 1.7
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -92,6 +92,7 @@ var
   Slept: QWord;
   Ini: TIniFile;
   LangC: string;
+  Used: TStringList;     // schon vergebene Zielnamen (gleiche Namen -> "(2)")
 begin
   KeepAwake := True;
   { Standardwerte + Werkzeug-Pfade aus StemMaker.ini (falls vorhanden) }
@@ -213,7 +214,7 @@ begin
     { keine Dateien -> kurze Hilfe }
     if Files.Count = 0 then
     begin
-      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), ['1.6']));
+      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), ['1.7']));
       WriteLn(_('Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]'));
       WriteLn(_('        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]'));
       WriteLn(_('        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)'));
@@ -232,9 +233,13 @@ begin
       WriteLn(Format(_('Energiesparplan vorübergehend: %s -> %s'), [Pw.OldName, Pw.NewName]));
 
     { ---- Dateien nacheinander umwandeln -------------------------------- }
+    Used := NewUsedNameList;
     try
     for I := 0 to Files.Count - 1 do
     begin
+      { eindeutiger Zielname: zwei Dateien mit gleichem Namen aus
+        verschiedenen Ordnern (bei -o) bekommen "Name (2).stem.mp4" }
+      S.OutFile := UniqueStemOutputName(Files[I], S.OutputDir, Used);
       Job := TStemJob.Create(S);
       try
         Job.OnLog := @Cli.DoLog;
@@ -250,6 +255,7 @@ begin
       end;
     end;
     finally
+      Used.Free;
       { auch bei Strg+C-freiem Fehlerabbruch: alles zurückstellen }
       PowerEndRun(Pw, StemIniFileName);
     end;

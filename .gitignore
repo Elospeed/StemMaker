@@ -3,8 +3,6 @@ bin/
 lib/
 backup/
 *.exe
-# Ausnahme: Testversionen zum Ausprobieren (siehe Temp/LIESMICH.md)
-!Temp/**/*.exe
 *.o
 *.ppu
 *.compiled

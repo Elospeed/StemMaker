@@ -17,6 +17,9 @@
        meldet der Thread das dem Hauptfenster (OnUpdateFound). Läuft gerade
        eine Umwandlung, wartet das Hauptfenster damit bis zum Ende -
        ein Update wird NIE während einer Konvertierung angeboten.
+    2b. Von Hand: Info -> "Nach Updates suchen" (CheckUpdateNow). Prüft
+       auch dann, wenn die Prüfung beim Start abgeschaltet ist, und bietet
+       auch eine übersprungene Version wieder an.
     3. ShowUpdateDialog: "Jetzt aktualisieren / Später / Version überspringen"
        und das Häkchen "Beim Start nach Updates suchen".
     4. "Jetzt": Release-ZIP laden (Fortschrittsfenster), SHA-256 prüfen,
@@ -48,6 +51,16 @@ procedure StartUpdateCheck(const CurrentVersion: string; OnFound: TUpdateFoundEv
 { Hauptfenster wird geschlossen: späte Ergebnisse nicht mehr melden }
 procedure CancelUpdateCheck;
 
+type
+  TManualCheckResult = (mcNewer, mcCurrent, mcError);
+
+{ Von Hand nach Updates suchen (Knopf im Info-Fenster). Wartet max. 20 s,
+  das Fenster bleibt dabei bedienbar. mcNewer: Info enthält die neue
+  Version (ohne Modell-Prüfsummen). Eine übersprungene Version zählt hier
+  als neu - wer von Hand sucht, will sie sehen. }
+function CheckUpdateNow(const CurrentVersion: string; out Info: TUpdateInfo;
+  out ErrMsg: string): TManualCheckResult;
+
 { Update-Fenster. True = Update installiert, StemMaker soll sich beenden
   (der Neustart ist dann schon angestossen). }
 function ShowUpdateDialog(const Info: TUpdateInfo; const CurrentVersion: string): Boolean;
@@ -57,6 +70,7 @@ implementation
 type
   TUpdateCheckThread = class(TThread)
   private
+    FStart: QWord;                  // Startzeit (GetTickCount64)
     FOK: Boolean;
     FInfo: TUpdateInfo;
     FErr: string;
@@ -64,6 +78,13 @@ type
   protected
     procedure Execute; override;
   end;
+
+const
+  { Kommt die Antwort später als das, wird sie nicht mehr angeboten. Die
+    WinINet-Zeitlimits (5 s) greifen nicht überall (z.B. unter Wine nie) -
+    sonst könnte das Update-Fenster nach Minuten mitten in der Arbeit
+    aufgehen. }
+  UPDATE_LATE_MS = 30000;
 
 var
   GOnFound: TUpdateFoundEvent = nil;
@@ -83,6 +104,12 @@ begin
     if not FOK then
     begin
       LogLine('Update-Prüfung: update.json nicht erreichbar (' + FErr + ')');
+      Exit;
+    end;
+    if GetTickCount64 - FStart > UPDATE_LATE_MS then
+    begin
+      LogLine(Format('Update-Prüfung: Antwort kam erst nach %d s - wird ignoriert',
+        [(GetTickCount64 - FStart) div 1000]));
       Exit;
     end;
     LogLine(Format('Update-Prüfung: neueste Version %s, installiert %s',
@@ -115,6 +142,7 @@ begin
   T := TUpdateCheckThread.Create(True);
   T.FreeOnTerminate := True;
   T.OnTerminate := @T.Done;
+  T.FStart := GetTickCount64;
   T.Start;
 end;
 
@@ -124,37 +152,118 @@ begin
 end;
 
 { ---------------------------------------------------------------------------
+  Prüfung von Hand
+  --------------------------------------------------------------------------- }
+const
+  MANUAL_WAIT_MS = 20000;
+
+type
+  TManualCheckThread = class(TThread)
+  public
+    OK: Boolean;
+    Info: TUpdateInfo;
+    Err: string;
+  protected
+    procedure Execute; override;
+  end;
+
+procedure TManualCheckThread.Execute;
+begin
+  OK := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, Err);
+  FreeUpdateInfo(Info);              // Modell-Prüfsummen braucht hier niemand
+end;
+
+function CheckUpdateNow(const CurrentVersion: string; out Info: TUpdateInfo;
+  out ErrMsg: string): TManualCheckResult;
+var
+  T: TManualCheckThread;
+  Start: QWord;
+begin
+  Info := Default(TUpdateInfo);
+  ErrMsg := '';
+  T := TManualCheckThread.Create(True);
+  T.FreeOnTerminate := False;
+  T.Start;
+  { warten, ohne das Fenster einzufrieren }
+  Start := GetTickCount64;
+  while (not T.Finished) and (GetTickCount64 - Start < MANUAL_WAIT_MS) do
+  begin
+    Application.ProcessMessages;
+    Sleep(20);
+  end;
+  if not T.Finished then
+  begin
+    { Server antwortet nicht: Thread loslassen, er gibt sich selbst frei,
+      sobald die Verbindung irgendwann abbricht }
+    T.FreeOnTerminate := True;
+    ErrMsg := _('Der Server antwortet nicht.');
+    LogLine('Update-Suche von Hand: keine Antwort nach 20 s');
+    Exit(mcError);
+  end;
+  T.WaitFor;
+  try
+    if not T.OK then
+    begin
+      ErrMsg := T.Err;
+      LogLine('Update-Suche von Hand: update.json nicht erreichbar (' + ErrMsg + ')');
+      Exit(mcError);
+    end;
+    Info := T.Info;
+    Info.ModelHashes := nil;
+    LogLine(Format('Update-Suche von Hand: neueste Version %s, installiert %s',
+      [Info.Version, CurrentVersion]));
+    if IsNewerVersion(Info.Version, CurrentVersion) then
+      Result := mcNewer
+    else
+      Result := mcCurrent;
+  finally
+    T.Free;
+  end;
+end;
+
+{ ---------------------------------------------------------------------------
   Download-Fenster: Balken + Abbrechen, Download im Thread
+
+  ABBRECHEN, AUCH WENN DER DOWNLOAD HÄNGT
+    Hängt die Verbindung (Server antwortet nicht mehr), kommt der Thread
+    nicht aus InternetReadFile zurück und merkt den Abbruch nicht. Früher
+    liess sich das Fenster dann weder mit "Abbrechen" noch mit dem X
+    schliessen - StemMaker war blockiert.
+    Jetzt: Bei "Abbrechen" wird der Thread "losgelassen" (FForm := nil) und
+    das Fenster geht sofort zu. Der Thread räumt sich selbst auf
+    (FreeOnTerminate), sobald die Verbindung irgendwann abbricht, und meldet
+    dann nichts mehr.
   --------------------------------------------------------------------------- }
 type
   TfrmUpdateDl = class;
 
   TUpdateDlThread = class(TThread)
   private
-    FForm: TfrmUpdateDl;
+    FForm: TfrmUpdateDl;            // nil = Fenster hat den Thread losgelassen
     FURL, FDest: string;
     FDone, FTotal: Int64;
+    FOK: Boolean;
+    FErr: string;
     procedure Progress(Done, Total: Int64);
     function IsCancelled: Boolean;
     procedure SyncProgress;
+    procedure Finished(Sender: TObject);
   protected
     procedure Execute; override;
-  public
-    OK: Boolean;
-    ErrMsg: string;
   end;
 
   TfrmUpdateDl = class(TForm)
   private
     pb: TProgressBar;
     lbl: TLabel;
-    FThread: TUpdateDlThread;       // läuft gerade (nil = fertig)
-    FFinished: TUpdateDlThread;     // fertiger Thread, wird nach dem Fenster freigegeben
+    FThread: TUpdateDlThread;       // läuft gerade (nil = fertig oder losgelassen)
     procedure btnCancelClick(Sender: TObject);
-    procedure ThreadDone(Sender: TObject);
+    procedure LetThreadGo;
+    procedure ThreadDone(AOK: Boolean; const AErr: string);
     procedure FormCloseQueryDl(Sender: TObject; var CanClose: Boolean);
   public
     OK: Boolean;
+    Cancelled: Boolean;             // vom Benutzer abgebrochen (kein Fehler)
     ErrMsg: string;
     constructor CreateDl(const URL, Dest, Version: string);
     procedure ShowProgress(Done, Total: Int64);
@@ -174,12 +283,22 @@ end;
 
 procedure TUpdateDlThread.SyncProgress;
 begin
-  FForm.ShowProgress(FDone, FTotal);
+  if FForm <> nil then
+    FForm.ShowProgress(FDone, FTotal);
 end;
 
 procedure TUpdateDlThread.Execute;
 begin
-  OK := HttpDownload(FURL, FDest, @Progress, @IsCancelled, ErrMsg);
+  FOK := HttpDownload(FURL, FDest, @Progress, @IsCancelled, FErr);
+end;
+
+{ läuft im Hauptthread (OnTerminate), danach gibt sich der Thread selbst frei }
+procedure TUpdateDlThread.Finished(Sender: TObject);
+begin
+  if FForm <> nil then
+    FForm.ThreadDone(FOK, FErr)
+  else if FOK then
+    SysUtils.DeleteFile(FDest);   // kam nach dem Abbruch doch noch an - wegwerfen
 end;
 
 constructor TfrmUpdateDl.CreateDl(const URL, Dest, Version: string);
@@ -214,8 +333,8 @@ begin
   FThread.FForm := Self;
   FThread.FURL := URL;
   FThread.FDest := Dest;
-  FThread.FreeOnTerminate := False;
-  FThread.OnTerminate := @ThreadDone;
+  FThread.FreeOnTerminate := True;
+  FThread.OnTerminate := @FThread.Finished;
   FThread.Start;
 end;
 
@@ -236,26 +355,39 @@ end;
 
 procedure TfrmUpdateDl.btnCancelClick(Sender: TObject);
 begin
+  LetThreadGo;
+end;
+
+{ Abbrechen: Thread loslassen und Fenster sofort schliessen (siehe oben).
+  FThread ist hier sicher noch da: Er gibt sich erst frei, nachdem
+  Finished im Hauptthread gelaufen ist - und das setzt FThread auf nil. }
+procedure TfrmUpdateDl.LetThreadGo;
+begin
   if FThread <> nil then
-    FThread.Terminate;            // Download bricht ab, ThreadDone schliesst
+  begin
+    FThread.FForm := nil;
+    FThread.Terminate;
+    FThread := nil;
+  end;
+  OK := False;
+  Cancelled := True;
+  ErrMsg := _('Abgebrochen');
+  ModalResult := mrCancel;
 end;
 
 procedure TfrmUpdateDl.FormCloseQueryDl(Sender: TObject; var CanClose: Boolean);
 begin
-  { mit dem X: wie Abbrechen - zu geht das Fenster erst, wenn der Thread fertig ist }
-  CanClose := FThread = nil;
-  if not CanClose then
-    FThread.Terminate;
+  { mit dem X: wie Abbrechen }
+  if FThread <> nil then
+    LetThreadGo;
+  CanClose := True;
 end;
 
-procedure TfrmUpdateDl.ThreadDone(Sender: TObject);
+procedure TfrmUpdateDl.ThreadDone(AOK: Boolean; const AErr: string);
 begin
-  OK := FThread.OK;
-  ErrMsg := FThread.ErrMsg;
-  { Thread nicht hier im eigenen OnTerminate freigeben (siehe Entwicklungslog),
-    sondern erst, wenn das Fenster zu ist (ShowUpdateDialog) }
-  FFinished := FThread;
   FThread := nil;
+  OK := AOK;
+  ErrMsg := AErr;
   if OK then ModalResult := mrOK else ModalResult := mrCancel;
 end;
 
@@ -369,7 +501,6 @@ var
   AutoCheck: Boolean;
   Zip, Got, Err: string;
   Dl: TfrmUpdateDl;
-  Th: TThread;
 begin
   Result := False;
   R := AskUpdate(Info, CurrentVersion, AutoCheck);
@@ -396,16 +527,17 @@ begin
     Exit;
   end;
 
-  Zip := GetTempDir(False) + 'StemMaker-update.zip';
+  Zip := GetTempDir(False) + UPDATE_ZIP_NAME;
   LogLine('Update ' + Info.Version + ': lade ' + Info.ZipURL);
   Dl := TfrmUpdateDl.CreateDl(Info.ZipURL, Zip, Info.Version);
   try
     Dl.ShowModal;
-    Th := Dl.FFinished;
-    if Th <> nil then
+    if Dl.Cancelled then
     begin
-      Th.WaitFor;
-      Th.Free;
+      { selbst abgebrochen: keine Fehlermeldung, beim nächsten Start kommt
+        das Angebot wieder }
+      LogLine('Update-Download abgebrochen');
+      Exit;
     end;
     if not Dl.OK then
     begin

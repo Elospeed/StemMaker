@@ -9,10 +9,32 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker
+- **Tags vollständig übernommen:** Neu landen **BPM**, **Tonart**, **Label** und **ISRC** der Quelldatei in der Stem-Datei. Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext und das Cover kamen schon vorher mit. Hintergrund: ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY` nicht mit den MP4-Atomen, darum liest StemMaker die Tags der Quelle jetzt selbst aus (`ffmpeg -f ffmetadata`, dauert Millisekunden) und schreibt BPM als `tmpo`, Tonart als `----:com.apple.iTunes:initialkey`, Label als `©pub` und ISRC als `----:com.apple.iTunes:ISRC`. Die drei letzten schreibt `uStemMP4` zusammen mit den Stem-Infos, ohne die Datei ein zweites Mal zu kopieren. Im Log steht, welche Werte gefunden wurden.
+
+- **Update-Funktion: Fehlerkorrekturen aus dem Wine-Test** (6. Oktober 2026, Test mit lokalem Test-Server und gefälschtem Update auf „1.8“):
+  - Hing der Download des Updates (Server antwortet nicht mehr), liess sich das Fortschrittsfenster weder mit „Abbrechen“ noch mit dem X schliessen – StemMaker war blockiert. Jetzt geht das Fenster sofort zu, der hängende Download läuft im Hintergrund ins Leere und räumt sich selbst auf. Zusätzlich brechen alle Downloads (Update, ffmpeg, Modelle) nach 30 Sekunden ohne Daten ab, statt bis zu 60 Minuten zu warten.
+  - „Abbrechen“ beim Update-Download zeigt keine Fehlermeldung mehr („Update konnte nicht geladen werden: Abgebrochen“).
+  - Ein einzelner falscher Eintrag in `update.json` (z. B. `null` statt einer Prüfsumme) legte die ganze Update-Prüfung lahm, ohne Grund im Log. Solche Einträge werden jetzt übersprungen, andere Fehler stehen mit Grund im Log. `"version": 1.8` ohne Anführungszeichen wird im Log erklärt.
+  - Kommt die Antwort auf die Update-Prüfung später als 30 Sekunden, wird sie ignoriert (das Update-Fenster ging sonst womöglich erst nach Minuten mitten in der Arbeit auf).
+  - Ein beschädigtes Update-ZIP liess den Hilfsordner `_update_tmp` im StemMaker-Ordner liegen.
+
+- **Neu: „Nach Updates suchen“** im Info-Fenster, dazu das Häkchen „Beim Start nach Updates suchen“. Wer die Prüfung beim Start abgeschaltet oder eine Version übersprungen hat, kommt so ohne INI wieder zum Update. Die Suche wartet höchstens 20 Sekunden, das Fenster bleibt bedienbar.
+- **Update wird bei einem Fehler zurückgedreht:** Scheitert das Kopieren mitten drin (z. B. Virenscanner sperrt eine Datei), werden die neuen Dateien entfernt und die alten wiederhergestellt. Vorher blieb eine Mischung aus alter und neuer Version.
+- Reste eines abgebrochenen Update-Downloads (`StemMaker-update.zip.part` im Temp-Ordner) räumt der nächste Start weg.
+- Kam ein Update während einer Umwandlung mit „PC nach Abschluss herunterfahren“ und wird das Herunterfahren abgebrochen, wird das Update jetzt angeboten (vorher erst beim nächsten Start).
+
+### Entwicklung
+- **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
+- **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).
+- Ordner `Temp/` entfernt. Die alten Testversionen bleiben im Git-Verlauf, neue kommen nicht mehr ins Repository.
+
+## 1.7 – 5. Oktober 2026
+
 ### Dokumentation
 - Vorschlag für eine Namenskonvention im Quelltext (Bereich und Typ im Variablennamen) in der Ideen-Liste, vorerst zurückgestellt: [docs/NAMENSKONVENTION-VORSCHLAG.md](docs/NAMENSKONVENTION-VORSCHLAG.md).
 
-### StemMaker (kommt mit der nächsten Version)
+### StemMaker
 - StemMaker liess sich manchmal nicht beenden („Keine Rückmeldung“). Ursache: Die Längen-Abfrage im Hintergrund (ffmpeg) konnte bei MP3s mit vielen Tags für immer hängen, und beim Schliessen wartete StemMaker darauf. Jetzt wird die ffmpeg-Ausgabe laufend gelesen, die Abfrage bricht nach 30 Sekunden oder beim Schliessen sofort ab.
 - Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei). Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert (PR #7).
 - Traktor-Pro-4-Test erledigt (Speedy, 3. Oktober 2026): Stem-Dateien aus StemMaker spielen in Traktor.
@@ -29,6 +51,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Neu: **Update-Prüfung beim Start** über `update.json` im Repository (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update-ZIP wird mit SHA-256 geprüft, die laufende Exe wird zu `.exe.old` und beim nächsten Start weggeräumt. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
 - **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle v4 und v3 werden geprüft (htdemucs_ft folgt, sobald die Prüfsummen bekannt sind). Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
 - Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
+- Fehler behoben (gefunden im grossen Wine-Test vom 6. Oktober 2026): Gleiche Dateinamen aus verschiedenen Ordnern gingen bei einem flachen Ausgabeordner verloren (die zweite Datei wurde übersprungen oder überschrieb mit „Überschreiben“ die erste). Jetzt heisst die spätere `Intro (2).stem.mp4`, `(3)` usw. Gilt auch für `Song.mp3` + `Song.wav` im selben Ordner und für StemCLI mit `-o`. Die Namen bleiben nach Abbrechen und Fortsetzen gleich.
+- Stürzt StemMaker ab oder wird im Task-Manager beendet, hören demucs und ffmpeg jetzt sofort mit auf. Vorher rechnete demucs im Hintergrund weiter, und nach einem Neustart liefen zwei Trennungen gleichzeitig.
+- Arbeitsordner, die ein Absturz in `%TEMP%\StemMaker` hinterlassen hat (pro Song einige hundert MB), werden beim nächsten Start gelöscht. Ordner, die gerade ein anderer StemMaker oder StemCLI benutzt, bleiben stehen; mit „Temp-Ordner behalten“ aufgehobene Ordner erst nach 12 Stunden.
+- Rückfragen auf Deutsch zeigen jetzt „Ja/Nein“ und „Bestätigung/Fehler/Warnung“ statt „Yes/No“ und „Confirmation/Error“.
+- „Liste leeren“ fragt jetzt nach. Vorher war die Liste samt gespeicherter Warteschlange mit einem Klick weg.
 
 ### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
 - Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).

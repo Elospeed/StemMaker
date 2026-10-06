@@ -19,10 +19,13 @@
   UPDATE INSTALLIEREN (InstallUpdate)
     1. Release-ZIP herunterladen und Prüfsumme kontrollieren (uUpdateUI)
     2. in einen Hilfsordner neben der Exe entpacken
-    3. jede Datei an ihren Platz kopieren. Eine laufende Exe kann Windows
-       nicht überschreiben, aber umbenennen: StemMaker.exe -> StemMaker.exe.old,
-       dann die neue hinlegen. Die .old-Dateien räumt der nächste Start weg
-       (CleanupOldFiles).
+    3. jede Datei an ihren Platz kopieren. Die alte Datei wird dabei NICHT
+       gelöscht, sondern zu <Name>.old umbenannt (eine laufende Exe kann
+       Windows nicht überschreiben, umbenennen geht). Die .old-Dateien
+       räumt der nächste Start weg (CleanupOldFiles).
+       Geht unterwegs etwas schief (z.B. Virenscanner sperrt eine Datei),
+       wird alles zurückgedreht: neue Dateien weg, .old zurückbenennen.
+       StemMaker bleibt dann vollständig auf der alten Version.
     4. NIE angefasst werden: StemMaker.ini, die Warteschlange, logs\,
        models\ und tools\ffmpeg.exe (liegen auch nicht im ZIP, aber sicher
        ist sicher).
@@ -48,6 +51,7 @@ const
   DEF_UPDATE_JSON_URL =
     'https://raw.githubusercontent.com/Elospeed/StemMaker/main/update.json';
   UPDATE_TIMEOUT_MS = 5000;     // länger wird beim Start nie gewartet
+  UPDATE_ZIP_NAME = 'StemMaker-update.zip';   // Download im Temp-Ordner
 
 type
   TUpdateInfo = record
@@ -88,7 +92,7 @@ procedure UpdateSetSkipVersion(const IniName, Version: string);
 { entpacktes Update an seinen Platz bringen (siehe oben) }
 function InstallUpdate(const ZipFile, AppDir: string; out ErrMsg: string): Boolean;
 
-{ *.old von einem früheren Update wegräumen }
+{ *.old von einem früheren Update wegräumen, dazu Download-Reste im Temp-Ordner }
 procedure CleanupOldFiles(const AppDir: string);
 
 implementation
@@ -125,57 +129,65 @@ begin
   Result := False;
   if not HttpGetText(UpdateJsonURL, TimeoutMS, Text, ErrMsg) then
     Exit;
+  D := nil;
+  { Alles in try/except: Ein einzelner falscher Eintrag (z.B. null statt Text)
+    darf nicht unbemerkt die ganze Prüfung abbrechen - dann steht wenigstens
+    der Grund im Log. }
   try
-    D := GetJSON(Text);
-  except
-    on E: Exception do
-    begin
-      ErrMsg := 'update.json: ' + E.Message;
-      Exit;
-    end;
-  end;
-  try
-    if not (D is TJSONObject) then
-    begin
-      ErrMsg := 'update.json: kein Objekt';
-      Exit;
-    end;
-    O := TJSONObject(D);
-    Info.Version := JStr(O, 'version');
-    Info.Date := JStr(O, 'date');
-    Info.PageURL := JStr(O, 'page');
-    { "Was ist neu" in der eingestellten Sprache, sonst Englisch, sonst Deutsch }
-    Info.Notes := JStr(O, 'notes_' + LangCode);
-    if Info.Notes = '' then Info.Notes := JStr(O, 'notes_en');
-    if Info.Notes = '' then Info.Notes := JStr(O, 'notes_de');
-    Info.ZipURL := JStr(O, 'zip_url');
-    Info.ZipSHA256 := LowerCase(JStr(O, 'zip_sha256'));
-    if O.Find('ffmpeg', F) then
-    begin
-      Info.FFmpegURL := JStr(F, 'url');
-      Info.FFmpegSHA256 := LowerCase(JStr(F, 'sha256'));
-      Info.FFmpegEntry := JStr(F, 'entry');
-      Info.FFmpegMB := F.Get('size_mb', 0);
-      Info.FFmpegVer := JStr(F, 'version');
-    end;
-    if Info.FFmpegEntry = '' then Info.FFmpegEntry := 'ffmpeg.exe';
-    if O.Find('models', M) then
-    begin
-      Info.ModelBaseURL := JStr(M, 'base_url');
-      if M.Find('sha256', H) then
+    try
+      D := GetJSON(Text);
+      if not (D is TJSONObject) then
       begin
-        Info.ModelHashes := TStringList.Create;
-        for I := 0 to H.Count - 1 do
-          if Trim(H.Items[I].AsString) <> '' then
-            Info.ModelHashes.Values[H.Names[I]] := LowerCase(Trim(H.Items[I].AsString));
+        ErrMsg := 'update.json: kein Objekt';
+        Exit;
+      end;
+      O := TJSONObject(D);
+      Info.Version := JStr(O, 'version');
+      Info.Date := JStr(O, 'date');
+      Info.PageURL := JStr(O, 'page');
+      { "Was ist neu" in der eingestellten Sprache, sonst Englisch, sonst Deutsch }
+      Info.Notes := JStr(O, 'notes_' + LangCode);
+      if Info.Notes = '' then Info.Notes := JStr(O, 'notes_en');
+      if Info.Notes = '' then Info.Notes := JStr(O, 'notes_de');
+      Info.ZipURL := JStr(O, 'zip_url');
+      Info.ZipSHA256 := LowerCase(JStr(O, 'zip_sha256'));
+      if O.Find('ffmpeg', F) then
+      begin
+        Info.FFmpegURL := JStr(F, 'url');
+        Info.FFmpegSHA256 := LowerCase(JStr(F, 'sha256'));
+        Info.FFmpegEntry := JStr(F, 'entry');
+        Info.FFmpegMB := F.Get('size_mb', 0);
+        Info.FFmpegVer := JStr(F, 'version');
+      end;
+      if Info.FFmpegEntry = '' then Info.FFmpegEntry := 'ffmpeg.exe';
+      if O.Find('models', M) then
+      begin
+        Info.ModelBaseURL := JStr(M, 'base_url');
+        if M.Find('sha256', H) then
+        begin
+          Info.ModelHashes := TStringList.Create;
+          for I := 0 to H.Count - 1 do
+            { nur Texte übernehmen - null oder Zahlen werden übersprungen }
+            if (H.Items[I].JSONType = jtString) and (Trim(H.Items[I].AsString) <> '') then
+              Info.ModelHashes.Values[H.Names[I]] := LowerCase(Trim(H.Items[I].AsString));
+        end;
+      end;
+      Info.Valid := Info.Version <> '';
+      Result := Info.Valid;
+      if not Result then
+        ErrMsg := 'update.json: "version" fehlt oder ist kein Text ' +
+          '(Version in Anführungszeichen schreiben, z.B. "1.8")';
+    except
+      on E: Exception do
+      begin
+        ErrMsg := 'update.json: ' + E.Message;
+        Result := False;
       end;
     end;
-    Info.Valid := Info.Version <> '';
-    Result := Info.Valid;
-    if not Result then
-      ErrMsg := 'update.json: "version" fehlt';
   finally
     D.Free;
+    if not Result then
+      FreeUpdateInfo(Info);
   end;
 end;
 
@@ -278,14 +290,19 @@ begin
     (R = 'tools\ffmpeg.exe') or (R = 'addons\stemplayer.ini');
 end;
 
-{ Eine Datei an ihren Platz bringen. Lässt sich das Ziel nicht löschen
-  (läuft gerade, z.B. StemMaker.exe), wird es zu <Name>.old umbenannt. }
-function PlaceFile(const Src, Dest: string; out ErrMsg: string): Boolean;
+{ Eine Datei an ihren Platz bringen. Gibt es das Ziel schon, wird es zu
+  <Name>.old umbenannt (siehe oben). Done merkt sich jede gelegte Datei
+  ("1" = alte Datei liegt als .old daneben, "0" = war neu), damit
+  RollBack alles zurückdrehen kann. }
+function PlaceFile(const Src, Dest: string; Done: TStrings; out ErrMsg: string): Boolean;
+var
+  HadOld: Boolean;
 begin
   Result := False;
   ErrMsg := '';
   ForceDirectories(ExtractFilePath(Dest));
-  if FileExists(Dest) and not SysUtils.DeleteFile(Dest) then
+  HadOld := FileExists(Dest);
+  if HadOld then
   begin
     if FileExists(Dest + '.old') then
       SysUtils.DeleteFile(Dest + '.old');
@@ -295,9 +312,30 @@ begin
       Exit;
     end;
   end;
+  if HadOld then
+    Done.Add('1' + Dest)
+  else
+    Done.Add('0' + Dest);
   Result := FileUtil.CopyFile(Src, Dest);
   if not Result then
     ErrMsg := Format(_('Kann %s nicht schreiben'), [Dest]);
+end;
+
+{ Halbe Installation zurückdrehen: rückwärts jede neue Datei löschen und
+  die .old wieder zurückbenennen }
+procedure RollBack(Done: TStrings);
+var
+  I: Integer;
+  Dest: string;
+begin
+  for I := Done.Count - 1 downto 0 do
+  begin
+    Dest := Copy(Done[I], 2, MaxInt);
+    if FileExists(Dest) then
+      SysUtils.DeleteFile(Dest);
+    if Done[I][1] = '1' then
+      RenameFile(Dest + '.old', Dest);
+  end;
 end;
 
 function InstallUpdate(const ZipFile, AppDir: string; out ErrMsg: string): Boolean;
@@ -305,6 +343,7 @@ var
   Tmp, Root, Rel: string;
   Files: TStringList;
   Dirs: TStringList;
+  Done: TStringList;
   I: Integer;
 begin
   Result := False;
@@ -312,9 +351,14 @@ begin
   if DirectoryExists(Tmp) then
     DeleteDirectory(ExcludeTrailingPathDelimiter(Tmp), False);
   if not ExtractZipAll(ZipFile, Tmp, ErrMsg) then
+  begin
+    { halb entpackten Hilfsordner nicht liegen lassen }
+    DeleteDirectory(ExcludeTrailingPathDelimiter(Tmp), False);
     Exit;
+  end;
   Files := nil;
   Dirs := TStringList.Create;
+  Done := TStringList.Create;
   try
     { Liegt im ZIP alles in einem Ordner "StemMaker\"? Dann ist dieser
       Ordner die Wurzel (so ist das Release-ZIP aufgebaut). }
@@ -340,13 +384,18 @@ begin
       Rel := ExtractRelativePath(Root, Files[I]);
       if IsProtected(Rel) then
         Continue;
-      if not PlaceFile(Files[I], IncludeTrailingPathDelimiter(AppDir) + Rel, ErrMsg) then
+      if not PlaceFile(Files[I], IncludeTrailingPathDelimiter(AppDir) + Rel, Done, ErrMsg) then
+      begin
+        RollBack(Done);
+        ErrMsg := ErrMsg + LineEnding + _('Die alte Version wurde wiederhergestellt.');
         Exit;
+      end;
     end;
     Result := True;
   finally
     Files.Free;
     Dirs.Free;
+    Done.Free;
     DeleteDirectory(ExcludeTrailingPathDelimiter(Tmp), False);
   end;
 end;
@@ -355,7 +404,13 @@ procedure CleanupOldFiles(const AppDir: string);
 var
   L: TStringList;
   I: Integer;
+  Zip: string;
 begin
+  { Reste eines abgebrochenen oder hängengebliebenen Update-Downloads im
+    Temp-Ordner (Name wie in uUpdateUI) }
+  Zip := GetTempDir(False) + UPDATE_ZIP_NAME;
+  if FileExists(Zip) then SysUtils.DeleteFile(Zip);
+  if FileExists(Zip + '.part') then SysUtils.DeleteFile(Zip + '.part');
   if not DirectoryExists(AppDir) then Exit;
   L := FindAllFiles(AppDir, '*.old', True);
   try

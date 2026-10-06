@@ -13,6 +13,8 @@
         "Anleitung": der Inhalt von LIESMICH.md bzw. README.md
         "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
                      THIRD-PARTY-NOTICES.md (ab 1.7)
+    - darüber: "Nach Updates suchen" und das Häkchen "Beim Start nach
+      Updates suchen" (ab 1.7)
     - unten: "Logs-Ordner öffnen", "Jetzt spenden", Sprachauswahl,
       "Schließen"
 
@@ -34,10 +36,13 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, LCLIntf, uDonate, uLog;
+  ComCtrls, LCLIntf, uDonate, uLog, uUpdate, uUpdateUI;
 
-{ Info-Fenster anzeigen. Version/Autor kommen vom Hauptfenster. }
-procedure ShowInfoDialog(const Version, Author: string);
+{ Info-Fenster anzeigen. Version/Autor kommen vom Hauptfenster.
+  Findet "Nach Updates suchen" eine neue Version, geht das Info-Fenster zu
+  und OnUpdateFound wird gerufen (Hauptfenster bietet das Update an). }
+procedure ShowInfoDialog(const Version, Author: string;
+  OnUpdateFound: TUpdateFoundEvent);
 
 implementation
 
@@ -50,11 +55,18 @@ type
     FLangCodes: TStringList;      // Sprach-Codes ('de', 'en', ...) in der
                                   // gleichen Reihenfolge wie in cbLang
     cbLang: TComboBox;            // Sprachauswahl unten im Fenster
+    btnUpdate: TButton;           // "Nach Updates suchen"
+    chkAutoUpdate: TCheckBox;     // "Beim Start nach Updates suchen"
+    FVersion: string;
+    procedure btnUpdateClick(Sender: TObject);
+    procedure chkAutoUpdateChange(Sender: TObject);
     procedure btnDonateClick(Sender: TObject);
     procedure btnLogsClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure cbLangChange(Sender: TObject);
   public
+    FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
+    FoundInfo: TUpdateInfo;
     constructor CreateInfo(const Version, Author: string);
     destructor Destroy; override;
   end;
@@ -182,12 +194,13 @@ var
   memText, memLic: TMemo;
   pcText: TPageControl;
   tsHelp, tsLic: TTabSheet;
-  pnlBottom: TPanel;
+  pnlBottom, pnlUpdate: TPanel;
   btnDonate, btnLogs, btnClose: TButton;
   lblLang: TLabel;
   I: Integer;
 begin
   inherited CreateNew(nil);
+  FVersion := Version;
   Caption := _('Info') + ' - ' + APP_NAME + ' ' + Version;
   Position := poMainFormCenter;
   Width := 720;
@@ -285,6 +298,30 @@ begin
     schon beim Öffnen des Fensters }
   cbLang.OnChange := @cbLangChange;
 
+  { --- Updates (Zeile über den Buttons) ---
+    Wer im Update-Fenster "Beim Start nach Updates suchen" abgehakt oder
+    eine Version übersprungen hat, kommt hier wieder dran. }
+  pnlUpdate := TPanel.Create(Self);
+  pnlUpdate.Parent := Self;
+  pnlUpdate.Align := alBottom;
+  pnlUpdate.Top := 0;                              // über pnlBottom
+  pnlUpdate.Height := 44;
+  pnlUpdate.BevelOuter := bvNone;
+
+  btnUpdate := TButton.Create(Self);
+  btnUpdate.Parent := pnlUpdate;
+  btnUpdate.SetBounds(10, 8, 200, 32);
+  btnUpdate.Caption := _('Nach Updates suchen');
+  btnUpdate.OnClick := @btnUpdateClick;
+
+  chkAutoUpdate := TCheckBox.Create(Self);
+  chkAutoUpdate.Parent := pnlUpdate;
+  chkAutoUpdate.Left := 224;
+  chkAutoUpdate.Top := 14;
+  chkAutoUpdate.Caption := _('Beim Start nach Updates suchen');
+  chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);
+  chkAutoUpdate.OnChange := @chkAutoUpdateChange;  // erst nach Checked setzen
+
   { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
@@ -332,6 +369,45 @@ begin
     mtInformation, [mbOK], 0);
 end;
 
+procedure TfrmInfo.chkAutoUpdateChange(Sender: TObject);
+begin
+  UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
+end;
+
+{ Von Hand suchen. Neue Version: Fenster zu, das Hauptfenster bietet sie
+  an (ShowInfoDialog). Sonst kurze Meldung. }
+procedure TfrmInfo.btnUpdateClick(Sender: TObject);
+var
+  Info: TUpdateInfo;
+  Err: string;
+  R: TManualCheckResult;
+begin
+  btnUpdate.Enabled := False;
+  btnUpdate.Caption := _('Suche ...');
+  Screen.Cursor := crHourGlass;
+  try
+    R := CheckUpdateNow(FVersion, Info, Err);
+  finally
+    Screen.Cursor := crDefault;
+    btnUpdate.Caption := _('Nach Updates suchen');
+    btnUpdate.Enabled := True;
+  end;
+  case R of
+    mcNewer:
+      begin
+        FoundInfo := Info;
+        FoundUpdate := True;
+        ModalResult := mrOK;
+      end;
+    mcCurrent:
+      MessageDlg(Format(_('Du hast die neueste Version (%s).'), [FVersion]),
+        mtInformation, [mbOK], 0);
+  else
+    MessageDlg(Format(_('Die Suche nach Updates hat nicht geklappt: %s'), [Err]),
+      mtWarning, [mbOK], 0);
+  end;
+end;
+
 procedure TfrmInfo.btnDonateClick(Sender: TObject);
 begin
   OpenDonatePage;
@@ -347,16 +423,24 @@ begin
   Close;
 end;
 
-procedure ShowInfoDialog(const Version, Author: string);
+procedure ShowInfoDialog(const Version, Author: string;
+  OnUpdateFound: TUpdateFoundEvent);
 var
   F: TfrmInfo;
+  Info: TUpdateInfo;
+  Found: Boolean;
 begin
   F := TfrmInfo.CreateInfo(Version, Author);
   try
     F.ShowModal;
+    Found := F.FoundUpdate;
+    Info := F.FoundInfo;
   finally
     F.Free;
   end;
+  { erst nach dem Schliessen anbieten, nicht als Fenster im Fenster }
+  if Found and Assigned(OnUpdateFound) then
+    OnUpdateFound(Info);
 end;
 
 end.

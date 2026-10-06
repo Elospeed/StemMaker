@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.6
+# Elospeed StemMaker 1.7
 
 **by Elospeed**
 
@@ -39,7 +39,7 @@ Then the **startup check window** opens. It ticks off, one by one: processor, ff
 - **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
 
-**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. Turn it off with the checkbox in the update window or `AutoCheck=0` (see below).
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update or Info window or `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
@@ -59,7 +59,7 @@ Windows remembers this, so the window only appears once per program.
 
 **Want to check the download?**
 - Upload the ZIP or the exe to [VirusTotal](https://www.virustotal.com). Single hits from little-known scanners are common with unsigned programs and are usually false alarms.
-- If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.6.zip` (adjust the file name).
+- If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.7.zip` (adjust the file name).
 - The full source code is in this repository. You can build StemMaker yourself (see [Build it yourself](#build-it-yourself)).
 
 ## Donations
@@ -100,7 +100,7 @@ The demucs programs are fully statically linked; they need no DLLs and no instal
 - **Start** processes the list one file after another. "Cancel" stops immediately and cleans up the temp files.
 - Below both progress bars you see **elapsed and estimated remaining time**: the top one for the current file, the bottom one for the whole list. The estimate uses the length of the waiting songs and the speed of this PC, and gets more accurate with every finished file. After each song the list shows how long it took, e.g. "OK (4:12)".
 - The result is `Title.stem.mp4`, by default next to the original file. Alternatively, choose an output folder.
-- Tags (title, artist, album, genre, year, track) and the **cover art** are copied from the MP3.
+- Tags and the **cover art** are copied from the source file: title, artist, album, album artist, composer, genre, year, track and disc number, comment, grouping, lyrics – plus **BPM**, **key**, **label** and **ISRC**. Traktor shows title, artist, album, genre, label and cover right after the import; BPM and key are overwritten by Traktor's own analysis.
 - **Check stem...** shows whether a file is a valid stem (5 tracks + stem metadata). This also works with purchased NI stems.
 - A normal player only plays track 1, the master. You only hear the individual stems in Traktor.
 
@@ -187,7 +187,7 @@ Older processors without AVX2 (e.g. 2nd/3rd generation Intel Core i) are much sl
 Same as Stemgen with `ni-stem`/MP4Box:
 - MP4 with 5 audio tracks: track 1 is the master and the only *enabled* one, tracks 2–5 are Drums/Bass/Other/Vox and *disabled*.
 - `moov/udta/stem`: JSON with stem names, colors and mastering DSP (compressor/limiter off, same values as Stemgen).
-- iTunes tags plus `TAUT = STEM`.
+- iTunes tags plus `TAUT = STEM`. BPM goes into the `tmpo` atom, the key into `----:com.apple.iTunes:initialkey`, the label into `©pub` and the ISRC into `----:com.apple.iTunes:ISRC` – ffmpeg cannot write those four for MP4, so StemMaker writes them itself (`uStemMP4`).
 
 ## Advanced: StemMaker.ini
 
