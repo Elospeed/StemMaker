@@ -81,6 +81,8 @@ type
     Normalize   : Boolean;  // Lautstärke angleichen: alle 5 Spuren gleich
                             // anheben, bis die Spitze bei ca. -1 dB liegt
     BassFix     : Boolean;  // Tiefbass unter 80 Hz von "Other" in "Bass"
+    OutFile     : string;   // fester Zielname (voller Pfad), z.B. "Intro (2).stem.mp4"
+                            // bei gleichen Namen; leer = aus OutputDir berechnen
   end;
 
   { eigene Exception-Klasse, damit "Abbrechen" kein Fehler ist }
@@ -178,6 +180,22 @@ function ExeName(const Base: string): string;
 { Name der Zieldatei: '<Titel>.stem.mp4' im Zielordner
   (oder neben der Originaldatei, wenn OutputDir leer ist) }
 function StemOutputName(const InputFile, OutputDir: string): string;
+{ Wie StemOutputName, aber eindeutig innerhalb einer Liste: Landen zwei
+  Dateien auf demselben Namen (z.B. A\Intro.mp3 und B\Intro.mp3 im selben
+  Ausgabeordner, oder Song.mp3 + Song.wav nebeneinander), bekommt die
+  zweite "Intro (2).stem.mp4", die dritte "(3)" usw.
+  Used = schon vergebene Namen; der neue Name wird dort eingetragen.
+  Used muss mit NewUsedNameList angelegt werden. }
+function UniqueStemOutputName(const InputFile, OutputDir: string;
+  Used: TStringList): string;
+{ leere Namensliste für UniqueStemOutputName (sortiert, Gross/klein egal
+  - wie bei Windows-Dateinamen) }
+function NewUsedNameList: TStringList;
+{ Beim Programmstart: Arbeitsordner in %TEMP%\StemMaker, die von einem
+  Absturz übrig sind, löschen. Ordner, die gerade ein anderer StemMaker
+  oder StemCLI benutzt, bleiben stehen. Ergebnis = Anzahl gelöschter
+  Ordner, FreedMB = freigegebener Platz. }
+function CleanupStaleTempDirs(out FreedMB: Int64): Integer;
 
 { Name der Einstellungsdatei: StemMaker.ini neben der Exe (portabel).
   Ist der Programmordner schreibgeschützt (z.B. unter C:\Programme),
@@ -211,6 +229,11 @@ uses
   uLang;
 
 const
+  { Sperrdatei in jedem Arbeitsordner unter %TEMP%\StemMaker\<Lauf>\ }
+  TEMP_LOCK_NAME = 'in-arbeit.lock';
+  { Ordner ohne Sperrdatei (z.B. "Temp-Ordner behalten") werden erst nach
+    so vielen Stunden beim Start gelöscht }
+  TEMP_MAX_AGE_H = 12;
   { Dateinamen der Modelle - genau so heißen sie auch auf Hugging Face }
   FT_MODELS: array[0..3] of string = (
     'ggml-model-htdemucs_ft_drums-4s-f16.bin',
@@ -339,6 +362,7 @@ begin
   Result.KeepTemp   := False;
   Result.Normalize  := True;           // Standard: Club-Pegel
   Result.BassFix    := True;           // Standard: Bass-Fix an
+  Result.OutFile    := '';             // Zielname aus OutputDir berechnen
 end;
 
 function StemOutputName(const InputFile, OutputDir: string): string;
@@ -350,6 +374,102 @@ begin
   else
     Dir := IncludeTrailingPathDelimiter(OutputDir);
   Result := Dir + ExtractFileNameOnly(InputFile) + '.stem.mp4';
+end;
+
+function NewUsedNameList: TStringList;
+begin
+  Result := TStringList.Create;
+  Result.CaseSensitive := False;   // Windows: "intro" = "Intro"
+  Result.Sorted := True;           // schnelles Suchen auch bei 10000 Dateien
+  Result.Duplicates := dupIgnore;
+end;
+
+function UniqueStemOutputName(const InputFile, OutputDir: string;
+  Used: TStringList): string;
+var
+  Base: string;
+  N, Dummy: Integer;
+begin
+  Result := StemOutputName(InputFile, OutputDir);
+  Base := Copy(Result, 1, Length(Result) - Length('.stem.mp4'));
+  N := 1;
+  while Used.Find(Result, Dummy) do
+  begin
+    Inc(N);
+    Result := Base + ' (' + IntToStr(N) + ').stem.mp4';
+  end;
+  Used.Add(Result);
+end;
+
+{ Zeitpunkt der letzten Änderung in einem Ordner: der Ordner selbst und
+  alle Dateien darin; Bytes = Gesamtgrösse der Dateien }
+function NewestChange(const Dir: string; out Bytes: Int64): TDateTime;
+var
+  SR: TSearchRec;
+  Files: TStringList;
+  I: Integer;
+  Age: LongInt;
+begin
+  Result := 0;
+  Bytes := 0;
+  if FindFirst(ExcludeTrailingPathDelimiter(Dir), faDirectory, SR) = 0 then
+  begin
+    Result := FileDateToDateTime(SR.Time);
+    SysUtils.FindClose(SR);
+  end;
+  Files := FindAllFiles(Dir, '*', True);
+  try
+    for I := 0 to Files.Count - 1 do
+    begin
+      Inc(Bytes, FileSizeUtf8(Files[I]));
+      Age := FileAgeUTF8(Files[I]);
+      if (Age <> -1) and (FileDateToDateTime(Age) > Result) then
+        Result := FileDateToDateTime(Age);
+    end;
+  finally
+    Files.Free;
+  end;
+end;
+
+function CleanupStaleTempDirs(out FreedMB: Int64): Integer;
+var
+  Base, Dir, Lock: string;
+  Dirs: TStringList;
+  I: Integer;
+  Bytes: Int64;
+  Newest: TDateTime;
+  Stale: Boolean;
+begin
+  Result := 0;
+  FreedMB := 0;
+  Base := IncludeTrailingPathDelimiter(GetTempDir(False)) + 'StemMaker';
+  if not DirectoryExists(Base) then Exit;
+  Dirs := FindAllDirectories(Base, False);
+  try
+    for I := 0 to Dirs.Count - 1 do
+    begin
+      Dir := IncludeTrailingPathDelimiter(Dirs[I]);
+      Lock := Dir + TEMP_LOCK_NAME;
+      Newest := NewestChange(Dir, Bytes);
+      if FileExists(Lock) then
+        { Sperrdatei da: Lässt sie sich löschen, ist der Besitzer nicht
+          mehr da (Absturz). Ist sie noch offen, arbeitet dort gerade ein
+          anderer StemMaker/StemCLI -> stehen lassen. }
+        Stale := SysUtils.DeleteFile(Lock)
+      else
+        { keine Sperrdatei ("Temp-Ordner behalten" oder ältere Version):
+          erst nach TEMP_MAX_AGE_H Stunden löschen }
+        Stale := (Now - Newest) * 24 > TEMP_MAX_AGE_H;
+      if Stale and DeleteDirectory(Dirs[I], False) then
+      begin
+        Inc(Result);
+        Inc(FreedMB, Bytes);
+      end;
+    end;
+  finally
+    Dirs.Free;
+  end;
+  FreedMB := FreedMB div 1048576;
 end;
 
 function StemIniFileName: string;
@@ -725,6 +845,79 @@ begin
   if GetProcessMemoryInfo(H, C, SizeOf(C)) then
     Result := C.PeakWorkingSetSize div (1024 * 1024);
 end;
+
+{ ---- Windows-Job-Objekt: Hilfsprogramme sterben mit StemMaker ----------
+  ffmpeg und demucs laufen als eigene Prozesse. Wird StemMaker hart
+  beendet (Absturz, Task-Manager), würde demucs sonst im Hintergrund
+  weiterrechnen - nach einem Neustart liefen dann zwei Trennungen
+  gleichzeitig. Darum kommen alle Hilfsprogramme in ein "Job-Objekt" mit
+  der Einstellung "beim Schliessen alle Prozesse beenden". Das Handle
+  darauf wird nie geschlossen: Windows schliesst es, wenn StemMaker endet
+  (egal wie), und beendet dabei alle Prozesse im Job. }
+const
+  JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = $2000;
+  JobObjectExtendedLimitInformation  = 9;
+
+type
+  { Aufbau wie in der Windows-Doku (winnt.h), normale Ausrichtung }
+  TJobBasicLimitInfo = record
+    PerProcessUserTimeLimit: Int64;
+    PerJobUserTimeLimit: Int64;
+    LimitFlags: DWORD;
+    MinimumWorkingSetSize: PtrUInt;
+    MaximumWorkingSetSize: PtrUInt;
+    ActiveProcessLimit: DWORD;
+    Affinity: PtrUInt;
+    PriorityClass: DWORD;
+    SchedulingClass: DWORD;
+  end;
+  TJobIoCounters = record
+    ReadOperationCount, WriteOperationCount, OtherOperationCount,
+    ReadTransferCount, WriteTransferCount, OtherTransferCount: QWord;
+  end;
+  TJobExtendedLimitInfo = record
+    BasicLimitInformation: TJobBasicLimitInfo;
+    IoInfo: TJobIoCounters;
+    ProcessMemoryLimit, JobMemoryLimit,
+    PeakProcessMemoryUsed, PeakJobMemoryUsed: PtrUInt;
+  end;
+
+function SmCreateJobObject(lpJobAttributes: Pointer; lpName: PWideChar): THandle;
+  stdcall; external 'kernel32.dll' name 'CreateJobObjectW';
+function SmSetInformationJobObject(hJob: THandle; InfoClass: DWORD;
+  lpInfo: Pointer; cbInfo: DWORD): BOOL;
+  stdcall; external 'kernel32.dll' name 'SetInformationJobObject';
+function SmAssignProcessToJobObject(hJob, hProcess: THandle): BOOL;
+  stdcall; external 'kernel32.dll' name 'AssignProcessToJobObject';
+
+var
+  ToolJob: THandle = 0;    // 0 = (noch) kein Job-Objekt
+
+{ Job-Objekt anlegen (einmal beim Programmstart, siehe initialization) }
+procedure CreateToolJob;
+var
+  Info: TJobExtendedLimitInfo;
+begin
+  ToolJob := SmCreateJobObject(nil, nil);
+  if ToolJob = 0 then Exit;
+  FillChar(Info, SizeOf(Info), 0);
+  Info.BasicLimitInformation.LimitFlags := JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+  if not SmSetInformationJobObject(ToolJob, JobObjectExtendedLimitInformation,
+    @Info, SizeOf(Info)) then
+  begin
+    CloseHandle(ToolJob);
+    ToolJob := 0;
+  end;
+end;
+
+{ gestartetes Hilfsprogramm in den Job stecken. Klappt das nicht (z.B.
+  Windows 7, wenn StemMaker selbst schon in einem fremden Job läuft),
+  läuft alles wie bisher weiter - nur ohne diesen Schutz. }
+procedure AddToToolJob(hProcess: THandle);
+begin
+  if ToolJob <> 0 then
+    SmAssignProcessToJobObject(ToolJob, hProcess);
+end;
 {$ENDIF}
 
 function TStemJob.CheckTools(out Problems: string): Boolean;
@@ -1037,6 +1230,9 @@ begin
       Hand in einer Eingabeaufforderung nachstellen kann }
     LogLine('  Starte: ' + QuoteArg(Exe) + ' ' + ArgsToText(Proc.Parameters));
     Proc.Execute;
+    {$IFDEF WINDOWS}
+    AddToToolJob(Proc.ProcessHandle);   // stirbt mit StemMaker, siehe oben
+    {$ENDIF}
 
     { Hauptschleife: Ausgabe lesen, solange das Programm läuft }
     while True do
@@ -1122,6 +1318,7 @@ var
   DoBassFix: Boolean;              // Bass-Fix für diese Datei wirklich machen
   Tail, Graph: string;             // ffmpeg-Filter für Klang-Optionen
   DotFS: TFormatSettings;          // Zahlen für ffmpeg immer mit Punkt
+  LockH: THandle;                  // Sperrdatei im Temp-Ordner (siehe unten)
 
   { Sekunden Rechenzeit pro Minute Musik - der Vergleichswert, um Modelle
     und PCs miteinander zu vergleichen (0 = Länge unbekannt) }
@@ -1234,8 +1431,12 @@ begin
   DoBassFix := False;
   DotFS := DefaultFormatSettings;
   DotFS.DecimalSeparator := '.';
-  OutFile := StemOutputName(InputFile, FSettings.OutputDir);
+  if FSettings.OutFile <> '' then
+    OutFile := FSettings.OutFile      // vorgegeben (eindeutig gemacht)
+  else
+    OutFile := StemOutputName(InputFile, FSettings.OutputDir);
   WorkDir := '';
+  LockH := feInvalidHandle;
   T0 := GetTickCount64;
   RunMS := 0;
   InBytes := 0;
@@ -1261,8 +1462,8 @@ begin
       { Dateigröße fürs Log und die Statistik (Länge kommt nach dem Dekodieren) }
       InBytes := FileSizeUtf8(InputFile);
       Log('  ' + Format(_('Dateigröße: %.1f MB'), [InBytes / 1048576]));
-      if (FSettings.OutputDir <> '') and not DirectoryExists(FSettings.OutputDir) then
-        if not ForceDirectories(FSettings.OutputDir) then
+      if not DirectoryExists(ExtractFilePath(OutFile)) then
+        if not ForceDirectories(ExtractFilePath(OutFile)) then
           raise Exception.Create(_('Ausgabeordner kann nicht erstellt werden'));
 
       { ---- Arbeitsordner im Windows-Temp anlegen ------------------------
@@ -1274,6 +1475,10 @@ begin
         IntToStr(Random(100000)) + PathDelim;
       if not ForceDirectories(WorkDir) then
         raise Exception.Create(Format(_('Temp-Ordner kann nicht erstellt werden: %s'), [WorkDir]));
+      { Sperrdatei: bleibt offen, solange wir hier arbeiten. Stürzt
+        StemMaker ab, gibt Windows sie frei - dann darf der nächste Start
+        den Ordner löschen (siehe CleanupStaleTempDirs). }
+      LockH := FileCreate(WorkDir + TEMP_LOCK_NAME, fmShareExclusive, 438);
       MixWav  := WorkDir + 'mix.wav';
       StemDir := WorkDir + 'stems';
       TmpMp4  := WorkDir + 'out.mp4';
@@ -1529,10 +1734,17 @@ begin
         RunMS := GetTickCount64 - T0;
       WriteStat;
     end;
+    if LockH <> feInvalidHandle then
+      FileClose(LockH);
     if (WorkDir <> '') and DirectoryExists(WorkDir) then
     begin
       if FSettings.KeepTemp then
-        Log('  ' + Format(_('Temp-Ordner behalten: %s'), [WorkDir]))
+      begin
+        { Sperrdatei weg - der Ordner bleibt zur Fehlersuche liegen und
+          wird erst nach TEMP_MAX_AGE_H Stunden beim Start gelöscht }
+        SysUtils.DeleteFile(WorkDir + TEMP_LOCK_NAME);
+        Log('  ' + Format(_('Temp-Ordner behalten: %s'), [WorkDir]));
+      end
       else
         DeleteDirectory(ExcludeTrailingPathDelimiter(WorkDir), False);
     end;
@@ -1541,5 +1753,8 @@ end;
 
 initialization
   Randomize;     // Zufallsgenerator für die Temp-Ordnernamen starten
+  {$IFDEF WINDOWS}
+  CreateToolJob; // Hilfsprogramme enden mit StemMaker (siehe oben)
+  {$ENDIF}
 
 end.

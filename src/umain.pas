@@ -55,7 +55,7 @@ type
     FForm    : TfrmMain;
     FSettings: TStemSettings;
     FFiles   : TStringList;        // volle Pfade der zu bearbeitenden Dateien
-    FRoots   : TStringList;        // Basisordner je Datei (für "Unterordner nachbauen")
+    FOutFiles: TStringList;        // Zielname je Datei (siehe PlannedOutFiles)
     FIndexes : array of Integer;   // zugehörige Zeile in der Dateiliste
     FJob     : TStemJob;           // der gerade laufende Auftrag
     FLock    : TRTLCriticalSection;// schützt FJob (Zugriff aus 2 Threads)
@@ -80,10 +80,9 @@ type
     OKCount, FailCount, SkipCount: Integer;   // Zähler für die Zusammenfassung
     MaxPeakMemMB: Integer;                     // höchster RAM-Bedarf von demucs
     OmpPerPart  : Integer;                     // Kerne pro demucs-Teilstück
-    KeepTree    : Boolean;                     // Unterordner im Ausgabeordner nachbauen
     constructor Create(AForm: TfrmMain; const ASettings: TStemSettings);
     destructor Destroy; override;
-    procedure AddFile(const FileName, Root: string; ListIndex: Integer);
+    procedure AddFile(const FileName, OutFile: string; ListIndex: Integer);
     procedure Cancel;
   end;
 
@@ -196,6 +195,8 @@ type
     procedure UpdateFound(const Info: TUpdateInfo);
     procedure OfferUpdate(Data: PtrInt);
     function ItemOutFile(Index: Integer): string;
+    function ItemOutDir(Index: Integer): string;
+    function PlannedOutFiles: TStringArray;
     procedure OpenInPlayer(const StemFile: string);
     procedure ShowInExplorer(const FileName: string);
     procedure UpdateTimes;
@@ -316,23 +317,23 @@ begin
   FForm := AForm;
   FSettings := ASettings;
   FFiles := TStringList.Create;
-  FRoots := TStringList.Create;
+  FOutFiles := TStringList.Create;
   InitCriticalSection(FLock);
 end;
 
 destructor TStemWorker.Destroy;
 begin
   FFiles.Free;
-  FRoots.Free;
+  FOutFiles.Free;
   DoneCriticalSection(FLock);
   inherited Destroy;
 end;
 
 { eine Datei in die Warteschlange stellen }
-procedure TStemWorker.AddFile(const FileName, Root: string; ListIndex: Integer);
+procedure TStemWorker.AddFile(const FileName, OutFile: string; ListIndex: Integer);
 begin
   FFiles.Add(FileName);
-  FRoots.Add(Root);
+  FOutFiles.Add(OutFile);
   SetLength(FIndexes, Length(FIndexes) + 1);
   FIndexes[High(FIndexes)] := ListIndex;
 end;
@@ -414,16 +415,11 @@ begin
     FSyncOut := '';
     Synchronize(@SyncStatus);
 
-    { Einstellungen für DIESE Datei. "Unterordner nachbauen": Ausgabe-
-      ordner + der Weg vom Basisordner zur Datei, z.B.
-        Basis  D:\Musik\   Datei D:\Musik\House\2024\a.mp3
-        Ausgabe E:\Stems\  ->  E:\Stems\House\2024\a.stem.mp4
-      (TStemJob legt fehlende Ordner selbst an.) }
+    { Einstellungen für DIESE Datei: der Zielname steht schon fest
+      (TfrmMain.PlannedOutFiles - Ordner, Unterordner, eindeutige Namen).
+      TStemJob legt fehlende Ordner selbst an. }
     FileSettings := FSettings;
-    if KeepTree and (FSettings.OutputDir <> '') and (FRoots[I] <> '') then
-      FileSettings.OutputDir := IncludeTrailingPathDelimiter(FSettings.OutputDir) +
-        ExtractRelativePath(IncludeTrailingPathDelimiter(FRoots[I]),
-          ExtractFilePath(FFiles[I]));
+    FileSettings.OutFile := FOutFiles[I];
 
     { neuen Job anlegen und merken (für Cancel) }
     Job := TStemJob.Create(FileSettings);
@@ -1208,6 +1204,12 @@ end;
 
 procedure TfrmMain.btnClearClick(Sender: TObject);
 begin
+  { nachfragen - die gespeicherte Warteschlange ist danach auch weg }
+  if (lvFiles.Items.Count > 0) and (MessageDlg(
+    Format(_('Alle %d Dateien aus der Liste entfernen?'), [lvFiles.Items.Count]) +
+    LineEnding + _('Bereits erstellte Stem-Dateien bleiben erhalten.'),
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
+    Exit;
   lvFiles.Items.Clear;
   QueueDelete;                     // gespeicherte Liste ebenfalls löschen
   lblTotal.Caption := '';
@@ -1253,25 +1255,60 @@ end;
 function TfrmMain.ItemOutFile(Index: Integer): string;
 var
   Item: TListItem;
-  OutDir, Root: string;
 begin
   Result := '';
   if (Index < 0) or (Index >= lvFiles.Items.Count) then Exit;
   Item := lvFiles.Items[Index];
   if (Item.SubItems.Count > 4) and (Item.SubItems[4] <> '') then
     Exit(Item.SubItems[4]);
+  Result := PlannedOutFiles[Index];
+end;
+
+{ Ausgabeordner einer Zeile nach den aktuellen Einstellungen.
+  "Unterordner nachbauen": Ausgabeordner + der Weg vom Basisordner zur
+  Datei, z.B.
+    Basis  D:\Musik\   Datei D:\Musik\House\2024\a.mp3
+    Ausgabe E:\Stems\  ->  E:\Stems\House\2024\ }
+function TfrmMain.ItemOutDir(Index: Integer): string;
+var
+  Item: TListItem;
+  Root: string;
+begin
+  Item := lvFiles.Items[Index];
   if chkBeside.Checked then
-    OutDir := ''                                  // neben der Originaldatei
+    Result := ''                                  // neben der Originaldatei
   else
   begin
-    OutDir := edtOut.Directory;
+    Result := edtOut.Directory;
     Root := Item.SubItems[2];
-    if chkKeepTree.Checked and (OutDir <> '') and (Root <> '') then
-      OutDir := IncludeTrailingPathDelimiter(OutDir) +
+    if chkKeepTree.Checked and (Result <> '') and (Root <> '') then
+      Result := IncludeTrailingPathDelimiter(Result) +
         ExtractRelativePath(IncludeTrailingPathDelimiter(Root),
           ExtractFilePath(Item.SubItems[1]));
   end;
-  Result := StemOutputName(Item.SubItems[1], OutDir);
+end;
+
+{ Zielnamen ALLER Zeilen, in Listen-Reihenfolge eindeutig gemacht: Landen
+  zwei Dateien auf demselben Namen (A\Intro.mp3 und B\Intro.mp3 in einem
+  flachen Ausgabeordner, oder Song.mp3 + Song.wav nebeneinander), heisst
+  die spätere "Intro (2).stem.mp4". Es wird immer über die ganze Liste
+  gerechnet - auch über schon fertige Zeilen -, damit jede Datei nach
+  Abbrechen und Fortsetzen wieder denselben Namen bekommt. }
+function TfrmMain.PlannedOutFiles: TStringArray;
+var
+  Used: TStringList;
+  I: Integer;
+begin
+  Result := nil;
+  SetLength(Result, lvFiles.Items.Count);
+  Used := NewUsedNameList;
+  try
+    for I := 0 to lvFiles.Items.Count - 1 do
+      Result[I] := UniqueStemOutputName(lvFiles.Items[I].SubItems[1],
+        ItemOutDir(I), Used);
+  finally
+    Used.Free;
+  end;
 end;
 
 { Fertige Stem-Datei einer Zeile merken (Spalte 4, siehe oben) }
@@ -1372,18 +1409,24 @@ procedure TfrmMain.btnListenClick(Sender: TObject);
 var
   I: Integer;
   F, Dir: string;
+  Planned: TStringArray;
 begin
   Dir := '';
   F := FLastOutFile;
   if not FileExists(F) then
   begin
     F := '';
+    Planned := PlannedOutFiles;          // einmal für alle Zeilen rechnen
     for I := lvFiles.Items.Count - 1 downto 0 do
-      if FileExists(ItemOutFile(I)) then
+    begin
+      if (lvFiles.Items[I].SubItems.Count > 4) and (lvFiles.Items[I].SubItems[4] <> '') then
+        Planned[I] := lvFiles.Items[I].SubItems[4];
+      if FileExists(Planned[I]) then
       begin
-        F := ItemOutFile(I);
+        F := Planned[I];
         Break;
       end;
+    end;
   end;
   if F <> '' then
     Dir := ExtractFilePath(F)
@@ -1442,6 +1485,7 @@ var
   Job: TStemJob;
   Problems: string;
   I: Integer;
+  Planned: TStringArray;
 begin
   S := CurrentSettings;
   if (not chkBeside.Checked) and (Trim(edtOut.Directory) = '') then
@@ -1471,12 +1515,12 @@ begin
 
   { Worker anlegen und alle noch nicht fertigen Dateien übergeben }
   FWorker := TStemWorker.Create(Self, S);
-  FWorker.KeepTree := chkKeepTree.Checked and not chkBeside.Checked;
+  Planned := PlannedOutFiles;            // Zielnamen, eindeutig (siehe dort)
   FTotal := 0;
   for I := 0 to lvFiles.Items.Count - 1 do
     if ItemState(lvFiles.Items[I]) <> ST_OK then   // alles ausser "fertig"
     begin
-      FWorker.AddFile(lvFiles.Items[I].SubItems[1], lvFiles.Items[I].SubItems[2], I);
+      FWorker.AddFile(lvFiles.Items[I].SubItems[1], Planned[I], I);
       SetState(lvFiles.Items[I], ST_WAIT);
       lvFiles.Items[I].SubItems[0] := _('wartet');
       Inc(FTotal);
@@ -1489,7 +1533,7 @@ begin
       mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
       for I := 0 to lvFiles.Items.Count - 1 do
       begin
-        FWorker.AddFile(lvFiles.Items[I].SubItems[1], lvFiles.Items[I].SubItems[2], I);
+        FWorker.AddFile(lvFiles.Items[I].SubItems[1], Planned[I], I);
         SetState(lvFiles.Items[I], ST_WAIT);
         lvFiles.Items[I].SubItems[0] := _('wartet');
         Inc(FTotal);
