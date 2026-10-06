@@ -73,7 +73,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Turn your MP3s into<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. Free, open source and without Python or any setup.</p>
+    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. One small Windows program, free and open source: no Python, no PyTorch, no graphics drivers, nothing to set up.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download for Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">View source on GitHub</a>
@@ -81,8 +81,10 @@
     <ul class="facts">
       <li>Free &amp; MIT licensed</li>
       <li>Windows 10 / 11</li>
+      <li>No Python, no graphics card</li>
       <li>Runs locally on your PC</li>
       <li>Whole folders in one go</li>
+      <li>Up to 320 kbit/s</li>
     </ul>
     <figure class="shot hero-shot">
       <div class="bar"><b></b><b></b><b></b><span>Elospeed StemMaker</span></div>
@@ -97,10 +99,11 @@
     <p class="sub">Unzip, start, drag your music in. On the first start StemMaker downloads ffmpeg and the separation model by itself.</p>
     <div class="grid">
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Four real stems</h3><p>Drums, Bass, Other (melody) and Vox, plus the original as master track, in the format Traktor expects. Names and colours are adjustable.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Modern AI separation</h3><p>Uses the open-source Demucs v4 model (htdemucs) through demucs.cpp. For the best quality choose htdemucs_ft, for speed Demucs v3.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Built for whole collections</h3><p>Add complete folders, see a time estimate before you start, let it run overnight. The list survives crashes and power cuts.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Quality on par with Traktor</h3><p>Uses the open-source Demucs v4 model (htdemucs). In a side-by-side test against a stem file made by Traktor Pro 4, drums, vocals and level came out practically the same. Three models to pick from: htdemucs_ft for the best quality, Demucs v3 when you want it quicker.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Built for whole collections</h3><p>Add complete folders, see a time estimate before you start, let it run overnight. The list is saved after every file, so a crash or a power cut costs you one track, not the run. In our own stress test 400 files in nested folders came out complete, even after cancelling and killing the program in between, with the folder tree rebuilt one to one.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Tags and cover art kept</h3><p>Title, artist, album, genre, year, track number and cover are copied from your MP3, so the stem file looks right in your Traktor collection.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read. Low bass is moved into the bass stem, like Traktor does.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The whole program is a 4 MB Windows exe, the separation engine is C++ (demucs.cpp) instead of Python and PyTorch. Nothing to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read and a stem does not drop in volume when you bring it into your set. Low bass that the model leaves in the melody stem is moved into the bass stem, like Traktor does, so the kick and bass stay solid.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Picks the fastest build for your processor (AVX2, AVX or generic), keeps the PC awake during long runs and can shut it down when done.</p></div>
     </div>
   </div>
@@ -126,10 +129,25 @@
 </section>
 
 <section class="alt">
+  <div class="wrap">
+    <h2>What you don't have to do</h2>
+    <p class="sub">Most stem separators are command-line tools. Getting them to run is usually the hard part, and the result is four loose files.</p>
+    <ul class="ticks">
+      <li><strong>No Python environment</strong>, no PyTorch, no CUDA drivers and no version conflicts to untangle</li>
+      <li><strong>No graphics card</strong>: separation runs on the processor of any 64-bit Windows PC</li>
+      <li><strong>No routing by hand</strong>: the four stems and the original mix land in one <code>.stem.mp4</code>, ready for a stem deck</li>
+      <li><strong>No paid extra software</strong> to build the Traktor container, and no Traktor licence to convert</li>
+      <li><strong>No track-by-track clicking</strong>: point StemMaker at a folder and come back later</li>
+      <li><strong>No test import</strong>: the included StemPlayer tells you whether the separation worked</li>
+    </ul>
+  </div>
+</section>
+
+<section class="alt">
   <div class="wrap split">
     <div>
       <h2>Listen before you play</h2>
-      <p class="sub" style="margin-bottom:0">The included StemPlayer add-on lets you check a finished stem file without opening Traktor.</p>
+      <p class="sub" style="margin-bottom:0">The included StemPlayer add-on lets you check a finished stem file without importing it into Traktor first.</p>
       <ul class="ticks">
         <li><strong>Mute, solo and volume</strong> for every stem, with level meters</li>
         <li><strong>A/B comparison</strong> with the original mix</li>
@@ -181,7 +199,7 @@
     </details>
     <details>
       <summary>Do I need a graphics card or Python?</summary>
-      <p>No. StemMaker is a single Windows program. It runs on the CPU and needs neither Python nor a graphics card. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 170 MB, model 81 MB).</p>
+      <p>No. StemMaker is a single Windows program with the separation engine built in as C++ code (demucs.cpp), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. It runs on the processor. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB).</p>
     </details>
     <details>
       <summary>Windows shows “Windows protected your PC”. Is that a problem?</summary>
@@ -189,7 +207,15 @@
     </details>
     <details>
       <summary>How good is the separation?</summary>
-      <p>StemMaker uses Demucs v4, one of the best freely available separation models. The result is clearly usable for DJing. Like every tool of this kind it is not perfect: when you solo a stem you can sometimes hear small artifacts.</p>
+      <p>In our test against a stem file made by Traktor Pro 4 from the same track, StemMaker came out about level: drums, kick and vocals sounded nearly identical. Paid tools like RipX or Lalal.ai and special models in UVR5 separate even more cleanly. When you solo a stem you can sometimes hear small artifacts, as with every tool of this kind.</p>
+    </details>
+    <details>
+      <summary>Traktor Pro 4 can make stems itself. Why StemMaker?</summary>
+      <p>StemMaker is built for converting a whole collection: it works through complete folders on its own, for example overnight, shows the expected time beforehand and continues after a stop or power cut. You don't need a Traktor licence for it. It also raises quiet files to club level, so the waveforms are easy to read, and you get files you can use with any software that reads <code>.stem.mp4</code>.</p>
+    </details>
+    <details>
+      <summary>Are tags and cover art carried over?</summary>
+      <p>Yes: title, artist, album, genre, year, track number and the cover are copied from the source file, so the stem file looks right in your collection. BPM and key are not carried over, because the MP4 container does not take those ID3 fields. Traktor works both out itself when it analyses the track.</p>
     </details>
     <details>
       <summary>What music can I use?</summary>

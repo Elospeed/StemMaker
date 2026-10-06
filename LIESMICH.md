@@ -7,6 +7,16 @@
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
 Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stemgen), nur **ohne Python** und ohne Setup: ein Lazarus-Programm, das alles Nötige beim ersten Start selbst holt.
 
+**Warum StemMaker**
+
+- **Nichts einzurichten:** eine 4 MB grosse Windows-EXE. Die Trennung steckt als C++-Code ([demucs.cpp](https://github.com/sevagh/demucs.cpp)) direkt drin, statt über Python zu laufen. Keine Python-Umgebung, kein PyTorch, kein CUDA-Treiber und nichts, was sich mit anderer Software beisst. Gerechnet wird auf dem Prozessor jedes 64-Bit-Windows-PCs.
+- **Traktor-Format statt vier Einzeldateien:** Master und die vier Stems landen in einer `.stem.mp4` mit den NI-Stem-Metadaten, fertig für das Stem-Deck. Kein Routing von Hand, keine Zusatzsoftware für den Container, keine Traktor-Lizenz zum Umwandeln.
+- **Für ganze Sammlungen gebaut:** ganze Ordner hinzufügen, vorher die geschätzte Dauer sehen, über Nacht laufen lassen. Die Liste wird nach jeder Datei gespeichert, ein Absturz oder Stromausfall kostet also einen Track und nicht den ganzen Lauf. Unterordner werden im Ausgabeordner nachgebaut.
+- **Vorher reinhören:** `AddOns\StemPlayer.exe` spielt eine fertige Stem-Datei mit Stumm, Solo, Lautstärke und Pegelanzeige pro Stem und A/B gegen das Original. Kein Testimport in Traktor nötig.
+- **Pegel und Bass sitzen:** Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, und Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem.
+- **Qualität:** Im direkten Vergleich mit einer Stem-Datei, die Traktor Pro 4 aus demselben Track gemacht hat, waren Drums, Kick, Gesang und Pegel praktisch gleich.
+- **Deine Musik bleibt lokal:** kein Konto, keine Cloud, keine Telemetrie, nichts, was im Hintergrund läuft.
+
 ```
 MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / other / vocals
                                                      │

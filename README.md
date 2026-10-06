@@ -7,6 +7,16 @@
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
 It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setup: a single Lazarus program that downloads everything it needs on first start.
 
+**Why StemMaker**
+
+- **Nothing to set up:** one 4 MB Windows exe. The separation engine is C++ ([demucs.cpp](https://github.com/sevagh/demucs.cpp)) instead of Python, so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software. It runs on the processor of any 64-bit Windows PC.
+- **Traktor format, not four loose files:** master plus the four stems land in one `.stem.mp4` with the NI stem metadata, ready for a stem deck. No routing by hand, no extra software for the container, no Traktor licence to convert.
+- **Built for whole collections:** add complete folders, see the expected time beforehand, let it run overnight. The list is saved after every file, so a crash or a power cut costs one track instead of the run, and subfolders are rebuilt in the output folder.
+- **Check before you play:** `AddOns\StemPlayer.exe` plays a finished stem file with mute, solo, volume and level meters per stem and A/B against the original, so you don't have to import into Traktor just to listen.
+- **Level and bass sorted out:** quiet files are raised to club level without a limiter, and low bass that the model leaves in the melody stem is moved into the bass stem.
+- **Quality:** in a side-by-side test against a stem file made by Traktor Pro 4 from the same track, drums, kick, vocals and level came out practically the same.
+- **Your music stays local:** no account, no cloud, no telemetry, nothing running in the background.
+
 The German version of this guide is `LIESMICH.md`.
 
 ```
