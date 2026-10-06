@@ -23,6 +23,7 @@ Zuletzt aktualisiert: 6. Oktober 2026
 ## 🧑‍⚖️ Speedy entscheidet oder macht von Hand
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
+- [ ] **Projektseite einschalten:** Settings → Pages → Source „GitHub Actions“. Danach läuft der Workflow „Projektseite“ und die Seite ist unter https://elospeed.github.io/StemMaker/ erreichbar. Anschliessend in der Google Search Console als URL-Präfix anmelden und `sitemap.xml` einreichen.
 - [ ] **Prüfsummen der htdemucs_ft-Modelle** (ohne Eile): v4 und v3 stehen in `update.json`. Die vier ft-Dateien fehlen noch, weil sie auf Speedys PC nicht geladen sind. Wer sie hat: Prüfsummen schicken, dann kommen sie dazu.
 
 ## 🔨 Elospeed baut als Nächstes
@@ -37,4 +38,3 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
-- „Nach Updates suchen“ im Info-Fenster, Update zurückdrehen bei Fehler.

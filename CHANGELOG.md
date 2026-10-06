@@ -62,6 +62,9 @@ Noch nichts.
 ### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
 - Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).
 
+### Projektseite
+- Neue Projektseite im Ordner `site/` (Englisch, Deutsch unter `/de/`) mit Screenshots von StemMaker und StemPlayer, Funktionen, Ablauf, ehrlichen Zeitangaben und FAQ. Mit Suchmaschinen-Grundlagen: Titel, Beschreibung, Open-Graph-Vorschaubild, `sitemap.xml`, `robots.txt`, strukturierte Daten. Wird per Workflow `.github/workflows/pages.yml` auf GitHub Pages veröffentlicht.
+
 ### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
 - Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
 - Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert; kommt so in die nächste StemMaker-Version.
