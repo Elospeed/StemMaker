@@ -6,13 +6,14 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 4. Oktober 2026
+Zuletzt aktualisiert: 6. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
 - **Release 1.7** – Versionsnummer gesetzt, Release-ZIP gebaut. Speedy testet das ZIP und legt das Release `v1.7` an, danach wird `update.json` auf 1.7 gestellt. Inhalt siehe [CHANGELOG](CHANGELOG.md).
+- **Automatischer Build** – GitHub Actions baut bei jedem PR und jedem Push auf `main` die Windows-Exes und legt sie als Vor-Release ab (ersetzt den Ordner `Temp/`).
 
 ## 📋 Geplant für den StemPlayer
 
@@ -24,7 +25,6 @@ Zuletzt aktualisiert: 4. Oktober 2026
 ## ❓ Offene Entscheidungen
 
 - **v3 (hdemucs_mmi) als Standard-Modell?** – fast doppelt so schnell. Entscheidung nach Hörvergleich in Traktor.
-- **Testversionen:** weiter im Ordner `Temp/` oder als GitHub-Pre-Release?
 
 ## ⏸️ Zurückgestellt
 

@@ -6,6 +6,18 @@ Neueste Einträge oben.
 
 ---
 
+## Automatischer Build (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Testversionen in `Temp/` machten das Repository mit jeder Exe dauerhaft grösser (bleiben im Git-Verlauf, auch nach dem Löschen). | Testversionen kommen jetzt als Vor-Release (Pre-release) mit festem Tag (`test-main`, `test-pr-<Nummer>`). Jeder Build löscht das alte Vor-Release samt Tag und legt es neu an, die Links bleiben gleich. `Temp/` und die `.gitignore`-Ausnahme sind entfernt. |
+| Exes wurden bisher von Hand gebaut; ob eine Exe wirklich zum Quelltext passt, war nicht nachvollziehbar. | GitHub Actions baut auf `windows-latest` mit `gcarreno/setup-lazarus` (Lazarus 3.8, FPC 3.2.2). Kein Cross-Build nötig. SHA-256 jeder Exe steht im Vor-Release und im Build-Protokoll. |
+| Vor-Releases dürfen die Update-Prüfung nicht stören. | Die Update-Prüfung liest nur `update.json`, nicht die GitHub-Releases. Zusätzlich werden Vor-Releases mit `--latest=false` angelegt. |
+| Schreibrecht für Releases im Workflow. | `permissions: contents: write` im Workflow reicht, eine Repo-Einstellung ist dafür nicht nötig. PRs aus fremden Forks bekommen nur das Build-Artefakt, kein Vor-Release. |
+| Gebaute Exes sind mit Debug-Infos sehr gross. | Im Workflow mit `strip.exe` aus der FPC-Installation verkleinern (wie früher von Hand). |
+
+---
+
 ## 1.7: Anhören, Ordner öffnen, Erststart-Fenster, Updates (Oktober 2026)
 
 | Problem | Lösung |
@@ -62,7 +74,7 @@ Neueste Einträge oben.
 | Problem | Lösung |
 |---|---|
 | Den Überblick behalten: was läuft, was ist fertig, was muss getestet werden? | Drei Dateien im Hauptordner: `ROADMAP.md` (Plan), `CHANGELOG.md` (erledigt), `TODO.md` (nächste Tests, Entscheidungen, Bauschritte). Jede Aufgabe trägt sich dort selbst ein und aus. |
-| Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. Alternative: GitHub-Pre-Releases. |
+| Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. *Ab Oktober 2026 abgelöst durch Vor-Releases aus dem automatischen Build (siehe oben).* |
 | Windows SmartScreen warnt beim Start („Herausgeber: Unbekannt“). | Code-Signing vorerst verworfen (Kosten; kostenloses SignPath würde „SignPath Foundation“ als Herausgeber zeigen). Stattdessen Abschnitt „Windows-Warnung“ in README/LIESMICH. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |
 | Rechtliche Frage: darf man fremde Teile im eigenen Repository haben? | demucs.cpp (MIT) und FFmpeg (LGPL, mit Lizenz + Quellcode) dürfen weitergegeben werden. Die Lizenz der Demucs-Modelle ist unklar → Modelle werden **nicht** selbst verteilt, sondern vom Originalort geladen. Alles dokumentiert in `THIRD-PARTY-NOTICES.md`. |
@@ -133,4 +145,4 @@ Neueste Einträge oben.
 - `pkill -f <text>` kann die eigene Shell beenden, wenn der Text im Befehl vorkommt → Prozesse gezielt mit `pkill -x Name` beenden.
 - Wine braucht nach `wineserver -k` einige Sekunden, bevor ein Fenster erscheint.
 - Ubuntu-Pakete reichen für den Windows-Build nicht: `fp-units-win-rtl` enthält nur die RTL, und der Debian-Quellcode von FPC hat keine Makefiles. Lösung: FPC-3.2.2-Quellcode von gitlab.com/freepascal.org laden, `make all OS_TARGET=win64 CPU_TARGET=x86_64` und `make install ... CROSSINSTALL=1`, dann die Units nach `/usr/lib/x86_64-linux-gnu/fpc/3.2.2/units/x86_64-win64` verlinken. Danach klappt `lazbuild --os=win64 --cpu=x86_64 --ws=win32`.
-- Testversionen in `Temp/` mit `x86_64-w64-mingw32-strip` verkleinern (StemMaker: 29 MB → 3,5 MB; fehlen dann nur die Zeilennummern im Absturz-Log).
+- Selbst gebaute Exes mit `x86_64-w64-mingw32-strip` verkleinern (der automatische Build macht das selbst) (StemMaker: 29 MB → 3,5 MB; fehlen dann nur die Zeilennummern im Absturz-Log).

@@ -9,7 +9,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
-Noch nichts.
+### Entwicklung
+- **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
+- **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).
+- Ordner `Temp/` entfernt. Die alten Testversionen bleiben im Git-Verlauf, neue kommen nicht mehr ins Repository.
 
 ## 1.7 – 5. Oktober 2026
 
