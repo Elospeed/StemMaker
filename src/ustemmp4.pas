@@ -69,6 +69,15 @@ type
   { immer genau 4 Stems: 0=Drums, 1=Bass, 2=Other, 3=Vocals }
   TStemInfoArray = array[0..3] of TStemInfo;
 
+  { Ein zusätzlicher Tag, den ffmpeg selbst nicht schreiben kann
+    (Tonart, Label, ISRC). Siehe InjectStemMetadata. }
+  TMp4Tag = record
+    Name    : RawByteString;  // 'initialkey' (Freiform) oder 4 Zeichen wie #$A9'pub'
+    Value   : string;         // der Text, UTF-8
+    Freeform: Boolean;        // True = Freiform-Tag '----:com.apple.iTunes:<Name>'
+  end;
+  TMp4TagArray = array of TMp4Tag;
+
 { Liefert die Standard-Namen und -Farben (identisch mit Stemgen) }
 function DefaultStemInfo: TStemInfoArray;
 
@@ -77,10 +86,14 @@ function DefaultStemInfo: TStemInfoArray;
 function BuildStemJSON(const Stems: TStemInfoArray): string;
 
 { Schreibt die 'stem'-Box und den Tag TAUT=STEM in eine bestehende MP4.
+  Die Tags aus Extra kommen zusätzlich in die iTunes-Tag-Liste - das sind
+  die Werte, die ffmpeg in MP4-Dateien nicht schreiben kann (Tonart,
+  Label, ISRC). Sie werden hier gleich mitgeschrieben, damit die große
+  Datei nicht ein zweites Mal kopiert werden muss. Extra darf nil sein.
   Die Datei wird dabei ersetzt. Bei einem Fehler: Rückgabe False und die
   Fehlerbeschreibung steht in ErrMsg. }
 function InjectStemMetadata(const FileName, StemJSON: string;
-  out ErrMsg: string): Boolean;
+  const Extra: TMp4TagArray; out ErrMsg: string): Boolean;
 
 { Liest den JSON-Text aus der 'stem'-Box wieder aus ('' = keine vorhanden).
   Praktisch zum Prüfen - funktioniert auch mit gekauften NI-Stems. }
@@ -451,6 +464,87 @@ begin
 end;
 
 { ---------------------------------------------------------------------------
+  MakeFreeformTag - baut einen Freiform-Tag ("----")
+
+  Für Werte, für die es keinen offiziellen 4-Zeichen-Tag gibt (z.B. die
+  Tonart), benutzen alle Programme denselben Trick von iTunes: eine Box
+  namens '----' mit drei Unter-Boxen:
+
+      ----
+        mean   4 Byte Version/Flags + "com.apple.iTunes"
+        name   4 Byte Version/Flags + Name des Werts, z.B. "initialkey"
+        data   wie bei MakeTextTag: Typ 1 (UTF-8) + Sprache + Text
+
+  So schreiben es Mp3tag, Mixed In Key, Serato und rekordbox - die
+  Tonart landet damit dort, wo DJ-Programme sie suchen.
+  --------------------------------------------------------------------------- }
+const
+  ITUNES_MEAN = 'com.apple.iTunes';
+
+{ Hilfsfunktion: eine Unter-Box 'mean'/'name'/'data' als Bytes }
+function SubBox(const Typ: RawByteString; const Flags: LongWord;
+  const Text: UTF8String; WithLang: Boolean): TBytes;
+var
+  Head, L: Integer;
+begin
+  if WithLang then Head := 16 else Head := 12;
+  L := Length(Text);
+  Result := nil;
+  SetLength(Result, Head + L);
+  PutBE32(Result, 0, Head + L);                 // Größe der Unter-Box
+  Move(Typ[1], Result[4], 4);                   // Typ
+  PutBE32(Result, 8, Flags);                    // Version 0 + Flags
+  if WithLang then
+    PutBE32(Result, 12, 0);                     // nur 'data': Sprache (0 = egal)
+  if L > 0 then
+    Move(Text[1], Result[Head], L);
+end;
+
+function MakeFreeformTag(const Name: RawByteString;
+  const Text: UTF8String): TBox;
+var
+  Mean, Nam, Data, All: TBytes;
+  P: SizeInt;
+begin
+  Result := TBox.Create('----');
+  Mean := SubBox('mean', 0, ITUNES_MEAN, False);
+  Nam  := SubBox('name', 0, Name, False);
+  Data := SubBox('data', 1, Text, True);        // Flags 1 = UTF-8-Text
+  All := nil;
+  SetLength(All, Length(Mean) + Length(Nam) + Length(Data));
+  P := 0;
+  Move(Mean[0], All[P], Length(Mean)); Inc(P, Length(Mean));
+  Move(Nam[0],  All[P], Length(Nam));  Inc(P, Length(Nam));
+  Move(Data[0], All[P], Length(Data));
+  Result.Payload := All;
+end;
+
+{ Steht in dieser (unveränderten) '----'-Box der gesuchte Name?
+  Wird gebraucht, um einen alten Tag zu entfernen, bevor der neue kommt.
+  Die Box wurde beim Einlesen nicht zerlegt, darum suchen wir den Namen
+  einfach in den Bytes - das genügt hier. }
+function FreeformHasName(Box: TBox; const Name: RawByteString): Boolean;
+var
+  I, J: SizeInt;
+  Hit: Boolean;
+begin
+  Result := False;
+  if (Box.BoxType <> '----') or (Name = '') then Exit;
+  for I := 0 to Length(Box.Payload) - Length(Name) do
+  begin
+    Hit := True;
+    for J := 1 to Length(Name) do
+      if Box.Payload[I + J - 1] <> Byte(Name[J]) then
+      begin
+        Hit := False;
+        Break;
+      end;
+    if Hit then
+      Exit(True);
+  end;
+end;
+
+{ ---------------------------------------------------------------------------
   MakeMetaBox - leere iTunes-Tag-Box erzeugen
 
   Wird nur gebraucht, falls die Datei noch gar keine Tags hat (ffmpeg
@@ -656,19 +750,20 @@ end;
     1. oberste Ebene scannen und 'moov' laden
     2. in moov/udta eine alte 'stem'-Box entfernen (falls die Datei schon
        einmal bearbeitet wurde) und die neue einfügen
-    3. Tag TAUT=STEM in moov/udta/meta/ilst setzen
+    3. Tag TAUT=STEM und die Tags aus Extra in moov/udta/meta/ilst setzen
     4. falls nötig die Positionsangaben der Audiodaten korrigieren
     5. neue Datei schreiben:  [alles vor moov] + [neue moov] + [alles danach]
        zuerst als *.stemtmp, danach wird das Original ersetzt.
        So bleibt bei einem Fehler das Original unbeschädigt.
   --------------------------------------------------------------------------- }
 function InjectStemMetadata(const FileName, StemJSON: string;
-  out ErrMsg: string): Boolean;
+  const Extra: TMp4TagArray; out ErrMsg: string): Boolean;
 var
   Src, Dst: TFileStream;
   Tops: TTopBoxArray;
   MoovIdx, I: Integer;
   Moov, Udta, Meta, Ilst, StemBox: TBox;
+  E: Integer;
   OldMoovEnd, Delta: Int64;
   NewMoov: TMemoryStream;
   TmpName: string;
@@ -718,6 +813,24 @@ begin
           if TBox(Ilst.Children[I]).BoxType = 'TAUT' then
             Ilst.Children.Delete(I);
         Ilst.Children.Add(MakeTextTag('TAUT', 'STEM'));
+
+        { --- zusätzliche Tags (Tonart, Label, ISRC) ---------------------- }
+        for E := 0 to High(Extra) do
+        begin
+          if Trim(Extra[E].Value) = '' then
+            Continue;
+          { einen gleichnamigen alten Tag vorher entfernen }
+          for I := Ilst.Children.Count - 1 downto 0 do
+            if (Extra[E].Freeform and
+                FreeformHasName(TBox(Ilst.Children[I]), Extra[E].Name)) or
+               ((not Extra[E].Freeform) and
+                (TBox(Ilst.Children[I]).BoxType = Extra[E].Name)) then
+              Ilst.Children.Delete(I);
+          if Extra[E].Freeform then
+            Ilst.Children.Add(MakeFreeformTag(Extra[E].Name, Extra[E].Value))
+          else
+            Ilst.Children.Add(MakeTextTag(Extra[E].Name, Extra[E].Value));
+        end;
 
         { --- die eigentliche NI-'stem'-Box -------------------------------- }
         StemBox := TBox.Create('stem');

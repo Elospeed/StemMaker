@@ -6,6 +6,19 @@ Neueste Einträge oben.
 
 ---
 
+## Tags der Quelldatei übernehmen (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| BPM und Tonart der MP3 landeten nicht in der Stem-Datei, obwohl `-map_metadata 0` gesetzt ist. Gemessen am 6. Oktober 2026 mit einer Test-MP3 mit allen Feldern: Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel-/CD-Nummer, Kommentar, Gruppierung, Liedtext und Cover kommen mit – BPM, Tonart, Label und ISRC nicht. | ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY`/`TPUB` nicht mit den MP4-Atomen; unbekannte Felder lässt der MP4-Muxer einfach weg. StemMaker liest die Tags der Quelle darum selbst: `ffmpeg -i <Datei> -f ffmetadata <Textdatei>` (dauert Millisekunden, es wird nichts dekodiert), danach `ParseFFMetadata` in `ustemjob.pas`. |
+| BPM schreiben. | `-metadata tmpo=<Zahl>` beim Zusammenbauen – diesen Namen kennt der MP4-Muxer, er schreibt daraus das Atom `tmpo` (geprüft). Nur ganze Zahlen zwischen 20 und 400, sonst wird der Tag weggelassen. |
+| Tonart, Label und ISRC schreiben: `-metadata publisher=…`, `©pub`, `initialkey` oder `ISRC` ignoriert der MP4-Muxer alle (geprüft). | `uStemMP4` schreibt sie selbst, zusammen mit der `stem`-Box – so wird die grosse Datei nur einmal kopiert. Tonart und ISRC als Freiform-Tag (`----` mit `mean`/`name`/`data`, `com.apple.iTunes:initialkey` bzw. `:ISRC`), Label als normaler Text-Tag `©pub`. So machen es Mp3tag, Mixed In Key, Serato und rekordbox. |
+| Ein Tag-Name wie `©pub` ist 4 **Bytes** mit `$A9` am Anfang – in UTF-8 wären es 5 Bytes und die Box wäre kaputt. | Im Quelltext als `#$A9'pub'` schreiben, nie als `'©pub'`. |
+| Wird eine Datei zweimal bearbeitet, dürfen Tags nicht doppelt drinstehen. | Vor dem Schreiben wird ein gleichnamiger Tag entfernt. Freiform-Tags werden beim Einlesen nicht zerlegt, darum wird der Name einfach in den Bytes der `----`-Box gesucht (`FreeformHasName`). Zweimal hintereinander ausgeführt: gleiche Anzahl Tags, Audio unverändert (geprüft, auch mit einer echten 36-MB-Stem-Datei). |
+| Was macht Traktor damit? | Titel, Artist, Album, Genre, Label und Cover zeigt Traktor direkt. BPM und Tonart überschreibt Traktor mit seiner eigenen Analyse – der Tag ist für die Anzeige vor der Analyse und für andere Programme. Traktors eigene Stem-Dateien enthalten übrigens gar keine Tags (nur `NITR`). |
+
+---
+
 ## Automatischer Build (Oktober 2026)
 
 | Problem | Lösung |

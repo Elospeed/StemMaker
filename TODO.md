@@ -37,4 +37,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
-- Automatischer Windows-Build mit GitHub Actions, Testversionen als Vor-Release statt im Ordner `Temp/`.
+- Tags vollständig übernehmen: BPM, Tonart, Label und ISRC aus der Quelldatei in die Stem-Datei.

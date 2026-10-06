@@ -90,7 +90,7 @@ The demucs programs are fully statically linked; they need no DLLs and no instal
 - **Start** processes the list one file after another. "Cancel" stops immediately and cleans up the temp files.
 - Below both progress bars you see **elapsed and estimated remaining time**: the top one for the current file, the bottom one for the whole list. The estimate uses the length of the waiting songs and the speed of this PC, and gets more accurate with every finished file. After each song the list shows how long it took, e.g. "OK (4:12)".
 - The result is `Title.stem.mp4`, by default next to the original file. Alternatively, choose an output folder.
-- Tags (title, artist, album, genre, year, track) and the **cover art** are copied from the MP3.
+- Tags and the **cover art** are copied from the source file: title, artist, album, album artist, composer, genre, year, track and disc number, comment, grouping, lyrics – plus **BPM**, **key**, **label** and **ISRC**. Traktor shows title, artist, album, genre, label and cover right after the import; BPM and key are overwritten by Traktor's own analysis.
 - **Check stem...** shows whether a file is a valid stem (5 tracks + stem metadata). This also works with purchased NI stems.
 - A normal player only plays track 1, the master. You only hear the individual stems in Traktor.
 
@@ -177,7 +177,7 @@ Older processors without AVX2 (e.g. 2nd/3rd generation Intel Core i) are much sl
 Same as Stemgen with `ni-stem`/MP4Box:
 - MP4 with 5 audio tracks: track 1 is the master and the only *enabled* one, tracks 2–5 are Drums/Bass/Other/Vox and *disabled*.
 - `moov/udta/stem`: JSON with stem names, colors and mastering DSP (compressor/limiter off, same values as Stemgen).
-- iTunes tags plus `TAUT = STEM`.
+- iTunes tags plus `TAUT = STEM`. BPM goes into the `tmpo` atom, the key into `----:com.apple.iTunes:initialkey`, the label into `©pub` and the ISRC into `----:com.apple.iTunes:ISRC` – ffmpeg cannot write those four for MP4, so StemMaker writes them itself (`uStemMP4`).
 
 ## Advanced: StemMaker.ini
 
