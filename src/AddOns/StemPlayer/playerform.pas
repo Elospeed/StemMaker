@@ -55,6 +55,12 @@
                        Bedienung und Funktion unverändert.
     1.3  (04.10.2026)  Ordner als Parameter: der Öffnen-Dialog startet gleich
                        in diesem Ordner (Knopf "Anhören" in StemMaker).
+    1.4  (06.10.2026)  Nur noch echte Stem-Dateien werden geladen. Vorher ging
+                       per Drag & Drop (oder "Alle Dateien" im Öffnen-Dialog)
+                       jede Datei durch, z.B. eine MP3: Der Player nahm dann
+                       einfach 5 Spuren an, die laufende Wiedergabe brach ab und
+                       ffmpeg meldete einen unverständlichen Fehler. Jetzt kommt
+                       eine klare Meldung (DE/EN), der geladene Track bleibt.
   ============================================================================ }
 unit playerform;
 
@@ -69,7 +75,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.3';
+  APP_VER   = '1.4';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -780,11 +786,33 @@ var
   Raw: array[0..TRACK_MAX] of string;
   Ok: Boolean;
   Ini: TIniFile;
-  Msg, ErrText: string;
+  Msg, ErrText, Reason: string;
   Dlg: TOpenDialog;
+  NewInfo: TStemInfo;
 begin
   if FLoading then Exit;
+
+  { Ordner statt Datei reingezogen? }
+  if DirectoryExists(FileName) then
+  begin
+    MessageDlg(APP_TITLE,
+      'Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner.' + LineEnding +
+      LineEnding + 'Please drop a stem file (.stem.mp4), not a folder.',
+      mtWarning, [mbOK], 0);
+    Exit;
+  end;
   if not FileExists(FileName) then Exit;
+
+  { Ist es überhaupt eine Stem-Datei? Diese Prüfung kommt VOR UnloadFile,
+    damit eine falsche Datei den gerade geladenen Track nicht wegwirft.
+    Sie liest nur die MP4-Struktur (Millisekunden), ffmpeg wird nicht gebraucht. }
+  if not CheckStemFile(FileName, NewInfo, Reason) then
+  begin
+    LblStatus.Caption := 'Keine Stem-Datei: ' + ExtractFileName(FileName);
+    MessageDlg(APP_TITLE, ExtractFileName(FileName) + LineEnding + LineEnding +
+      Reason, mtWarning, [mbOK], 0);
+    Exit;
+  end;
 
   { ffmpeg vorhanden? Sonst einmalig fragen und merken }
   if (FFFmpeg = '') or not FileExists(FFFmpeg) then
@@ -820,16 +848,14 @@ begin
   try
     UnloadFile;
 
-    { 1) Struktur lesen }
-    ReadStemInfo(FileName, FInfo);
+    { 1) Struktur übernehmen (oben schon von CheckStemFile gelesen, also
+         mindestens 5 Audiospuren) }
+    FInfo := NewInfo;
     Tracks := FInfo.AudioTracks;
-    if Tracks = 0 then Tracks := 5;            // nicht lesbar -> Standard annehmen
     if Tracks > TRACK_MAX + 1 then Tracks := TRACK_MAX + 1;
 
     Msg := '';
-    if FInfo.AudioTracks < 5 then
-      Msg := Format('Achtung: Datei hat nur %d Audiospur(en) - eine Traktor-Stem-Datei hat 5.', [FInfo.AudioTracks])
-    else if not FInfo.HasStemBox then
+    if not FInfo.HasStemBox then
       Msg := 'Hinweis: kein Traktor-"stem"-Block gefunden (Standardnamen werden verwendet).';
 
     { 2) Dekodieren }
