@@ -29,7 +29,7 @@ Then the **startup check window** opens. It ticks off, one by one: processor, ff
 - **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
 
-**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. Turn it off with the checkbox in the update window or `AutoCheck=0` (see below).
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update or Info window or `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 

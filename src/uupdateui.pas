@@ -17,6 +17,9 @@
        meldet der Thread das dem Hauptfenster (OnUpdateFound). Läuft gerade
        eine Umwandlung, wartet das Hauptfenster damit bis zum Ende -
        ein Update wird NIE während einer Konvertierung angeboten.
+    2b. Von Hand: Info -> "Nach Updates suchen" (CheckUpdateNow). Prüft
+       auch dann, wenn die Prüfung beim Start abgeschaltet ist, und bietet
+       auch eine übersprungene Version wieder an.
     3. ShowUpdateDialog: "Jetzt aktualisieren / Später / Version überspringen"
        und das Häkchen "Beim Start nach Updates suchen".
     4. "Jetzt": Release-ZIP laden (Fortschrittsfenster), SHA-256 prüfen,
@@ -47,6 +50,16 @@ procedure StartUpdateCheck(const CurrentVersion: string; OnFound: TUpdateFoundEv
 
 { Hauptfenster wird geschlossen: späte Ergebnisse nicht mehr melden }
 procedure CancelUpdateCheck;
+
+type
+  TManualCheckResult = (mcNewer, mcCurrent, mcError);
+
+{ Von Hand nach Updates suchen (Knopf im Info-Fenster). Wartet max. 20 s,
+  das Fenster bleibt dabei bedienbar. mcNewer: Info enthält die neue
+  Version (ohne Modell-Prüfsummen). Eine übersprungene Version zählt hier
+  als neu - wer von Hand sucht, will sie sehen. }
+function CheckUpdateNow(const CurrentVersion: string; out Info: TUpdateInfo;
+  out ErrMsg: string): TManualCheckResult;
 
 { Update-Fenster. True = Update installiert, StemMaker soll sich beenden
   (der Neustart ist dann schon angestossen). }
@@ -136,6 +149,76 @@ end;
 procedure CancelUpdateCheck;
 begin
   GOnFound := nil;
+end;
+
+{ ---------------------------------------------------------------------------
+  Prüfung von Hand
+  --------------------------------------------------------------------------- }
+const
+  MANUAL_WAIT_MS = 20000;
+
+type
+  TManualCheckThread = class(TThread)
+  public
+    OK: Boolean;
+    Info: TUpdateInfo;
+    Err: string;
+  protected
+    procedure Execute; override;
+  end;
+
+procedure TManualCheckThread.Execute;
+begin
+  OK := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, Err);
+  FreeUpdateInfo(Info);              // Modell-Prüfsummen braucht hier niemand
+end;
+
+function CheckUpdateNow(const CurrentVersion: string; out Info: TUpdateInfo;
+  out ErrMsg: string): TManualCheckResult;
+var
+  T: TManualCheckThread;
+  Start: QWord;
+begin
+  Info := Default(TUpdateInfo);
+  ErrMsg := '';
+  T := TManualCheckThread.Create(True);
+  T.FreeOnTerminate := False;
+  T.Start;
+  { warten, ohne das Fenster einzufrieren }
+  Start := GetTickCount64;
+  while (not T.Finished) and (GetTickCount64 - Start < MANUAL_WAIT_MS) do
+  begin
+    Application.ProcessMessages;
+    Sleep(20);
+  end;
+  if not T.Finished then
+  begin
+    { Server antwortet nicht: Thread loslassen, er gibt sich selbst frei,
+      sobald die Verbindung irgendwann abbricht }
+    T.FreeOnTerminate := True;
+    ErrMsg := _('Der Server antwortet nicht.');
+    LogLine('Update-Suche von Hand: keine Antwort nach 20 s');
+    Exit(mcError);
+  end;
+  T.WaitFor;
+  try
+    if not T.OK then
+    begin
+      ErrMsg := T.Err;
+      LogLine('Update-Suche von Hand: update.json nicht erreichbar (' + ErrMsg + ')');
+      Exit(mcError);
+    end;
+    Info := T.Info;
+    Info.ModelHashes := nil;
+    LogLine(Format('Update-Suche von Hand: neueste Version %s, installiert %s',
+      [Info.Version, CurrentVersion]));
+    if IsNewerVersion(Info.Version, CurrentVersion) then
+      Result := mcNewer
+    else
+      Result := mcCurrent;
+  finally
+    T.Free;
+  end;
 end;
 
 { ---------------------------------------------------------------------------
@@ -444,7 +527,7 @@ begin
     Exit;
   end;
 
-  Zip := GetTempDir(False) + 'StemMaker-update.zip';
+  Zip := GetTempDir(False) + UPDATE_ZIP_NAME;
   LogLine('Update ' + Info.Version + ': lade ' + Info.ZipURL);
   Dl := TfrmUpdateDl.CreateDl(Info.ZipURL, Zip, Info.Version);
   try
