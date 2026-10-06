@@ -19,6 +19,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
   - Kommt die Antwort auf die Update-Prüfung später als 30 Sekunden, wird sie ignoriert (das Update-Fenster ging sonst womöglich erst nach Minuten mitten in der Arbeit auf).
   - Ein beschädigtes Update-ZIP liess den Hilfsordner `_update_tmp` im StemMaker-Ordner liegen.
 
+- **Neu: „Nach Updates suchen“** im Info-Fenster, dazu das Häkchen „Beim Start nach Updates suchen“. Wer die Prüfung beim Start abgeschaltet oder eine Version übersprungen hat, kommt so ohne INI wieder zum Update. Die Suche wartet höchstens 20 Sekunden, das Fenster bleibt bedienbar.
+- **Update wird bei einem Fehler zurückgedreht:** Scheitert das Kopieren mitten drin (z. B. Virenscanner sperrt eine Datei), werden die neuen Dateien entfernt und die alten wiederhergestellt. Vorher blieb eine Mischung aus alter und neuer Version.
+- Reste eines abgebrochenen Update-Downloads (`StemMaker-update.zip.part` im Temp-Ordner) räumt der nächste Start weg.
+- Kam ein Update während einer Umwandlung mit „PC nach Abschluss herunterfahren“ und wird das Herunterfahren abgebrochen, wird das Update jetzt angeboten (vorher erst beim nächsten Start).
+
 ### Entwicklung
 - **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
 - **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).

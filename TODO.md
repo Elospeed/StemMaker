@@ -38,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
-- Update-Funktion: Fehlerkorrekturen aus dem Wine-Test (hängender Download, falsche Einträge in `update.json`).
+- „Nach Updates suchen“ im Info-Fenster, Update zurückdrehen bei Fehler.

@@ -616,7 +616,7 @@ end;
 
 procedure TfrmMain.btnInfoClick(Sender: TObject);
 begin
-  ShowInfoDialog(APP_VERSION, APP_AUTHOR);
+  ShowInfoDialog(APP_VERSION, APP_AUTHOR, @UpdateFound);
 end;
 
 procedure TfrmMain.btnCopyLogClick(Sender: TObject);
@@ -1663,7 +1663,12 @@ begin
     Close;                         // StemMaker sauber beenden (Log wird normal abgeschlossen)
   end
   else
+  begin
     AddLog(_('Herunterfahren abgebrochen.'));
+    { kam während der Umwandlung ein Update, jetzt anbieten }
+    if FHasUpdate then
+      Application.QueueAsyncCall(@OfferUpdate, 0);
+  end;
 end;
 
 { ---------------------------------------------------------------------------
