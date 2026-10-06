@@ -37,7 +37,6 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 
 ## Traktor-Integration
 
-- 🟡 **BPM und Tonart in die Stem-Datei schreiben** – geprüft am 6. Oktober 2026: `-map_metadata 0` übernimmt Titel, Interpret, Album, Genre, Jahr, Track und Cover, aber **nicht** die ID3-Felder `TBPM` und `TKEY`; ffmpeg hat für sie keine Entsprechung im MP4-Container. Möglich wäre, sie beim Umwandeln auszulesen und als iTunes-Atome (`tmpo` bzw. ein Freiform-Atom für die Tonart) selbst zu setzen. Nutzen ist klein, weil Traktor beim Analysieren beides selbst ermittelt; für Sammlungen mit von Hand gepflegten Werten aber nett.
 - 🔴 **Hotcues und Beatgrid übernehmen** – aus Traktors `collection.nml` vom MP3 auf die Stem-Datei kopieren. Vorsicht: verändert Traktors Sammlung → vorher Sicherung, nur bei geschlossenem Traktor.
 
 ## Tempo und Qualität
