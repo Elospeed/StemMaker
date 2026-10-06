@@ -121,6 +121,14 @@ header.top nav .lang {
 figcaption { color: var(--muted); font-size: 14px; text-align: center; margin-top: 12px; }
 .hero-shot { max-width: 900px; margin: 46px auto 0; }
 
+/* ---- Demovideo: volle Breite bis 960 px, Seitenverhältnis 16:9 bleibt erhalten ---- */
+.video { margin: 28px auto 0; max-width: 960px; }
+.video video {
+  display: block; width: 100%; height: auto; background: #000;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+}
+
 /* ---- Abschnitte ---- */
 section { padding: 64px 0; }
 section.alt { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
