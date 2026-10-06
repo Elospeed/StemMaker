@@ -39,6 +39,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Neu: **Update-Prüfung beim Start** über `update.json` im Repository (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update-ZIP wird mit SHA-256 geprüft, die laufende Exe wird zu `.exe.old` und beim nächsten Start weggeräumt. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
 - **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle v4 und v3 werden geprüft (htdemucs_ft folgt, sobald die Prüfsummen bekannt sind). Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
 - Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
+- Fehler behoben (gefunden im grossen Wine-Test vom 6. Oktober 2026): Gleiche Dateinamen aus verschiedenen Ordnern gingen bei einem flachen Ausgabeordner verloren (die zweite Datei wurde übersprungen oder überschrieb mit „Überschreiben“ die erste). Jetzt heisst die spätere `Intro (2).stem.mp4`, `(3)` usw. Gilt auch für `Song.mp3` + `Song.wav` im selben Ordner und für StemCLI mit `-o`. Die Namen bleiben nach Abbrechen und Fortsetzen gleich.
+- Stürzt StemMaker ab oder wird im Task-Manager beendet, hören demucs und ffmpeg jetzt sofort mit auf. Vorher rechnete demucs im Hintergrund weiter, und nach einem Neustart liefen zwei Trennungen gleichzeitig.
+- Arbeitsordner, die ein Absturz in `%TEMP%\StemMaker` hinterlassen hat (pro Song einige hundert MB), werden beim nächsten Start gelöscht. Ordner, die gerade ein anderer StemMaker oder StemCLI benutzt, bleiben stehen; mit „Temp-Ordner behalten“ aufgehobene Ordner erst nach 12 Stunden.
+- Rückfragen auf Deutsch zeigen jetzt „Ja/Nein“ und „Bestätigung/Fehler/Warnung“ statt „Yes/No“ und „Confirmation/Error“.
+- „Liste leeren“ fragt jetzt nach. Vorher war die Liste samt gespeicherter Warteschlange mit einem Klick weg.
 
 ### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
 - Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).
