@@ -12,7 +12,7 @@ Zuletzt aktualisiert: 6. Oktober 2026
 
 ## 🔨 In Arbeit
 
-- **Release 1.7** – Versionsnummer gesetzt. Vor der Veröffentlichung kommen die Fehlerkorrekturen aus dem grossen Wine-Test dazu, danach wird die Release-ZIP neu gebaut. Speedy testet das ZIP und legt das Release `v1.7` an, danach wird `update.json` auf 1.7 gestellt. Inhalt siehe [CHANGELOG](CHANGELOG.md).
+- Nichts Grösseres. Version 1.7 ist seit 6. Oktober 2026 veröffentlicht, siehe [CHANGELOG](CHANGELOG.md).
 
 ## 📋 Geplant für den StemPlayer
 
