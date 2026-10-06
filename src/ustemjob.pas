@@ -228,6 +228,16 @@ implementation
 uses
   uLang;
 
+type
+  { Die Tags der Quelldatei, die ffmpeg beim Zusammenbauen der MP4 nicht
+    selbst übernehmen kann (siehe ParseFFMetadata) }
+  TSrcTags = record
+    BPM      : string;   // z.B. '124' oder '124.5'
+    Key       : string;  // Tonart, z.B. '8A', 'Fm'
+    Publisher: string;   // Label / Verlag
+    ISRC     : string;   // Tonträgerkennung
+  end;
+
 const
   { Sperrdatei in jedem Arbeitsordner unter %TEMP%\StemMaker\<Lauf>\ }
   TEMP_LOCK_NAME = 'in-arbeit.lock';
@@ -308,6 +318,121 @@ begin
     Result := Result +
       InL[1] + FLT + Tail + OutL[1] + ';' +
       InL[2] + FLT + Tail + OutL[2];
+end;
+
+{ ---------------------------------------------------------------------------
+  Tags der Quelldatei lesen
+
+  ffmpeg kann die Tags einer Datei als einfache Textdatei ausgeben
+  ("-f ffmetadata"). Das geht sehr schnell, weil dabei nichts dekodiert
+  wird. Die Datei sieht so aus:
+
+      ;FFMETADATA1
+      title=Clap Your Hands
+      artist=Kungs
+      TBPM=124
+      TKEY=8A
+
+  Titel, Interpret, Album, Jahr, Genre, Kommentar, Titelnummer und Cover
+  übernimmt ffmpeg beim Zusammenbauen selbst (-map_metadata). Was ffmpeg
+  in MP4-Dateien NICHT schreiben kann, holen wir uns hier heraus:
+  BPM, Tonart, Label und ISRC.
+  --------------------------------------------------------------------------- }
+function ParseFFMetadata(const FileName: string): TSrcTags;
+var
+  L: TStringList;
+  I, P: Integer;
+  Key, Val: string;
+
+  { ffmpeg setzt vor '=', ';', '#', '\' und Zeilenenden einen Backslash }
+  function Unescape(const S: string): string;
+  var
+    J: Integer;
+  begin
+    Result := '';
+    J := 1;
+    while J <= Length(S) do
+    begin
+      if (S[J] = '\') and (J < Length(S)) then
+        Inc(J);
+      Result := Result + S[J];
+      Inc(J);
+    end;
+  end;
+
+begin
+  Result.BPM := '';
+  Result.Key := '';
+  Result.Publisher := '';
+  Result.ISRC := '';
+  if not FileExists(FileName) then
+    Exit;
+  L := TStringList.Create;
+  try
+    try
+      L.LoadFromFile(FileName);
+    except
+      Exit;                      // unlesbar: dann gibt es eben keine Tags
+    end;
+    for I := 0 to L.Count - 1 do
+    begin
+      if (L[I] = '') or (L[I][1] = ';') or (L[I][1] = '#') then
+        Continue;
+      P := Pos('=', L[I]);
+      if P < 2 then
+        Continue;
+      Key := LowerCase(Trim(Copy(L[I], 1, P - 1)));
+      Val := Trim(Unescape(Copy(L[I], P + 1, MaxInt)));
+      if Val = '' then
+        Continue;
+      { je Wert mehrere mögliche Tag-Namen - je nach Format und Programm,
+        das die Datei getaggt hat. Der erste Treffer gewinnt. }
+      if ((Key = 'tbpm') or (Key = 'bpm') or (Key = 'tmpo') or
+          (Key = 'beats_per_minute')) and (Result.BPM = '') then
+        Result.BPM := Val
+      else if ((Key = 'tkey') or (Key = 'key') or (Key = 'initialkey') or
+               (Key = 'initial_key')) and (Result.Key = '') then
+        Result.Key := Val
+      else if ((Key = 'publisher') or (Key = 'tpub') or (Key = 'label') or
+               (Key = 'organization')) and (Result.Publisher = '') then
+        Result.Publisher := Val
+      else if ((Key = 'isrc') or (Key = 'tsrc')) and (Result.ISRC = '') then
+        Result.ISRC := Val;
+    end;
+  finally
+    L.Free;
+  end;
+end;
+
+{ BPM als ganze Zahl. Im Tag kann "124", "124.5" oder "124,5" stehen.
+  Rückgabe 0 = kein brauchbarer Wert (dann schreiben wir keinen BPM-Tag).
+  Traktor rechnet die BPM beim Analysieren sowieso selbst aus; der Tag
+  ist für die Anzeige vor der Analyse und für andere Programme. }
+function BpmToInt(const S: string): Integer;
+var
+  T: string;
+  I: Integer;
+  D: Double;
+  FS: TFormatSettings;
+begin
+  Result := 0;
+  T := '';
+  for I := 1 to Length(S) do
+    if S[I] in ['0'..'9'] then
+      T := T + S[I]
+    else if (S[I] in ['.', ',']) and (Pos('.', T) = 0) then
+      T := T + '.'
+    else
+      Break;                     // alles ab dem ersten anderen Zeichen weg
+  if T = '' then
+    Exit;
+  FS := DefaultFormatSettings;
+  FS.DecimalSeparator := '.';
+  if not TryStrToFloat(T, D, FS) then
+    Exit;
+  if (D < 20) or (D > 400) then  // offensichtlich unsinnige Werte wegwerfen
+    Exit;
+  Result := Round(D);
 end;
 
 function StemModelDisplayName(M: TStemModel): string;
@@ -1307,7 +1432,10 @@ end;
   --------------------------------------------------------------------------- }
 function TStemJob.Run(const InputFile: string; out OutFile, ErrMsg: string): Boolean;
 var
-  WorkDir, MixWav, StemDir, TmpMp4, Problems, Err: string;
+  WorkDir, MixWav, StemDir, TmpMp4, TagFile, Problems, Err: string;
+  SrcTags: TSrcTags;               // BPM, Tonart, Label, ISRC der Quelldatei
+  Bpm: Integer;                    // BPM als ganze Zahl (0 = keine)
+  Extra: TMp4TagArray;             // Tags, die uStemMP4 schreiben muss
   SrcText: string;                 // Quelle als Text fürs Log, z.B. 'mp3 320 kbit/s'
   Args: TStringList;
   I, Code: Integer;
@@ -1482,6 +1610,7 @@ begin
       MixWav  := WorkDir + 'mix.wav';
       StemDir := WorkDir + 'stems';
       TmpMp4  := WorkDir + 'out.mp4';
+      TagFile := WorkDir + 'tags.txt';
 
       { ---- 1. Eingangsdatei -> WAV 44.1 kHz Stereo ---------------------- }
       SetStage(0, 4, _('Dekodieren'));
@@ -1501,6 +1630,27 @@ begin
         Log('  ' + Format(_('Länge: %d:%.2d min'), [Trunc(FDurationSec) div 60,
           Trunc(FDurationSec) mod 60]));
       FSrcDone := True;          // beim späteren Zusammenbauen nicht neu lesen
+
+      { ---- Tags der Quelldatei lesen ------------------------------------
+        Dauert nur Millisekunden (es wird nichts dekodiert). Schlägt es
+        fehl, ist das kein Fehler der Umwandlung - dann fehlen eben BPM
+        und Tonart. }
+      RunTool(FSettings.FFmpegExe, ['-hide_banner', '-nostdin', '-y',
+        '-i', InputFile, '-f', 'ffmetadata', TagFile], False);
+      SrcTags := ParseFFMetadata(TagFile);
+      Bpm := BpmToInt(SrcTags.BPM);
+      if (Bpm > 0) or (SrcTags.Key <> '') then
+      begin
+        if Bpm > 0 then
+          SrcText := IntToStr(Bpm)
+        else
+          SrcText := '-';
+        if SrcTags.Key = '' then
+          Log('  ' + Format(_('Tags der Quelle: BPM %s, keine Tonart'), [SrcText]))
+        else
+          Log('  ' + Format(_('Tags der Quelle: BPM %s, Tonart %s'),
+            [SrcText, SrcTags.Key]));
+      end;
 
       { Welche Bitrate bekommt die Stem-Datei? }
       if FSettings.Codec = scAAC then
@@ -1631,6 +1781,11 @@ begin
         Args.AddStrings(['-c:a', 'alac', '-sample_fmt:a', 's16p'])
       else
         Args.AddStrings(['-c:a', 'aac', '-b:a', IntToStr(FUsedKbps) + 'k']);
+      { BPM: ffmpeg übernimmt den BPM-Tag der Quelle NICHT von selbst
+        (in MP3 heißt er TBPM, in MP4 'tmpo' - ffmpeg verbindet die zwei
+        nicht). Darum setzen wir ihn hier ausdrücklich. }
+      if Bpm > 0 then
+        Args.AddStrings(['-metadata', 'tmpo=' + IntToStr(Bpm)]);
       Args.AddStrings(['-ar', '44100', '-ac', '2',
         '-map_metadata', '0',               // Tags (Titel, Artist, ...) vom Original
         '-map_chapters', '-1',              // keine Kapitel
@@ -1647,7 +1802,32 @@ begin
 
       { ---- 4. NI-Stem-Infos hineinschreiben ----------------------------- }
       SetStage(98, 99, _('Stem-Metadaten schreiben'));
-      if not InjectStemMetadata(TmpMp4, BuildStemJSON(FSettings.Stems), Err) then
+      { Tonart, Label und ISRC kann ffmpeg in MP4-Dateien nicht schreiben -
+        die kommen zusammen mit den Stem-Infos hinein (siehe uStemMP4). }
+      Extra := nil;
+      if SrcTags.Key <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := 'initialkey';   // so suchen es DJ-Programme
+        Extra[High(Extra)].Value := SrcTags.Key;
+        Extra[High(Extra)].Freeform := True;
+      end;
+      if SrcTags.Publisher <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := #$A9'pub';   // '©pub' = Label/Verlag
+        Extra[High(Extra)].Value := SrcTags.Publisher;
+        Extra[High(Extra)].Freeform := False;
+      end;
+      if SrcTags.ISRC <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := 'ISRC';
+        Extra[High(Extra)].Value := SrcTags.ISRC;
+        Extra[High(Extra)].Freeform := True;
+      end;
+      if not InjectStemMetadata(TmpMp4, BuildStemJSON(FSettings.Stems),
+           Extra, Err) then
         raise Exception.Create(Format(_('Stem-Metadaten: %s'), [Err]));
       { Kontrolle: es müssen genau 5 Spuren drin sein }
       if CountTracks(TmpMp4) <> 5 then

@@ -38,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
-- Fehlerkorrekturen aus dem Wine-Test vor Release 1.7 (gleiche Dateinamen, demucs nach Absturz, Temp-Reste, deutsche Knöpfe, „Liste leeren“ fragt nach).
+- Tags vollständig übernehmen: BPM, Tonart, Label und ISRC aus der Quelldatei in die Stem-Datei.

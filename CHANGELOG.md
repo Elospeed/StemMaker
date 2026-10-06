@@ -9,6 +9,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker
+- **Tags vollständig übernommen:** Neu landen **BPM**, **Tonart**, **Label** und **ISRC** der Quelldatei in der Stem-Datei. Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext und das Cover kamen schon vorher mit. Hintergrund: ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY` nicht mit den MP4-Atomen, darum liest StemMaker die Tags der Quelle jetzt selbst aus (`ffmpeg -f ffmetadata`, dauert Millisekunden) und schreibt BPM als `tmpo`, Tonart als `----:com.apple.iTunes:initialkey`, Label als `©pub` und ISRC als `----:com.apple.iTunes:ISRC`. Die drei letzten schreibt `uStemMP4` zusammen mit den Stem-Infos, ohne die Datei ein zweites Mal zu kopieren. Im Log steht, welche Werte gefunden wurden.
+
 ### Entwicklung
 - **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
 - **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).
