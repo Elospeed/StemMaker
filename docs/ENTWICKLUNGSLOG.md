@@ -59,6 +59,9 @@ Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt 
 | Update-Prüfung darf den Start nicht bremsen. | Eigener Thread, WinINet-Zeitlimits 5 s; Ergebnis kommt per `OnTerminate` im Hauptthread an. Läuft gerade eine Umwandlung, wird das Update erst danach angeboten. |
 | BtbN-ZIP „latest“ ändert sich täglich und ist 171 MB gross. | Eigenes Release `ffmpeg-9.0.2` mit nur `ffmpeg.exe` + Lizenz + Quellcode-Hinweis (56 MB), Prüfsumme in `update.json`. |
 | Das Release-ZIP 1.6 enthielt `AddOns\StemPlayer.exe` noch nicht. | Ab 1.7 muss der StemPlayer ins ZIP, sonst meldet „Anhören“ nur „StemPlayer nicht gefunden“. |
+| Wine-Test 6.10.: Hängt der Update-Download, blieb StemMaker im Fortschrittsfenster gefangen. `InternetReadFile` kehrt nicht zurück, der Thread sieht `Terminated` nie, und `CloseQuery` wartete auf den Thread. | Thread mit `FreeOnTerminate` und eigenem `OnTerminate` (`Finished`). „Abbrechen“/X setzt `FForm := nil` und schliesst sofort; kommt der Thread irgendwann zurück, meldet er nichts mehr. Sicher, weil sich der Thread erst nach `Finished` (im Hauptthread) freigibt. Dazu 30 s Zeitlimit für alle Downloads (Windows-Standard sind 60 min). |
+| Unter Wine wirken die WinINet-Zeitlimits nicht (Update-Prüfung hing 90 s+ bei einem stummen Server). | Unter Windows wirken sie. Trotzdem: Antwort nach mehr als 30 s wird ignoriert, damit das Fenster nicht mitten in der Arbeit aufgeht. |
+| Ein `null` unter `models.sha256` in `update.json` warf in `AsString` eine Ausnahme im Thread – Prüfung still weg, leerer Fehlertext im Log. | Nur Einträge vom Typ Text übernehmen, ganze Auswertung in `try/except` mit Grund im Log. |
 
 ---
 

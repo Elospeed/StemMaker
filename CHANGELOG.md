@@ -12,6 +12,13 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ### StemMaker
 - **Tags vollständig übernommen:** Neu landen **BPM**, **Tonart**, **Label** und **ISRC** der Quelldatei in der Stem-Datei. Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext und das Cover kamen schon vorher mit. Hintergrund: ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY` nicht mit den MP4-Atomen, darum liest StemMaker die Tags der Quelle jetzt selbst aus (`ffmpeg -f ffmetadata`, dauert Millisekunden) und schreibt BPM als `tmpo`, Tonart als `----:com.apple.iTunes:initialkey`, Label als `©pub` und ISRC als `----:com.apple.iTunes:ISRC`. Die drei letzten schreibt `uStemMP4` zusammen mit den Stem-Infos, ohne die Datei ein zweites Mal zu kopieren. Im Log steht, welche Werte gefunden wurden.
 
+- **Update-Funktion: Fehlerkorrekturen aus dem Wine-Test** (6. Oktober 2026, Test mit lokalem Test-Server und gefälschtem Update auf „1.8“):
+  - Hing der Download des Updates (Server antwortet nicht mehr), liess sich das Fortschrittsfenster weder mit „Abbrechen“ noch mit dem X schliessen – StemMaker war blockiert. Jetzt geht das Fenster sofort zu, der hängende Download läuft im Hintergrund ins Leere und räumt sich selbst auf. Zusätzlich brechen alle Downloads (Update, ffmpeg, Modelle) nach 30 Sekunden ohne Daten ab, statt bis zu 60 Minuten zu warten.
+  - „Abbrechen“ beim Update-Download zeigt keine Fehlermeldung mehr („Update konnte nicht geladen werden: Abgebrochen“).
+  - Ein einzelner falscher Eintrag in `update.json` (z. B. `null` statt einer Prüfsumme) legte die ganze Update-Prüfung lahm, ohne Grund im Log. Solche Einträge werden jetzt übersprungen, andere Fehler stehen mit Grund im Log. `"version": 1.8` ohne Anführungszeichen wird im Log erklärt.
+  - Kommt die Antwort auf die Update-Prüfung später als 30 Sekunden, wird sie ignoriert (das Update-Fenster ging sonst womöglich erst nach Minuten mitten in der Arbeit auf).
+  - Ein beschädigtes Update-ZIP liess den Hilfsordner `_update_tmp` im StemMaker-Ordner liegen.
+
 ### Entwicklung
 - **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
 - **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).
