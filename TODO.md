@@ -13,7 +13,7 @@ Zuletzt aktualisiert: 6. Oktober 2026
 
 ## 🧪 Speedy testet
 
-- [ ] **Release-ZIP 1.7 testen** (neue ZIP mit den Fehlerkorrekturen aus dem Wine-Test kommt nach dem Merge): `StemMaker-1.7.zip` in einen neuen Ordner entpacken und starten. Erststart-Fenster (Text passt?), eine Datei umwandeln (Explorer geht mit der fertigen Datei auf, Club-Pegel und Bass-Fix an), „Anhören“ öffnet den StemPlayer 1.3, Info → Lizenzen. Fenster schliessen geht sofort zu. Die Update-Prüfung lässt sich erst mit 1.7.1 echt testen (unter Wine mit Test-Server geprüft).
+- [ ] **Release 1.7 testen** (ZIP von der Release-Seite): `StemMaker-1.7.zip` in einen neuen Ordner entpacken und starten. Erststart-Fenster (Text passt?), eine Datei umwandeln (Explorer geht mit der fertigen Datei auf, Club-Pegel und Bass-Fix an), „Anhören“ öffnet den StemPlayer 1.3, Info → Lizenzen. Fenster schliessen geht sofort zu. Die Update-Prüfung lässt sich erst mit 1.7.1 echt testen (unter Wine mit Test-Server geprüft).
 - [ ] **Lange Pfade (über 260 Zeichen):** einen sehr tief verschachtelten Ordner mit einer MP3 anlegen (Pfad länger als 260 Zeichen) und umwandeln. Unter Wine nicht prüfbar, im Manifest fehlt `longPathAware`. Geht es nicht, wird das nachgebaut.
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
@@ -24,7 +24,6 @@ Zuletzt aktualisiert: 6. Oktober 2026
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
 - [ ] **Prüfsummen der htdemucs_ft-Modelle** (ohne Eile): v4 und v3 stehen in `update.json`. Die vier ft-Dateien fehlen noch, weil sie auf Speedys PC nicht geladen sind. Wer sie hat: Prüfsummen schicken, dann kommen sie dazu.
-- [ ] **Release 1.7 anlegen:** Tag `v1.7`, Titel „Elospeed StemMaker 1.7“, `StemMaker-1.7.zip` anhängen, als neuestes Release markieren. Danach Bescheid geben, dann wird `update.json` auf 1.7 gestellt (siehe [docs/UPDATE-JSON.md](docs/UPDATE-JSON.md)).
 
 ## 🔨 Elospeed baut als Nächstes
 
