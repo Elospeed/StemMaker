@@ -123,6 +123,7 @@ const
   INTERNET_OPTION_CONNECT_TIMEOUT = 2;
   INTERNET_OPTION_SEND_TIMEOUT    = 5;
   INTERNET_OPTION_RECEIVE_TIMEOUT = 6;
+  DL_TIMEOUT_MS = 30000;          // Downloads: so lange ohne Daten = Fehler
 
 { ---------------------------------------------------------------------------
   bcrypt.dll (Windows-Krypto, "CNG") - nur das, was für SHA-256 nötig ist
@@ -178,6 +179,7 @@ var
   FS: TFileStream;
   PartFile: string;
   LastReport: QWord;
+  T: DWORD;
 begin
   Result := False;
   ErrMsg := '';
@@ -191,6 +193,12 @@ begin
     Exit;
   end;
   try
+    { Zeitlimits: Ohne sie wartet WinINet bei einer hängenden Verbindung
+      bis zu 60 Minuten. 30 s ohne Daten = Abbruch mit Fehler. }
+    T := DL_TIMEOUT_MS;
+    InternetSetOptionW(hNet, INTERNET_OPTION_CONNECT_TIMEOUT, @T, SizeOf(T));
+    InternetSetOptionW(hNet, INTERNET_OPTION_SEND_TIMEOUT, @T, SizeOf(T));
+    InternetSetOptionW(hNet, INTERNET_OPTION_RECEIVE_TIMEOUT, @T, SizeOf(T));
     { 2. URL öffnen }
     WURL := UTF8Decode(URL);
     hUrl := InternetOpenUrlW(hNet, PWideChar(WURL), nil, 0,

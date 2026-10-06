@@ -187,6 +187,8 @@
  "Lade StemMaker %s ...": "Downloading StemMaker %s ...",
  "Lautheit Master: %.1f LUFS, Umfang %.1f LU": "Master loudness: %.1f LUFS, range %.1f LU",
  "Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS": "Master loudness: %.1f LUFS, range %.1f LU, true peak %.1f dBFS",
+ "Tags der Quelle: BPM %s, keine Tonart": "Source tags: BPM %s, no key",
+ "Tags der Quelle: BPM %s, Tonart %s": "Source tags: BPM %s, key %s",
  "Lautheit konnte nicht gemessen werden: %s": "Loudness could not be measured: %s",
  "Lautheit messen": "Measuring loudness",
  "Lautstärke angleichen (Club-Pegel)": "Normalize loudness (club level)",
@@ -328,5 +330,13 @@
  "wartet (unterbrochen)": "waiting (interrupted)",
  "wird berechnet ...": "calculating ...",
  "Übersprungen (Format nicht unterstützt): %s": "Skipped (format not supported): %s",
- "übersprungen, existiert schon: %s": "skipped, already exists: %s"
+ "übersprungen, existiert schon: %s": "skipped, already exists: %s",
+ "Alle %d Dateien aus der Liste entfernen?": "Remove all %d files from the list?",
+ "Bereits erstellte Stem-Dateien bleiben erhalten.": "Stem files already created are kept.",
+ "Der Server antwortet nicht.": "The server does not respond.",
+ "Die Suche nach Updates hat nicht geklappt: %s": "Checking for updates failed: %s",
+ "Die alte Version wurde wiederhergestellt.": "The previous version has been restored.",
+ "Du hast die neueste Version (%s).": "You have the latest version (%s).",
+ "Nach Updates suchen": "Check for updates",
+ "Suche ...": "Searching ..."
 }

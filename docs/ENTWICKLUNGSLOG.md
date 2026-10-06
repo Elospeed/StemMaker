@@ -6,6 +6,44 @@ Neueste Einträge oben.
 
 ---
 
+## Tags der Quelldatei übernehmen (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| BPM und Tonart der MP3 landeten nicht in der Stem-Datei, obwohl `-map_metadata 0` gesetzt ist. Gemessen am 6. Oktober 2026 mit einer Test-MP3 mit allen Feldern: Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel-/CD-Nummer, Kommentar, Gruppierung, Liedtext und Cover kommen mit – BPM, Tonart, Label und ISRC nicht. | ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY`/`TPUB` nicht mit den MP4-Atomen; unbekannte Felder lässt der MP4-Muxer einfach weg. StemMaker liest die Tags der Quelle darum selbst: `ffmpeg -i <Datei> -f ffmetadata <Textdatei>` (dauert Millisekunden, es wird nichts dekodiert), danach `ParseFFMetadata` in `ustemjob.pas`. |
+| BPM schreiben. | `-metadata tmpo=<Zahl>` beim Zusammenbauen – diesen Namen kennt der MP4-Muxer, er schreibt daraus das Atom `tmpo` (geprüft). Nur ganze Zahlen zwischen 20 und 400, sonst wird der Tag weggelassen. |
+| Tonart, Label und ISRC schreiben: `-metadata publisher=…`, `©pub`, `initialkey` oder `ISRC` ignoriert der MP4-Muxer alle (geprüft). | `uStemMP4` schreibt sie selbst, zusammen mit der `stem`-Box – so wird die grosse Datei nur einmal kopiert. Tonart und ISRC als Freiform-Tag (`----` mit `mean`/`name`/`data`, `com.apple.iTunes:initialkey` bzw. `:ISRC`), Label als normaler Text-Tag `©pub`. So machen es Mp3tag, Mixed In Key, Serato und rekordbox. |
+| Ein Tag-Name wie `©pub` ist 4 **Bytes** mit `$A9` am Anfang – in UTF-8 wären es 5 Bytes und die Box wäre kaputt. | Im Quelltext als `#$A9'pub'` schreiben, nie als `'©pub'`. |
+| Wird eine Datei zweimal bearbeitet, dürfen Tags nicht doppelt drinstehen. | Vor dem Schreiben wird ein gleichnamiger Tag entfernt. Freiform-Tags werden beim Einlesen nicht zerlegt, darum wird der Name einfach in den Bytes der `----`-Box gesucht (`FreeformHasName`). Zweimal hintereinander ausgeführt: gleiche Anzahl Tags, Audio unverändert (geprüft, auch mit einer echten 36-MB-Stem-Datei). |
+| Was macht Traktor damit? | Titel, Artist, Album, Genre, Label und Cover zeigt Traktor direkt. BPM und Tonart überschreibt Traktor mit seiner eigenen Analyse – der Tag ist für die Anzeige vor der Analyse und für andere Programme. Traktors eigene Stem-Dateien enthalten übrigens gar keine Tags (nur `NITR`). |
+
+---
+
+## Fehler aus dem grossen Wine-Test (Oktober 2026)
+
+Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt (Bericht im Projektordner, nicht im Repository).
+
+| Problem | Lösung |
+|---|---|
+| Flacher Ausgabeordner: `A\Intro.mp3` und `B\Intro.mp3` ergaben beide `Intro.stem.mp4`. Die zweite wurde übersprungen oder überschrieb die erste. | `UniqueStemOutputName` in `uStemJob`: sortierte Liste der schon vergebenen Namen (Gross/klein egal wie bei Windows), Doppelte bekommen ` (2)`, ` (3)`. Gerechnet wird immer über die **ganze** Liste in Listen-Reihenfolge, auch über fertige Zeilen – sonst bekäme eine Datei nach Abbrechen und Fortsetzen einen anderen Namen. Der Name geht als `TStemSettings.OutFile` an den Job. |
+| Nach einem harten Absturz rechnete demucs weiter (eigener Prozess). | Windows-Job-Objekt mit `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`, angelegt beim Programmstart; jedes Hilfsprogramm kommt nach `Execute` hinein. Das Handle wird nie geschlossen – endet StemMaker (egal wie), schliesst Windows es und beendet alle Prozesse im Job. Der StemPlayer läuft nicht über diesen Weg und bleibt offen. Schlägt das Zuordnen fehl (Windows 7 in einem fremden Job), läuft alles ohne Schutz weiter. |
+| Temp-Ordner nach Absturz blieben für immer liegen. | Jeder Arbeitsordner hat eine Sperrdatei `in-arbeit.lock`, exklusiv geöffnet solange der Job läuft. Beim Start: Lässt sich die Sperrdatei löschen, ist der Besitzer tot → Ordner weg. Ohne Sperrdatei (Temp behalten, ältere Version) erst nach 12 Stunden. So wird nie der Ordner eines gerade laufenden StemCLI gelöscht. |
+| Deutsche Rückfragen hatten „Yes/No“ und „Confirmation“. | Die Texte kommen aus der LCL-Unit `lclstrconsts` und werden nicht über unsere `lang\`-Dateien übersetzt. Bei Deutsch ersetzt `SetUnitResourceStrings('lclstrconsts', …)` in `uLangUI` die Knopf- und Titeltexte. Wirkt für das LCL-eigene Fenster und für den Windows-TaskDialog (beide holen die Texte über `GetButtonCaption`). |
+
+---
+
+## Automatischer Build (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Testversionen in `Temp/` machten das Repository mit jeder Exe dauerhaft grösser (bleiben im Git-Verlauf, auch nach dem Löschen). | Testversionen kommen jetzt als Vor-Release (Pre-release) mit festem Tag (`test-main`, `test-pr-<Nummer>`). Jeder Build löscht das alte Vor-Release samt Tag und legt es neu an, die Links bleiben gleich. `Temp/` und die `.gitignore`-Ausnahme sind entfernt. |
+| Exes wurden bisher von Hand gebaut; ob eine Exe wirklich zum Quelltext passt, war nicht nachvollziehbar. | GitHub Actions baut auf `windows-latest` mit `gcarreno/setup-lazarus` (Lazarus 3.8, FPC 3.2.2). Kein Cross-Build nötig. SHA-256 jeder Exe steht im Vor-Release und im Build-Protokoll. |
+| Vor-Releases dürfen die Update-Prüfung nicht stören. | Die Update-Prüfung liest nur `update.json`, nicht die GitHub-Releases. Zusätzlich werden Vor-Releases mit `--latest=false` angelegt. |
+| Schreibrecht für Releases im Workflow. | `permissions: contents: write` im Workflow reicht, eine Repo-Einstellung ist dafür nicht nötig. PRs aus fremden Forks bekommen nur das Build-Artefakt, kein Vor-Release. |
+| Gebaute Exes sind mit Debug-Infos sehr gross. | Im Workflow mit `strip.exe` aus der FPC-Installation verkleinern (wie früher von Hand). |
+
+---
+
 ## 1.7: Anhören, Ordner öffnen, Erststart-Fenster, Updates (Oktober 2026)
 
 | Problem | Lösung |
@@ -21,6 +59,11 @@ Neueste Einträge oben.
 | Update-Prüfung darf den Start nicht bremsen. | Eigener Thread, WinINet-Zeitlimits 5 s; Ergebnis kommt per `OnTerminate` im Hauptthread an. Läuft gerade eine Umwandlung, wird das Update erst danach angeboten. |
 | BtbN-ZIP „latest“ ändert sich täglich und ist 171 MB gross. | Eigenes Release `ffmpeg-9.0.2` mit nur `ffmpeg.exe` + Lizenz + Quellcode-Hinweis (56 MB), Prüfsumme in `update.json`. |
 | Das Release-ZIP 1.6 enthielt `AddOns\StemPlayer.exe` noch nicht. | Ab 1.7 muss der StemPlayer ins ZIP, sonst meldet „Anhören“ nur „StemPlayer nicht gefunden“. |
+| Wine-Test 6.10.: Hängt der Update-Download, blieb StemMaker im Fortschrittsfenster gefangen. `InternetReadFile` kehrt nicht zurück, der Thread sieht `Terminated` nie, und `CloseQuery` wartete auf den Thread. | Thread mit `FreeOnTerminate` und eigenem `OnTerminate` (`Finished`). „Abbrechen“/X setzt `FForm := nil` und schliesst sofort; kommt der Thread irgendwann zurück, meldet er nichts mehr. Sicher, weil sich der Thread erst nach `Finished` (im Hauptthread) freigibt. Dazu 30 s Zeitlimit für alle Downloads (Windows-Standard sind 60 min). |
+| Unter Wine wirken die WinINet-Zeitlimits nicht (Update-Prüfung hing 90 s+ bei einem stummen Server). | Unter Windows wirken sie. Trotzdem: Antwort nach mehr als 30 s wird ignoriert, damit das Fenster nicht mitten in der Arbeit aufgeht. |
+| Update von Hand suchen, ohne das Info-Fenster einzufrieren und ohne dass ein hängender Server es blockiert. | Thread + Warteschleife mit `Application.ProcessMessages`, max. 20 s; danach Thread loslassen (`FreeOnTerminate := True`). Das Update-Fenster kommt erst, wenn das Info-Fenster zu ist (kein Fenster im Fenster). |
+| Halbe Installation (eine Datei gesperrt) liess eine Mischung aus alter und neuer Version zurück. | Jede alte Datei wird zu `.old` umbenannt statt gelöscht, die gelegten Dateien werden mitgeschrieben. Bei einem Fehler rückwärts: neue Datei löschen, `.old` zurückbenennen. |
+| Ein `null` unter `models.sha256` in `update.json` warf in `AsString` eine Ausnahme im Thread – Prüfung still weg, leerer Fehlertext im Log. | Nur Einträge vom Typ Text übernehmen, ganze Auswertung in `try/except` mit Grund im Log. |
 
 ---
 
@@ -62,7 +105,7 @@ Neueste Einträge oben.
 | Problem | Lösung |
 |---|---|
 | Den Überblick behalten: was läuft, was ist fertig, was muss getestet werden? | Drei Dateien im Hauptordner: `ROADMAP.md` (Plan), `CHANGELOG.md` (erledigt), `TODO.md` (nächste Tests, Entscheidungen, Bauschritte). Jede Aufgabe trägt sich dort selbst ein und aus. |
-| Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. Alternative: GitHub-Pre-Releases. |
+| Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. *Ab Oktober 2026 abgelöst durch Vor-Releases aus dem automatischen Build (siehe oben).* |
 | Windows SmartScreen warnt beim Start („Herausgeber: Unbekannt“). | Code-Signing vorerst verworfen (Kosten; kostenloses SignPath würde „SignPath Foundation“ als Herausgeber zeigen). Stattdessen Abschnitt „Windows-Warnung“ in README/LIESMICH. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |
 | Rechtliche Frage: darf man fremde Teile im eigenen Repository haben? | demucs.cpp (MIT) und FFmpeg (LGPL, mit Lizenz + Quellcode) dürfen weitergegeben werden. Die Lizenz der Demucs-Modelle ist unklar → Modelle werden **nicht** selbst verteilt, sondern vom Originalort geladen. Alles dokumentiert in `THIRD-PARTY-NOTICES.md`. |
@@ -133,4 +176,4 @@ Neueste Einträge oben.
 - `pkill -f <text>` kann die eigene Shell beenden, wenn der Text im Befehl vorkommt → Prozesse gezielt mit `pkill -x Name` beenden.
 - Wine braucht nach `wineserver -k` einige Sekunden, bevor ein Fenster erscheint.
 - Ubuntu-Pakete reichen für den Windows-Build nicht: `fp-units-win-rtl` enthält nur die RTL, und der Debian-Quellcode von FPC hat keine Makefiles. Lösung: FPC-3.2.2-Quellcode von gitlab.com/freepascal.org laden, `make all OS_TARGET=win64 CPU_TARGET=x86_64` und `make install ... CROSSINSTALL=1`, dann die Units nach `/usr/lib/x86_64-linux-gnu/fpc/3.2.2/units/x86_64-win64` verlinken. Danach klappt `lazbuild --os=win64 --cpu=x86_64 --ws=win32`.
-- Testversionen in `Temp/` mit `x86_64-w64-mingw32-strip` verkleinern (StemMaker: 29 MB → 3,5 MB; fehlen dann nur die Zeilennummern im Absturz-Log).
+- Selbst gebaute Exes mit `x86_64-w64-mingw32-strip` verkleinern (der automatische Build macht das selbst) (StemMaker: 29 MB → 3,5 MB; fehlen dann nur die Zeilennummern im Absturz-Log).

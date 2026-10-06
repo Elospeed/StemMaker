@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : StemMaker.lpr  (Hauptprogramm)
-  Version : 1.6
+  Version : 1.7
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
@@ -48,6 +48,8 @@ uses
 
 var
   Settings: TStemSettings;
+  TempDirs: Integer;     // beim Start gelöschte Temp-Ordner
+  TempMB: Int64;
 
 begin
   RequireDerivedFormResource := True;
@@ -92,6 +94,12 @@ begin
 
   { 0a4. Reste eines Updates (*.old) wegräumen }
   CleanupOldFiles(AppBaseDir);
+
+  { 0a5. Arbeitsordner in %TEMP%\StemMaker, die ein Absturz hinterlassen
+         hat, löschen (pro Song einige hundert MB, siehe uStemJob) }
+  TempDirs := CleanupStaleTempDirs(TempMB);
+  if TempDirs > 0 then
+    LogLine(Format('  Temp-Reste     : %d alte Arbeitsordner gelöscht (%d MB)', [TempDirs, TempMB]));
 
   { 0a. Hat ein abgestürzter Lauf den Energiesparplan umgestellt und
         konnte ihn nicht mehr zurückstellen? Dann jetzt nachholen. }

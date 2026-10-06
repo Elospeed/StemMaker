@@ -30,6 +30,13 @@ Legende: 🟢 klein · 🟡 mittel · 🔴 gross
 - 🟢 **StemPlayer: Schnellwahl-Knöpfe** – „Karaoke“ (Vocals stumm), „Acapella“ (nur Vocals), „Drums + Bass“, „Alle“. Mute/Solo gibt es schon, daher wenig Aufwand. (Idee aus dem Vergleich mit StemKit.)
 - 🟡 **StemPlayer: Wellenform mit Klick-zum-Springen** – pro Spur eine farbige Wellenform, Klick springt an die Stelle. StemKit zeigt, dass Nutzer das mögen.
 - 🟢 **„Eigene Stems verpacken“** – vorhandene Einzelspuren (z. B. aus dem Studio) ohne Trennung zu einer Traktor-Stem-Datei zusammenbauen.
+- 🟡 **Pegel-AddOn (wie MP3Gain)** – eigenes Programm `AddOns\PegelAnpasser.exe` für ganze Ordner, damit alle MP3s gleich laut sind (Idee Speedy, 4. Oktober 2026; Anlass: Aufnahmen mit Recordify lagen bei −24 LUFS).
+  - Ordner wählen → jede Datei messen (Lautheit in LUFS und True Peak) und als Liste anzeigen.
+  - Ziel wählen: Streaming (−14 LUFS) oder Club (−9 LUFS).
+  - Pro Datei automatisch: verlustfrei anheben wie MP3Gain, wenn der Spielraum bis zur Übersteuerung reicht; sonst mit Limiter neu kodieren (320 kbps, minimaler Qualitätsverlust). Der Spielraum ist je Datei verschieden (gemessen: Spitzen bei −14 dBTP → ca. +13 dB verlustfrei; Spitzen bei −6 dBTP → nur ca. +5 dB).
+  - Originale nie überschreiben, angepasste Kopien in einen Unterordner.
+  - Technik: ffmpeg aus `tools\` (schon vorhanden), Messcode aus der Log-Statistik (PR #8) wiederverwenden.
+  - Hinweis: Traktor gleicht mit Autogain beim Abspielen ohnehin an; das AddOn lohnt sich vor allem für andere Player und saubere Dateien. Verwandt mit der Option „Lautheit angleichen“ unten bei *Tempo und Qualität*.
 
 ## Quelltext
 

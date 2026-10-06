@@ -6,19 +6,13 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 4. Oktober 2026
+Zuletzt aktualisiert: 6. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
-- **StemPlayer aus StemMaker starten und Ordner öffnen** – Knopf „Anhören“, Doppelklick in der Liste, Explorer mit der fertigen Datei nach der Umwandlung (Testversion, Speedy testet).
-- **Update-Prüfung über `update.json`, feste ffmpeg-Version, SHA-256 für alle Downloads** (gebaut, ffmpeg-Release ist online).
-- **Erststart-Fenster** (Haftungsausschluss, Lizenzen, einmal pro PC) und **Info → Lizenzen** (Testversion, Speedy testet).
-
-## 📋 Geplant für Version 1.7
-
-Alles gebaut, siehe „In Arbeit“. Offen ist nur noch das Release 1.7 von Speedy (ffmpeg-Release ist seit 5. Oktober 2026 online).
+- **Release 1.7** – Versionsnummer gesetzt. Vor der Veröffentlichung kommen die Fehlerkorrekturen aus dem grossen Wine-Test dazu, danach wird die Release-ZIP neu gebaut. Speedy testet das ZIP und legt das Release `v1.7` an, danach wird `update.json` auf 1.7 gestellt. Inhalt siehe [CHANGELOG](CHANGELOG.md).
 
 ## 📋 Geplant für den StemPlayer
 
@@ -30,7 +24,6 @@ Alles gebaut, siehe „In Arbeit“. Offen ist nur noch das Release 1.7 von Spee
 ## ❓ Offene Entscheidungen
 
 - **v3 (hdemucs_mmi) als Standard-Modell?** – fast doppelt so schnell. Entscheidung nach Hörvergleich in Traktor.
-- **Testversionen:** weiter im Ordner `Temp/` oder als GitHub-Pre-Release?
 
 ## ⏸️ Zurückgestellt
 
@@ -41,6 +34,7 @@ Alles gebaut, siehe „In Arbeit“. Offen ist nur noch das Release 1.7 von Spee
 - Einzelnen Stem (z. B. Vocals oder Drum-Beat) als eigene MP3/WAV exportieren – für Traktor Remix Decks und Loops.
 - Hotcues und Beatgrid aus Traktors `collection.nml` übernehmen.
 - Grafikkarte (ONNX Runtime + DirectML) und Mel-Band RoFormer für sauberere Vocals.
+- Pegel-AddOn (wie MP3Gain): ganze Ordner auf gleiche Lautheit bringen (−14 oder −9 LUFS), verlustfrei wenn möglich, sonst mit Limiter.
 - Weitere Sprachen.
 - Namenskonvention im Quelltext (Bereich und Typ im Variablennamen), vorerst zurückgestellt (05.10.2026).
 - Code-Signing: vorerst nicht (Entscheidung 03.10.2026, Kosten lohnen sich im Anfangsstadium nicht). Stattdessen Hinweis zur Windows-Warnung in README/LIESMICH.

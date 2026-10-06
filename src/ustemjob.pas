@@ -81,6 +81,8 @@ type
     Normalize   : Boolean;  // Lautstärke angleichen: alle 5 Spuren gleich
                             // anheben, bis die Spitze bei ca. -1 dB liegt
     BassFix     : Boolean;  // Tiefbass unter 80 Hz von "Other" in "Bass"
+    OutFile     : string;   // fester Zielname (voller Pfad), z.B. "Intro (2).stem.mp4"
+                            // bei gleichen Namen; leer = aus OutputDir berechnen
   end;
 
   { eigene Exception-Klasse, damit "Abbrechen" kein Fehler ist }
@@ -178,6 +180,22 @@ function ExeName(const Base: string): string;
 { Name der Zieldatei: '<Titel>.stem.mp4' im Zielordner
   (oder neben der Originaldatei, wenn OutputDir leer ist) }
 function StemOutputName(const InputFile, OutputDir: string): string;
+{ Wie StemOutputName, aber eindeutig innerhalb einer Liste: Landen zwei
+  Dateien auf demselben Namen (z.B. A\Intro.mp3 und B\Intro.mp3 im selben
+  Ausgabeordner, oder Song.mp3 + Song.wav nebeneinander), bekommt die
+  zweite "Intro (2).stem.mp4", die dritte "(3)" usw.
+  Used = schon vergebene Namen; der neue Name wird dort eingetragen.
+  Used muss mit NewUsedNameList angelegt werden. }
+function UniqueStemOutputName(const InputFile, OutputDir: string;
+  Used: TStringList): string;
+{ leere Namensliste für UniqueStemOutputName (sortiert, Gross/klein egal
+  - wie bei Windows-Dateinamen) }
+function NewUsedNameList: TStringList;
+{ Beim Programmstart: Arbeitsordner in %TEMP%\StemMaker, die von einem
+  Absturz übrig sind, löschen. Ordner, die gerade ein anderer StemMaker
+  oder StemCLI benutzt, bleiben stehen. Ergebnis = Anzahl gelöschter
+  Ordner, FreedMB = freigegebener Platz. }
+function CleanupStaleTempDirs(out FreedMB: Int64): Integer;
 
 { Name der Einstellungsdatei: StemMaker.ini neben der Exe (portabel).
   Ist der Programmordner schreibgeschützt (z.B. unter C:\Programme),
@@ -210,7 +228,22 @@ implementation
 uses
   uLang;
 
+type
+  { Die Tags der Quelldatei, die ffmpeg beim Zusammenbauen der MP4 nicht
+    selbst übernehmen kann (siehe ParseFFMetadata) }
+  TSrcTags = record
+    BPM      : string;   // z.B. '124' oder '124.5'
+    Key       : string;  // Tonart, z.B. '8A', 'Fm'
+    Publisher: string;   // Label / Verlag
+    ISRC     : string;   // Tonträgerkennung
+  end;
+
 const
+  { Sperrdatei in jedem Arbeitsordner unter %TEMP%\StemMaker\<Lauf>\ }
+  TEMP_LOCK_NAME = 'in-arbeit.lock';
+  { Ordner ohne Sperrdatei (z.B. "Temp-Ordner behalten") werden erst nach
+    so vielen Stunden beim Start gelöscht }
+  TEMP_MAX_AGE_H = 12;
   { Dateinamen der Modelle - genau so heißen sie auch auf Hugging Face }
   FT_MODELS: array[0..3] of string = (
     'ggml-model-htdemucs_ft_drums-4s-f16.bin',
@@ -287,6 +320,121 @@ begin
       InL[2] + FLT + Tail + OutL[2];
 end;
 
+{ ---------------------------------------------------------------------------
+  Tags der Quelldatei lesen
+
+  ffmpeg kann die Tags einer Datei als einfache Textdatei ausgeben
+  ("-f ffmetadata"). Das geht sehr schnell, weil dabei nichts dekodiert
+  wird. Die Datei sieht so aus:
+
+      ;FFMETADATA1
+      title=Clap Your Hands
+      artist=Kungs
+      TBPM=124
+      TKEY=8A
+
+  Titel, Interpret, Album, Jahr, Genre, Kommentar, Titelnummer und Cover
+  übernimmt ffmpeg beim Zusammenbauen selbst (-map_metadata). Was ffmpeg
+  in MP4-Dateien NICHT schreiben kann, holen wir uns hier heraus:
+  BPM, Tonart, Label und ISRC.
+  --------------------------------------------------------------------------- }
+function ParseFFMetadata(const FileName: string): TSrcTags;
+var
+  L: TStringList;
+  I, P: Integer;
+  Key, Val: string;
+
+  { ffmpeg setzt vor '=', ';', '#', '\' und Zeilenenden einen Backslash }
+  function Unescape(const S: string): string;
+  var
+    J: Integer;
+  begin
+    Result := '';
+    J := 1;
+    while J <= Length(S) do
+    begin
+      if (S[J] = '\') and (J < Length(S)) then
+        Inc(J);
+      Result := Result + S[J];
+      Inc(J);
+    end;
+  end;
+
+begin
+  Result.BPM := '';
+  Result.Key := '';
+  Result.Publisher := '';
+  Result.ISRC := '';
+  if not FileExists(FileName) then
+    Exit;
+  L := TStringList.Create;
+  try
+    try
+      L.LoadFromFile(FileName);
+    except
+      Exit;                      // unlesbar: dann gibt es eben keine Tags
+    end;
+    for I := 0 to L.Count - 1 do
+    begin
+      if (L[I] = '') or (L[I][1] = ';') or (L[I][1] = '#') then
+        Continue;
+      P := Pos('=', L[I]);
+      if P < 2 then
+        Continue;
+      Key := LowerCase(Trim(Copy(L[I], 1, P - 1)));
+      Val := Trim(Unescape(Copy(L[I], P + 1, MaxInt)));
+      if Val = '' then
+        Continue;
+      { je Wert mehrere mögliche Tag-Namen - je nach Format und Programm,
+        das die Datei getaggt hat. Der erste Treffer gewinnt. }
+      if ((Key = 'tbpm') or (Key = 'bpm') or (Key = 'tmpo') or
+          (Key = 'beats_per_minute')) and (Result.BPM = '') then
+        Result.BPM := Val
+      else if ((Key = 'tkey') or (Key = 'key') or (Key = 'initialkey') or
+               (Key = 'initial_key')) and (Result.Key = '') then
+        Result.Key := Val
+      else if ((Key = 'publisher') or (Key = 'tpub') or (Key = 'label') or
+               (Key = 'organization')) and (Result.Publisher = '') then
+        Result.Publisher := Val
+      else if ((Key = 'isrc') or (Key = 'tsrc')) and (Result.ISRC = '') then
+        Result.ISRC := Val;
+    end;
+  finally
+    L.Free;
+  end;
+end;
+
+{ BPM als ganze Zahl. Im Tag kann "124", "124.5" oder "124,5" stehen.
+  Rückgabe 0 = kein brauchbarer Wert (dann schreiben wir keinen BPM-Tag).
+  Traktor rechnet die BPM beim Analysieren sowieso selbst aus; der Tag
+  ist für die Anzeige vor der Analyse und für andere Programme. }
+function BpmToInt(const S: string): Integer;
+var
+  T: string;
+  I: Integer;
+  D: Double;
+  FS: TFormatSettings;
+begin
+  Result := 0;
+  T := '';
+  for I := 1 to Length(S) do
+    if S[I] in ['0'..'9'] then
+      T := T + S[I]
+    else if (S[I] in ['.', ',']) and (Pos('.', T) = 0) then
+      T := T + '.'
+    else
+      Break;                     // alles ab dem ersten anderen Zeichen weg
+  if T = '' then
+    Exit;
+  FS := DefaultFormatSettings;
+  FS.DecimalSeparator := '.';
+  if not TryStrToFloat(T, D, FS) then
+    Exit;
+  if (D < 20) or (D > 400) then  // offensichtlich unsinnige Werte wegwerfen
+    Exit;
+  Result := Round(D);
+end;
+
 function StemModelDisplayName(M: TStemModel): string;
 begin
   { gleiche Texte wie in StemModelNames, aber übersetzbar }
@@ -339,6 +487,7 @@ begin
   Result.KeepTemp   := False;
   Result.Normalize  := True;           // Standard: Club-Pegel
   Result.BassFix    := True;           // Standard: Bass-Fix an
+  Result.OutFile    := '';             // Zielname aus OutputDir berechnen
 end;
 
 function StemOutputName(const InputFile, OutputDir: string): string;
@@ -350,6 +499,102 @@ begin
   else
     Dir := IncludeTrailingPathDelimiter(OutputDir);
   Result := Dir + ExtractFileNameOnly(InputFile) + '.stem.mp4';
+end;
+
+function NewUsedNameList: TStringList;
+begin
+  Result := TStringList.Create;
+  Result.CaseSensitive := False;   // Windows: "intro" = "Intro"
+  Result.Sorted := True;           // schnelles Suchen auch bei 10000 Dateien
+  Result.Duplicates := dupIgnore;
+end;
+
+function UniqueStemOutputName(const InputFile, OutputDir: string;
+  Used: TStringList): string;
+var
+  Base: string;
+  N, Dummy: Integer;
+begin
+  Result := StemOutputName(InputFile, OutputDir);
+  Base := Copy(Result, 1, Length(Result) - Length('.stem.mp4'));
+  N := 1;
+  while Used.Find(Result, Dummy) do
+  begin
+    Inc(N);
+    Result := Base + ' (' + IntToStr(N) + ').stem.mp4';
+  end;
+  Used.Add(Result);
+end;
+
+{ Zeitpunkt der letzten Änderung in einem Ordner: der Ordner selbst und
+  alle Dateien darin; Bytes = Gesamtgrösse der Dateien }
+function NewestChange(const Dir: string; out Bytes: Int64): TDateTime;
+var
+  SR: TSearchRec;
+  Files: TStringList;
+  I: Integer;
+  Age: LongInt;
+begin
+  Result := 0;
+  Bytes := 0;
+  if FindFirst(ExcludeTrailingPathDelimiter(Dir), faDirectory, SR) = 0 then
+  begin
+    Result := FileDateToDateTime(SR.Time);
+    SysUtils.FindClose(SR);
+  end;
+  Files := FindAllFiles(Dir, '*', True);
+  try
+    for I := 0 to Files.Count - 1 do
+    begin
+      Inc(Bytes, FileSizeUtf8(Files[I]));
+      Age := FileAgeUTF8(Files[I]);
+      if (Age <> -1) and (FileDateToDateTime(Age) > Result) then
+        Result := FileDateToDateTime(Age);
+    end;
+  finally
+    Files.Free;
+  end;
+end;
+
+function CleanupStaleTempDirs(out FreedMB: Int64): Integer;
+var
+  Base, Dir, Lock: string;
+  Dirs: TStringList;
+  I: Integer;
+  Bytes: Int64;
+  Newest: TDateTime;
+  Stale: Boolean;
+begin
+  Result := 0;
+  FreedMB := 0;
+  Base := IncludeTrailingPathDelimiter(GetTempDir(False)) + 'StemMaker';
+  if not DirectoryExists(Base) then Exit;
+  Dirs := FindAllDirectories(Base, False);
+  try
+    for I := 0 to Dirs.Count - 1 do
+    begin
+      Dir := IncludeTrailingPathDelimiter(Dirs[I]);
+      Lock := Dir + TEMP_LOCK_NAME;
+      Newest := NewestChange(Dir, Bytes);
+      if FileExists(Lock) then
+        { Sperrdatei da: Lässt sie sich löschen, ist der Besitzer nicht
+          mehr da (Absturz). Ist sie noch offen, arbeitet dort gerade ein
+          anderer StemMaker/StemCLI -> stehen lassen. }
+        Stale := SysUtils.DeleteFile(Lock)
+      else
+        { keine Sperrdatei ("Temp-Ordner behalten" oder ältere Version):
+          erst nach TEMP_MAX_AGE_H Stunden löschen }
+        Stale := (Now - Newest) * 24 > TEMP_MAX_AGE_H;
+      if Stale and DeleteDirectory(Dirs[I], False) then
+      begin
+        Inc(Result);
+        Inc(FreedMB, Bytes);
+      end;
+    end;
+  finally
+    Dirs.Free;
+  end;
+  FreedMB := FreedMB div 1048576;
 end;
 
 function StemIniFileName: string;
@@ -725,6 +970,79 @@ begin
   if GetProcessMemoryInfo(H, C, SizeOf(C)) then
     Result := C.PeakWorkingSetSize div (1024 * 1024);
 end;
+
+{ ---- Windows-Job-Objekt: Hilfsprogramme sterben mit StemMaker ----------
+  ffmpeg und demucs laufen als eigene Prozesse. Wird StemMaker hart
+  beendet (Absturz, Task-Manager), würde demucs sonst im Hintergrund
+  weiterrechnen - nach einem Neustart liefen dann zwei Trennungen
+  gleichzeitig. Darum kommen alle Hilfsprogramme in ein "Job-Objekt" mit
+  der Einstellung "beim Schliessen alle Prozesse beenden". Das Handle
+  darauf wird nie geschlossen: Windows schliesst es, wenn StemMaker endet
+  (egal wie), und beendet dabei alle Prozesse im Job. }
+const
+  JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = $2000;
+  JobObjectExtendedLimitInformation  = 9;
+
+type
+  { Aufbau wie in der Windows-Doku (winnt.h), normale Ausrichtung }
+  TJobBasicLimitInfo = record
+    PerProcessUserTimeLimit: Int64;
+    PerJobUserTimeLimit: Int64;
+    LimitFlags: DWORD;
+    MinimumWorkingSetSize: PtrUInt;
+    MaximumWorkingSetSize: PtrUInt;
+    ActiveProcessLimit: DWORD;
+    Affinity: PtrUInt;
+    PriorityClass: DWORD;
+    SchedulingClass: DWORD;
+  end;
+  TJobIoCounters = record
+    ReadOperationCount, WriteOperationCount, OtherOperationCount,
+    ReadTransferCount, WriteTransferCount, OtherTransferCount: QWord;
+  end;
+  TJobExtendedLimitInfo = record
+    BasicLimitInformation: TJobBasicLimitInfo;
+    IoInfo: TJobIoCounters;
+    ProcessMemoryLimit, JobMemoryLimit,
+    PeakProcessMemoryUsed, PeakJobMemoryUsed: PtrUInt;
+  end;
+
+function SmCreateJobObject(lpJobAttributes: Pointer; lpName: PWideChar): THandle;
+  stdcall; external 'kernel32.dll' name 'CreateJobObjectW';
+function SmSetInformationJobObject(hJob: THandle; InfoClass: DWORD;
+  lpInfo: Pointer; cbInfo: DWORD): BOOL;
+  stdcall; external 'kernel32.dll' name 'SetInformationJobObject';
+function SmAssignProcessToJobObject(hJob, hProcess: THandle): BOOL;
+  stdcall; external 'kernel32.dll' name 'AssignProcessToJobObject';
+
+var
+  ToolJob: THandle = 0;    // 0 = (noch) kein Job-Objekt
+
+{ Job-Objekt anlegen (einmal beim Programmstart, siehe initialization) }
+procedure CreateToolJob;
+var
+  Info: TJobExtendedLimitInfo;
+begin
+  ToolJob := SmCreateJobObject(nil, nil);
+  if ToolJob = 0 then Exit;
+  FillChar(Info, SizeOf(Info), 0);
+  Info.BasicLimitInformation.LimitFlags := JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+  if not SmSetInformationJobObject(ToolJob, JobObjectExtendedLimitInformation,
+    @Info, SizeOf(Info)) then
+  begin
+    CloseHandle(ToolJob);
+    ToolJob := 0;
+  end;
+end;
+
+{ gestartetes Hilfsprogramm in den Job stecken. Klappt das nicht (z.B.
+  Windows 7, wenn StemMaker selbst schon in einem fremden Job läuft),
+  läuft alles wie bisher weiter - nur ohne diesen Schutz. }
+procedure AddToToolJob(hProcess: THandle);
+begin
+  if ToolJob <> 0 then
+    SmAssignProcessToJobObject(ToolJob, hProcess);
+end;
 {$ENDIF}
 
 function TStemJob.CheckTools(out Problems: string): Boolean;
@@ -1037,6 +1355,9 @@ begin
       Hand in einer Eingabeaufforderung nachstellen kann }
     LogLine('  Starte: ' + QuoteArg(Exe) + ' ' + ArgsToText(Proc.Parameters));
     Proc.Execute;
+    {$IFDEF WINDOWS}
+    AddToToolJob(Proc.ProcessHandle);   // stirbt mit StemMaker, siehe oben
+    {$ENDIF}
 
     { Hauptschleife: Ausgabe lesen, solange das Programm läuft }
     while True do
@@ -1111,7 +1432,10 @@ end;
   --------------------------------------------------------------------------- }
 function TStemJob.Run(const InputFile: string; out OutFile, ErrMsg: string): Boolean;
 var
-  WorkDir, MixWav, StemDir, TmpMp4, Problems, Err: string;
+  WorkDir, MixWav, StemDir, TmpMp4, TagFile, Problems, Err: string;
+  SrcTags: TSrcTags;               // BPM, Tonart, Label, ISRC der Quelldatei
+  Bpm: Integer;                    // BPM als ganze Zahl (0 = keine)
+  Extra: TMp4TagArray;             // Tags, die uStemMP4 schreiben muss
   SrcText: string;                 // Quelle als Text fürs Log, z.B. 'mp3 320 kbit/s'
   Args: TStringList;
   I, Code: Integer;
@@ -1122,6 +1446,7 @@ var
   DoBassFix: Boolean;              // Bass-Fix für diese Datei wirklich machen
   Tail, Graph: string;             // ffmpeg-Filter für Klang-Optionen
   DotFS: TFormatSettings;          // Zahlen für ffmpeg immer mit Punkt
+  LockH: THandle;                  // Sperrdatei im Temp-Ordner (siehe unten)
 
   { Sekunden Rechenzeit pro Minute Musik - der Vergleichswert, um Modelle
     und PCs miteinander zu vergleichen (0 = Länge unbekannt) }
@@ -1234,8 +1559,12 @@ begin
   DoBassFix := False;
   DotFS := DefaultFormatSettings;
   DotFS.DecimalSeparator := '.';
-  OutFile := StemOutputName(InputFile, FSettings.OutputDir);
+  if FSettings.OutFile <> '' then
+    OutFile := FSettings.OutFile      // vorgegeben (eindeutig gemacht)
+  else
+    OutFile := StemOutputName(InputFile, FSettings.OutputDir);
   WorkDir := '';
+  LockH := feInvalidHandle;
   T0 := GetTickCount64;
   RunMS := 0;
   InBytes := 0;
@@ -1261,8 +1590,8 @@ begin
       { Dateigröße fürs Log und die Statistik (Länge kommt nach dem Dekodieren) }
       InBytes := FileSizeUtf8(InputFile);
       Log('  ' + Format(_('Dateigröße: %.1f MB'), [InBytes / 1048576]));
-      if (FSettings.OutputDir <> '') and not DirectoryExists(FSettings.OutputDir) then
-        if not ForceDirectories(FSettings.OutputDir) then
+      if not DirectoryExists(ExtractFilePath(OutFile)) then
+        if not ForceDirectories(ExtractFilePath(OutFile)) then
           raise Exception.Create(_('Ausgabeordner kann nicht erstellt werden'));
 
       { ---- Arbeitsordner im Windows-Temp anlegen ------------------------
@@ -1274,9 +1603,14 @@ begin
         IntToStr(Random(100000)) + PathDelim;
       if not ForceDirectories(WorkDir) then
         raise Exception.Create(Format(_('Temp-Ordner kann nicht erstellt werden: %s'), [WorkDir]));
+      { Sperrdatei: bleibt offen, solange wir hier arbeiten. Stürzt
+        StemMaker ab, gibt Windows sie frei - dann darf der nächste Start
+        den Ordner löschen (siehe CleanupStaleTempDirs). }
+      LockH := FileCreate(WorkDir + TEMP_LOCK_NAME, fmShareExclusive, 438);
       MixWav  := WorkDir + 'mix.wav';
       StemDir := WorkDir + 'stems';
       TmpMp4  := WorkDir + 'out.mp4';
+      TagFile := WorkDir + 'tags.txt';
 
       { ---- 1. Eingangsdatei -> WAV 44.1 kHz Stereo ---------------------- }
       SetStage(0, 4, _('Dekodieren'));
@@ -1296,6 +1630,27 @@ begin
         Log('  ' + Format(_('Länge: %d:%.2d min'), [Trunc(FDurationSec) div 60,
           Trunc(FDurationSec) mod 60]));
       FSrcDone := True;          // beim späteren Zusammenbauen nicht neu lesen
+
+      { ---- Tags der Quelldatei lesen ------------------------------------
+        Dauert nur Millisekunden (es wird nichts dekodiert). Schlägt es
+        fehl, ist das kein Fehler der Umwandlung - dann fehlen eben BPM
+        und Tonart. }
+      RunTool(FSettings.FFmpegExe, ['-hide_banner', '-nostdin', '-y',
+        '-i', InputFile, '-f', 'ffmetadata', TagFile], False);
+      SrcTags := ParseFFMetadata(TagFile);
+      Bpm := BpmToInt(SrcTags.BPM);
+      if (Bpm > 0) or (SrcTags.Key <> '') then
+      begin
+        if Bpm > 0 then
+          SrcText := IntToStr(Bpm)
+        else
+          SrcText := '-';
+        if SrcTags.Key = '' then
+          Log('  ' + Format(_('Tags der Quelle: BPM %s, keine Tonart'), [SrcText]))
+        else
+          Log('  ' + Format(_('Tags der Quelle: BPM %s, Tonart %s'),
+            [SrcText, SrcTags.Key]));
+      end;
 
       { Welche Bitrate bekommt die Stem-Datei? }
       if FSettings.Codec = scAAC then
@@ -1426,6 +1781,11 @@ begin
         Args.AddStrings(['-c:a', 'alac', '-sample_fmt:a', 's16p'])
       else
         Args.AddStrings(['-c:a', 'aac', '-b:a', IntToStr(FUsedKbps) + 'k']);
+      { BPM: ffmpeg übernimmt den BPM-Tag der Quelle NICHT von selbst
+        (in MP3 heißt er TBPM, in MP4 'tmpo' - ffmpeg verbindet die zwei
+        nicht). Darum setzen wir ihn hier ausdrücklich. }
+      if Bpm > 0 then
+        Args.AddStrings(['-metadata', 'tmpo=' + IntToStr(Bpm)]);
       Args.AddStrings(['-ar', '44100', '-ac', '2',
         '-map_metadata', '0',               // Tags (Titel, Artist, ...) vom Original
         '-map_chapters', '-1',              // keine Kapitel
@@ -1442,7 +1802,32 @@ begin
 
       { ---- 4. NI-Stem-Infos hineinschreiben ----------------------------- }
       SetStage(98, 99, _('Stem-Metadaten schreiben'));
-      if not InjectStemMetadata(TmpMp4, BuildStemJSON(FSettings.Stems), Err) then
+      { Tonart, Label und ISRC kann ffmpeg in MP4-Dateien nicht schreiben -
+        die kommen zusammen mit den Stem-Infos hinein (siehe uStemMP4). }
+      Extra := nil;
+      if SrcTags.Key <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := 'initialkey';   // so suchen es DJ-Programme
+        Extra[High(Extra)].Value := SrcTags.Key;
+        Extra[High(Extra)].Freeform := True;
+      end;
+      if SrcTags.Publisher <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := #$A9'pub';   // '©pub' = Label/Verlag
+        Extra[High(Extra)].Value := SrcTags.Publisher;
+        Extra[High(Extra)].Freeform := False;
+      end;
+      if SrcTags.ISRC <> '' then
+      begin
+        SetLength(Extra, Length(Extra) + 1);
+        Extra[High(Extra)].Name := 'ISRC';
+        Extra[High(Extra)].Value := SrcTags.ISRC;
+        Extra[High(Extra)].Freeform := True;
+      end;
+      if not InjectStemMetadata(TmpMp4, BuildStemJSON(FSettings.Stems),
+           Extra, Err) then
         raise Exception.Create(Format(_('Stem-Metadaten: %s'), [Err]));
       { Kontrolle: es müssen genau 5 Spuren drin sein }
       if CountTracks(TmpMp4) <> 5 then
@@ -1529,10 +1914,17 @@ begin
         RunMS := GetTickCount64 - T0;
       WriteStat;
     end;
+    if LockH <> feInvalidHandle then
+      FileClose(LockH);
     if (WorkDir <> '') and DirectoryExists(WorkDir) then
     begin
       if FSettings.KeepTemp then
-        Log('  ' + Format(_('Temp-Ordner behalten: %s'), [WorkDir]))
+      begin
+        { Sperrdatei weg - der Ordner bleibt zur Fehlersuche liegen und
+          wird erst nach TEMP_MAX_AGE_H Stunden beim Start gelöscht }
+        SysUtils.DeleteFile(WorkDir + TEMP_LOCK_NAME);
+        Log('  ' + Format(_('Temp-Ordner behalten: %s'), [WorkDir]));
+      end
       else
         DeleteDirectory(ExcludeTrailingPathDelimiter(WorkDir), False);
     end;
@@ -1541,5 +1933,8 @@ end;
 
 initialization
   Randomize;     // Zufallsgenerator für die Temp-Ordnernamen starten
+  {$IFDEF WINDOWS}
+  CreateToolJob; // Hilfsprogramme enden mit StemMaker (siehe oben)
+  {$ENDIF}
 
 end.

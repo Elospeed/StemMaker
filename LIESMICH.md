@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.6
+# Elospeed StemMaker 1.7
 
 **by Elospeed**
 
@@ -37,7 +37,7 @@ Danach öffnet sich das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, 
 - **Beim allerersten Start** fehlen ffmpeg (ca. 56 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Jeder Download wird mit der SHA-256-Prüfsumme aus `update.json` kontrolliert; eine kaputte oder ausgetauschte Datei wird verworfen. Danach wird neu geprüft, und StemMaker startet.
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
 
-**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Abschalten über das Häkchen im Update-Fenster oder `AutoCheck=0` (siehe unten).
+**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Geht beim Kopieren etwas schief, dreht StemMaker alles zurück und bleibt auf der alten Version. Von Hand suchen: **Info → Nach Updates suchen** (zeigt auch eine übersprungene Version wieder an). Abschalten über das Häkchen im Update- oder Info-Fenster oder `AutoCheck=0` (siehe unten).
 
 Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htdemucs_ft), fragt StemMaker, ob es jetzt geladen werden soll.
 
@@ -57,7 +57,7 @@ Windows merkt sich das, das Fenster kommt pro Programm nur einmal.
 
 **Download prüfen?**
 - ZIP oder exe bei [VirusTotal](https://www.virustotal.com) hochladen. Einzelne Treffer von wenig bekannten Scannern sind bei unsignierten Programmen häufig und meist Fehlalarme.
-- Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.6.zip` (Dateinamen anpassen).
+- Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.7.zip` (Dateinamen anpassen).
 - Der komplette Quellcode liegt in diesem Repository. Du kannst StemMaker selbst kompilieren (siehe [Selber kompilieren](#selber-kompilieren)).
 
 ## Spenden
@@ -98,7 +98,7 @@ Die demucs-Programme sind komplett statisch gelinkt; sie brauchen keine DLLs und
 - **Start** verarbeitet die Liste nacheinander. „Abbrechen“ stoppt sofort und räumt die Temp-Dateien auf.
 - Unter beiden Fortschrittsbalken stehen **vergangene und geschätzte Restzeit**: oben für die aktuelle Datei, unten für die ganze Liste. Gerechnet wird mit der Länge der wartenden Songs und dem Tempo dieses PCs; mit jeder fertigen Datei wird es genauer. In der Liste steht nach jedem Song, wie lange er gedauert hat, z. B. „OK (4:12)“.
 - Das Ergebnis ist `Titel.stem.mp4`, standardmässig neben der Originaldatei. Alternativ wählst du einen Ausgabeordner.
-- Tags (Titel, Artist, Album, Genre, Jahr, Track) und das **Cover** werden aus der MP3 übernommen.
+- Tags und das **Cover** werden aus der Quelldatei übernommen: Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext – dazu **BPM**, **Tonart**, **Label** und **ISRC**. Traktor zeigt Titel, Artist, Album, Genre, Label und Cover gleich nach dem Import; BPM und Tonart überschreibt Traktor mit seiner eigenen Analyse.
 - **Stem prüfen…** zeigt, ob eine Datei ein gültiger Stem ist (5 Spuren + Stem-Metadaten). Das klappt auch mit gekauften NI-Stems.
 - Ein normaler Player spielt nur Spur 1, den Master. Die einzelnen Stems hörst du erst in Traktor.
 
@@ -185,7 +185,7 @@ Faustregel: Auf einem aktuellen PC dauert htdemucs etwa **doppelt so lang wie de
 Gleich wie bei Stemgen mit `ni-stem`/MP4Box:
 - MP4 mit 5 Audiospuren: Spur 1 ist der Master und als einzige *aktiv*, Spuren 2–5 sind Drums/Bass/Other/Vox und *deaktiviert*.
 - `moov/udta/stem`: JSON mit Stem-Namen, Farben und Mastering-DSP (Kompressor/Limiter aus, gleiche Werte wie Stemgen).
-- iTunes-Tags plus `TAUT = STEM`.
+- iTunes-Tags plus `TAUT = STEM`. BPM steht im Atom `tmpo`, die Tonart in `----:com.apple.iTunes:initialkey`, das Label in `©pub` und die ISRC in `----:com.apple.iTunes:ISRC` – diese vier kann ffmpeg für MP4 nicht schreiben, das macht StemMaker selbst (`uStemMP4`).
 
 ## Für Fortgeschrittene: StemMaker.ini
 
