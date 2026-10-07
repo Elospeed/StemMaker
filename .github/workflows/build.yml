@@ -52,7 +52,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Lazarus installieren
-        uses: gcarreno/setup-lazarus@v3
+        # Fremde Action: auf einen festen Commit gepinnt (= Tag v3.4.1), nicht auf
+        # "v3". Ein Tag kann der Autor jederzeit verschieben, und dieser Job läuft
+        # mit Schreibrecht auf das Repository. Neue Version: Commit-SHA des Tags
+        # nachschlagen und hier eintragen.
+        uses: gcarreno/setup-lazarus@3ee9d77e0c771b37c1069f218cb68bd5ce7c30fe # v3.4.1
         with:
           lazarus-version: ${{ env.LAZARUS_VERSION }}
           with-cache: false
@@ -98,20 +102,29 @@ jobs:
 
       - name: Tag für das Vor-Release bestimmen
         id: tag
+        # Branch-Name und Fork-Name kommen über Umgebungsvariablen ins Skript,
+        # nicht direkt per ${{ }} in den Text. Sonst könnte ein Branch-Name mit
+        # Anführungszeichen eigene Befehle ins Skript schmuggeln.
+        env:
+          EREIGNIS: ${{ github.event_name }}
+          PR_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_NR: ${{ github.event.pull_request.number }}
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
         run: |
           # Tag-Name je nach Anlass; leer = kein Vor-Release
           TAG=""
-          case "${{ github.event_name }}" in
+          case "$EREIGNIS" in
             push)
               TAG="test-main" ;;
             pull_request)
               # PRs aus fremden Forks haben kein Schreibrecht -> nur Artefakt
-              if [ "${{ github.event.pull_request.head.repo.full_name }}" = "${{ github.repository }}" ]; then
-                TAG="test-pr-${{ github.event.pull_request.number }}"
+              if [ "$PR_REPO" = "$REPO" ]; then
+                TAG="test-pr-$PR_NR"
               fi ;;
             workflow_dispatch)
               # Schrägstriche und andere Sonderzeichen im Branch-Namen durch "-" ersetzen
-              TAG="test-$(echo '${{ github.ref_name }}' | tr -c 'A-Za-z0-9._\n-' '-')" ;;
+              TAG="test-$(printf '%s\n' "$BRANCH" | tr -c 'A-Za-z0-9._\n-' '-')" ;;
           esac
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Tag: ${TAG:-(keiner)}"

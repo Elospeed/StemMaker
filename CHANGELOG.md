@@ -9,6 +9,12 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### Sicherheit
+- **Keine ungeprüften Downloads mehr, wenn `update.json` nicht erreichbar ist:** Bisher lud StemMaker dann ffmpeg als täglich wechselndes „latest“-ZIP von BtbN und die Modelle ohne Prüfsumme. Jetzt kommt ffmpeg auch in diesem Fall aus dem eigenen Release `ffmpeg-9.0.2`, und für ffmpeg sowie die Modelle v4 und v3 sind die SHA-256-Prüfsummen fest eingebaut. Nur die vier htdemucs_ft-Dateien haben noch keine Prüfsumme.
+- **ZIP-Pfade werden geprüft:** Einträge mit `..` oder absolutem Pfad werden beim Entpacken (Update, ffmpeg) abgewiesen. Die Free-Pascal-Unit `zipper` prüft das selbst nicht („Zip Slip“). Unsere ZIPs sind vorher über die Prüfsumme abgesichert, das ist eine zusätzliche Sicherung.
+- **Release-Seite aus `update.json`** wird nur geöffnet, wenn sie mit `https://` beginnt.
+- **Build-Workflow:** Die fremde Action `setup-lazarus` ist auf einen festen Commit gepinnt (der Job hat Schreibrecht auf das Repository), und Branch-Namen gelangen nur noch über Umgebungsvariablen ins Skript.
+
 ### Projekt
 - **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet. TODO und ROADMAP nennen die nächsten Schritte.
 

@@ -56,9 +56,16 @@ uses
 
 const
   { Download-Adressen (lassen sich in der INI überschreiben, siehe DownloadURL) }
-  DEF_FFMPEG_ZIP_URL = 'https://github.com/BtbN/FFmpeg-Builds/releases/download/' +
-                       'latest/ffmpeg-master-latest-win64-lgpl.zip';
+  DEF_FFMPEG_ZIP_URL = 'https://github.com/Elospeed/StemMaker/releases/download/' +
+                       'ffmpeg-9.0.2/ffmpeg-9.0.2-win64-lgpl.zip';
   DEF_MODEL_BASE_URL = 'https://huggingface.co/datasets/Retrobear/demucs.cpp/resolve/main/';
+
+  { Eingebaute Prüfsummen (SHA-256) für den Fall, dass update.json nicht
+    erreichbar ist. So wird auch dann keine ungeprüfte Datei verwendet.
+    Müssen zu den Werten in update.json passen (gleiche Dateien). }
+  DEF_FFMPEG_SHA256 = 'd350ded1fd523fdae90064c11b954497d2ba8f9ef3b10a2447f6717acc210af0';
+  DEF_MODEL_SHA256_V4 = '72b17c42d308982ddb5069bc3bf48b81a5aac4cb6516e4366c0fa7cef6df0064';
+  DEF_MODEL_SHA256_V3 = 'f72a3b8ecce3aa50da9e062a91c46367e15b5f5a71d070874217c5e4cb6b35a4';
   FFMPEG_MB = 60;                       // ungefähre Downloadgröße für die Anzeige (feste Version aus update.json)
   MIN_MODEL_SIZE = 40 * 1024 * 1024;    // echte Modelle sind 53..160 MB groß
 
@@ -190,6 +197,29 @@ begin
     Result := Trim(Ini.ReadString('Download', Key, '')) <> '';
   finally
     Ini.Free;
+  end;
+end;
+
+{ Eingebaute Prüfsumme für einen Download-Auftrag ('' = keine bekannt).
+  Wird nur genommen, wenn update.json nicht erreichbar ist. Hat jemand in
+  der INI eine eigene Adresse eingetragen, gibt es keine eingebaute
+  Prüfsumme - die eigene Quelle kann ja eine andere Datei liefern. }
+function BuiltinHash(const IniKey, Dest: string): string;
+var
+  N: string;
+begin
+  Result := '';
+  if DownloadURLFromIni(IniKey) then
+    Exit;
+  if IniKey = 'FFmpegZipURL' then
+    Result := DEF_FFMPEG_SHA256
+  else if IniKey = 'ModelBaseURL' then
+  begin
+    N := LowerCase(ExtractFileName(Dest));
+    if N = 'ggml-model-htdemucs-4s-f16.bin' then
+      Result := DEF_MODEL_SHA256_V4
+    else if N = 'ggml-model-hdemucs_mmi-v3-f16.bin' then
+      Result := DEF_MODEL_SHA256_V3;
   end;
 end;
 
@@ -394,12 +424,13 @@ begin
   ErrMsg := '';
   { Zuerst update.json holen (max. 5 s): Dort stehen die festen Download-
     Adressen und die SHA-256-Prüfsummen. Klappt das nicht (offline, GitHub
-    gestört), wird mit den eingebauten Adressen geladen - ohne Prüfsumme. }
+    gestört), wird mit den eingebauten Adressen und Prüfsummen geladen
+    (siehe BuiltinHash; für die htdemucs_ft-Modelle gibt es noch keine). }
   HaveInfo := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, E);
   if HaveInfo then
     LogLine(Format('update.json gelesen (Version %s, ffmpeg %s)', [Info.Version, Info.FFmpegVer]))
   else
-    LogLine('update.json nicht erreichbar (' + E + ') - eingebaute Download-Adressen, ohne Prüfsumme');
+    LogLine('update.json nicht erreichbar (' + E + ') - eingebaute Download-Adressen und Prüfsummen');
   try
   for I := 0 to High(FJobs) do
   begin
@@ -429,7 +460,9 @@ begin
             ExtractFileName(FJobs[I].Dest);
         Hash := ModelHash(Info, FJobs[I].Dest);
       end;
-    end;
+    end
+    else
+      Hash := BuiltinHash(FJobs[I].IniKey, FJobs[I].Dest);
     FIndex := I;
     Synchronize(@SyncJobStart);
     LogLine('Download: ' + FJobs[I].URL);

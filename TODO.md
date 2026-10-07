@@ -40,4 +40,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- winget: Vertriebsweg in TODO, ROADMAP und CHANGELOG eintragen.
+- Sicherheitsprüfung: eingebaute Prüfsummen für ffmpeg und Modelle, ZIP-Pfade prüfen, Build-Workflow absichern.
