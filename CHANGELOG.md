@@ -9,6 +9,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### Projekt
+- **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet. TODO und ROADMAP nennen die nächsten Schritte.
+
 ### StemPlayer 1.4
 - **Falsche Dateien werden abgewiesen:** Per Drag & Drop (oder „Alle Dateien“ im Öffnen-Dialog) liess sich jede Datei laden, z. B. eine MP3 oder ein Video. Der Player nahm dann einfach 5 Spuren an, die laufende Wiedergabe brach ab und ffmpeg meldete einen unverständlichen Fehler. Jetzt prüft der Player vorher die MP4-Struktur (MP4-Format und mindestens 5 Audiospuren) und zeigt eine klare Meldung auf Deutsch und Englisch. Der gerade geladene Track bleibt dabei erhalten. Ein reingezogener Ordner wird ebenfalls mit Hinweis abgewiesen.
 
