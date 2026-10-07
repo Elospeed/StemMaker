@@ -18,6 +18,7 @@ Zuletzt aktualisiert: 6. Oktober 2026
 - [ ] **Hörvergleich v3 gegen v4:** denselben Track mit `hdemucs_mmi` (v3) und dem Standard-Modell umwandeln und in Traktor vergleichen (Vocals solo, Instrumental, Drums). Ergebnis entscheidet unten über das Standard-Modell.
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
 
+- [ ] **StemPlayer 1.4: falsche Datei reinziehen** (Testversion aus dem Vor-Release des PRs, Links in [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md)): einen Track laden und abspielen, dann eine MP3, ein normales MP4-Video und einen Ordner reinziehen. Erwartet: jedes Mal eine Meldung (DE/EN), der Track spielt weiter. Danach eine echte `.stem.mp4` reinziehen, die lädt wie gewohnt.
 - [ ] **Erste automatisch gebaute Testversion:** `StemMaker.exe` und `StemPlayer.exe` aus dem Vor-Release des Build-PRs unter Windows kurz starten (Links in [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md)). Bestätigt, dass der Build auf GitHub genauso funktioniert wie der von Hand.
 
 ## 🧑‍⚖️ Speedy entscheidet oder macht von Hand
@@ -37,4 +38,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Projektseite (Ordner `site/`, Englisch und Deutsch, mit Screenshots).
+- StemPlayer 1.4: falsche Dateien per Drag & Drop abweisen.

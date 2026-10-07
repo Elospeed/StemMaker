@@ -21,6 +21,8 @@
   Versionen:
     1.0  (01.10.2026)  Erste Version
     1.1  (02.10.2026)  unverändert (nur Kommentare ergänzt)
+    1.2  (06.10.2026)  CheckStemFile: prüft vor dem Laden, ob die Datei
+                       wirklich eine Stem-Datei ist (MP4 mit mind. 5 Audiospuren)
   ============================================================================ }
 unit mp4stem;
 
@@ -46,6 +48,15 @@ type
 { Liest die Stem-Infos. Gibt False zurück, wenn die Datei kein gültiges MP4 ist
   (Info ist dann trotzdem mit Standardwerten gefüllt). }
 function ReadStemInfo(const FileName: string; out Info: TStemInfo): Boolean;
+
+{ Prüft, ob die Datei eine abspielbare Stem-Datei ist:
+    - ein MP4-Container (sonst z.B. MP3, WAV, ZIP oder umbenannte Datei)
+    - mit mindestens 5 Audiospuren (Master + 4 Stems)
+  Gibt bei False in Reason eine Meldung für den Benutzer zurück
+  (Deutsch und Englisch untereinander, der Player hat noch keine
+  Sprachumschaltung). Info ist danach wie bei ReadStemInfo gefüllt. }
+function CheckStemFile(const FileName: string; out Info: TStemInfo;
+  out Reason: string): Boolean;
 
 implementation
 
@@ -246,6 +257,41 @@ begin
   finally
     S.Free;
   end;
+end;
+
+function CheckStemFile(const FileName: string; out Info: TStemInfo;
+  out Reason: string): Boolean;
+const
+  HINT_DE = 'Der StemPlayer spielt nur Traktor-Stem-Dateien (.stem.mp4) ab,' + LineEnding +
+            'z.B. die von Elospeed StemMaker erzeugten.';
+  HINT_EN = 'StemPlayer only plays Traktor stem files (.stem.mp4),' + LineEnding +
+            'e.g. those created by Elospeed StemMaker.';
+begin
+  Result := False;
+  Reason := '';
+  if not ReadStemInfo(FileName, Info) then
+  begin
+    { Kein 'moov'-Block gefunden oder Datei nicht lesbar }
+    Reason := 'Das ist keine Stem-Datei (kein MP4-Format).' + LineEnding +
+              HINT_DE + LineEnding + LineEnding +
+              'This is not a stem file (not in MP4 format).' + LineEnding +
+              HINT_EN;
+    Exit;
+  end;
+  if Info.AudioTracks < STEM_COUNT + 1 then
+  begin
+    { Normales MP4/M4A (1 Spur) oder Video ohne Stems }
+    Reason := Format('Das ist keine Stem-Datei: Sie hat %d Audiospur(en), ' +
+              'eine Stem-Datei hat %d (Master + %d Stems).',
+              [Info.AudioTracks, STEM_COUNT + 1, STEM_COUNT]) + LineEnding +
+              HINT_DE + LineEnding + LineEnding +
+              Format('This is not a stem file: it has %d audio track(s), ' +
+              'a stem file has %d (master + %d stems).',
+              [Info.AudioTracks, STEM_COUNT + 1, STEM_COUNT]) + LineEnding +
+              HINT_EN;
+    Exit;
+  end;
+  Result := True;
 end;
 
 end.
