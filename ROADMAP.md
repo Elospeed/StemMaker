@@ -6,13 +6,14 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 6. Oktober 2026
+Zuletzt aktualisiert: 7. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
-- Nichts Grösseres. Version 1.7 ist seit 6. Oktober 2026 veröffentlicht, siehe [CHANGELOG](CHANGELOG.md).
+- Version 1.7 ist seit 6. Oktober 2026 veröffentlicht, siehe [CHANGELOG](CHANGELOG.md).
+- **Verteilung über winget** (Hauptkanal, Entscheidung 7. Oktober 2026): Manifest für 1.7 ist fertig, Speedy reicht es ein. Danach `winget install Elospeed.StemMaker`. Vor 1.7.1: Daten (Modelle, ffmpeg, Einstellungen, Logs) bei winget-Installationen ausserhalb des Programmordners ablegen, weil winget den Ordner bei jedem Upgrade löscht.
 
 ## 📋 Geplant für den StemPlayer
 
@@ -37,6 +38,6 @@ Zuletzt aktualisiert: 6. Oktober 2026
 - Pegel-AddOn (wie MP3Gain): ganze Ordner auf gleiche Lautheit bringen (−14 oder −9 LUFS), verlustfrei wenn möglich, sonst mit Limiter.
 - Weitere Sprachen.
 - Namenskonvention im Quelltext (Bereich und Typ im Variablennamen), vorerst zurückgestellt (05.10.2026).
-- Code-Signing: vorerst nicht (Entscheidung 03.10.2026, Kosten lohnen sich im Anfangsstadium nicht). Stattdessen Hinweis zur Windows-Warnung in README/LIESMICH.
+- Code-Signing: vorerst nicht (Entscheidung 03.10.2026, Kosten lohnen sich im Anfangsstadium nicht). Stattdessen Hinweis zur Windows-Warnung in README/LIESMICH. Später realistisch: Certum Open Source (ca. 50–70 €/Jahr) oder SignPath (gratis für Open Source), Stand 07.10.2026.
 
 Mehr in [docs/IDEEN.md](docs/IDEEN.md).
