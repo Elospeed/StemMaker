@@ -517,19 +517,57 @@ begin
 end;
 
 { ---------------------------------------------------------------------------
+  SafeZipEntry - darf dieser Name aus dem ZIP entpackt werden?
+
+  Die Unit 'zipper' (Free Pascal 3.2) hängt den Namen aus dem ZIP einfach an
+  den Zielordner an. Ein manipuliertes ZIP mit einem Eintrag wie
+  "..\..\Autostart\x.exe" könnte so ausserhalb des Zielordners schreiben
+  ("Zip Slip"). Unsere ZIPs sind zwar vorher über die Prüfsumme geprüft,
+  trotzdem werden solche Namen hier abgewiesen:
+    - Laufwerk oder absoluter Pfad ("C:...", "/...", "\...")
+    - ein Ordnerteil ".." irgendwo im Pfad
+  --------------------------------------------------------------------------- }
+function SafeZipEntry(const Name: string): Boolean;
+var
+  N: string;
+  Parts: TStringArray;
+  I: Integer;
+begin
+  Result := False;
+  N := StringReplace(Name, '\', '/', [rfReplaceAll]);
+  if (N = '') or (N[1] = '/') or (Pos(':', N) > 0) then
+    Exit;
+  Parts := N.Split(['/']);
+  for I := 0 to High(Parts) do
+    if Parts[I] = '..' then
+      Exit;
+  Result := True;
+end;
+
+{ ---------------------------------------------------------------------------
   ExtractZipAll - ganzes ZIP entpacken (für Updates)
   --------------------------------------------------------------------------- }
 function ExtractZipAll(const ZipFile, DestDir: string; out ErrMsg: string): Boolean;
 var
   UZ: TUnZipper;
+  I: Integer;
 begin
   Result := False;
   ErrMsg := '';
   UZ := TUnZipper.Create;
   try
     try
-      ForceDirectories(DestDir);
+      { zuerst alle Namen prüfen, erst dann entpacken (siehe SafeZipEntry) }
       UZ.FileName := ZipFile;
+      UZ.Examine;
+      for I := 0 to UZ.Entries.Count - 1 do
+        if not SafeZipEntry(UZ.Entries[I].ArchiveFileName) then
+        begin
+          ErrMsg := Format(_('ZIP-Fehler: %s'),
+            ['unerlaubter Pfad ' + UZ.Entries[I].ArchiveFileName]);
+          Exit;
+        end;
+      ForceDirectories(DestDir);
       UZ.OutputPath := DestDir;
       UZ.UnZipAllFiles;
       Result := True;
@@ -581,6 +619,11 @@ begin
       if Entry = '' then
       begin
         ErrMsg := Format(_('%s nicht im ZIP gefunden'), [EntryFileName]);
+        Exit;
+      end;
+      if not SafeZipEntry(Entry) then
+      begin
+        ErrMsg := Format(_('ZIP-Fehler: %s'), ['unerlaubter Pfad ' + Entry]);
         Exit;
       end;
       { 3. nur diesen einen Eintrag entpacken }

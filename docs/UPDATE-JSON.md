@@ -9,7 +9,7 @@
 
 Adresse, die StemMaker liest: `https://raw.githubusercontent.com/Elospeed/StemMaker/main/update.json`
 
-Ist die Datei nicht erreichbar (offline, GitHub gestört), startet StemMaker normal. Downloads laufen dann über die eingebauten Adressen, ohne Prüfsumme.
+Ist die Datei nicht erreichbar (offline, GitHub gestört), startet StemMaker normal. Downloads laufen dann über die eingebauten Adressen und eingebauten Prüfsummen (`src/uinit.pas`, `DEF_FFMPEG_SHA256` und `DEF_MODEL_SHA256_*`). Ändert sich ffmpeg oder ein Modell, dort ebenfalls nachtragen.
 
 ## Aufbau
 

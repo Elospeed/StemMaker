@@ -145,6 +145,11 @@ begin
       Info.Version := JStr(O, 'version');
       Info.Date := JStr(O, 'date');
       Info.PageURL := JStr(O, 'page');
+      { Die Seite wird im Browser geöffnet (OpenURL). Nur echte Web-Adressen
+        zulassen - ein Eintrag wie "C:\...\x.exe" oder "file://..." würde
+        sonst ein Programm auf dem PC starten. }
+      if Pos('https://', LowerCase(Info.PageURL)) <> 1 then
+        Info.PageURL := '';
       { "Was ist neu" in der eingestellten Sprache, sonst Englisch, sonst Deutsch }
       Info.Notes := JStr(O, 'notes_' + LangCode);
       if Info.Notes = '' then Info.Notes := JStr(O, 'notes_en');
