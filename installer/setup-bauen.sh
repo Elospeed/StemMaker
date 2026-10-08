@@ -41,6 +41,8 @@ fi
 # Versionsnummer für die Datei-Eigenschaften: nur der Ziffern-Teil (1.7.1-test -> 1.7.1)
 NUM=$(printf '%s' "$VERSION" | grep -oE '^[0-9]+(\.[0-9]+)*')
 
-"$ISCC" /Q "/DAppVersion=$VERSION" "/DVersionNum=$NUM" "/DOutputName=$NAME" \
+# MSYS2_ARG_CONV_EXCL: Git-Bash würde Schalter wie "/Q" und "/DAppVersion=..." sonst
+# für Pfade halten und umschreiben (ISCC meldet dann "more than one script filename")
+MSYS2_ARG_CONV_EXCL='*' "$ISCC" /Q "/DAppVersion=$VERSION" "/DVersionNum=$NUM" "/DOutputName=$NAME" \
   "/DSourceDir=$(cygpath -w "$PWD/$QUELLE")" StemMaker.iss
 ls -l "Output/$NAME.exe"
