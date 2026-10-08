@@ -7,7 +7,7 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 7. Oktober 2026
+Zuletzt aktualisiert: 8. Oktober 2026
 
 ---
 
@@ -19,13 +19,15 @@ Zuletzt aktualisiert: 7. Oktober 2026
   Nacheinander umwandeln, nicht gleichzeitig. Achtung: Die fertige Datei heisst bei beiden Modellen gleich (`Song.stem.mp4`). Nach dem ersten Lauf die Datei umbenennen (z. B. `Song v4.stem.mp4`) oder für den zweiten Lauf einen anderen Zielordner wählen, sonst wird sie übersprungen bzw. überschrieben.
 
 - [ ] **StemPlayer 1.4: falsche Datei reinziehen** (Testversion aus dem Vor-Release `test-main`, Links in [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md)): einen Track laden und abspielen, dann eine MP3, ein normales MP4-Video und einen Ordner reinziehen. Erwartet: jedes Mal eine Meldung (DE/EN), der Track spielt weiter. Danach eine echte `.stem.mp4` reinziehen, die lädt wie gewohnt.
+- [ ] **Installer testen** (`StemMaker-Setup-Test.exe` aus dem Vor-Release des Installer-PRs, Links in [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md)): installieren (SmartScreen-Warnung? Startmenü-Eintrag „StemMaker“ und „StemPlayer“ da?), StemMaker starten, Modell laden, eine Datei umwandeln. Dann das Setup noch einmal drüber installieren: Modell und Einstellungen müssen bleiben. Zum Schluss unter „Apps & Features“ deinstallieren, die Frage nach Modellen und Einstellungen mit „Ja“ beantworten: Ordner `%LOCALAPPDATA%\Programs\StemMaker` ist danach weg.
 - [ ] **Erste automatisch gebaute Testversion:** `StemMaker.exe` und `StemPlayer.exe` aus dem Vor-Release des Build-PRs unter Windows kurz starten (Links in [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md)). Bestätigt, dass der Build auf GitHub genauso funktioniert wie der von Hand.
 
 ## 🧑‍⚖️ Speedy entscheidet oder macht von Hand
 
 - [ ] **v3 als Standard-Modell?** – erst nach dem Hörvergleich oben.
 - [ ] **Projektseite einschalten:** Settings → Pages → Source „GitHub Actions“. Danach läuft der Workflow „Projektseite“ und die Seite ist unter https://elospeed.github.io/StemMaker/ erreichbar. Anschliessend in der Google Search Console als URL-Präfix anmelden und `sitemap.xml` einreichen.
-- [ ] **StemMaker bei winget einreichen:** Manifest für 1.7 und Schritt-für-Schritt-Anleitung liegen im Projektordner (`winget/`). Erst lokal mit `winget install --manifest` testen (dabei schauen, ob die SmartScreen-Warnung ausbleibt), dann Pull Request in `microsoft/winget-pkgs`. Jede neue Version braucht danach ein neues Manifest.
+- [ ] **Setup für 1.7 erzeugen** (nach dem Merge des Installer-PRs): Actions → „Setup zum Release“ → „Run workflow“, Tag `v1.7`. Der Lauf baut `StemMaker-1.7-Setup.exe`, testet es und hängt es ans Release 1.7. Ab 1.7.1 passiert das beim Veröffentlichen des Releases von selbst.
+- [ ] **StemMaker bei winget einreichen:** mit dem Setup (Manifest-Typ `inno`), nicht mit dem ZIP. Beim ZIP-Paket löscht `winget upgrade` den ganzen Ordner samt Modellen und Einstellungen, beim Setup nicht. Das Manifest wird neu vorbereitet, sobald das Setup am Release hängt (die Prüfsumme steht dann in der Zusammenfassung des Workflow-Laufs). Danach Pull Request in `microsoft/winget-pkgs`, Anleitung im Projektordner (`winget/`).
 - [ ] **Prüfsummen der htdemucs_ft-Modelle** (ohne Eile): v4 und v3 stehen in `update.json`. Die vier ft-Dateien fehlen noch, weil sie auf Speedys PC nicht geladen sind. Wer sie hat: Prüfsummen schicken, dann kommen sie dazu.
 
 ## 🔨 Elospeed baut als Nächstes
@@ -34,10 +36,10 @@ Reihenfolge = Vorschlag, Speedy kann umstellen.
 
 1. [ ] **StemPlayer: Deutsch/Englisch** über `lang\` und Einstellungen in `StemMaker.ini`, wie StemCLI.
 2. [ ] **StemPlayer: High-DPI** – saubere Darstellung bei 125 % / 150 % Bildschirm-Skalierung.
-3. [ ] **Eigener Datenordner bei winget-Installation** (vor 1.7.1): `winget upgrade` und `winget uninstall` löschen den ganzen Programmordner, also auch ffmpeg, Modelle, `StemMaker.ini`, Warteschlange und `logs\statistik.csv`. Liegt StemMaker unter `\WinGet\Packages\`, sollen diese Dateien nach `%LOCALAPPDATA%\StemMaker\`. Die eingebaute Update-Funktion verweist dann auf `winget upgrade`.
+3. [ ] **Update-Funktion und Installer:** Nach einem Update aus StemMaker heraus zeigt „Apps & Features“ (und `winget list`) noch die alte Versionsnummer. Die Update-Funktion soll sie im Registry-Eintrag des Installers nachführen, falls StemMaker per Setup installiert wurde.
 
 Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur einmal um 5 s (schon seit 1.1).
 
 ## 🔀 Offene Pull Requests
 
-- Sicherheitsprüfung: eingebaute Prüfsummen für ffmpeg und Modelle, ZIP-Pfade prüfen, Build-Workflow absichern.
+- Installer (Inno Setup): Setup-Exe neben dem ZIP, für winget.

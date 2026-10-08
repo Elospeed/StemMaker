@@ -6,14 +6,14 @@ Woran gerade gearbeitet wird und was als Nächstes geplant ist. Fertiges wandert
 Die kurze Liste „was ist als Nächstes zu tun“ (Tests, Entscheidungen, nächste Bauschritte) steht in der [TODO](TODO.md).
 Die lange Ideen-Sammlung (ohne Zusage) steht in [docs/IDEEN.md](docs/IDEEN.md).
 
-Zuletzt aktualisiert: 7. Oktober 2026
+Zuletzt aktualisiert: 8. Oktober 2026
 
 ---
 
 ## 🔨 In Arbeit
 
 - Version 1.7 ist seit 6. Oktober 2026 veröffentlicht, siehe [CHANGELOG](CHANGELOG.md).
-- **Verteilung über winget** (Hauptkanal, Entscheidung 7. Oktober 2026): Manifest für 1.7 ist fertig, Speedy reicht es ein. Danach `winget install Elospeed.StemMaker`. Vor 1.7.1: Daten (Modelle, ffmpeg, Einstellungen, Logs) bei winget-Installationen ausserhalb des Programmordners ablegen, weil winget den Ordner bei jedem Upgrade löscht.
+- **Verteilung über winget** (Hauptkanal, Entscheidung 7. Oktober 2026) **mit Installer** (Inno Setup, Entscheidung 8. Oktober 2026): Das Setup installiert pro Benutzer nach `%LOCALAPPDATA%\Programs\StemMaker`, mit Startmenü-Eintrag. winget installiert und aktualisiert es als Typ `inno`; Modelle, ffmpeg und Einstellungen bleiben dabei erhalten. Das ZIP bleibt als portable Variante und für die eingebaute Update-Funktion.
 
 ## 📋 Geplant für den StemPlayer
 

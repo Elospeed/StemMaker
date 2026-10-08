@@ -27,8 +27,12 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 
 ## Loslegen
 
-1. ZIP entpacken, z. B. nach `C:\Tools\StemMaker`.
-2. `StemMaker.exe` starten. Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
+Auf der [Release-Seite](https://github.com/Elospeed/StemMaker/releases/latest) gibt es zwei Downloads mit demselben Programm:
+- **`StemMaker-<Version>-Setup.exe`** (Installer): installiert nur für deinen Windows-Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker`, mit Startmenü-Eintrag und Eintrag zum Deinstallieren unter „Apps & Features“. Beim Deinstallieren von Hand fragt er, ob die heruntergeladenen Modelle, ffmpeg und die Einstellungen auch weg sollen.
+- **`StemMaker-<Version>.zip`** (portabel): irgendwohin entpacken, z. B. nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
+
+1. Installer ausführen oder ZIP entpacken.
+2. `StemMaker.exe` starten (nach dem Installer: Startmenü-Eintrag „StemMaker“). Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
 
 **Beim ersten Start auf einem PC** zeigt ein Fenster den Haftungsausschluss und die Lizenzhinweise. Häkchen setzen und **„Einverstanden - StemMaker starten“** klicken. Das kommt einmal pro PC: Wird der StemMaker-Ordner auf einen anderen PC kopiert, fragt er dort noch einmal (kein Kopierschutz, Kopieren ist nach der MIT-Lizenz erlaubt). `AddOns\StemCLI.exe` will dieselbe Bestätigung einmal mit `--accept`. Den Text findest du jederzeit wieder unter **Info → Lizenzen**.
 
@@ -43,7 +47,7 @@ Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htd
 
 ## Windows-Warnung („Der Computer wurde durch Windows geschützt“)
 
-StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
+StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
 
 **So startest du es trotzdem:**
 1. Im blauen Fenster auf **„Weitere Informationen“** klicken.
