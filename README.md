@@ -5,7 +5,7 @@
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
-It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setup: a single Lazarus program that downloads everything it needs on first start.
+It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setting up a Python environment: a single Lazarus program that downloads everything it needs on first start. Available as an installer or as a portable ZIP.
 
 **Why StemMaker**
 
