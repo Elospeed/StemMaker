@@ -42,4 +42,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Installer (Inno Setup): Setup-Exe neben dem ZIP, für winget.
-- Projektseite: ehrlichere FAQ-Antwort „Traktor Pro 4 kann selbst Stems machen. Wozu StemMaker?“ (Traktor ist pro Track schneller, StemMaker liefert eigenständige Dateien).
+- Ideen aus Reddit: lange Stem-Datei zerschneiden, 5.1-Surround und Videos als Eingabe (nur IDEEN.md).
