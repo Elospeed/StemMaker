@@ -338,5 +338,10 @@
  "Die alte Version wurde wiederhergestellt.": "The previous version has been restored.",
  "Du hast die neueste Version (%s).": "You have the latest version (%s).",
  "Nach Updates suchen": "Check for updates",
- "Suche ...": "Searching ..."
+ "Suche ...": "Searching ...",
+ "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste.": "%d folder(s) could not be read because their path is longer than %d characters. Music in them is missing from the list.",
+ "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log.": "Fix: move the folder higher up (e.g. directly under D:\\Music) or shorten folder names. The folders are listed in the log.",
+ "Ordner übersprungen, Pfad zu lang: %s": "Folder skipped, path too long: %s",
+ "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben.": "Path too long (%d characters, Windows allows at most %d). Please move the file to a folder with a shorter path.",
+ "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen.": "Target path too long (%d characters, Windows allows at most %d). Please choose a shorter output folder or shorten the file name."
 }

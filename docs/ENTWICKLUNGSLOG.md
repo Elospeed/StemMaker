@@ -6,6 +6,18 @@ Neueste Einträge oben.
 
 ---
 
+## Lange Pfade über 260 Zeichen (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Was passiert mit Pfaden über 260 Zeichen? Unter Wine nicht prüfbar, Wine kennt die Windows-Grenze nicht. | Am 8. Oktober 2026 auf Windows getestet, mit 5 Fällen (MP3-Pfad 120, 250, 256, 275 und 300 Zeichen). Bis 259 Zeichen geht alles. Darüber gibt es einen Fehler („Datei nicht gefunden“ bzw. „Kann Zieldatei nicht schreiben“), aber keinen Absturz und kein falsches „OK“. Ein Ordner über der Grenze wird beim Durchsuchen **still übersprungen**, die Musik darin fehlt ohne Hinweis in der Liste. |
+| Klare Meldung statt allgemeinem Fehler. | `PathTooLong` in `ustemjob.pas` prüft vor der Arbeit Quell- und Zielpfad und meldet „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“. Gilt auch für StemCLI. Die Stem-Datei ist 5 Zeichen länger als die MP3 (`.mp3` → `.stem.mp4`), darum kann nur das Ziel zu lang sein. |
+| Übersprungene Ordner melden. | `AddFolder` in `umain.pas` sucht nach dem Hinzufügen alle Unterordner, deren Pfad + `\*` über 259 Zeichen liegt (so sucht Windows beim Auflisten), schreibt sie ins Log und zeigt einen Hinweis. |
+| Zeichen zählen. | Windows zählt UTF-16-Zeichen, Pascal-Strings sind UTF-8 (ein Umlaut = 2 Bytes). Darum `Length(UTF8Decode(S))` in `PathLength`, nie `Length(S)`. |
+| Warum keine echte Unterstützung für lange Pfade? | Das bräuchte `longPathAware` im Manifest **und** den Registry-Schalter `LongPathsEnabled`, den Nutzer selbst setzen müssten, dazu müssten ffmpeg und demucs mitspielen. Viel Aufwand für einen seltenen Fall. Abhilfe für Nutzer: Ordner weiter oben ablegen. |
+
+---
+
 ## Tags der Quelldatei übernehmen (Oktober 2026)
 
 | Problem | Lösung |
