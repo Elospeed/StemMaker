@@ -1131,7 +1131,7 @@ end;
 procedure TfrmMain.AddFolder(const Dir: string);
 var
   L: TStringList;
-  I: Integer;
+  I, Skipped: Integer;
   Root: string;
 begin
   Root := ExtractFileDir(ExcludeTrailingPathDelimiter(Dir));
@@ -1144,6 +1144,37 @@ begin
   finally
     L.Free;
   end;
+  { Ordner mit zu langem Pfad (über 259 Zeichen) kann Windows nicht
+    auflisten. FindAllFiles überspringt sie still, die Musik darin fehlt
+    dann ohne Hinweis in der Liste. Darum hier nachzählen und melden.
+    Gemeldet wird nur der oberste zu lange Ordner, die Ordner darunter
+    findet Windows ohnehin nicht. }
+  Skipped := 0;
+  if DirTooLongToList(Dir) then
+  begin
+    Inc(Skipped);
+    AddLog(Format(_('Ordner übersprungen, Pfad zu lang: %s'), [Dir]));
+  end
+  else
+  begin
+    L := FindAllDirectories(Dir, True);
+    try
+      for I := 0 to L.Count - 1 do
+        if DirTooLongToList(L[I]) then
+        begin
+          Inc(Skipped);
+          AddLog(Format(_('Ordner übersprungen, Pfad zu lang: %s'), [L[I]]));
+        end;
+    finally
+      L.Free;
+    end;
+  end;
+  if Skipped > 0 then
+    MessageDlg(Format(_('%d Ordner konnten nicht gelesen werden, weil ihr Pfad ' +
+      'länger als %d Zeichen ist. Musik darin fehlt in der Liste.') + LineEnding +
+      LineEnding + _('Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter ' +
+      'D:\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log.'),
+      [Skipped, MAX_PATH_CHARS]), mtWarning, [mbOK], 0);
 end;
 
 { Drag & Drop aus dem Explorer (AllowDropFiles ist im Formular aktiv) }

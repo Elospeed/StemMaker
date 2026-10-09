@@ -9,6 +9,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker
+- **Klare Meldung bei Pfaden über 260 Zeichen:** Windows kann längere Pfade nicht öffnen (am 8. Oktober 2026 auf Windows getestet). Bisher hiess es dann „Datei nicht gefunden“ oder „Kann Zieldatei nicht schreiben“. Jetzt steht in der Liste „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“ mit einem Tipp, was zu tun ist. Gilt auch für StemCLI.
+- **Hinweis auf übersprungene Ordner:** Liegt beim Hinzufügen eines Ordners ein Unterordner über der Grenze, fehlte die Musik darin bisher ohne Hinweis in der Liste. Jetzt kommt eine Meldung, und die Ordner stehen im Log.
+
 ### Sicherheit
 - **Keine ungeprüften Downloads mehr, wenn `update.json` nicht erreichbar ist:** Bisher lud StemMaker dann ffmpeg als täglich wechselndes „latest“-ZIP von BtbN und die Modelle ohne Prüfsumme. Jetzt kommt ffmpeg auch in diesem Fall aus dem eigenen Release `ffmpeg-9.0.2`, und für ffmpeg sowie die Modelle v4 und v3 sind die SHA-256-Prüfsummen fest eingebaut. Nur die vier htdemucs_ft-Dateien haben noch keine Prüfsumme.
 - **ZIP-Pfade werden geprüft:** Einträge mit `..` oder absolutem Pfad werden beim Entpacken (Update, ffmpeg) abgewiesen. Die Free-Pascal-Unit `zipper` prüft das selbst nicht („Zip Slip“). Unsere ZIPs sind vorher über die Prüfsumme abgesichert, das ist eine zusätzliche Sicherung.
