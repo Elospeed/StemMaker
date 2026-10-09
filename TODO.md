@@ -40,4 +40,4 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 ## 🔀 Offene Pull Requests
 
 - Installer (Inno Setup): Setup-Exe neben dem ZIP, für winget.
-- Ideen aus Reddit: lange Stem-Datei zerschneiden, 5.1-Surround und Videos als Eingabe (nur IDEEN.md).
+- Ideen: „Stem-Werkstatt“ als eigenes AddOn (eigene Stems verpacken, Stem-Datei zerschneiden, 5.1 auf vier Decks), nur IDEEN.md.
