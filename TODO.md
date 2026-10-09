@@ -7,7 +7,7 @@ Der grössere Plan steht in der [ROADMAP](ROADMAP.md), Erledigtes im [CHANGELOG]
 
 Regel: Wird etwas erledigt, kommt es hier raus und ins CHANGELOG. Kommt eine neue Aufgabe dazu, wird sie hier eingetragen.
 
-Zuletzt aktualisiert: 8. Oktober 2026
+Zuletzt aktualisiert: 9. Oktober 2026
 
 ---
 
@@ -39,4 +39,5 @@ Kleinigkeit ohne Eile: Im StemPlayer springt zweimal sehr schnell Pfeiltaste nur
 
 ## 🔀 Offene Pull Requests
 
-- Lange Pfade: klare Meldung „Pfad zu lang“ und Hinweis auf übersprungene Ordner. Speedy testet danach mit der Testversion aus dem Vor-Release (Fälle 3 bis 5 aus dem Langpfad-Test).
+- Installer (Inno Setup): Setup-Exe neben dem ZIP, für winget.
+- Projektseite: ehrlichere FAQ-Antwort „Traktor Pro 4 kann selbst Stems machen. Wozu StemMaker?“ (Traktor ist pro Track schneller, StemMaker liefert eigenständige Dateien).
