@@ -1,4 +1,4 @@
-Elospeed StemDecks 0.2 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemDecks 0.3 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
 =====================================================================
 
 Macht aus einem 5.1-Mitschnitt (z.B. Konzert-DVD) Traktor-Stems.
@@ -34,7 +34,14 @@ INSTALLATION
   DVD: die grossen VOB-Dateien des Films (VTS_01_1.VOB ...). Kopiergeschützte
   DVDs kann ffmpeg nicht lesen.
 
-3) VIER DECKS ABSPIELEN
+3) AUSSCHNITT (zum Verschicken an uns)
+  Datei aufs Fenster ziehen (oder Knopf AUSSCHNITT) und "Ausschnitt zum
+  Verschicken" wählen. Start (z.B. 1:00) und Länge (z.B. 45 s) eingeben.
+  Es entsteht <Name>-sample.mka neben der Quelle: alle Tonspuren im
+  Original, ohne Neukodierung, ohne Bild. Der Ordner geht danach auf.
+  Diese Datei und logs\StemDecks.log z.B. über WeTransfer schicken.
+
+4) VIER DECKS ABSPIELEN
   "DECKS LADEN" und eine A_-Datei wählen: B_/C_/D_ aus demselben Ordner
   kommen automatisch auf Deck B..D. Ein gemeinsames Play/Pause, alle Decks
   laufen sampelgenau synchron.

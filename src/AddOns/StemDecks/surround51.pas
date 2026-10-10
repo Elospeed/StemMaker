@@ -35,6 +35,8 @@
     0.1  (10.10.2026)  Erste Testversion
     0.2  (10.10.2026)  Zuordnung einstellbar, Auswahl der Tonspur,
                        LFE-Anhebung, Verpacken in eine Stem-Datei
+    0.3  (10.10.2026)  "6 channels" (5.1 ohne Layout-Angabe, z.B. AC3 in MKA)
+                       wird als 5.1(side) behandelt
   ============================================================================ }
 unit surround51;
 
@@ -153,7 +155,24 @@ end;
 
 function IsSupported51(const Layout: string): Boolean;
 begin
-  Result := (Layout = '5.1') or (Layout = '5.1(side)');
+  { "6 channels" = 6 Kanäle ohne Layout-Angabe (z.B. AC3 nach dem Umpacken
+    in MKV/MKA). Die Reihenfolge ist bei AC3/DTS/AAC trotzdem 5.1. }
+  Result := (Layout = '5.1') or (Layout = '5.1(side)') or (Layout = '6 channels');
+end;
+
+{ Anfang des Filters: gewählte Spur, bei "6 channels" erst als 5.1(side)
+  kennzeichnen (sonst kennt channelsplit die Kanäle nicht) }
+function TrackInput(const Layout: string; Track: Integer): string;
+begin
+  Result := Format('[0:a:%d]', [Track]);
+  if Layout = '6 channels' then
+    Result := Result + 'channelmap=channel_layout=5.1(side),';
+end;
+
+{ Layout, mit dem channelsplit arbeitet }
+function SplitLayout(const Layout: string): string;
+begin
+  if Layout = '6 channels' then Result := '5.1(side)' else Result := Layout;
 end;
 
 function PartsValid(const P: TDeckParts): Boolean;
@@ -207,14 +226,14 @@ function SplitFilter(const Layout: string; Track: Integer; LfeGainDb: Double): s
 var SurL, SurR: string;
 begin
   { Namen der Surround-Kanäle hängen vom Layout ab }
-  if Layout = '5.1(side)' then begin SurL := 'SL'; SurR := 'SR'; end
+  if SplitLayout(Layout) = '5.1(side)' then begin SurL := 'SL'; SurR := 'SR'; end
   else begin SurL := 'BL'; SurR := 'BR'; end;
   { channelsplit zerlegt in 6 Mono-Kanäle. join setzt zwei Mono-Kanäle
     zu Stereo zusammen - die map ist nötig, sonst legt ffmpeg die Mono-
     Eingänge auf den Center und vertauscht dabei links/rechts.
     pan macht aus einem Mono-Kanal Stereo (beide Seiten gleich). }
   Result :=
-    Format('[0:a:%d]', [Track]) + 'channelsplit=channel_layout=' + Layout +
+    TrackInput(Layout, Track) + 'channelsplit=channel_layout=' + SplitLayout(Layout) +
       '[FL][FR][FC][LFE][' + SurL + '][' + SurR + '];' +
     '[FL][FR]join=inputs=2:channel_layout=stereo:map=0.0-FL|1.0-FR[t0];' +
     '[FC]pan=stereo|c0=c0|c1=c0[t1];' +
@@ -231,7 +250,7 @@ begin
   Args.Clear;
   AddInput(SourceFile, MaxSeconds, Args);
   Args.Add('-filter_complex');
-  Args.Add(Format('[0:a:%d]pan=mono|c0=LFE,volumedetect[o]', [Track]));
+  Args.Add(TrackInput(Layout, Track) + 'pan=mono|c0=LFE,volumedetect[o]');
   Args.Add('-map'); Args.Add('[o]');
   Args.Add('-f'); Args.Add('null'); Args.Add('-');
 end;

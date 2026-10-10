@@ -56,15 +56,17 @@
     Leertaste / P  Play / Pause (alle Decks)   Pos1   an den Anfang
     1..4           Deck A..D stumm an/aus      Pfeile -/+ 5 s
     Strg+O         Decks laden
-  Parameter / Drag & Drop: Stem-Datei -> laden, andere Datei -> fragen,
-  ob 1 Stem-Datei oder 4 Decks.
+  Parameter / Drag & Drop: Stem-Datei -> laden, andere Datei -> fragen:
+  1 Stem-Datei, 4 Decks oder Ausschnitt zum Verschicken.
 
   Versionen:
     0.1  (10.10.2026)  Erste Testversion (Machbarkeit 5.1 auf vier Decks)
     0.2  (10.10.2026)  Zuordnung einstellbar (Standard A Front, B LFE,
                        C Center, D Surround), "5.1 -> 1 STEM" ohne KI,
                        Auswahl der Tonspur, LFE auf 0 dB, Protokoll mit
-                       Log-Fenster, Deutsch/Englisch, Taste P
+                       Log-Fenster, Deutsch/Englisch, Taste P,
+    0.3  (10.10.2026)  AUSSCHNITT: kurzen Clip mit allen Tonspuren verlustfrei
+                       ausschneiden (zum Verschicken an uns)
   ============================================================================ }
 unit deckform;
 
@@ -79,7 +81,7 @@ uses
 
 const
   APP_TITLE   = 'Elospeed StemDecks';
-  APP_VER     = '0.2';
+  APP_VER     = '0.3';
   TEMP_PREFIX = 'ElospeedStemDecks_';   // Präfix der Temp-Ordner
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   TEST_SECONDS= 180;                    // "nur Anfang" beim Umwandeln
@@ -124,6 +126,7 @@ type
     BtnLoadAll : TDJButton;
     BtnSettings: TDJButton;
     BtnLog     : TDJButton;
+    BtnSample  : TDJButton;
     LblHint    : TLabel;
     BtnPlay    : TDJButton;
     BtnStop    : TDJButton;
@@ -227,6 +230,7 @@ type
     procedure Pack51(const FileName: string);
     procedure Split51(const FileName: string);
     function  ConvertWithStemCLI(const Wavs: array of string): Boolean;
+    procedure MakeSample(const FileName: string);
 
     { Ereignisse }
     procedure BtnPackClick(Sender: TObject);
@@ -234,6 +238,7 @@ type
     procedure BtnLoadAllClick(Sender: TObject);
     procedure BtnSettingsClick(Sender: TObject);
     procedure BtnLogClick(Sender: TObject);
+    procedure BtnSampleClick(Sender: TObject);
     procedure BtnDeckLoadClick(Sender: TObject);
     procedure BtnPlayClick(Sender: TObject);
     procedure BtnStopClick(Sender: TObject);
@@ -429,7 +434,15 @@ begin
   BtnLog.ShowHint := True;
   BtnLog.OnClick := @BtnLogClick;
 
-  LblHint := MakeLabel(PnlTop, '', 630, 18, 0, False);
+  BtnSample := MakeButton(PnlTop, T('AUSSCHNITT', 'SAMPLE'), 624, 10, 100, 32);
+  BtnSample.Hint := T('Kurzen Ausschnitt (z.B. 45 s) einer Quelle verlustfrei ausschneiden,' + LineEnding +
+                      'mit allen Tonspuren - zum Verschicken an Elospeed',
+                      'Cut a short clip (e.g. 45 s) of a source without quality loss,' + LineEnding +
+                      'with all audio tracks - to send to Elospeed');
+  BtnSample.ShowHint := True;
+  BtnSample.OnClick := @BtnSampleClick;
+
+  LblHint := MakeLabel(PnlTop, '', 740, 18, 0, False);
   LblHint.Font.Color := DJ_DIM;
 
   BtnPlay := MakeButton(PnlTop, '', 12, 56, 46, 36);
@@ -1139,6 +1152,7 @@ begin
   BtnSplit.Enabled := not B;
   BtnLoadAll.Enabled := not B;
   BtnSettings.Enabled := not B;
+  BtnSample.Enabled := not B;
   for d := 0 to DECK_COUNT - 1 do Decks[d].BtnLoad.Enabled := not B;
 end;
 
@@ -1892,6 +1906,137 @@ begin
   Result := True;
 end;
 
+{ "1:30", "01:30", "90" -> Sekunden. -1 = ungültig }
+function ParseTimeSec(const S: string): Integer;
+var
+  p, M, Sec: Integer;
+begin
+  Result := -1;
+  p := Pos(':', S);
+  if p = 0 then
+  begin
+    if TryStrToInt(Trim(S), Sec) and (Sec >= 0) then Result := Sec;
+    Exit;
+  end;
+  if TryStrToInt(Trim(Copy(S, 1, p - 1)), M) and TryStrToInt(Trim(Copy(S, p + 1, MaxInt)), Sec) and
+     (M >= 0) and (Sec >= 0) and (Sec < 60) then
+    Result := M * 60 + Sec;
+end;
+
+{ Schneidet einen kurzen Ausschnitt OHNE Neukodierung aus (alle Tonspuren,
+  z.B. AC3 und DTS einer DVD) in <Name>-sample.mka. Gedacht zum Verschicken
+  an uns, damit wir mit echtem Material testen können. Kein Video, damit
+  die Datei klein bleibt. }
+procedure TMainForm.MakeSample(const FileName: string);
+var
+  Args: TStringList;
+  OutText, OutFile, Lines: string;
+  Values: array of string;
+  Tracks: TAudioTracks;
+  StartSec, LenSec, Code, i: Integer;
+  Size: Int64;
+begin
+  if FBusy or not EnsureFFmpeg then Exit;
+  OutFile := '';
+  SetBusy(True);
+  Args := TStringList.Create;
+  try
+    Log('--- ' + T('AUSSCHNITT', 'SAMPLE') + ' ---');
+    Log('Quelle / source: ' + FileName);
+    { Tonspuren auflisten (nur zur Kontrolle und fürs Log) }
+    Args.Add('-hide_banner');
+    Args.Add('-nostdin');
+    Args.Add('-probesize'); Args.Add('100M');
+    Args.Add('-analyzeduration'); Args.Add('100M');
+    Args.Add('-i'); Args.Add(FileName);
+    Code := RunTool(FFFmpeg, Args, T('Prüfe Tonspuren', 'Checking audio tracks'), OutText);
+    if Code < 0 then Exit;
+    Tracks := ParseAudioTracks(OutText);
+    if Length(Tracks) = 0 then
+    begin
+      MessageDlg(APP_TITLE, T('In dieser Datei wurde keine Tonspur gefunden:',
+        'No audio track was found in this file:') + LineEnding + FileName + LineEnding + LineEnding +
+        T('Bei DVDs: die grossen VOB-Dateien des Films nehmen (z.B. VTS_01_1.VOB).',
+          'For DVDs: use the big VOB files of the movie (e.g. VTS_01_1.VOB).'),
+        mtWarning, [mbOK], 0);
+      Exit;
+    end;
+    Lines := '';
+    for i := 0 to High(Tracks) do
+      Lines := Lines + '  ' + Tracks[i].Line + LineEnding;
+
+    { Start und Länge abfragen }
+    SetLength(Values, 2);
+    Values[0] := '1:00';
+    Values[1] := '45';
+    repeat
+      if not InputQuery(APP_TITLE + ' - ' + T('Ausschnitt', 'Sample clip'),
+           [T('Start (Minuten:Sekunden)', 'Start (minutes:seconds)'),
+            T('Länge in Sekunden (max. 120)', 'Length in seconds (max. 120)')], Values) then
+        Exit;
+      StartSec := ParseTimeSec(Values[0]);
+      LenSec := ParseTimeSec(Values[1]);
+      if (StartSec >= 0) and (LenSec >= 5) and (LenSec <= 120) then Break;
+      MessageDlg(APP_TITLE, T('Bitte Start z.B. als 1:00 und Länge zwischen 5 und 120 Sekunden angeben.',
+        'Please enter the start e.g. as 1:00 and a length between 5 and 120 seconds.'),
+        mtWarning, [mbOK], 0);
+    until False;
+    Log(Format('Start %d s, Länge / length %d s', [StartSec, LenSec]));
+
+    OutFile := ExtractFilePath(FileName) + ExtractFileNameOnly(FileName) + '-sample.mka';
+    Args.Clear;
+    Args.Add('-hide_banner');
+    Args.Add('-nostdin');
+    Args.Add('-y');
+    Args.Add('-probesize'); Args.Add('100M');
+    Args.Add('-analyzeduration'); Args.Add('100M');
+    Args.Add('-ss'); Args.Add(IntToStr(StartSec));
+    Args.Add('-i'); Args.Add(FileName);
+    Args.Add('-t'); Args.Add(IntToStr(LenSec));
+    Args.Add('-map'); Args.Add('0:a');      // alle Tonspuren, kein Video
+    Args.Add('-c'); Args.Add('copy');       // ohne Neukodierung = Original
+    Args.Add('-f'); Args.Add('matroska');
+    Args.Add(OutFile);
+    Code := RunTool(FFFmpeg, Args, T('Schneide Ausschnitt aus', 'Cutting sample clip'), OutText);
+    if Code < 0 then
+    begin
+      OutFile := '';
+      Exit;
+    end;
+    Size := 0;
+    if FileExists(OutFile) then Size := FileSizeUtf8(OutFile);
+    if (Code <> 0) or (Size = 0) then
+    begin
+      MessageDlg(APP_TITLE, T('Der Ausschnitt konnte nicht erstellt werden:',
+        'The sample clip could not be created:') + LineEnding + LineEnding +
+        Copy(Trim(OutText), 1, 1500) + LineEnding + LineEnding +
+        T('Bitte das Log schicken (Knopf LOG -> Log-Ordner öffnen).',
+          'Please send us the log (LOG button -> Open log folder).'), mtError, [mbOK], 0);
+      OutFile := '';
+      Exit;
+    end;
+    Log(Format('Ausschnitt / sample: %s (%.1f MB)', [OutFile, Size / 1048576]));
+    LblStatus.Caption := T('Ausschnitt fertig: ', 'Sample clip done: ') + OutFile;
+    MessageDlg(APP_TITLE,
+      T('Ausschnitt fertig:', 'Sample clip done:') + LineEnding + OutFile +
+      Format('  (%.1f MB)', [Size / 1048576]) + LineEnding + LineEnding +
+      T('Enthaltene Tonspuren:', 'Audio tracks included:') + LineEnding + Lines + LineEnding +
+      T('Bitte diese Datei und die Logdatei (logs\StemDecks.log)' + LineEnding +
+        'z.B. über WeTransfer, Google Drive oder Dropbox schicken.' + LineEnding +
+        'Der Ordner wird jetzt geöffnet.',
+        'Please send this file and the log file (logs\StemDecks.log)' + LineEnding +
+        'e.g. via WeTransfer, Google Drive or Dropbox.' + LineEnding +
+        'The folder opens now.'),
+      mtInformation, [mbOK], 0);
+  finally
+    Args.Free;
+    SetBusy(False);
+    if FCloseAfter then Application.QueueAsyncCall(@DeferredClose, 0);
+  end;
+  if (OutFile <> '') and not FCancel then
+    OpenDocument(ExtractFilePath(OutFile));
+end;
+
 { ============================================================================
   Ereignisse
   ============================================================================ }
@@ -1920,6 +2065,13 @@ procedure TMainForm.BtnSettingsClick(Sender: TObject);
 begin
   if FBusy then Exit;
   ShowSettings;
+end;
+
+procedure TMainForm.BtnSampleClick(Sender: TObject);
+begin
+  if FBusy then Exit;
+  SrcDlg.Title := T('Quelle für den Ausschnitt wählen', 'Choose the source for the sample clip');
+  if SrcDlg.Execute then MakeSample(SrcDlg.FileName);
 end;
 
 procedure TMainForm.BtnLogClick(Sender: TObject);
@@ -2120,9 +2272,12 @@ begin
     R := QuestionDlg(APP_TITLE, ExtractFileName(FileName) + LineEnding + LineEnding +
       T('Was soll mit dieser 5.1-Datei passieren?', 'What should be done with this 5.1 file?'),
       mtConfirmation,
-      [mrYes, '5.1 -> 1 STEM', mrAll, '5.1 -> 4 DECKS', mrCancel, T('Abbrechen', 'Cancel')], 0);
+      [mrYes, '5.1 -> 1 STEM', mrAll, '5.1 -> 4 DECKS',
+       mrIgnore, T('Ausschnitt zum Verschicken', 'Sample clip to send'),
+       mrCancel, T('Abbrechen', 'Cancel')], 0);
     if R = mrYes then Pack51(FileName)
-    else if R = mrAll then Split51(FileName);
+    else if R = mrAll then Split51(FileName)
+    else if R = mrIgnore then MakeSample(FileName);
   end;
 end;
 

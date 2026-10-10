@@ -1,4 +1,4 @@
-Elospeed StemDecks 0.2 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
+Elospeed StemDecks 0.3 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
 =========================================================================
 
 Turns a 5.1 recording (e.g. a concert DVD) into Traktor stems.
@@ -38,7 +38,14 @@ SETUP
   DVD: use the big VOB files of the movie (VTS_01_1.VOB ...). ffmpeg cannot
   read copy-protected DVDs.
 
-3) PLAYING FOUR DECKS
+3) SAMPLE CLIP (to send to us)
+  Drop your file onto the window (or click SAMPLE) and choose "Sample clip
+  to send". Enter the start (e.g. 1:00) and length (e.g. 45 s). This
+  creates <name>-sample.mka next to the source: all audio tracks in their
+  original format, not re-encoded, no video. The folder opens afterwards.
+  Please send this file and logs\StemDecks.log, e.g. via WeTransfer.
+
+4) PLAYING FOUR DECKS
   "LOAD DECKS" and pick an A_ file: B_/C_/D_ from the same folder are
   loaded onto decks B..D automatically. One shared play/pause, all decks
   stay sample-accurately in sync.
