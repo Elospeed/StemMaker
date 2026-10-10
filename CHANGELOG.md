@@ -10,95 +10,47 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## Unveröffentlicht
 
 ### StemMaker
-- **Klare Meldung bei Pfaden über 260 Zeichen:** Windows kann längere Pfade nicht öffnen (am 8. Oktober 2026 auf Windows getestet). Bisher hiess es dann „Datei nicht gefunden“ oder „Kann Zieldatei nicht schreiben“. Jetzt steht in der Liste „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“ mit einem Tipp, was zu tun ist. Gilt auch für StemCLI.
-- **Hinweis auf übersprungene Ordner:** Liegt beim Hinzufügen eines Ordners ein Unterordner über der Grenze, fehlte die Musik darin bisher ohne Hinweis in der Liste. Jetzt kommt eine Meldung, und die Ordner stehen im Log.
+- **Installer:** Neben dem ZIP gibt es `StemMaker-<Version>-Setup.exe`. Es installiert nur für den aktuellen Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker`, legt Startmenü-Einträge für StemMaker und StemPlayer an und erscheint unter „Apps & Features“. Drüberinstallieren (Update) lässt Modelle, ffmpeg und Einstellungen in Ruhe. Beim Deinstallieren fragt es, ob auch diese gelöscht werden sollen. Das ZIP bleibt als portable Variante.
+- **Klare Meldung bei Pfaden über 260 Zeichen:** Windows kann längere Pfade nicht öffnen. Bisher hiess es dann „Datei nicht gefunden“ oder „Kann Zieldatei nicht schreiben“. Jetzt steht in der Liste „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“ mit einem Tipp, was zu tun ist. Gilt auch für StemCLI.
+- **Hinweis auf übersprungene Ordner:** Liegt beim Hinzufügen eines Ordners ein Unterordner über der Grenze, fehlte die Musik darin bisher ohne Hinweis. Jetzt kommt eine Meldung, und die Ordner stehen im Log.
 
 ### Sicherheit
-- **Keine ungeprüften Downloads mehr, wenn `update.json` nicht erreichbar ist:** Bisher lud StemMaker dann ffmpeg als täglich wechselndes „latest“-ZIP von BtbN und die Modelle ohne Prüfsumme. Jetzt kommt ffmpeg auch in diesem Fall aus dem eigenen Release `ffmpeg-9.0.2`, und für ffmpeg sowie die Modelle v4 und v3 sind die SHA-256-Prüfsummen fest eingebaut. Nur die vier htdemucs_ft-Dateien haben noch keine Prüfsumme.
-- **ZIP-Pfade werden geprüft:** Einträge mit `..` oder absolutem Pfad werden beim Entpacken (Update, ffmpeg) abgewiesen. Die Free-Pascal-Unit `zipper` prüft das selbst nicht („Zip Slip“). Unsere ZIPs sind vorher über die Prüfsumme abgesichert, das ist eine zusätzliche Sicherung.
+- **Keine ungeprüften Downloads mehr, wenn `update.json` nicht erreichbar ist:** Bisher lud StemMaker dann ffmpeg als täglich wechselndes „latest“-ZIP und die Modelle ohne Prüfsumme. Jetzt kommt ffmpeg auch in diesem Fall aus dem eigenen Release `ffmpeg-9.0.2`, und für ffmpeg sowie die Modelle v4 und v3 sind die SHA-256-Prüfsummen fest eingebaut.
+- **ZIP-Pfade werden geprüft:** Einträge mit `..` oder absolutem Pfad werden beim Entpacken (Update, ffmpeg) abgewiesen.
 - **Release-Seite aus `update.json`** wird nur geöffnet, wenn sie mit `https://` beginnt.
-- **Build-Workflow:** Die fremde Action `setup-lazarus` ist auf einen festen Commit gepinnt (der Job hat Schreibrecht auf das Repository), und Branch-Namen gelangen nur noch über Umgebungsvariablen ins Skript.
-
-### Projekt
-- **Planungslisten nicht mehr im Repository:** `ROADMAP.md`, `TODO.md` und `docs/IDEEN.md` werden ab jetzt intern geführt. Was fertig ist, steht weiterhin hier im CHANGELOG.
-- **Installer (Inno Setup):** Neben dem ZIP gibt es `StemMaker-<Version>-Setup.exe`. Es installiert nur für den aktuellen Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker` (dort darf StemMaker Modelle, Einstellungen und Logs schreiben und sich selbst aktualisieren), legt Startmenü-Einträge für StemMaker und StemPlayer an und erscheint unter „Apps & Features“. Drüberinstallieren (Update) lässt Modelle, ffmpeg und Einstellungen in Ruhe. Beim Deinstallieren von Hand fragt es, ob auch diese gelöscht werden sollen; still (z. B. per winget) wird nichts davon gelöscht. Der Workflow „Setup zum Release“ baut das Setup beim Veröffentlichen eines Releases aus dessen ZIP, testet es auf Windows (installieren, Update, deinstallieren) und hängt es ans Release. Jeder PR-Build legt zusätzlich `StemMaker-Setup-Test.exe` ins Vor-Release.
-- **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet.
 
 ### StemPlayer 1.4
-- **Falsche Dateien werden abgewiesen:** Per Drag & Drop (oder „Alle Dateien“ im Öffnen-Dialog) liess sich jede Datei laden, z. B. eine MP3 oder ein Video. Der Player nahm dann einfach 5 Spuren an, die laufende Wiedergabe brach ab und ffmpeg meldete einen unverständlichen Fehler. Jetzt prüft der Player vorher die MP4-Struktur (MP4-Format und mindestens 5 Audiospuren) und zeigt eine klare Meldung auf Deutsch und Englisch. Der gerade geladene Track bleibt dabei erhalten. Ein reingezogener Ordner wird ebenfalls mit Hinweis abgewiesen.
+- **Falsche Dateien werden abgewiesen:** Per Drag & Drop (oder „Alle Dateien“ im Öffnen-Dialog) liess sich jede Datei laden, z. B. eine MP3 oder ein Video. Die laufende Wiedergabe brach dann ab, und es kam ein unverständlicher Fehler. Jetzt prüft der Player die Datei vorher und zeigt eine klare Meldung auf Deutsch und Englisch. Der gerade geladene Track bleibt erhalten. Ein reingezogener Ordner wird ebenfalls mit Hinweis abgewiesen.
 
 ## 1.7 – 6. Oktober 2026
 
-### StemMaker – Ergänzungen und Fehlerkorrekturen vom 6. Oktober
-- **Tags vollständig übernommen:** Neu landen **BPM**, **Tonart**, **Label** und **ISRC** der Quelldatei in der Stem-Datei. Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext und das Cover kamen schon vorher mit. Hintergrund: ffmpeg verbindet die ID3-Felder `TBPM`/`TKEY` nicht mit den MP4-Atomen, darum liest StemMaker die Tags der Quelle jetzt selbst aus (`ffmpeg -f ffmetadata`, dauert Millisekunden) und schreibt BPM als `tmpo`, Tonart als `----:com.apple.iTunes:initialkey`, Label als `©pub` und ISRC als `----:com.apple.iTunes:ISRC`. Die drei letzten schreibt `uStemMP4` zusammen mit den Stem-Infos, ohne die Datei ein zweites Mal zu kopieren. Im Log steht, welche Werte gefunden wurden.
-
-- **Update-Funktion: Fehlerkorrekturen aus dem Wine-Test** (6. Oktober 2026, Test mit lokalem Test-Server und gefälschtem Update auf „1.8“):
-  - Hing der Download des Updates (Server antwortet nicht mehr), liess sich das Fortschrittsfenster weder mit „Abbrechen“ noch mit dem X schliessen – StemMaker war blockiert. Jetzt geht das Fenster sofort zu, der hängende Download läuft im Hintergrund ins Leere und räumt sich selbst auf. Zusätzlich brechen alle Downloads (Update, ffmpeg, Modelle) nach 30 Sekunden ohne Daten ab, statt bis zu 60 Minuten zu warten.
-  - „Abbrechen“ beim Update-Download zeigt keine Fehlermeldung mehr („Update konnte nicht geladen werden: Abgebrochen“).
-  - Ein einzelner falscher Eintrag in `update.json` (z. B. `null` statt einer Prüfsumme) legte die ganze Update-Prüfung lahm, ohne Grund im Log. Solche Einträge werden jetzt übersprungen, andere Fehler stehen mit Grund im Log. `"version": 1.8` ohne Anführungszeichen wird im Log erklärt.
-  - Kommt die Antwort auf die Update-Prüfung später als 30 Sekunden, wird sie ignoriert (das Update-Fenster ging sonst womöglich erst nach Minuten mitten in der Arbeit auf).
-  - Ein beschädigtes Update-ZIP liess den Hilfsordner `_update_tmp` im StemMaker-Ordner liegen.
-
-- **Neu: „Nach Updates suchen“** im Info-Fenster, dazu das Häkchen „Beim Start nach Updates suchen“. Wer die Prüfung beim Start abgeschaltet oder eine Version übersprungen hat, kommt so ohne INI wieder zum Update. Die Suche wartet höchstens 20 Sekunden, das Fenster bleibt bedienbar.
-- **Update wird bei einem Fehler zurückgedreht:** Scheitert das Kopieren mitten drin (z. B. Virenscanner sperrt eine Datei), werden die neuen Dateien entfernt und die alten wiederhergestellt. Vorher blieb eine Mischung aus alter und neuer Version.
-- Reste eines abgebrochenen Update-Downloads (`StemMaker-update.zip.part` im Temp-Ordner) räumt der nächste Start weg.
-- Kam ein Update während einer Umwandlung mit „PC nach Abschluss herunterfahren“ und wird das Herunterfahren abgebrochen, wird das Update jetzt angeboten (vorher erst beim nächsten Start).
-
-### Entwicklung
-- **Automatischer Windows-Build** mit GitHub Actions (`.github/workflows/build.yml`): Jeder Pull Request und jeder Push auf `main` baut `StemMaker.exe`, `StemCLI.exe` und `StemPlayer.exe` (Lazarus 3.8, Win64) mit SHA-256-Prüfsummen. Die Exes stammen damit nachvollziehbar aus dem Quelltext.
-- **Testversionen als Vor-Release** statt im Ordner `Temp/`: `test-main` (Stand von `main`) und `test-pr-<Nummer>` (pro PR, wird nach dem Schliessen gelöscht). Direkte Download-Links ohne Login, siehe [docs/TESTVERSIONEN.md](docs/TESTVERSIONEN.md).
-- Ordner `Temp/` entfernt. Die alten Testversionen bleiben im Git-Verlauf, neue kommen nicht mehr ins Repository.
-
-### Dokumentation
-- Vorschlag für eine Namenskonvention im Quelltext (Bereich und Typ im Variablennamen) in der Ideen-Liste, vorerst zurückgestellt: [docs/NAMENSKONVENTION-VORSCHLAG.md](docs/NAMENSKONVENTION-VORSCHLAG.md).
-
 ### StemMaker
-- StemMaker liess sich manchmal nicht beenden („Keine Rückmeldung“). Ursache: Die Längen-Abfrage im Hintergrund (ffmpeg) konnte bei MP3s mit vielen Tags für immer hängen, und beim Schliessen wartete StemMaker darauf. Jetzt wird die ffmpeg-Ausgabe laufend gelesen, die Abfrage bricht nach 30 Sekunden oder beim Schliessen sofort ab.
-- Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ (Deutsch/Englisch) und holt das offene Fenster nach vorne. Vorher störten sich zwei laufende StemMaker gegenseitig (gemeinsame Warteschlange, Einstellungen, Logs und gleicher Name der fertigen Datei). Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert (PR #7).
-- Traktor-Pro-4-Test erledigt (Speedy, 3. Oktober 2026): Stem-Dateien aus StemMaker spielen in Traktor.
-- Log pro Datei: Dateigröße, Größe der fertigen Stem-Datei und Tempo in „Sekunden pro Minute Musik“ mit Modell. Die Zusammenfassung zeigt das Tempo über alle Dateien.
-- Lautheit der Master-Spur jeder fertigen Stem-Datei wird gemessen und geloggt (integrierte Lautheit in LUFS, Umfang in LU, True Peak in dBFS; Hinweis bei True Peak über 0 dBFS). Die Datei selbst wird nicht verändert.
-- Neue Datei `logs\statistik.csv`: eine Zeile pro umgewandelter Datei (Größe, Länge, Quelle, Modell, Teile/Kerne, Umwandlungszeit, s pro Musikminute, RAM, Lautheit, CPU, Ergebnis) zum Auswerten in Excel. Grundlage für eine spätere Zeitschätzung vor grossen Ordnern.
-- Log-Statistik und Lautheit am 3. Oktober 2026 von Speedy unter Windows getestet (i5-2500, v3, 8-min-Track): alle Werte im Log und in `statistik.csv` stimmen (PR #8).
-- Neu: **Lautstärke angleichen (Club-Pegel)**, standardmässig an. Alle 5 Spuren werden gemeinsam angehoben, bis die lauteste Spitze (Master, Stems und Stem-Summe) bei ca. −1 dB liegt. Kein Limiter. Leise Quellen bekommen in Traktor dadurch grosse, lesbare Wellenformen. Abschaltbar im Fenster und mit `--no-normalize` in StemCLI.
-- Neu: **Bass-Fix**, standardmässig an. Tiefbass unter 80 Hz wandert von „Other“ in den Bass-Stem (Tiefpass vorwärts und rückwärts, damit die Phase stimmt; Summe aller Stems bleibt gleich). Hintergrund: Vergleich mit Traktor Pro 4 am 4. Oktober 2026 – danach liegen Bass- und Other-Pegel wie bei Traktor. Abschaltbar im Fenster und mit `--no-bassfix`.
-- Neu: **Anhören** – startet `AddOns\StemPlayer.exe`, der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei. Doppelklick auf eine fertige Datei in der Liste öffnet genau diese Datei im Player.
+- Neu: **Anhören** – startet den StemPlayer, der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei. Doppelklick auf eine fertige Datei in der Liste öffnet genau diese Datei im Player.
 - Neu: **Ordner nach der Umwandlung öffnen**, standardmässig an. Der Explorer geht auf und markiert die zuletzt fertige Stem-Datei, so kann man sie direkt in Traktor ziehen. Nicht, wenn danach heruntergefahren wird.
 - „Ordner öffnen“ zeigt bei markierter Zeile genau deren Stem-Datei im Explorer.
-- Neu: **Erststart-Fenster** mit Haftungsausschluss, Hinweis zu den Rechten an der Musik und Lizenzhinweisen (Deutsch/Englisch). Häkchen setzen und bestätigen, sonst startet StemMaker nicht. Gilt pro PC (Hash der Windows-Installationsnummer in `StemMaker.ini`); wird der Ordner auf einen anderen PC kopiert, kommt die Frage erneut. StemCLI verlangt dafür einmal `--accept`.
-- Neu: **Update-Prüfung beim Start** über `update.json` im Repository (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update-ZIP wird mit SHA-256 geprüft, die laufende Exe wird zu `.exe.old` und beim nächsten Start weggeräumt. INI, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
-- **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) aus einem eigenen Release statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle v4 und v3 werden geprüft (htdemucs_ft folgt, sobald die Prüfsummen bekannt sind). Download-Adressen stehen jetzt in `update.json` (Anleitung: `docs/UPDATE-JSON.md`).
-- Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen** (Haftungsausschluss, `LICENSE`, `THIRD-PARTY-NOTICES.md`).
-- Fehler behoben (gefunden im grossen Wine-Test vom 6. Oktober 2026): Gleiche Dateinamen aus verschiedenen Ordnern gingen bei einem flachen Ausgabeordner verloren (die zweite Datei wurde übersprungen oder überschrieb mit „Überschreiben“ die erste). Jetzt heisst die spätere `Intro (2).stem.mp4`, `(3)` usw. Gilt auch für `Song.mp3` + `Song.wav` im selben Ordner und für StemCLI mit `-o`. Die Namen bleiben nach Abbrechen und Fortsetzen gleich.
-- Stürzt StemMaker ab oder wird im Task-Manager beendet, hören demucs und ffmpeg jetzt sofort mit auf. Vorher rechnete demucs im Hintergrund weiter, und nach einem Neustart liefen zwei Trennungen gleichzeitig.
-- Arbeitsordner, die ein Absturz in `%TEMP%\StemMaker` hinterlassen hat (pro Song einige hundert MB), werden beim nächsten Start gelöscht. Ordner, die gerade ein anderer StemMaker oder StemCLI benutzt, bleiben stehen; mit „Temp-Ordner behalten“ aufgehobene Ordner erst nach 12 Stunden.
-- Rückfragen auf Deutsch zeigen jetzt „Ja/Nein“ und „Bestätigung/Fehler/Warnung“ statt „Yes/No“ und „Confirmation/Error“.
-- „Liste leeren“ fragt jetzt nach. Vorher war die Liste samt gespeicherter Warteschlange mit einem Klick weg.
+- Neu: **Lautstärke angleichen (Club-Pegel)**, standardmässig an. Alle 5 Spuren werden gemeinsam angehoben, bis die lauteste Spitze (Master, Stems und Stem-Summe) bei ca. −1 dB liegt. Kein Limiter. Leise Quellen bekommen in Traktor dadurch grosse, lesbare Wellenformen. Abschaltbar im Fenster und mit `--no-normalize` in StemCLI.
+- Neu: **Bass-Fix**, standardmässig an. Tiefbass unter 80 Hz wandert von „Other“ in den Bass-Stem, die Summe aller Stems bleibt gleich. Danach liegen Bass- und Other-Pegel wie bei Traktor Pro 4. Abschaltbar im Fenster und mit `--no-bassfix`.
+- **Tags vollständig übernommen:** Neu landen auch **BPM**, **Tonart**, **Label** und **ISRC** der Quelldatei in der Stem-Datei. Titel, Artist, Album, Album-Artist, Komponist, Genre, Jahr, Titel- und CD-Nummer, Kommentar, Gruppierung, Liedtext und das Cover kamen schon vorher mit.
+- Neu: **Update-Prüfung beim Start** (im Hintergrund, max. 5 s, abschaltbar). Fenster „Jetzt aktualisieren / Später / Diese Version überspringen“. Das Update wird mit SHA-256 geprüft; Einstellungen, Warteschlange, Logs, Modelle und ffmpeg bleiben. Nie während einer Umwandlung, danach Neustart von selbst.
+- Neu: **„Nach Updates suchen“** im Info-Fenster, dazu das Häkchen „Beim Start nach Updates suchen“.
+- **Update wird bei einem Fehler zurückgedreht:** Scheitert das Kopieren mitten drin (z. B. Virenscanner sperrt eine Datei), werden die alten Dateien wiederhergestellt.
+- Ein hängender Update-Download lässt sich jetzt jederzeit abbrechen. Alle Downloads (Update, ffmpeg, Modelle) brechen nach 30 Sekunden ohne Daten ab, statt bis zu 60 Minuten zu warten.
+- **Feste ffmpeg-Version** (9.0.2, LGPL, 56 statt 170 MB) statt täglich „latest“, mit SHA-256-Prüfung. Auch die Modelle v4 und v3 werden geprüft.
+- Neu: **Erststart-Fenster** mit Haftungsausschluss, Hinweis zu den Rechten an der Musik und Lizenzhinweisen (Deutsch/Englisch). StemCLI verlangt dafür einmal `--accept`.
+- Info-Fenster mit zwei Reitern: **Anleitung** und **Lizenzen**.
+- Log pro Datei mit Dateigrösse, Grösse der fertigen Stem-Datei, Tempo und Lautheit der Master-Spur (LUFS, True Peak). Neue Datei `logs\statistik.csv` mit einer Zeile pro umgewandelter Datei zum Auswerten in Excel.
+- Nur ein StemMaker gleichzeitig: Ein zweiter Start zeigt den Hinweis „StemMaker läuft schon“ und holt das offene Fenster nach vorne.
+- Behoben: StemMaker liess sich manchmal nicht beenden („Keine Rückmeldung“), vor allem bei MP3s mit vielen Tags.
+- Behoben: Gleiche Dateinamen aus verschiedenen Ordnern gingen bei einem gemeinsamen Ausgabeordner verloren. Jetzt heisst die spätere Datei `Intro (2).stem.mp4`, `(3)` usw. Gilt auch für StemCLI mit `-o`.
+- Behoben: Nach einem Absturz rechnete demucs im Hintergrund weiter. Jetzt hören demucs und ffmpeg sofort mit auf, und liegengebliebene Arbeitsordner in `%TEMP%\StemMaker` werden beim nächsten Start gelöscht.
+- Rückfragen auf Deutsch zeigen jetzt „Ja/Nein“ statt „Yes/No“.
+- „Liste leeren“ fragt jetzt nach.
 
-### StemPlayer 1.3 (AddOn) – 4. Oktober 2026
-- Ordner als Parameter: Der Öffnen-Dialog startet gleich in diesem Ordner (für „Anhören“ in StemMaker).
-
-### Projektseite
-- Neue Projektseite im Ordner `site/` (Englisch, Deutsch unter `/de/`) mit Screenshots von StemMaker und StemPlayer, Funktionen, Ablauf, ehrlichen Zeitangaben und FAQ. Mit Suchmaschinen-Grundlagen: Titel, Beschreibung, Open-Graph-Vorschaubild, `sitemap.xml`, `robots.txt`, strukturierte Daten. Wird per Workflow `.github/workflows/pages.yml` auf GitHub Pages veröffentlicht.
-
-### StemPlayer 1.2 (AddOn) – 3. Oktober 2026
-- Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor, eigene gezeichnete Regler (PR #2).
-- Am 3. Oktober 2026 von Speedy unter Windows getestet, funktioniert; kommt so in die nächste StemMaker-Version.
-
-### StemPlayer 1.1 (AddOn) – 2. Oktober 2026
-- Test-Player für `.stem.mp4`: pro Stem Stumm, Solo und Lautstärke-Regler, Pegelanzeigen.
-- A/B-Vergleich mit dem Original und Modus „Rest“ (Original minus Summe der Stems) – zeigt, was bei der Trennung verloren geht.
-- Liegt als `AddOns\StemPlayer.exe` im StemMaker-Ordner. Quellcode unter `src/AddOns/StemPlayer/` (PR #1).
-
-### Repository
-- `TODO.md`: kurze Liste, was als Nächstes getestet, entschieden oder gebaut wird.
-- `ROADMAP.md` und `CHANGELOG.md` angelegt (PR #3).
-- Ordner `Temp/` für Testversionen, darin `StemPlayer/1.2/StemPlayer.exe` (PR #4).
-- README: Beta-Hinweis (Traktor-Pro-4-Test läuft noch). Am 4. Oktober 2026 wieder entfernt, der Test ist erledigt.
-- Entwicklungslog und Ideen-Liste unter `docs/`.
-- Ko-fi-Spenden-Knopf (`.github/FUNDING.yml`).
-- Sprach-Links oben in README und LIESMICH.
-- README/LIESMICH: Abschnitt zur Windows-SmartScreen-Warnung (warum sie kommt, „Trotzdem ausführen“, ZIP „Zulassen“, Download prüfen) (PR #5).
+### StemPlayer 1.3 (liegt jetzt im ZIP unter `AddOns`)
+- Neues Aussehen „Traktor Dark“: dunkles Design, Stem-Farben wie in Traktor.
+- Pro Stem Stumm, Solo und Lautstärke-Regler, Pegelanzeigen.
+- A/B-Vergleich mit dem Original und Modus „Rest“ (Original minus Summe der Stems): zeigt, was bei der Trennung verloren geht.
+- Startet auf Wunsch gleich im richtigen Ordner (für „Anhören“ in StemMaker).
 
 ---
 
