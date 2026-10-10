@@ -1,0 +1,44 @@
+Elospeed StemDecks 0.1 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+=====================================================================
+
+MACHBARKEITSTEST, kein fertiges Programm. Frage dahinter: Lässt sich ein
+5.1-Mitschnitt (z.B. Konzert-Video) so zerlegen, dass er in Traktor auf
+allen vier Decks (4 x 4 = 16 Stems) synchron läuft?
+
+INSTALLATION
+  StemDecks.exe in den Ordner AddOns\ von StemMaker kopieren (dort liegen
+  auch StemPlayer.exe und StemCLI.exe). ffmpeg.exe und StemCLI.exe werden
+  automatisch gesucht, sonst fragt das Programm einmal danach und merkt
+  sich den Pfad in StemDecks.ini.
+
+1) 5.1 ZERLEGEN
+  5.1-Datei wählen (mkv, mp4, m4a, mov, ac3, eac3, dts, wav, flac ...).
+  Es entstehen im selben Ordner vier Stereo-WAV-Dateien:
+      A_<Name>.wav   Front L/R
+      B_<Name>.wav   Center        (mono, auf beide Seiten)
+      C_<Name>.wav   Surround L/R
+      D_<Name>.wav   LFE / Sub     (mono, auf beide Seiten)
+  Auf Wunsch nur die ersten 3 Minuten (schneller zum Testen).
+  Danach wandelt StemCLI die vier Dateien in A_/B_/C_/D_<Name>.stem.mp4
+  um - OHNE Club-Pegel, damit die Decks im richtigen Verhältnis bleiben.
+  (Alternativ in StemMaker umwandeln, dort Club-Pegel ausschalten.)
+
+2) VIER DECKS ABSPIELEN
+  "DECKS LADEN" und eine A_-Datei wählen: B_/C_/D_ aus demselben Ordner
+  kommen automatisch auf Deck B..D. Einzelne Decks über "LADEN" im Deck.
+  Ein gemeinsames Play/Stop, alle Decks laufen sampelgenau synchron.
+  Pro Deck: Stumm + Lautstärke. Pro Stem: Stumm + Lautstärke + Pegel.
+
+  Leertaste  Play / Pause         1 .. 4   Deck A..D stumm an/aus
+  Pfeile     -/+ 5 Sekunden       Pos1     an den Anfang
+  Strg+O     Decks laden          Strg+5   5.1 zerlegen
+
+IN TRAKTOR
+  Die vier .stem.mp4 auf Deck A..D laden (Decks C/D als Stem-Decks).
+  Gleichzeitig starten: eine Taste per Controller-Mapping viermal auf
+  Play/Pause (Deck A..D) legen, oder Sync + Quantize benutzen.
+
+HINWEIS
+  Der Player dekodiert alle 16 Stems in den Temp-Ordner (ca. 10 MB pro
+  Stem und Minute, also rund 160 MB pro Minute). Beim Schliessen wird
+  alles wieder gelöscht.

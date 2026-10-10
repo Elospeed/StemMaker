@@ -65,7 +65,7 @@ jobs:
         run: |
           set -e
           # -B = alle Units des Projekts neu übersetzen (kein alter Stand aus einem Cache)
-          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi; do
+          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi src/AddOns/StemDecks/StemDecks.lpi; do
             echo "::group::$lpi"
             lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 "$lpi"
             echo "::endgroup::"
@@ -75,7 +75,7 @@ jobs:
         run: |
           set -e
           mkdir -p ausgabe
-          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe ausgabe/
+          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe src/AddOns/StemDecks/StemDecks.exe ausgabe/
 
           # Debug-Infos entfernen (StemMaker: ca. 29 MB -> 3,5 MB). Es fehlen dann
           # nur die Zeilennummern im Absturz-Log. strip.exe liegt bei FPC dabei.
@@ -164,6 +164,7 @@ jobs:
             echo "- [StemMaker.exe]($BASIS/StemMaker.exe)"
             echo "- [StemCLI.exe]($BASIS/StemCLI.exe)"
             echo "- [StemPlayer.exe]($BASIS/StemPlayer.exe) (gehört in den Ordner \`AddOns\\\`)"
+            echo "- [StemDecks.exe]($BASIS/StemDecks.exe) (Test 5.1 auf vier Decks, gehört in den Ordner \`AddOns\\\`, nicht im Setup)"
             echo "- [StemMaker-Setup-Test.exe]($BASIS/StemMaker-Setup-Test.exe) (Installer mit Startmenü-Eintrag, installiert nach %LOCALAPPDATA%\\Programs\\StemMaker)"
             echo "- [SHA256SUMS.txt]($BASIS/SHA256SUMS.txt)"
             echo
