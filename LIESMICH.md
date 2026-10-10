@@ -250,11 +250,8 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
 
 ## Entwicklung
 
-- [Roadmap](ROADMAP.md): woran gerade gearbeitet wird und was als Nächstes kommt
 - [Changelog](CHANGELOG.md): was erledigt ist, pro Version
-- [TODO](TODO.md): was als Nächstes getestet, entschieden oder gebaut werden muss
 - [Entwicklungslog](docs/ENTWICKLUNGSLOG.md): aufgetretene Probleme und ihre Lösungen
-- [Ideen für künftige Versionen](docs/IDEEN.md)
 
 ## Lizenzen / Credits
 
