@@ -116,7 +116,6 @@ Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt 
 
 | Problem | Lösung |
 |---|---|
-| Den Überblick behalten: was läuft, was ist fertig, was muss getestet werden? | Drei Dateien im Hauptordner: `ROADMAP.md` (Plan), `CHANGELOG.md` (erledigt), `TODO.md` (nächste Tests, Entscheidungen, Bauschritte). Jede Aufgabe trägt sich dort selbst ein und aus. *Seit 10. Oktober 2026 werden Roadmap, TODO und Ideenliste intern geführt; öffentlich bleibt das CHANGELOG.* |
 | Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. *Ab Oktober 2026 abgelöst durch Vor-Releases aus dem automatischen Build (siehe oben).* |
 | Windows SmartScreen warnt beim Start („Herausgeber: Unbekannt“). | Code-Signing vorerst verworfen (Kosten; kostenloses SignPath würde „SignPath Foundation“ als Herausgeber zeigen). Stattdessen Abschnitt „Windows-Warnung“ in README/LIESMICH. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |
