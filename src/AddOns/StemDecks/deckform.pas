@@ -1,45 +1,70 @@
 { ============================================================================
-  deckform.pas  -  Hauptfenster des Elospeed StemDecks-Tests
+  deckform.pas  -  Hauptfenster von Elospeed StemDecks
 
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
 
-  Zweck (Machbarkeitstest, KEIN fertiges Produkt):
-    Ein 5.1-Mitschnitt (z.B. Konzert-Video) hat sechs Kanäle. Traktor kann
-    pro Deck genau 4 Stems abspielen - mit allen 4 Decks also 16 Spuren.
-    Idee: 5.1 in vier Stereo-Teile zerlegen (Front, Center, Surround, LFE),
-    jeden Teil wie einen Song in 4 Stems trennen und die vier Stem-Dateien
-    auf Deck A..D gleichzeitig abspielen.
+  Zweck:
+    Ein 5.1-Mitschnitt (z.B. Konzert-DVD) hat sechs Kanäle. Daraus macht
+    das Programm vier Stereo-"Teile": Front L/R, Center, LFE (Sub) und
+    Surround L/R. Welcher Teil wohin kommt, ist einstellbar
+    (EINSTELLUNGEN). Standard nach dem Wunsch eines Nutzers auf r/Traktor:
+        Deck A / Slot 1 = Front L/R
+        Deck B / Slot 2 = LFE  (B wie Bass, auf 0 dB angehoben)
+        Deck C / Slot 3 = Center
+        Deck D / Slot 4 = Surround L/R
 
-    Dieses Programm macht beides:
-      1. "5.1 ZERLEGEN": prüft die Datei mit ffmpeg, schreibt
-         A_/B_/C_/D_<Name>.wav und wandelt sie auf Wunsch gleich mit
-         StemCLI (ohne Club-Pegel) in A_/B_/C_/D_<Name>.stem.mp4 um.
-      2. Vierfach-StemPlayer im Traktor-Stil (ohne Wellenform):
+    Drei Funktionen:
+      1. "5.1 -> 1 STEM": die vier Teile direkt als Stems in EINE
+         Stem-Datei (<Name>.stem.mp4) - ohne KI, sehr schnell.
+         Master = Kopie von Slot 1 oder still (einstellbar).
+      2. "5.1 -> 4 DECKS": schreibt A_/B_/C_/D_<Name>.wav und trennt
+         jede davon mit StemCLI (KI, ohne Club-Pegel) in 4 Stems
+         -> A_/B_/C_/D_<Name>.stem.mp4 = 16 Stems auf 4 Decks.
+      3. Vierfach-StemPlayer im Traktor-Stil (ohne Wellenform):
          Deck A..D mit je 4 Stems (Mute, Fader, LED-Meter), Deck-Fader und
-         EIN gemeinsames Play/Stop - alle Decks laufen sampelgenau synchron.
+         EIN gemeinsames Play/Pause - alle Decks laufen sampelgenau synchron.
          Wer eine A_-Datei lädt, bekommt B_/C_/D_ aus demselben Ordner
          automatisch dazu.
 
+    Hat die Quelle mehrere Tonspuren (DVD: oft Stereo + AC3 5.1 + DTS 5.1),
+    wird gefragt, welche 5.1-Spur verwendet werden soll.
+
+    Alles, was passiert (auch die komplette Ausgabe von ffmpeg/StemCLI),
+    steht im Protokoll logs\StemDecks.log (Knopf LOG). Bei Problemen
+    schickt der Nutzer diese Datei.
+
   Aufbau wie im StemPlayer: Fenster komplett im Code (keine .lfm),
   Optik aus djcontrols.pas, Stem-Prüfung aus mp4stem.pas (beide aus
-  ..\StemPlayer\ mitbenutzt), Audio in deckengine.pas.
+  ..\StemPlayer\ mitbenutzt), Stem-Block aus ..\..\ustemmp4.pas (StemMaker),
+  Audio in deckengine.pas, Sprache und Protokoll in decklog.pas.
 
   Temp-Dateien: wie StemPlayer ein eigener Ordner pro Instanz
       %TEMP%\ElospeedStemDecks_<PID>_<Startzeit>\   (mit instance.lock)
   darin pro Deck ein Unterordner mit den dekodierten Stems
-  (16 Bit / 44.1 kHz / Stereo, ca. 10 MB pro Stem und Minute -> 4 volle
-  Decks mit 5 Minuten = ca. 800 MB). Beim Schliessen wird alles gelöscht,
-  Reste nach einem Absturz beim nächsten Start.
+  (16 Bit / 44.1 kHz / Stereo, ca. 10 MB pro Stem und Minute). Beim
+  Schliessen wird alles gelöscht, Reste nach einem Absturz beim nächsten
+  Start.
+
+  Einstellungen in StemDecks.ini neben der exe:
+      [Zuordnung] DeckA..DeckD = 0 Front, 1 Center, 2 LFE, 3 Surround
+                  LfeAuf0dB = 1/0, MasterStill = 1/0
+      [Allgemein] Sprache = (leer = automatisch) / de / en
+      [Pfade]     ffmpeg, stemcli
 
   Tastatur:
-    Leertaste  Play / Pause (alle Decks)    Pos1   an den Anfang
-    1..4       Deck A..D stumm an/aus       Pfeile -/+ 5 s
-    Strg+O     Decks laden                  Strg+5 5.1 zerlegen
-  Parameter / Drag & Drop: Stem-Datei -> laden, andere Datei -> 5.1 zerlegen.
+    Leertaste / P  Play / Pause (alle Decks)   Pos1   an den Anfang
+    1..4           Deck A..D stumm an/aus      Pfeile -/+ 5 s
+    Strg+O         Decks laden
+  Parameter / Drag & Drop: Stem-Datei -> laden, andere Datei -> fragen,
+  ob 1 Stem-Datei oder 4 Decks.
 
   Versionen:
     0.1  (10.10.2026)  Erste Testversion (Machbarkeit 5.1 auf vier Decks)
+    0.2  (10.10.2026)  Zuordnung einstellbar (Standard A Front, B LFE,
+                       C Center, D Surround), "5.1 -> 1 STEM" ohne KI,
+                       Auswahl der Tonspur, LFE auf 0 dB, Protokoll mit
+                       Log-Fenster, Deutsch/Englisch, Taste P
   ============================================================================ }
 unit deckform;
 
@@ -50,14 +75,14 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, LCLType, LCLIntf, Process, FileUtil, LazFileUtils, IniFiles,
-  mp4stem, deckengine, djcontrols, surround51;
+  uStemMP4, mp4stem, deckengine, djcontrols, surround51, decklog;
 
 const
   APP_TITLE   = 'Elospeed StemDecks';
-  APP_VER     = '0.1 Test';
+  APP_VER     = '0.2';
   TEMP_PREFIX = 'ElospeedStemDecks_';   // Präfix der Temp-Ordner
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
-  TEST_SECONDS= 180;                    // "nur Anfang" beim Zerlegen
+  TEST_SECONDS= 180;                    // "nur Anfang" beim Umwandeln
 
 type
   { Eine Stem-Zeile innerhalb eines Decks }
@@ -85,7 +110,7 @@ type
     RawDir   : string;     // Temp-Unterordner mit stem0..3.raw ('' = leer)
     OldRawDir: string;     // vorheriger Ordner, wird nach dem Engine-Neustart gelöscht
     Frames   : Int64;      // Länge in Frames
-    Info     : TStemInfo;
+    Info     : mp4stem.TStemInfo;
   end;
 
   { TMainForm }
@@ -94,8 +119,11 @@ type
   private
     { --- Oben --- }
     PnlTop     : TDJPanel;
+    BtnPack    : TDJButton;
     BtnSplit   : TDJButton;
     BtnLoadAll : TDJButton;
+    BtnSettings: TDJButton;
+    BtnLog     : TDJButton;
     LblHint    : TLabel;
     BtnPlay    : TDJButton;
     BtnStop    : TDJButton;
@@ -117,7 +145,7 @@ type
     { --- Sonstiges --- }
     Timer      : TTimer;
     OpenDlg    : TOpenDialog;
-    SplitDlg   : TOpenDialog;
+    SrcDlg     : TOpenDialog;
 
     Engine      : TDeckEngine;
     FInstanceDir: string;
@@ -131,11 +159,21 @@ type
     FOutLevel   : array[0..1] of Single;
     FLastClip   : Integer;
     FClipTicks  : Integer;
+    { Einstellungen }
+    FParts      : TDeckParts;  // welcher 5.1-Teil auf Deck/Slot A..D
+    FLfeNorm    : Boolean;     // LFE auf 0 dB Spitzenpegel anheben
+    FMasterSilent: Boolean;    // Master der Stem-Datei still statt = Slot 1
+    FIniLang    : string;      // '' / 'de' / 'en'
+    { Bedienelemente im Fenster EINSTELLUNGEN (nur solange es offen ist) }
+    FSetCb      : array[0..3] of TComboBox;
+    FSetLfe     : TCheckBox;
+    FSetMaster  : TComboBox;
 
     { Aufbau }
     procedure BuildUI;
     procedure BuildDeck(d: Integer);
     procedure LayoutDecks(Sender: TObject);
+    procedure UpdateHint;
     function  MakeButton(AParent: TWinControl; const ACaption: string;
                          ALeft, ATop, AWidth, AHeight: Integer): TDJButton;
     function  MakeFader(AParent: TWinControl; ALeft, ATop, AWidth: Integer;
@@ -143,8 +181,16 @@ type
     function  MakeLabel(AParent: TWinControl; const ACaption: string;
                         ALeft, ATop: Integer; ASize: Integer; ABold: Boolean): TLabel;
 
-    { Werkzeuge / Temp }
+    { Einstellungen }
     function  IniFileName: string;
+    procedure LoadSettings;
+    procedure SaveSettings;
+    function  ShowSettings: Boolean;
+    procedure SettingsDefaultClick(Sender: TObject);
+    procedure SettingsCloseQuery(Sender: TObject; var CanClose: Boolean);
+    function  PartsText: string;
+
+    { Werkzeuge / Temp }
     function  ReadIniPath(const Key: string): string;
     procedure WriteIniPath(const Key, Value: string);
     function  AskForExe(const ExeName, Why, IniKey: string): string;
@@ -172,13 +218,22 @@ type
     function  FormatTime(Frames: Int64): string;
     function  LevelToFrac(L: Single): Single;
 
-    { 5.1 zerlegen }
+    { 5.1 umwandeln }
+    function  ProbeSource(const FileName: string; out Track: Integer;
+                          out Layout, AudioLine: string): Boolean;
+    function  ChooseTrack(const Tracks: TAudioTracks; out Idx: Integer): Boolean;
+    function  AskLength(const AudioLine, Extra: string): Integer;
+    function  MeasureLfeGain(const FileName, Layout: string; Track, MaxSec: Integer): Double;
+    procedure Pack51(const FileName: string);
     procedure Split51(const FileName: string);
     function  ConvertWithStemCLI(const Wavs: array of string): Boolean;
 
     { Ereignisse }
+    procedure BtnPackClick(Sender: TObject);
     procedure BtnSplitClick(Sender: TObject);
     procedure BtnLoadAllClick(Sender: TObject);
+    procedure BtnSettingsClick(Sender: TObject);
+    procedure BtnLogClick(Sender: TObject);
     procedure BtnDeckLoadClick(Sender: TObject);
     procedure BtnPlayClick(Sender: TObject);
     procedure BtnStopClick(Sender: TObject);
@@ -214,6 +269,12 @@ const
   { Deck-Farben ähnlich Traktor: A/B blau, C/D grau-weiss  (TColor = $BBGGRR) }
   DECK_COLORS: array[0..DECK_COUNT-1] of TColor =
     ($00E8A03C, $00E8A03C, $00C8C8C8, $00C8C8C8);
+  { Stem-Farben in der verpackten Datei, je 5.1-Teil (Front, Center, LFE, Surround) }
+  PART_COLORS: array[0..3] of string = ('#56B4E9', '#CC79A7', '#D55E00', '#009E73');
+  { Dateitypen, in denen 5.1-Ton stecken kann }
+  SRC_FILTER_EXT =
+    '*.mkv;*.mka;*.mp4;*.m4v;*.m4a;*.mov;*.ac3;*.eac3;*.dts;*.thd;*.wav;*.flac;' +
+    '*.vob;*.ts;*.m2ts;*.mts;*.avi;*.webm;*.ogg;*.opus';
 
 { ============================================================================
   Aufbau des Fensters
@@ -223,7 +284,15 @@ constructor TMainForm.Create(TheOwner: TComponent);
 var d: Integer;
 begin
   inherited CreateNew(TheOwner);    // keine .lfm-Datei
-  Caption := APP_TITLE + ' ' + APP_VER + '  -  vier Decks, 16 Stems  -  von Elospeed';
+  { Erst Einstellungen (darin steht die Sprache), dann Protokoll, dann Fenster }
+  LoadSettings;
+  InitLanguage(FIniLang);
+  LogInit(APP_TITLE, APP_VER);
+  Log('Zuordnung / mapping: ' + PartsText);
+
+  Caption := APP_TITLE + ' ' + APP_VER +
+    T('  -  5.1 auf Stems und vier Decks  -  von Elospeed',
+      '  -  5.1 to stems and four decks  -  by Elospeed');
   Width := 1180;
   Height := 820;
   Constraints.MinWidth := 1000;
@@ -244,16 +313,17 @@ begin
   for d := 0 to DECK_COUNT - 1 do
     ReadStemInfo('', Decks[d].Info);   // Standardnamen/-farben
   BuildUI;
+  UpdateHint;
 
   OpenDlg := TOpenDialog.Create(Self);
-  OpenDlg.Title := 'Stem-Datei laden (A_-Datei lädt B_/C_/D_ automatisch mit)';
-  OpenDlg.Filter := 'Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*';
+  OpenDlg.Title := T('Stem-Datei laden (A_-Datei lädt B_/C_/D_ automatisch mit)',
+                     'Load stem file (an A_ file also loads B_/C_/D_)');
+  OpenDlg.Filter := T('Traktor Stems', 'Traktor stems') +
+    ' (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|' + T('Alle Dateien', 'All files') + ' (*.*)|*.*';
 
-  SplitDlg := TOpenDialog.Create(Self);
-  SplitDlg.Title := '5.1-Datei zum Zerlegen wählen';
-  SplitDlg.Filter :=
-    '5.1-Ton (Video/Audio)|*.mkv;*.mka;*.mp4;*.m4v;*.m4a;*.mov;*.ac3;*.eac3;*.dts;*.thd;*.wav;*.flac;*.vob;*.ts;*.m2ts;*.avi;*.webm;*.ogg;*.opus|' +
-    'Alle Dateien (*.*)|*.*';
+  SrcDlg := TOpenDialog.Create(Self);
+  SrcDlg.Filter := T('5.1-Ton (Video/Audio)', '5.1 audio (video/audio)') + '|' +
+    SRC_FILTER_EXT + '|' + T('Alle Dateien', 'All files') + ' (*.*)|*.*';
 
   Timer := TTimer.Create(Self);
   Timer.Interval := 30;
@@ -264,10 +334,13 @@ begin
   CreateInstanceDir;
 
   FFFmpeg := FindFFmpeg;
+  Log('ffmpeg : ' + FFFmpeg);
+  Log('StemCLI: ' + FindStemCLI);
   if FFFmpeg = '' then
-    LblStatus.Caption := 'ffmpeg.exe nicht gefunden - wird beim ersten Laden abgefragt.'
+    LblStatus.Caption := T('ffmpeg.exe nicht gefunden - wird beim ersten Gebrauch abgefragt.',
+                           'ffmpeg.exe not found - you will be asked for it on first use.')
   else
-    LblStatus.Caption := 'ffmpeg: ' + FFFmpeg;
+    LblStatus.Caption := 'ffmpeg: ' + FFFmpeg + '    ·    Log: ' + LogFileName;
   UpdateGains;
 end;
 
@@ -320,35 +393,58 @@ begin
   PnlTop.BorderSpacing.Around := MARGIN;
   PnlTop.Width := W;
 
-  BtnSplit := MakeButton(PnlTop, '5.1 ZERLEGEN', 12, 10, 140, 32);
-  BtnSplit.Hint := '5.1-Datei (z.B. Konzert-Video) in A_/B_/C_/D_-Dateien zerlegen' + LineEnding +
-                   'und auf Wunsch gleich in Stems umwandeln (Strg+5)';
+  BtnPack := MakeButton(PnlTop, '5.1 -> 1 STEM', 12, 10, 136, 32);
+  BtnPack.Hint := T('5.1-Datei direkt in EINE Stem-Datei verpacken (ohne KI):' + LineEnding +
+                    'die vier 5.1-Teile werden Stem 1..4 (Zuordnung unter EINSTELLUNGEN)',
+                    'Pack a 5.1 file into ONE stem file (no AI):' + LineEnding +
+                    'the four 5.1 parts become stems 1..4 (mapping under SETTINGS)');
+  BtnPack.ShowHint := True;
+  BtnPack.OnClick := @BtnPackClick;
+
+  BtnSplit := MakeButton(PnlTop, '5.1 -> 4 DECKS', 156, 10, 136, 32);
+  BtnSplit.Hint := T('5.1-Datei in A_/B_/C_/D_-Dateien aufteilen und jede mit KI' + LineEnding +
+                     'in 4 Stems trennen (16 Stems auf 4 Decks, braucht StemMaker)',
+                     'Split a 5.1 file into A_/B_/C_/D_ files and separate each' + LineEnding +
+                     'into 4 stems with AI (16 stems on 4 decks, needs StemMaker)');
   BtnSplit.ShowHint := True;
   BtnSplit.OnClick := @BtnSplitClick;
 
-  BtnLoadAll := MakeButton(PnlTop, 'DECKS LADEN', 160, 10, 140, 32);
-  BtnLoadAll.Hint := 'Eine A_-Stem-Datei wählen: B_/C_/D_ aus demselben Ordner' + LineEnding +
-                     'werden automatisch auf Deck B..D geladen (Strg+O)';
+  BtnLoadAll := MakeButton(PnlTop, T('DECKS LADEN', 'LOAD DECKS'), 300, 10, 120, 32);
+  BtnLoadAll.Hint := T('Eine A_-Stem-Datei wählen: B_/C_/D_ aus demselben Ordner' + LineEnding +
+                       'werden automatisch auf Deck B..D geladen (Strg+O)',
+                       'Pick an A_ stem file: B_/C_/D_ from the same folder' + LineEnding +
+                       'are loaded onto decks B..D automatically (Ctrl+O)');
   BtnLoadAll.ShowHint := True;
   BtnLoadAll.OnClick := @BtnLoadAllClick;
 
-  LblHint := MakeLabel(PnlTop,
-    'Machbarkeitstest: 5.1 -> 4 Decks x 4 Stems.  A = Front  ·  B = Center  ·  C = Surround  ·  D = LFE',
-    316, 18, 0, False);
+  BtnSettings := MakeButton(PnlTop, T('EINSTELLUNGEN', 'SETTINGS'), 428, 10, 120, 32);
+  BtnSettings.Hint := T('Welcher 5.1-Teil auf welchem Deck / Slot, LFE, Master, Sprache',
+                        'Which 5.1 part goes to which deck / slot, LFE, master, language');
+  BtnSettings.ShowHint := True;
+  BtnSettings.OnClick := @BtnSettingsClick;
+
+  BtnLog := MakeButton(PnlTop, 'LOG', 556, 10, 60, 32);
+  BtnLog.Hint := T('Protokoll anzeigen (bei Problemen bitte die Datei schicken)',
+                   'Show the log (if something goes wrong, please send us this file)');
+  BtnLog.ShowHint := True;
+  BtnLog.OnClick := @BtnLogClick;
+
+  LblHint := MakeLabel(PnlTop, '', 630, 18, 0, False);
   LblHint.Font.Color := DJ_DIM;
 
   BtnPlay := MakeButton(PnlTop, '', 12, 56, 46, 36);
   BtnPlay.Glyph := dgPlay;
   BtnPlay.LitColor := DJ_GREEN;
   BtnPlay.Enabled := False;
-  BtnPlay.Hint := 'Play / Pause - alle Decks gleichzeitig (Leertaste)';
+  BtnPlay.Hint := T('Play / Pause - alle Decks gleichzeitig (Leertaste oder P)',
+                    'Play / pause - all decks together (space or P)');
   BtnPlay.ShowHint := True;
   BtnPlay.OnClick := @BtnPlayClick;
 
   BtnStop := MakeButton(PnlTop, '', 64, 56, 46, 36);
   BtnStop.Glyph := dgStop;
   BtnStop.Enabled := False;
-  BtnStop.Hint := 'Stop und zurück an den Anfang';
+  BtnStop.Hint := T('Stop und zurück an den Anfang', 'Stop and back to the start');
   BtnStop.ShowHint := True;
   BtnStop.OnClick := @BtnStopClick;
 
@@ -388,8 +484,10 @@ begin
   PnlBottom.Top := 10000;           // ganz unten
 
   LblHelp := MakeLabel(PnlBottom,
-    'Leertaste Play/Pause  ·  1-4 Deck A-D stumm  ·  Pfeile -/+5 s  ·  Pos1 Anfang  ·  ' +
-    'Strg+O Decks laden  ·  Strg+5 5.1 zerlegen  ·  Dateien aufs Fenster ziehen', 12, 6, 0, False);
+    T('Leertaste / P  Play/Pause  ·  1-4 Deck A-D stumm  ·  Pfeile -/+5 s  ·  Pos1 Anfang  ·  ' +
+      'Strg+O Decks laden  ·  Dateien aufs Fenster ziehen',
+      'Space / P  play/pause  ·  1-4 mute deck A-D  ·  arrows -/+5 s  ·  Home start  ·  ' +
+      'Ctrl+O load decks  ·  drop files onto the window'), 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -409,7 +507,7 @@ begin
   PnlMaster.Top := 9000;            // über der Fusszeile
 
   MakeLabel(PnlMaster, 'MASTER', 14, 8, 11, True);
-  L := MakeLabel(PnlMaster, 'SUMME ALLER DECKS', 14, 32, 7, False);
+  L := MakeLabel(PnlMaster, T('SUMME ALLER DECKS', 'SUM OF ALL DECKS'), 14, 32, 7, False);
   L.Font.Color := DJ_DIM;
 
   TrkMaster := MakeFader(PnlMaster, 180, 15, 200, DJ_TEXT);
@@ -432,7 +530,8 @@ begin
   BtnClip.Anchors := [akTop, akRight];
   BtnClip.LitColor := DJ_RED;
   BtnClip.Font.Size := 7;
-  BtnClip.Hint := 'Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)';
+  BtnClip.Hint := T('Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)',
+                    'Lights red when the sum clips (turn the master down)');
   BtnClip.ShowHint := True;
 
   { ---------- Mitte: 4 Decks im 2x2-Raster wie in Traktor ---------- }
@@ -471,19 +570,20 @@ begin
   Dk^.LblLetter := MakeLabel(Dk^.Panel, DECK_LETTERS[d], 14, 4, 24, True);
   Dk^.LblLetter.Font.Color := DECK_COLORS[d];
 
-  Dk^.LblName := MakeLabel(Dk^.Panel, '(leer)', 52, 8, 11, True);
+  Dk^.LblName := MakeLabel(Dk^.Panel, '', 52, 8, 11, True);
   Dk^.LblName.AutoSize := False;
   Dk^.LblName.SetBounds(52, 8, W - 52 - 96, 22);
   Dk^.LblName.Anchors := [akLeft, akTop, akRight];
   Dk^.LblName.Font.Color := DJ_DIM;
 
-  Dk^.LblInfo := MakeLabel(Dk^.Panel, 'Stem-Datei laden', 52, 30, 8, False);
+  Dk^.LblInfo := MakeLabel(Dk^.Panel, '', 52, 30, 8, False);
   Dk^.LblInfo.Font.Color := DJ_DIM;
 
-  Dk^.BtnLoad := MakeButton(Dk^.Panel, 'LADEN', W - 88, 10, 76, 28);
+  Dk^.BtnLoad := MakeButton(Dk^.Panel, T('LADEN', 'LOAD'), W - 88, 10, 76, 28);
   Dk^.BtnLoad.Anchors := [akTop, akRight];
   Dk^.BtnLoad.Tag := d;
-  Dk^.BtnLoad.Hint := Format('Stem-Datei auf Deck %s laden', [DECK_LETTERS[d]]);
+  Dk^.BtnLoad.Hint := Format(T('Stem-Datei auf Deck %s laden', 'Load a stem file onto deck %s'),
+                             [DECK_LETTERS[d]]);
   Dk^.BtnLoad.ShowHint := True;
   Dk^.BtnLoad.OnClick := @BtnDeckLoadClick;
 
@@ -496,7 +596,8 @@ begin
   Dk^.BtnMute.LitColor := DJ_RED;
   Dk^.BtnMute.Tag := 1000 + d;
   Dk^.BtnMute.OnClick := @MuteClick;
-  Dk^.BtnMute.Hint := Format('Ganzes Deck %s stumm (Taste %d)', [DECK_LETTERS[d], d + 1]);
+  Dk^.BtnMute.Hint := Format(T('Ganzes Deck %s stumm (Taste %d)', 'Mute whole deck %s (key %d)'),
+                             [DECK_LETTERS[d], d + 1]);
   Dk^.BtnMute.ShowHint := True;
   Dk^.TrkVol := MakeFader(Dk^.Panel, 140, Y + 1, 160, DECK_COLORS[d]);
   Dk^.TrkVol.Position := 100;
@@ -551,14 +652,239 @@ begin
     Decks[d].Panel.SetBounds((d mod 2) * (W + MARGIN), (d div 2) * (H + MARGIN), W, H);
 end;
 
+{ "A = FRONT L/R  ·  B = LFE (SUB)  ·  ..." }
+function TMainForm.PartsText: string;
+var d: Integer;
+begin
+  Result := '';
+  for d := 0 to 3 do
+  begin
+    if d > 0 then Result := Result + '  ·  ';
+    Result := Result + DECK_LETTERS[d] + ' = ' + PART_NAMES[FParts[d]];
+  end;
+end;
+
+procedure TMainForm.UpdateHint;
+begin
+  LblHint.Caption := PartsText;
+end;
+
 { ============================================================================
-  Werkzeuge finden, Temp-Ordner
+  Einstellungen
   ============================================================================ }
 
 function TMainForm.IniFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.ini');
 end;
+
+procedure TMainForm.LoadSettings;
+var
+  Ini: TIniFile;
+  d: Integer;
+begin
+  FParts := DEFAULT_PARTS;
+  FLfeNorm := True;
+  FMasterSilent := False;
+  FIniLang := '';
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      for d := 0 to 3 do
+        FParts[d] := Ini.ReadInteger('Zuordnung', 'Deck' + DECK_LETTERS[d], DEFAULT_PARTS[d]);
+      FLfeNorm := Ini.ReadBool('Zuordnung', 'LfeAuf0dB', True);
+      FMasterSilent := Ini.ReadBool('Zuordnung', 'MasterStill', False);
+      FIniLang := Trim(Ini.ReadString('Allgemein', 'Sprache', ''));
+    finally
+      Ini.Free;
+    end;
+  except
+    { ini nicht lesbar -> Standard }
+  end;
+  if not PartsValid(FParts) then FParts := DEFAULT_PARTS;
+end;
+
+procedure TMainForm.SaveSettings;
+var
+  Ini: TIniFile;
+  d: Integer;
+begin
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      for d := 0 to 3 do
+        Ini.WriteInteger('Zuordnung', 'Deck' + DECK_LETTERS[d], FParts[d]);
+      Ini.WriteBool('Zuordnung', 'LfeAuf0dB', FLfeNorm);
+      Ini.WriteBool('Zuordnung', 'MasterStill', FMasterSilent);
+      Ini.WriteString('Allgemein', 'Sprache', FIniLang);
+    finally
+      Ini.Free;
+    end;
+  except
+    on E: Exception do
+      Log('Einstellungen nicht gespeichert / settings not saved: ' + E.Message);
+  end;
+end;
+
+{ Fenster EINSTELLUNGEN. True = übernommen }
+function TMainForm.ShowSettings: Boolean;
+var
+  F: TForm;
+  Cb: array[0..3] of TComboBox;
+  CbMaster, CbLang: TComboBox;
+  ChkLfe: TCheckBox;
+  L: TLabel;
+  B: TButton;
+  P: TDeckParts;
+  d, k, Y: Integer;
+  R: TModalResult;
+  OldLang: string;
+
+  function AddLabel(const S: string; X, AY: Integer): TLabel;
+  begin
+    Result := TLabel.Create(F);
+    Result.Parent := F;
+    Result.Left := X;
+    Result.Top := AY;
+    Result.Caption := S;
+  end;
+
+  function AddCombo(X, AY, AW: Integer): TComboBox;
+  begin
+    Result := TComboBox.Create(F);
+    Result.Parent := F;
+    Result.Style := csDropDownList;
+    Result.SetBounds(X, AY, AW, 26);
+  end;
+
+  function AddButton(const S: string; X: Integer; MR: TModalResult): TButton;
+  begin
+    Result := TButton.Create(F);
+    Result.Parent := F;
+    Result.SetBounds(X, F.ClientHeight - 44, 130, 30);
+    Result.Caption := S;
+    Result.ModalResult := MR;
+  end;
+
+begin
+  Result := False;
+  F := TForm.CreateNew(nil);
+  try
+    F.Caption := APP_TITLE + ' - ' + T('Einstellungen', 'Settings');
+    F.BorderStyle := bsDialog;
+    F.Position := poScreenCenter;
+    F.ClientWidth := 580;
+    F.ClientHeight := 400;
+
+    L := AddLabel(T('Welcher 5.1-Teil kommt auf welches Deck (5.1 -> 4 DECKS)' + LineEnding +
+                    'bzw. in welchen Stem-Slot (5.1 -> 1 STEM)?',
+                    'Which 5.1 part goes to which deck (5.1 -> 4 DECKS)' + LineEnding +
+                    'or into which stem slot (5.1 -> 1 STEM)?'), 16, 12);
+    L.Font.Style := [fsBold];
+
+    for d := 0 to 3 do
+    begin
+      Y := 60 + d * 34;
+      AddLabel(Format(T('Deck %s  /  Slot %d', 'Deck %s  /  slot %d'), [DECK_LETTERS[d], d + 1]),
+               16, Y + 4);
+      Cb[d] := AddCombo(190, Y, 220);
+      for k := 0 to 3 do Cb[d].Items.Add(PART_NAMES[k]);
+      Cb[d].ItemIndex := FParts[d];
+    end;
+
+    ChkLfe := TCheckBox.Create(F);
+    ChkLfe.Parent := F;
+    ChkLfe.SetBounds(16, 206, 550, 24);
+    ChkLfe.Caption := T('LFE (Sub) auf 0 dB Spitzenpegel anheben (ist auf DVDs meist sehr leise)',
+                        'Raise LFE (sub) to 0 dB peak (usually very quiet on DVDs)');
+    ChkLfe.Checked := FLfeNorm;
+
+    AddLabel(T('Master-Spur der Stem-Datei:', 'Master track of the stem file:'), 16, 248);
+    CbMaster := AddCombo(250, 244, 220);
+    CbMaster.Items.Add(T('gleich wie Slot 1', 'same as slot 1'));
+    CbMaster.Items.Add(T('still (leer)', 'silent (empty)'));
+    if FMasterSilent then CbMaster.ItemIndex := 1 else CbMaster.ItemIndex := 0;
+
+    AddLabel('Sprache / Language:', 16, 290);
+    CbLang := AddCombo(250, 286, 220);
+    CbLang.Items.Add('Automatisch / Automatic');
+    CbLang.Items.Add('Deutsch');
+    CbLang.Items.Add('English');
+    if SameText(FIniLang, 'de') then CbLang.ItemIndex := 1
+    else if SameText(FIniLang, 'en') then CbLang.ItemIndex := 2
+    else CbLang.ItemIndex := 0;
+    L := AddLabel(T('(gilt nach einem Neustart)', '(takes effect after a restart)'), 250, 316);
+    L.Font.Color := clGrayText;
+
+    B := AddButton(T('Standard', 'Default'), 16, mrNone);
+    B.OnClick := @SettingsDefaultClick;
+    B := AddButton('OK', F.ClientWidth - 2 * 138, mrOK);
+    B.Default := True;
+    B := AddButton(T('Abbrechen', 'Cancel'), F.ClientWidth - 138, mrCancel);
+    B.Cancel := True;
+
+    { Für "Standard" und die Prüfung beim Schliessen merken }
+    for d := 0 to 3 do FSetCb[d] := Cb[d];
+    FSetLfe := ChkLfe;
+    FSetMaster := CbMaster;
+    F.OnCloseQuery := @SettingsCloseQuery;
+    R := F.ShowModal;
+    FSetLfe := nil;
+    FSetMaster := nil;
+    if R <> mrOK then Exit;
+    for d := 0 to 3 do P[d] := Cb[d].ItemIndex;
+
+    FParts := P;
+    FLfeNorm := ChkLfe.Checked;
+    FMasterSilent := CbMaster.ItemIndex = 1;
+    OldLang := FIniLang;
+    case CbLang.ItemIndex of
+      1: FIniLang := 'de';
+      2: FIniLang := 'en';
+    else
+      FIniLang := '';
+    end;
+    SaveSettings;
+    UpdateHint;
+    for d := 0 to DECK_COUNT - 1 do UpdateDeckLook(d);
+    Log(Format('Einstellungen / settings: %s  ·  LFE 0 dB=%s  ·  master silent=%s  ·  lang=%s',
+      [PartsText, BoolToStr(FLfeNorm, True), BoolToStr(FMasterSilent, True), FIniLang]));
+    if not SameText(OldLang, FIniLang) then
+      MessageDlg(APP_TITLE, T('Die Sprache wird beim nächsten Start umgestellt.',
+                              'The language changes at the next start.'), mtInformation, [mbOK], 0);
+    Result := True;
+  finally
+    F.Free;
+  end;
+end;
+
+{ Knopf "Standard": Zuordnung A Front, B LFE, C Center, D Surround }
+procedure TMainForm.SettingsDefaultClick(Sender: TObject);
+var d: Integer;
+begin
+  for d := 0 to 3 do FSetCb[d].ItemIndex := DEFAULT_PARTS[d];
+  FSetLfe.Checked := True;
+  FSetMaster.ItemIndex := 0;
+end;
+
+{ Bei OK prüfen, ob jeder Teil genau einmal vorkommt - sonst bleibt das
+  Fenster offen }
+procedure TMainForm.SettingsCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  P: TDeckParts;
+  d: Integer;
+begin
+  if TForm(Sender).ModalResult <> mrOK then Exit;
+  for d := 0 to 3 do P[d] := FSetCb[d].ItemIndex;
+  CanClose := PartsValid(P);
+  if not CanClose then
+    MessageDlg(APP_TITLE, T('Jeder 5.1-Teil darf nur einmal vorkommen.',
+                            'Each 5.1 part may be used only once.'), mtWarning, [mbOK], 0);
+end;
+
+{ ============================================================================
+  Werkzeuge finden, Temp-Ordner
+  ============================================================================ }
 
 function TMainForm.ReadIniPath(const Key: string): string;
 var Ini: TIniFile;
@@ -596,22 +922,24 @@ function TMainForm.AskForExe(const ExeName, Why, IniKey: string): string;
 var Dlg: TOpenDialog;
 begin
   Result := '';
-  MessageDlg(APP_TITLE, ExeName + ' wurde nicht gefunden.' + LineEnding + Why,
-    mtInformation, [mbOK], 0);
+  Log(ExeName + ' nicht gefunden / not found - frage Nutzer / asking user');
+  MessageDlg(APP_TITLE, ExeName + T(' wurde nicht gefunden.', ' was not found.') +
+    LineEnding + Why, mtInformation, [mbOK], 0);
   Dlg := TOpenDialog.Create(nil);
   try
-    Dlg.Title := ExeName + ' auswählen';
-    Dlg.Filter := ExeName + '|' + ExeName + '|Programme (*.exe)|*.exe';
+    Dlg.Title := ExeName + T(' auswählen', ' - please select');
+    Dlg.Filter := ExeName + '|' + ExeName + '|' + T('Programme', 'Programs') + ' (*.exe)|*.exe';
     if Dlg.Execute then Result := Dlg.FileName;
   finally
     Dlg.Free;
   end;
+  Log(ExeName + ' = ' + Result);
   if Result <> '' then WriteIniPath(IniKey, Result);
 end;
 
 function TMainForm.FindFFmpeg: string;
 const
-  { Typische Orte relativ zur exe (StemDecks liegt in StemMaker\AddOns\) }
+  { Typische Orte relativ zur exe (StemDecks liegt allein oder in StemMaker\AddOns\) }
   Candidates: array[0..9] of string = (
     'ffmpeg.exe', 'tools\ffmpeg.exe', 'bin\ffmpeg.exe', 'ffmpeg\bin\ffmpeg.exe',
     '..\ffmpeg.exe', '..\tools\ffmpeg.exe', '..\bin\ffmpeg.exe',
@@ -653,7 +981,10 @@ function TMainForm.EnsureFFmpeg: Boolean;
 begin
   if (FFFmpeg = '') or not FileExists(FFFmpeg) then
     FFFmpeg := AskForExe('ffmpeg.exe',
-      'Bitte im nächsten Dialog die ffmpeg.exe auswählen (z.B. die von StemMaker im Ordner tools\).',
+      T('Bitte im nächsten Dialog die ffmpeg.exe auswählen' + LineEnding +
+        '(z.B. die von StemMaker im Ordner tools\, oder von ffmpeg.org).',
+        'Please select ffmpeg.exe in the next dialog' + LineEnding +
+        '(e.g. the one in StemMaker''s tools\ folder, or from ffmpeg.org).'),
       'ffmpeg');
   Result := FFFmpeg <> '';
 end;
@@ -661,14 +992,17 @@ end;
 { Startet ein Werkzeug (ffmpeg oder StemCLI) ohne Konsolenfenster, liest
   seine Ausgabe laufend mit (sonst läuft die Pipe voll und es bleibt hängen)
   und hält das Fenster bedienbar. Die letzte Ausgabezeile erscheint in der
-  Statuszeile. Rückgabe: Exit-Code, -1 bei Abbruch (Fenster geschlossen). }
+  Statuszeile. Aufruf, Exit-Code, Dauer und Ausgabe kommen ins Protokoll.
+  Rückgabe: Exit-Code, -1 bei Abbruch (Fenster geschlossen) oder wenn das
+  Programm nicht startet. }
 function TMainForm.RunTool(const Exe: string; Args: TStrings; const What: string;
   out OutText: string): Integer;
 var
   P: TProcess;
   Buf: array[0..4095] of Char;
-  Chunk, LastLine: string;
+  Chunk, LastLine, Cmd: string;
   n: LongInt;
+  i: Integer;
   T0: QWord;
 
   procedure Drain;
@@ -696,14 +1030,30 @@ begin
   Result := -1;
   OutText := '';
   LastLine := '';
+  { Aufruf ins Protokoll (Parameter mit Leerzeichen in Anführungszeichen) }
+  Cmd := '"' + Exe + '"';
+  for i := 0 to Args.Count - 1 do
+    if Pos(' ', Args[i]) > 0 then Cmd := Cmd + ' "' + Args[i] + '"'
+    else Cmd := Cmd + ' ' + Args[i];
+  Log(What);
+  Log('  > ' + Cmd);
+  T0 := GetTickCount64;
   P := TProcess.Create(nil);
   try
     P.Executable := Exe;
     P.Parameters.Assign(Args);
     P.Options := [poUsePipes, poStderrToOutPut, poNoConsole];
     P.ShowWindow := swoHIDE;
-    P.Execute;
-    T0 := GetTickCount64;
+    try
+      P.Execute;
+    except
+      on E: Exception do
+      begin
+        Log('  ! Start fehlgeschlagen / failed to start: ' + E.Message);
+        OutText := E.Message;
+        Exit(-1);
+      end;
+    end;
     while P.Running do
     begin
       Drain;
@@ -711,6 +1061,7 @@ begin
       begin
         P.Terminate(1);
         P.WaitOnExit;     // warten, bis die Dateien freigegeben sind
+        Log('  ! abgebrochen / cancelled');
         Exit(-1);
       end;
       LblStatus.Caption := Format('%s ... %d s   %s',
@@ -723,6 +1074,12 @@ begin
   finally
     P.Free;
   end;
+  Log(Format('  < Exit-Code %d nach / after %.1f s', [Result, (GetTickCount64 - T0) / 1000]));
+  { Ausgabe ins Protokoll (bei sehr langer Ausgabe nur das Ende) }
+  if Length(OutText) > 12000 then
+    LogBlock('[...]' + LineEnding + Copy(OutText, Length(OutText) - 12000, MaxInt))
+  else
+    LogBlock(StringReplace(OutText, #13#10, #10, [rfReplaceAll]));
 end;
 
 procedure TMainForm.CreateInstanceDir;
@@ -778,8 +1135,10 @@ var d: Integer;
 begin
   FBusy := B;
   if B then Screen.Cursor := crHourGlass else Screen.Cursor := crDefault;
+  BtnPack.Enabled := not B;
   BtnSplit.Enabled := not B;
   BtnLoadAll.Enabled := not B;
+  BtnSettings.Enabled := not B;
   for d := 0 to DECK_COUNT - 1 do Decks[d].BtnLoad.Enabled := not B;
 end;
 
@@ -792,7 +1151,7 @@ end;
   geklappt hat - bis dahin spielt der alte Inhalt weiter. }
 function TMainForm.DecodeDeck(d: Integer; const FileName: string): Boolean;
 var
-  NewInfo: TStemInfo;
+  NewInfo: mp4stem.TStemInfo;
   Reason, Dir, OutText: string;
   Args: TStringList;
   s, Code: Integer;
@@ -801,6 +1160,7 @@ begin
   Result := False;
   if not CheckStemFile(FileName, NewInfo, Reason) then
   begin
+    Log('Keine Stem-Datei / not a stem file: ' + FileName + ' - ' + Reason);
     MessageDlg(APP_TITLE, ExtractFileName(FileName) + LineEnding + LineEnding + Reason,
       mtWarning, [mbOK], 0);
     Exit;
@@ -816,7 +1176,7 @@ begin
     Args.Add('-loglevel'); Args.Add('error');
     Args.Add('-y');
     Args.Add('-i'); Args.Add(FileName);
-    { Nur die 4 Stems (Spur 1..4). Den Master braucht der Test nicht. }
+    { Nur die 4 Stems (Spur 1..4). Den Master braucht der Player nicht. }
     for s := 0 to STEMS_PER_DECK - 1 do
     begin
       Args.Add('-map'); Args.Add('0:a:' + IntToStr(s + 1));
@@ -827,7 +1187,8 @@ begin
       Args.Add(Dir + 'stem' + IntToStr(s) + '.raw');
     end;
     Code := RunTool(FFFmpeg, Args,
-      Format('Deck %s: dekodiere %s', [DECK_LETTERS[d], ExtractFileName(FileName)]), OutText);
+      Format(T('Deck %s: dekodiere %s', 'Deck %s: decoding %s'),
+        [DECK_LETTERS[d], ExtractFileName(FileName)]), OutText);
   finally
     Args.Free;
   end;
@@ -835,7 +1196,8 @@ begin
   begin
     DeleteDirectory(Dir, False);
     if Code > 0 then
-      MessageDlg(APP_TITLE, 'ffmpeg konnte die Datei nicht dekodieren:' + LineEnding +
+      MessageDlg(APP_TITLE, T('ffmpeg konnte die Datei nicht dekodieren:',
+        'ffmpeg could not decode the file:') + LineEnding +
         FileName + LineEnding + LineEnding + Trim(OutText), mtError, [mbOK], 0);
     Exit;
   end;
@@ -858,6 +1220,7 @@ begin
     end;
   except
   end;
+  Log(Format('Deck %s: %s (%s)', [DECK_LETTERS[d], FileName, FormatTime(Decks[d].Frames)]));
   Result := True;
 end;
 
@@ -904,7 +1267,10 @@ begin
   begin
     Engine := TDeckEngine.Create(Raw, Pos);
     if Engine.OpenError <> '' then
+    begin
+      Log('Audio-Fehler / audio error: ' + Engine.OpenError);
       MessageDlg(APP_TITLE, Engine.OpenError, mtError, [mbOK], 0);
+    end;
     FUpdatingPos := True;
     TrkPos.Max := Max(1, Engine.TotalFrames div (SAMPLE_RATE div 10));   // 1/10 s
     FUpdatingPos := False;
@@ -927,7 +1293,8 @@ begin
   try
     if DecodeDeck(d, FileName) then RebuildEngine;
     if not FCancel then
-      LblStatus.Caption := Format('Deck %s geladen: %s', [DECK_LETTERS[d], FileName]);
+      LblStatus.Caption := Format(T('Deck %s geladen: %s', 'Deck %s loaded: %s'),
+                                  [DECK_LETTERS[d], FileName]);
   finally
     SetBusy(False);
     if FCloseAfter then Application.QueueAsyncCall(@DeferredClose, 0);
@@ -967,7 +1334,8 @@ begin
     if (NLoaded > 0) and not FCancel then
     begin
       RebuildEngine;
-      LblStatus.Caption := Format('%d Decks geladen (%s)  ·  Länge %s',
+      LblStatus.Caption := Format(T('%d Decks geladen (%s)  ·  Länge %s',
+                                    '%d decks loaded (%s)  ·  length %s'),
         [NLoaded, Base, FormatTime(Engine.TotalFrames)]);
     end;
   finally
@@ -1011,7 +1379,7 @@ end;
 { Namen, Farben und Abdunkelung eines Decks an den Zustand anpassen }
 procedure TMainForm.UpdateDeckLook(d: Integer);
 var
-  s, Part: Integer;
+  s, DeckOfFile: Integer;
   Base: string;
   IsOn, DeckOn: Boolean;
 begin
@@ -1020,19 +1388,20 @@ begin
     DeckOn := (RawDir <> '') and not BtnMute.Down;
     if RawDir = '' then
     begin
-      LblName.Caption := '(leer)';
+      LblName.Caption := T('(leer)', '(empty)');
       LblName.Font.Color := DJ_DIM;
-      LblInfo.Caption := 'Stem-Datei laden';
+      LblInfo.Caption := T('Stem-Datei laden', 'load a stem file');
     end
     else
     begin
       LblName.Caption := ExtractFileName(FileName);
       LblName.Font.Color := DJ_TEXT;
-      Part := DeckFromFileName(FileName, Base);
-      if Part >= 0 then
-        LblInfo.Caption := Format('5.1-Teil: %s  ·  %s', [DECK_PARTS[Part], FormatTime(Frames)])
+      DeckOfFile := DeckFromFileName(FileName, Base);
+      if DeckOfFile >= 0 then
+        LblInfo.Caption := Format(T('5.1-Teil: %s  ·  %s', '5.1 part: %s  ·  %s'),
+          [PART_NAMES[FParts[DeckOfFile]], FormatTime(Frames)])
       else
-        LblInfo.Caption := 'Länge ' + FormatTime(Frames);
+        LblInfo.Caption := T('Länge ', 'length ') + FormatTime(Frames);
     end;
     if DeckOn then
     begin
@@ -1102,15 +1471,307 @@ begin
 end;
 
 { ============================================================================
-  5.1 zerlegen
+  5.1 umwandeln
   ============================================================================ }
 
+{ Liest die Tonspuren der Quelle und wählt eine 5.1-Spur (bei mehreren
+  fragt ein Fenster). False = keine passende Spur oder abgebrochen. }
+function TMainForm.ProbeSource(const FileName: string; out Track: Integer;
+  out Layout, AudioLine: string): Boolean;
+var
+  Args: TStringList;
+  OutText, AllLines: string;
+  Tracks, Usable: TAudioTracks;
+  i, n, Idx, Code: Integer;
+begin
+  Result := False;
+  Track := -1;
+  Layout := '';
+  AudioLine := '';
+  Log('Quelle / source: ' + FileName);
+  Args := TStringList.Create;
+  try
+    { "ffmpeg -i Datei" ohne Ausgabe listet die Spuren auf (Exit-Code ist
+      dabei immer 1, das ist normal) }
+    Args.Add('-hide_banner');
+    Args.Add('-nostdin');
+    Args.Add('-probesize'); Args.Add('100M');
+    Args.Add('-analyzeduration'); Args.Add('100M');
+    Args.Add('-i'); Args.Add(FileName);
+    Code := RunTool(FFFmpeg, Args, T('Prüfe Tonspuren', 'Checking audio tracks'), OutText);
+  finally
+    Args.Free;
+  end;
+  if Code < 0 then Exit;
+
+  Tracks := ParseAudioTracks(OutText);
+  Usable := nil;
+  n := 0;
+  AllLines := '';
+  for i := 0 to High(Tracks) do
+  begin
+    AllLines := AllLines + '  ' + Tracks[i].Line + LineEnding;
+    if IsSupported51(Tracks[i].Layout) then
+    begin
+      SetLength(Usable, n + 1);
+      Usable[n] := Tracks[i];
+      Inc(n);
+    end;
+  end;
+  Log(Format('%d Tonspur(en) / audio track(s), davon 5.1 / of which 5.1: %d', [Length(Tracks), n]));
+
+  if Length(Tracks) = 0 then
+  begin
+    MessageDlg(APP_TITLE, T('In dieser Datei wurde keine Tonspur gefunden:',
+      'No audio track was found in this file:') + LineEnding + FileName + LineEnding + LineEnding +
+      T('Bei DVDs: die grossen VOB-Dateien des Films nehmen (z.B. VTS_01_1.VOB),' + LineEnding +
+        'nicht VIDEO_TS.VOB. Kopiergeschützte DVDs kann ffmpeg nicht lesen.',
+        'For DVDs: use the big VOB files of the movie (e.g. VTS_01_1.VOB),' + LineEnding +
+        'not VIDEO_TS.VOB. ffmpeg cannot read copy-protected DVDs.'),
+      mtWarning, [mbOK], 0);
+    Exit;
+  end;
+  if n = 0 then
+  begin
+    MessageDlg(APP_TITLE, T('Keine 5.1-Tonspur gefunden. Vorhandene Tonspuren:',
+      'No 5.1 audio track found. Audio tracks in this file:') + LineEnding + LineEnding +
+      AllLines + LineEnding +
+      T('Unterstützt wird 5.1 bzw. 5.1(side) (6 Kanäle).',
+        'Supported: 5.1 or 5.1(side) (6 channels).'), mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  Idx := 0;
+  if n > 1 then
+    if not ChooseTrack(Usable, Idx) then Exit;
+  Track := Usable[Idx].Index;
+  Layout := Usable[Idx].Layout;
+  AudioLine := Usable[Idx].Line;
+  Log(Format('Gewählt / selected: Tonspur / audio track %d (%s)  %s', [Track + 1, Layout, AudioLine]));
+  Result := True;
+end;
+
+{ Auswahlfenster, wenn die Quelle mehrere 5.1-Spuren hat (DVD: AC3 + DTS) }
+function TMainForm.ChooseTrack(const Tracks: TAudioTracks; out Idx: Integer): Boolean;
+var
+  F: TForm;
+  LB: TListBox;
+  L: TLabel;
+  B: TButton;
+  i: Integer;
+begin
+  Result := False;
+  Idx := 0;
+  F := TForm.CreateNew(nil);
+  try
+    F.Caption := APP_TITLE + ' - ' + T('Tonspur wählen', 'Choose audio track');
+    F.BorderStyle := bsDialog;
+    F.Position := poScreenCenter;
+    F.ClientWidth := 760;
+    F.ClientHeight := 260;
+
+    L := TLabel.Create(F);
+    L.Parent := F;
+    L.SetBounds(12, 12, 730, 20);
+    L.Caption := T('Diese Datei hat mehrere 5.1-Tonspuren. Welche soll verwendet werden?',
+                   'This file has several 5.1 audio tracks. Which one should be used?');
+
+    LB := TListBox.Create(F);
+    LB.Parent := F;
+    LB.SetBounds(12, 40, 736, 160);
+    for i := 0 to High(Tracks) do
+      LB.Items.Add(Format(T('Tonspur %d:  %s', 'Audio track %d:  %s'),
+        [Tracks[i].Index + 1, Tracks[i].Line]));
+    LB.ItemIndex := 0;
+
+    B := TButton.Create(F);
+    B.Parent := F;
+    B.SetBounds(F.ClientWidth - 2 * 128, 214, 116, 30);
+    B.Caption := 'OK';
+    B.ModalResult := mrOK;
+    B.Default := True;
+
+    B := TButton.Create(F);
+    B.Parent := F;
+    B.SetBounds(F.ClientWidth - 128, 214, 116, 30);
+    B.Caption := T('Abbrechen', 'Cancel');
+    B.ModalResult := mrCancel;
+    B.Cancel := True;
+
+    if (F.ShowModal = mrOK) and (LB.ItemIndex >= 0) then
+    begin
+      Idx := LB.ItemIndex;
+      Result := True;
+    end;
+  finally
+    F.Free;
+  end;
+end;
+
+{ Ganze Datei oder nur der Anfang? Rückgabe: Sekunden (0 = ganz), -1 = Abbruch }
+function TMainForm.AskLength(const AudioLine, Extra: string): Integer;
+var R: TModalResult;
+begin
+  R := QuestionDlg(APP_TITLE,
+    T('5.1-Ton gefunden:', '5.1 audio found:') + LineEnding + AudioLine + LineEnding + LineEnding +
+    Extra + LineEnding + LineEnding +
+    Format(T('Ganze Datei oder nur die ersten %d Minuten (schneller zum Testen)?',
+             'Whole file or only the first %d minutes (quicker for testing)?'), [TEST_SECONDS div 60]),
+    mtConfirmation,
+    [mrYes, Format(T('Nur %d Minuten', 'Only %d minutes'), [TEST_SECONDS div 60]),
+     mrAll, T('Ganze Datei', 'Whole file'),
+     mrCancel, T('Abbrechen', 'Cancel')], 0);
+  if R = mrYes then Result := TEST_SECONDS
+  else if R = mrAll then Result := 0
+  else Result := -1;
+  Log(Format('Länge / length: %d s (0 = ganz / whole, -1 = Abbruch / cancel)', [Result]));
+end;
+
+{ Misst den Spitzenpegel des LFE und liefert die Anhebung auf 0 dB.
+  0 = keine Anhebung (ausgeschaltet, Kanal stumm oder Messung fehlgeschlagen) }
+function TMainForm.MeasureLfeGain(const FileName, Layout: string; Track, MaxSec: Integer): Double;
+var
+  Args: TStringList;
+  OutText: string;
+  Peak: Double;
+  Code: Integer;
+begin
+  Result := 0;
+  if not FLfeNorm then Exit;
+  Args := TStringList.Create;
+  try
+    BuildLfePeakArgs(FileName, Layout, Track, MaxSec, Args);
+    Code := RunTool(FFFmpeg, Args, T('Messe LFE-Pegel', 'Measuring LFE level'), OutText);
+  finally
+    Args.Free;
+  end;
+  if Code <> 0 then Exit;
+  if not ParseMaxVolume(OutText, Peak) then
+  begin
+    Log('LFE: kein max_volume gefunden / not found');
+    Exit;
+  end;
+  if Peak < -80 then
+  begin
+    Log(Format('LFE ist praktisch stumm / practically silent (%.1f dB) - keine Anhebung / no gain', [Peak]));
+    Exit;
+  end;
+  Result := EnsureRange(-Peak, 0, 40);
+  Log(Format('LFE Spitze / peak %.1f dB -> Anhebung / gain +%.1f dB', [Peak, Result]));
+end;
+
+{ 5.1 -> EINE Stem-Datei (ohne KI): Slot 1..4 = Teile gemäss Zuordnung }
+procedure TMainForm.Pack51(const FileName: string);
+var
+  Args: TStringList;
+  OutText, AudioLine, Layout, OutFile, TmpFile, Err, Desc: string;
+  Track, MaxSec, Code, s: Integer;
+  Gain: Double;
+  Stems: TStemInfoArray;
+  LoadNow: Boolean;
+begin
+  if FBusy or not EnsureFFmpeg then Exit;
+  LoadNow := False;
+  OutFile := '';
+  SetBusy(True);
+  Args := TStringList.Create;
+  try
+    Log('--- 5.1 -> 1 STEM ---');
+    if not ProbeSource(FileName, Track, Layout, AudioLine) then Exit;
+
+    Desc := T('Es entsteht EINE Stem-Datei (ohne KI):', 'This creates ONE stem file (no AI):') + LineEnding;
+    for s := 0 to 3 do
+      Desc := Desc + Format('  Slot %d = %s', [s + 1, PART_NAMES[FParts[s]]]) + LineEnding;
+    if FMasterSilent then Desc := Desc + T('  Master = still', '  Master = silent')
+    else Desc := Desc + T('  Master = gleich wie Slot 1', '  Master = same as slot 1');
+    MaxSec := AskLength(AudioLine, Desc);
+    if MaxSec < 0 then Exit;
+
+    Gain := MeasureLfeGain(FileName, Layout, Track, MaxSec);
+    if FCancel then Exit;
+
+    OutFile := ExtractFilePath(FileName) + ExtractFileNameOnly(FileName) + '.stem.mp4';
+    TmpFile := ExtractFilePath(FileName) + ExtractFileNameOnly(FileName) + '.stemdecks.tmp.mp4';
+    if FileExists(OutFile) then
+      if MessageDlg(APP_TITLE, ExtractFileName(OutFile) +
+           T(' gibt es schon. Überschreiben?', ' already exists. Overwrite?'),
+           mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      begin
+        OutFile := '';
+        Exit;
+      end;
+
+    BuildPackArgs(FileName, TmpFile, Layout, Track, MaxSec, FParts, Gain, FMasterSilent, Args);
+    Code := RunTool(FFFmpeg, Args, T('Verpacke 5.1 in eine Stem-Datei', 'Packing 5.1 into a stem file'),
+                    OutText);
+    if Code < 0 then
+    begin
+      DeleteFile(TmpFile);
+      OutFile := '';
+      Exit;
+    end;
+    if (Code <> 0) or not FileExists(TmpFile) then
+    begin
+      DeleteFile(TmpFile);
+      MessageDlg(APP_TITLE, T('ffmpeg konnte die Stem-Datei nicht erstellen:',
+        'ffmpeg could not create the stem file:') + LineEnding + LineEnding +
+        Copy(Trim(OutText), 1, 1500) + LineEnding + LineEnding +
+        T('Details im Log (Knopf LOG).', 'Details in the log (LOG button).'), mtError, [mbOK], 0);
+      OutFile := '';
+      Exit;
+    end;
+
+    { Stem-Block (Namen + Farben für Traktor) wie in StemMaker }
+    for s := 0 to 3 do
+    begin
+      Stems[s].Name := PART_STEM_NAMES[FParts[s]];
+      Stems[s].Color := PART_COLORS[FParts[s]];
+    end;
+    if not InjectStemMetadata(TmpFile, BuildStemJSON(Stems), nil, Err) then
+    begin
+      Log('Stem-Block fehlgeschlagen / stem block failed: ' + Err);
+      DeleteFile(TmpFile);
+      MessageDlg(APP_TITLE, T('Stem-Block konnte nicht geschrieben werden:',
+        'Could not write the stem block:') + LineEnding + Err, mtError, [mbOK], 0);
+      OutFile := '';
+      Exit;
+    end;
+    if FileExists(OutFile) then DeleteFile(OutFile);
+    if not RenameFile(TmpFile, OutFile) then
+    begin
+      Log('Umbenennen fehlgeschlagen / rename failed: ' + TmpFile + ' -> ' + OutFile);
+      MessageDlg(APP_TITLE, T('Konnte die Datei nicht umbenennen:', 'Could not rename the file:') +
+        LineEnding + TmpFile, mtError, [mbOK], 0);
+      OutFile := '';
+      Exit;
+    end;
+    Log('Fertig / done: ' + OutFile);
+    LblStatus.Caption := T('Fertig: ', 'Done: ') + OutFile;
+
+    LoadNow := QuestionDlg(APP_TITLE,
+      T('Fertig:', 'Done:') + LineEnding + OutFile + LineEnding + LineEnding +
+      T('Die Datei kann direkt in Traktor geladen werden.' + LineEnding +
+        'Jetzt hier auf Deck A anhören?',
+        'The file can be loaded straight into Traktor.' + LineEnding +
+        'Listen to it here on deck A now?'),
+      mtInformation, [mrYes, T('Auf Deck A laden', 'Load onto deck A'), mrOK, 'OK'], 0) = mrYes;
+  finally
+    Args.Free;
+    SetBusy(False);
+    if FCloseAfter then Application.QueueAsyncCall(@DeferredClose, 0);
+  end;
+  if LoadNow and (OutFile <> '') and not FCancel then
+    LoadIntoDeck(0, OutFile);
+end;
+
+{ 5.1 -> A_/B_/C_/D_.wav -> (StemCLI) -> A_/B_/C_/D_.stem.mp4 -> 4 Decks }
 procedure TMainForm.Split51(const FileName: string);
 var
   Args: TStringList;
-  OutText, AudioLine, Layout, OutDir: string;
+  OutText, AudioLine, Layout, OutDir, Desc: string;
   Wavs: array[0..3] of string;
-  Code, MaxSec, d: Integer;
+  Track, Code, MaxSec, d: Integer;
+  Gain: Double;
   R: TModalResult;
   StemFiles: Boolean;
 begin
@@ -1119,70 +1780,52 @@ begin
   SetBusy(True);
   Args := TStringList.Create;
   try
-    { 1) Kanal-Layout ermitteln: "ffmpeg -i Datei" ohne Ausgabe listet die
-         Spuren auf (Exit-Code ist dabei immer 1, das ist normal). }
-    Args.Add('-hide_banner');
-    Args.Add('-nostdin');
-    Args.Add('-i'); Args.Add(FileName);
-    Code := RunTool(FFFmpeg, Args, 'Prüfe Tonspur', OutText);
-    if Code < 0 then Exit;
-    Layout := ParseAudioLayout(OutText, AudioLine);
-    if AudioLine = '' then
-    begin
-      MessageDlg(APP_TITLE, 'In dieser Datei wurde keine Tonspur gefunden:' + LineEnding +
-        FileName, mtWarning, [mbOK], 0);
-      Exit;
-    end;
-    if not IsSupported51(Layout) then
-    begin
-      MessageDlg(APP_TITLE, 'Die erste Tonspur ist kein 5.1-Ton, sondern "' + Layout + '".' +
-        LineEnding + LineEnding + AudioLine + LineEnding + LineEnding +
-        'Dieser Test kann nur 5.1 bzw. 5.1(side) zerlegen.', mtWarning, [mbOK], 0);
-      Exit;
-    end;
+    Log('--- 5.1 -> 4 DECKS ---');
+    if not ProbeSource(FileName, Track, Layout, AudioLine) then Exit;
 
-    { 2) Ganze Datei oder nur den Anfang? Lange Konzerte brauchen beim
-         Trennen viel Zeit - für den Test reicht oft ein Ausschnitt. }
-    R := QuestionDlg(APP_TITLE,
-      '5.1-Ton gefunden:' + LineEnding + AudioLine + LineEnding + LineEnding +
-      'Es entstehen 4 WAV-Dateien im selben Ordner:' + LineEnding +
-      '  A_ = Front L/R,  B_ = Center,  C_ = Surround L/R,  D_ = LFE' + LineEnding + LineEnding +
-      'Ganze Datei zerlegen oder nur die ersten ' + IntToStr(TEST_SECONDS div 60) +
-      ' Minuten (schneller zum Testen)?',
-      mtConfirmation,
-      [mrYes, Format('Nur %d Minuten', [TEST_SECONDS div 60]), mrNo, 'Ganze Datei',
-       mrCancel, 'Abbrechen'], 0);
-    if R = mrYes then MaxSec := TEST_SECONDS
-    else if R = mrNo then MaxSec := 0
-    else Exit;
+    Desc := T('Es entstehen 4 WAV-Dateien im selben Ordner:',
+              'This creates 4 WAV files in the same folder:') + LineEnding;
+    for d := 0 to 3 do
+      Desc := Desc + Format('  %s_ = %s', [DECK_LETTERS[d], PART_NAMES[FParts[d]]]) + LineEnding;
+    MaxSec := AskLength(AudioLine, TrimRight(Desc));
+    if MaxSec < 0 then Exit;
 
-    { 3) Zerlegen }
+    Gain := MeasureLfeGain(FileName, Layout, Track, MaxSec);
+    if FCancel then Exit;
+
     OutDir := ExtractFilePath(FileName);
-    BuildSplitArgs(FileName, OutDir, Layout, MaxSec, Args);
-    Code := RunTool(FFFmpeg, Args, 'Zerlege 5.1 in A_/B_/C_/D_', OutText);
+    BuildSplitArgs(FileName, OutDir, Layout, Track, MaxSec, FParts, Gain, Args);
+    Code := RunTool(FFFmpeg, Args, T('Teile 5.1 in A_/B_/C_/D_', 'Splitting 5.1 into A_/B_/C_/D_'),
+                    OutText);
     if Code < 0 then Exit;
     for d := 0 to 3 do Wavs[d] := DeckWavName(FileName, OutDir, d);
     if (Code <> 0) or not FileExists(Wavs[0]) then
     begin
-      MessageDlg(APP_TITLE, 'ffmpeg konnte die Datei nicht zerlegen:' + LineEnding +
-        Trim(OutText), mtError, [mbOK], 0);
+      MessageDlg(APP_TITLE, T('ffmpeg konnte die Datei nicht aufteilen:',
+        'ffmpeg could not split the file:') + LineEnding + Copy(Trim(OutText), 1, 1500) +
+        LineEnding + LineEnding + T('Details im Log (Knopf LOG).', 'Details in the log (LOG button).'),
+        mtError, [mbOK], 0);
       Exit;
     end;
-    LblStatus.Caption := 'Zerlegt: ' + ExtractFileName(Wavs[0]) + ' ... ' +
+    LblStatus.Caption := T('Aufgeteilt: ', 'Split: ') + ExtractFileName(Wavs[0]) + ' ... ' +
                          ExtractFileName(Wavs[3]);
 
-    { 4) Gleich in Stems umwandeln? }
+    { Gleich in Stems umwandeln? }
     R := QuestionDlg(APP_TITLE,
-      'Fertig zerlegt:' + LineEnding +
+      T('Fertig aufgeteilt:', 'Split done:') + LineEnding +
       '  ' + ExtractFileName(Wavs[0]) + LineEnding +
       '  ' + ExtractFileName(Wavs[1]) + LineEnding +
       '  ' + ExtractFileName(Wavs[2]) + LineEnding +
       '  ' + ExtractFileName(Wavs[3]) + LineEnding + LineEnding +
-      'Jetzt mit StemCLI in Stem-Dateien umwandeln?' + LineEnding +
-      '(ohne Club-Pegel, damit die Decks im richtigen Verhältnis bleiben;' + LineEnding +
-      'dauert etwa viermal so lange wie ein Song dieser Länge)' + LineEnding + LineEnding +
-      'Alternativ: die 4 WAV-Dateien in StemMaker umwandeln (Club-Pegel AUS).',
-      mtConfirmation, [mrYes, 'Jetzt umwandeln', mrNo, 'Später'], 0);
+      T('Jetzt jede Datei mit StemCLI (KI) in 4 Stems trennen?' + LineEnding +
+        '(ohne Club-Pegel, damit die Decks im richtigen Verhältnis bleiben;' + LineEnding +
+        'dauert etwa viermal so lange wie ein Song dieser Länge)' + LineEnding + LineEnding +
+        'Alternativ: die 4 WAV-Dateien in StemMaker umwandeln (Club-Pegel AUS).',
+        'Separate each file into 4 stems with StemCLI (AI) now?' + LineEnding +
+        '(without club level, so the decks keep their balance;' + LineEnding +
+        'takes about four times as long as one song of this length)' + LineEnding + LineEnding +
+        'Alternative: convert the 4 WAV files in StemMaker (club level OFF).'),
+      mtConfirmation, [mrYes, T('Jetzt trennen', 'Separate now'), mrNo, T('Später', 'Later')], 0);
     if R <> mrYes then Exit;
     StemFiles := ConvertWithStemCLI(Wavs);
   finally
@@ -1191,7 +1834,7 @@ begin
     if FCloseAfter then Application.QueueAsyncCall(@DeferredClose, 0);
   end;
 
-  { 5) Ergebnis gleich auf die vier Decks laden }
+  { Ergebnis gleich auf die vier Decks laden }
   if StemFiles and not FCancel then
     LoadSet(ChangeFileExt(Wavs[0], '.stem.mp4'));
 end;
@@ -1210,7 +1853,10 @@ begin
   Cli := FindStemCLI;
   if Cli = '' then
     Cli := AskForExe('StemCLI.exe',
-      'StemCLI.exe liegt im StemMaker-Ordner (neben StemMaker.exe).', 'stemcli');
+      T('StemCLI.exe liegt im StemMaker-Ordner (neben StemMaker.exe).' + LineEnding +
+        'StemMaker gibt es kostenlos auf github.com/Elospeed/StemMaker',
+        'StemCLI.exe is in the StemMaker folder (next to StemMaker.exe).' + LineEnding +
+        'StemMaker is free at github.com/Elospeed/StemMaker'), 'stemcli');
   if Cli = '' then Exit;
 
   Args := TStringList.Create;
@@ -1218,22 +1864,27 @@ begin
     for d := 0 to High(Wavs) do Args.Add(Wavs[d]);
     Args.Add('--no-normalize');
     Args.Add('--overwrite');
-    Code := RunTool(Cli, Args, 'StemCLI trennt 4 Dateien in Stems', OutText);
+    Code := RunTool(Cli, Args, T('StemCLI trennt 4 Dateien in Stems',
+                                 'StemCLI is separating 4 files into stems'), OutText);
   finally
     Args.Free;
   end;
   if Code < 0 then Exit;
   if Code = 3 then
   begin
-    MessageDlg(APP_TITLE, 'StemCLI ist auf diesem PC noch nicht freigegeben.' + LineEnding +
+    MessageDlg(APP_TITLE, T('StemCLI ist auf diesem PC noch nicht freigegeben.' + LineEnding +
       'Bitte StemMaker.exe einmal starten und den Hinweis bestätigen,' + LineEnding +
-      'danach "5.1 ZERLEGEN" nochmals ausführen.', mtWarning, [mbOK], 0);
+      'danach "5.1 -> 4 DECKS" nochmals ausführen.',
+      'StemCLI is not enabled on this PC yet.' + LineEnding +
+      'Please start StemMaker.exe once and confirm the notice,' + LineEnding +
+      'then run "5.1 -> 4 DECKS" again.'), mtWarning, [mbOK], 0);
     Exit;
   end;
   for d := 0 to High(Wavs) do
     if not FileExists(ChangeFileExt(Wavs[d], '.stem.mp4')) then
     begin
-      MessageDlg(APP_TITLE, Format('StemCLI ist fehlgeschlagen (Code %d).', [Code]) +
+      MessageDlg(APP_TITLE, Format(T('StemCLI ist fehlgeschlagen (Code %d).',
+        'StemCLI failed (code %d).'), [Code]) +
         LineEnding + LineEnding + Copy(Trim(OutText), Max(1, Length(Trim(OutText)) - 1500), 1500),
         mtError, [mbOK], 0);
       Exit;
@@ -1245,10 +1896,18 @@ end;
   Ereignisse
   ============================================================================ }
 
+procedure TMainForm.BtnPackClick(Sender: TObject);
+begin
+  if FBusy then Exit;
+  SrcDlg.Title := T('5.1-Datei in eine Stem-Datei verpacken', '5.1 file to pack into one stem file');
+  if SrcDlg.Execute then Pack51(SrcDlg.FileName);
+end;
+
 procedure TMainForm.BtnSplitClick(Sender: TObject);
 begin
   if FBusy then Exit;
-  if SplitDlg.Execute then Split51(SplitDlg.FileName);
+  SrcDlg.Title := T('5.1-Datei auf vier Decks aufteilen', '5.1 file to split onto four decks');
+  if SrcDlg.Execute then Split51(SrcDlg.FileName);
 end;
 
 procedure TMainForm.BtnLoadAllClick(Sender: TObject);
@@ -1257,16 +1916,31 @@ begin
   if OpenDlg.Execute then LoadSet(OpenDlg.FileName);
 end;
 
+procedure TMainForm.BtnSettingsClick(Sender: TObject);
+begin
+  if FBusy then Exit;
+  ShowSettings;
+end;
+
+procedure TMainForm.BtnLogClick(Sender: TObject);
+begin
+  ShowLogWindow;
+end;
+
 procedure TMainForm.BtnDeckLoadClick(Sender: TObject);
-var d: Integer;
+var
+  d: Integer;
+  OldTitle: string;
 begin
   if FBusy then Exit;
   d := TDJButton(Sender).Tag;
-  OpenDlg.Title := Format('Stem-Datei auf Deck %s laden', [DECK_LETTERS[d]]);
+  OldTitle := OpenDlg.Title;
+  OpenDlg.Title := Format(T('Stem-Datei auf Deck %s laden', 'Load a stem file onto deck %s'),
+                          [DECK_LETTERS[d]]);
   try
     if OpenDlg.Execute then LoadIntoDeck(d, OpenDlg.FileName);
   finally
-    OpenDlg.Title := 'Stem-Datei laden (A_-Datei lädt B_/C_/D_ automatisch mit)';
+    OpenDlg.Title := OldTitle;
   end;
 end;
 
@@ -1288,11 +1962,11 @@ begin
 end;
 
 procedure TMainForm.VolChange(Sender: TObject);
-var t: Integer;
+var Idx: Integer;
 begin
-  t := TDJSlider(Sender).Tag;
-  if t >= 1000 then
-    Decks[t - 1000].LblVol.Caption := IntToStr(Decks[t - 1000].TrkVol.Position) + '%';
+  Idx := TDJSlider(Sender).Tag;
+  if Idx >= 1000 then
+    Decks[Idx - 1000].LblVol.Caption := IntToStr(Decks[Idx - 1000].TrkVol.Position) + '%';
   UpdateGains;
 end;
 
@@ -1323,16 +1997,16 @@ end;
 procedure TMainForm.MeterPaint(Sender: TObject);
 var
   PB: TPaintBox;
-  t, d, s: Integer;
+  Idx, d, s: Integer;
   C: TColor;
 begin
   PB := TPaintBox(Sender);
-  t := PB.Tag;
-  d := t div STEMS_PER_DECK;
-  s := t mod STEMS_PER_DECK;
+  Idx := PB.Tag;
+  d := Idx div STEMS_PER_DECK;
+  s := Idx mod STEMS_PER_DECK;
   PB.Canvas.Brush.Color := DJ_PANEL;
   PB.Canvas.FillRect(0, 0, PB.Width, PB.Height);
-  if (Engine <> nil) and (Engine.Gain[t] > 0) then C := Decks[d].Stems[s].Color
+  if (Engine <> nil) and (Engine.Gain[Idx] > 0) then C := Decks[d].Stems[s].Color
   else C := DJ_OFF;
   DrawLedBar(PB.Canvas, Rect(0, 0, PB.Width, PB.Height),
              LevelToFrac(Decks[d].Stems[s].Level), C, False);
@@ -1412,7 +2086,8 @@ var d: Integer;
 begin
   if FBusy then Exit;
   case Key of
-    VK_SPACE: begin TogglePlay; Key := 0; end;
+    { P wie im Wunsch des Nutzers: alle vier Decks gleichzeitig starten/pausieren }
+    VK_SPACE, VK_P: begin TogglePlay; Key := 0; end;
     VK_1..VK_4:
       begin
         d := Key - VK_1;
@@ -1421,8 +2096,6 @@ begin
         UpdateGains;
         Key := 0;
       end;
-    VK_5:
-      if ssCtrl in Shift then begin BtnSplitClick(nil); Key := 0; end;
     VK_O:
       if ssCtrl in Shift then begin BtnLoadAllClick(nil); Key := 0; end;
     VK_LEFT:  begin SeekRelative(-5); Key := 0; end;
@@ -1431,9 +2104,11 @@ begin
   end;
 end;
 
-{ Stem-Datei -> auf die Decks laden, alles andere -> als 5.1-Quelle zerlegen }
+{ Stem-Datei -> auf die Decks laden, alles andere -> fragen: 1 Stem oder 4 Decks }
 procedure TMainForm.OpenAny(const FileName: string);
-var Base: string;
+var
+  Base: string;
+  R: TModalResult;
 begin
   if FBusy or not FileExists(FileName) then Exit;
   if (Pos('.stem.mp4', LowerCase(FileName)) > 0) or
@@ -1441,7 +2116,14 @@ begin
       SameText(ExtractFileExt(FileName), '.mp4')) then
     LoadSet(FileName)
   else
-    Split51(FileName);
+  begin
+    R := QuestionDlg(APP_TITLE, ExtractFileName(FileName) + LineEnding + LineEnding +
+      T('Was soll mit dieser 5.1-Datei passieren?', 'What should be done with this 5.1 file?'),
+      mtConfirmation,
+      [mrYes, '5.1 -> 1 STEM', mrAll, '5.1 -> 4 DECKS', mrCancel, T('Abbrechen', 'Cancel')], 0);
+    if R = mrYes then Pack51(FileName)
+    else if R = mrAll then Split51(FileName);
+  end;
 end;
 
 procedure TMainForm.FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -1470,7 +2152,7 @@ begin
   begin
     FCancel := True;
     FCloseAfter := True;
-    LblStatus.Caption := 'Breche ab ...';
+    LblStatus.Caption := T('Breche ab ...', 'Cancelling ...');
     CanClose := False;
   end
   else
@@ -1484,6 +2166,7 @@ begin
   FreeAndNil(Engine);
   for d := 0 to DECK_COUNT - 1 do ClearDeck(d);
   ReleaseInstanceDir;
+  Log('Beendet / closed');
 end;
 
 end.

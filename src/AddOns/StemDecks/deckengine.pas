@@ -169,7 +169,8 @@ begin
   if R <> MMSYSERR_NOERROR then
   begin
     FWave := 0;
-    FOpenError := Format('Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d).', [R]);
+    FOpenError := Format('Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d).' + LineEnding +
+                         'Could not open the audio device (waveOutOpen error %d).', [R, R]);
     Exit;
   end;
   { Gerät pausieren, damit nichts spielt, bevor die GUI "Play" drückt }

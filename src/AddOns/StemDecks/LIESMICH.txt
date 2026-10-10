@@ -1,44 +1,52 @@
-Elospeed StemDecks 0.1 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemDecks 0.2 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
 =====================================================================
 
-MACHBARKEITSTEST, kein fertiges Programm. Frage dahinter: Lässt sich ein
-5.1-Mitschnitt (z.B. Konzert-Video) so zerlegen, dass er in Traktor auf
-allen vier Decks (4 x 4 = 16 Stems) synchron läuft?
+Macht aus einem 5.1-Mitschnitt (z.B. Konzert-DVD) Traktor-Stems.
+Testversion, kein fertiges Programm. English: README.txt
+
+DIE VIER 5.1-TEILE
+  FRONT L/R      vorne links/rechts (Stereo)
+  CENTER         Mitte (mono, auf beide Seiten gelegt)
+  LFE (SUB)      Subwoofer (mono, auf Wunsch auf 0 dB Spitzenpegel angehoben)
+  SURROUND L/R   hinten/seitlich links/rechts (Stereo)
+  Standard-Zuordnung:  A / Slot 1 = Front,  B / Slot 2 = LFE,
+                       C / Slot 3 = Center, D / Slot 4 = Surround
+  Änderbar unter EINSTELLUNGEN (gespeichert in StemDecks.ini).
 
 INSTALLATION
-  StemDecks.exe in den Ordner AddOns\ von StemMaker kopieren (dort liegen
-  auch StemPlayer.exe und StemCLI.exe). ffmpeg.exe und StemCLI.exe werden
-  automatisch gesucht, sonst fragt das Programm einmal danach und merkt
-  sich den Pfad in StemDecks.ini.
+  Ordner entpacken, StemDecks.exe starten. Gebraucht wird ffmpeg.exe:
+  liegt sie nicht daneben (oder in tools\), fragt das Programm einmal
+  danach. Für "5.1 -> 4 DECKS" zusätzlich StemCLI.exe aus StemMaker
+  (am einfachsten StemDecks.exe in den Ordner AddOns\ von StemMaker legen).
 
-1) 5.1 ZERLEGEN
-  5.1-Datei wählen (mkv, mp4, m4a, mov, ac3, eac3, dts, wav, flac ...).
-  Es entstehen im selben Ordner vier Stereo-WAV-Dateien:
-      A_<Name>.wav   Front L/R
-      B_<Name>.wav   Center        (mono, auf beide Seiten)
-      C_<Name>.wav   Surround L/R
-      D_<Name>.wav   LFE / Sub     (mono, auf beide Seiten)
-  Auf Wunsch nur die ersten 3 Minuten (schneller zum Testen).
-  Danach wandelt StemCLI die vier Dateien in A_/B_/C_/D_<Name>.stem.mp4
-  um - OHNE Club-Pegel, damit die Decks im richtigen Verhältnis bleiben.
-  (Alternativ in StemMaker umwandeln, dort Club-Pegel ausschalten.)
+1) 5.1 -> 1 STEM  (ohne KI, schnell)
+  Die vier Teile werden direkt Stem 1..4 einer Datei <Name>.stem.mp4.
+  Master = gleich wie Slot 1 oder still (EINSTELLUNGEN).
 
-2) VIER DECKS ABSPIELEN
+2) 5.1 -> 4 DECKS  (mit KI)
+  Schreibt A_/B_/C_/D_<Name>.wav und trennt jede mit StemCLI in 4 Stems
+  (ohne Club-Pegel) -> A_/B_/C_/D_<Name>.stem.mp4 = 16 Stems auf 4 Decks.
+
+  Hat die Datei mehrere 5.1-Tonspuren (DVD: AC3 und DTS), wird gefragt,
+  welche. Auf Wunsch nur die ersten 3 Minuten (schneller zum Testen).
+  Dateitypen: mkv, mka, mp4, m4v, m4a, mov, ac3, eac3, dts, thd, wav, flac,
+  vob, ts, m2ts, mts, avi, webm, ogg, opus.
+  DVD: die grossen VOB-Dateien des Films (VTS_01_1.VOB ...). Kopiergeschützte
+  DVDs kann ffmpeg nicht lesen.
+
+3) VIER DECKS ABSPIELEN
   "DECKS LADEN" und eine A_-Datei wählen: B_/C_/D_ aus demselben Ordner
-  kommen automatisch auf Deck B..D. Einzelne Decks über "LADEN" im Deck.
-  Ein gemeinsames Play/Stop, alle Decks laufen sampelgenau synchron.
-  Pro Deck: Stumm + Lautstärke. Pro Stem: Stumm + Lautstärke + Pegel.
+  kommen automatisch auf Deck B..D. Ein gemeinsames Play/Pause, alle Decks
+  laufen sampelgenau synchron.
 
-  Leertaste  Play / Pause         1 .. 4   Deck A..D stumm an/aus
-  Pfeile     -/+ 5 Sekunden       Pos1     an den Anfang
-  Strg+O     Decks laden          Strg+5   5.1 zerlegen
+  Leertaste / P  Play / Pause     1 .. 4   Deck A..D stumm an/aus
+  Pfeile         -/+ 5 Sekunden   Pos1     an den Anfang
+  Strg+O         Decks laden
 
-IN TRAKTOR
-  Die vier .stem.mp4 auf Deck A..D laden (Decks C/D als Stem-Decks).
-  Gleichzeitig starten: eine Taste per Controller-Mapping viermal auf
-  Play/Pause (Deck A..D) legen, oder Sync + Quantize benutzen.
+PROTOKOLL (LOG)
+  Alles, was passiert, steht in logs\StemDecks.log neben der exe
+  (Knopf LOG zeigt es an). Bei Problemen bitte diese Datei schicken.
 
 HINWEIS
-  Der Player dekodiert alle 16 Stems in den Temp-Ordner (ca. 10 MB pro
-  Stem und Minute, also rund 160 MB pro Minute). Beim Schliessen wird
-  alles wieder gelöscht.
+  Der Player dekodiert die Stems in den Temp-Ordner (ca. 10 MB pro Stem und
+  Minute). Beim Schliessen wird alles wieder gelöscht.
