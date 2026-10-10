@@ -2,7 +2,7 @@
 
 🇬🇧 *This file is kept in German. English readers: see the [README](README.md).*
 
-Was erledigt ist, pro Version, neueste oben. Was gerade läuft und geplant ist, steht in der [ROADMAP](ROADMAP.md).
+Was erledigt ist, pro Version, neueste oben.
 Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Entwicklungslog](docs/ENTWICKLUNGSLOG.md).
 
 ---
@@ -20,8 +20,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Build-Workflow:** Die fremde Action `setup-lazarus` ist auf einen festen Commit gepinnt (der Job hat Schreibrecht auf das Repository), und Branch-Namen gelangen nur noch über Umgebungsvariablen ins Skript.
 
 ### Projekt
+- **Planungslisten nicht mehr im Repository:** `ROADMAP.md`, `TODO.md` und `docs/IDEEN.md` werden ab jetzt intern geführt. Was fertig ist, steht weiterhin hier im CHANGELOG.
 - **Installer (Inno Setup):** Neben dem ZIP gibt es `StemMaker-<Version>-Setup.exe`. Es installiert nur für den aktuellen Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker` (dort darf StemMaker Modelle, Einstellungen und Logs schreiben und sich selbst aktualisieren), legt Startmenü-Einträge für StemMaker und StemPlayer an und erscheint unter „Apps & Features“. Drüberinstallieren (Update) lässt Modelle, ffmpeg und Einstellungen in Ruhe. Beim Deinstallieren von Hand fragt es, ob auch diese gelöscht werden sollen; still (z. B. per winget) wird nichts davon gelöscht. Der Workflow „Setup zum Release“ baut das Setup beim Veröffentlichen eines Releases aus dessen ZIP, testet es auf Windows (installieren, Update, deinstallieren) und hängt es ans Release. Jeder PR-Build legt zusätzlich `StemMaker-Setup-Test.exe` ins Vor-Release.
-- **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet. TODO und ROADMAP nennen die nächsten Schritte.
+- **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet.
 
 ### StemPlayer 1.4
 - **Falsche Dateien werden abgewiesen:** Per Drag & Drop (oder „Alle Dateien“ im Öffnen-Dialog) liess sich jede Datei laden, z. B. eine MP3 oder ein Video. Der Player nahm dann einfach 5 Spuren an, die laufende Wiedergabe brach ab und ffmpeg meldete einen unverständlichen Fehler. Jetzt prüft der Player vorher die MP4-Struktur (MP4-Format und mindestens 5 Audiospuren) und zeigt eine klare Meldung auf Deutsch und Englisch. Der gerade geladene Track bleibt dabei erhalten. Ein reingezogener Ordner wird ebenfalls mit Hinweis abgewiesen.
