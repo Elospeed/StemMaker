@@ -93,6 +93,20 @@ jobs:
           cat SHA256SUMS.txt
           ls -l
 
+      - name: Setup bauen und testen (Testversion)
+        # Das Setup braucht den ganzen Programmordner (demucs, Sprachdateien ...).
+        # Dafür nehmen wir das aktuelle Release-ZIP aus update.json (Prüfsumme wird
+        # kontrolliert) und ersetzen darin die Exes durch die frisch gebauten.
+        run: |
+          set -e
+          read -r VERSION URL SHA < <(python -c "import json; d=json.load(open('update.json', encoding='utf-8')); print(d['version'], d['zip_url'], d['zip_sha256'])" | tr -d '\r')
+          curl -sSfL -o release.zip "$URL"
+          echo "$SHA  release.zip" | sha256sum -c -
+          bash installer/setup-bauen.sh release.zip "$VERSION-test" StemMaker-Setup-Test ausgabe
+          pwsh -File installer/setup-testen.ps1 installer/Output/StemMaker-Setup-Test.exe
+          cp installer/Output/StemMaker-Setup-Test.exe ausgabe/
+          (cd ausgabe && sha256sum StemMaker-Setup-Test.exe >> SHA256SUMS.txt && cat SHA256SUMS.txt)
+
       - name: Exes als Workflow-Artefakt ablegen
         uses: actions/upload-artifact@v4
         with:
@@ -150,6 +164,7 @@ jobs:
             echo "- [StemMaker.exe]($BASIS/StemMaker.exe)"
             echo "- [StemCLI.exe]($BASIS/StemCLI.exe)"
             echo "- [StemPlayer.exe]($BASIS/StemPlayer.exe) (gehört in den Ordner \`AddOns\\\`)"
+            echo "- [StemMaker-Setup-Test.exe]($BASIS/StemMaker-Setup-Test.exe) (Installer mit Startmenü-Eintrag, installiert nach %LOCALAPPDATA%\\Programs\\StemMaker)"
             echo "- [SHA256SUMS.txt]($BASIS/SHA256SUMS.txt)"
             echo
             echo "So testen: \`StemMaker.exe\` in einer bestehenden StemMaker-Installation ersetzen (alte Exe vorher umbenennen, z. B. in \`StemMaker-alt.exe\`). Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nicht signiert, Windows SmartScreen warnt deshalb: „Weitere Informationen“ → „Trotzdem ausführen“."

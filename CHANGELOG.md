@@ -20,6 +20,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Build-Workflow:** Die fremde Action `setup-lazarus` ist auf einen festen Commit gepinnt (der Job hat Schreibrecht auf das Repository), und Branch-Namen gelangen nur noch über Umgebungsvariablen ins Skript.
 
 ### Projekt
+- **Installer (Inno Setup):** Neben dem ZIP gibt es `StemMaker-<Version>-Setup.exe`. Es installiert nur für den aktuellen Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker` (dort darf StemMaker Modelle, Einstellungen und Logs schreiben und sich selbst aktualisieren), legt Startmenü-Einträge für StemMaker und StemPlayer an und erscheint unter „Apps & Features“. Drüberinstallieren (Update) lässt Modelle, ffmpeg und Einstellungen in Ruhe. Beim Deinstallieren von Hand fragt es, ob auch diese gelöscht werden sollen; still (z. B. per winget) wird nichts davon gelöscht. Der Workflow „Setup zum Release“ baut das Setup beim Veröffentlichen eines Releases aus dessen ZIP, testet es auf Windows (installieren, Update, deinstallieren) und hängt es ans Release. Jeder PR-Build legt zusätzlich `StemMaker-Setup-Test.exe` ins Vor-Release.
 - **winget als Vertriebsweg geplant:** Manifest für StemMaker 1.7 (Paket-ID `Elospeed.StemMaker`, ZIP mit portablen EXEs, Befehle `stemmaker` und `stemcli`) ist vorbereitet. TODO und ROADMAP nennen die nächsten Schritte.
 
 ### StemPlayer 1.4

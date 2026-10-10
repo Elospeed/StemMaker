@@ -19,6 +19,7 @@ Direkte Links (kein Login nötig), Beispiel `test-main`:
 - https://github.com/Elospeed/StemMaker/releases/download/test-main/StemMaker.exe
 - https://github.com/Elospeed/StemMaker/releases/download/test-main/StemCLI.exe
 - https://github.com/Elospeed/StemMaker/releases/download/test-main/StemPlayer.exe
+- https://github.com/Elospeed/StemMaker/releases/download/test-main/StemMaker-Setup-Test.exe
 - https://github.com/Elospeed/StemMaker/releases/download/test-main/SHA256SUMS.txt
 
 Für einen PR einfach `test-main` durch `test-pr-<Nummer>` ersetzen, z. B. `test-pr-20`.
@@ -31,6 +32,7 @@ Zusätzlich hängt an jedem Build-Lauf unter *Actions* ein Artefakt mit denselbe
 - **StemMaker:** `StemMaker.exe` in einer bestehenden StemMaker-Installation ersetzen (vorher die alte Exe umbenennen, z. B. in `StemMaker-alt.exe`). Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten.
 - **StemPlayer:** `StemPlayer.exe` in den Ordner `AddOns\` einer StemMaker-Installation kopieren, damit `tools\ffmpeg.exe` gefunden wird.
 - **StemCLI:** neben `StemMaker.exe` legen.
+- **Installer:** `StemMaker-Setup-Test.exe` ausführen. Es enthält das aktuelle Release-ZIP (aus `update.json`) mit den frisch gebauten Exes und installiert nach `%LOCALAPPDATA%\Programs\StemMaker`. Unter „Apps & Features“ steht als Version z. B. `1.7-test`. Der Build hat das Setup vorher schon auf Windows still installiert, drüberinstalliert und deinstalliert (`installer/setup-testen.ps1`).
 
 Die Exes sind nicht signiert. Windows SmartScreen warnt deshalb: „Weitere Informationen“ → „Trotzdem ausführen“ (Details in der [LIESMICH](../LIESMICH.md#windows-warnung-der-computer-wurde-durch-windows-geschützt)).
 Die Prüfsummen (SHA-256) stehen in `SHA256SUMS.txt` und in der Beschreibung des Vor-Releases.

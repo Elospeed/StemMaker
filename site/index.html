@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StemMaker – free MP3 to Traktor Stems converter for Windows</title>
-<meta name="description" content="Elospeed StemMaker turns your MP3, WAV and FLAC files into Traktor stem files (.stem.mp4) with drums, bass, melody and vocals. Free, open source, no Python, no setup. For Windows.">
+<meta name="description" content="Elospeed StemMaker turns your MP3, WAV and FLAC files into Traktor stem files (.stem.mp4) with drums, bass, melody and vocals. Free, open source, no Python. Installer or portable ZIP. For Windows.">
 <meta name="keywords" content="Traktor stems, stem.mp4, MP3 to stems, stem separation, Demucs, htdemucs, Traktor Pro 4, DJ, stem converter, Windows, free, open source">
 <meta name="author" content="Elospeed">
 <meta name="robots" content="index, follow">
@@ -108,14 +108,14 @@
 
 <section id="features" class="alt">
   <div class="wrap">
-    <h2>Everything you need, nothing to install</h2>
-    <p class="sub">Unzip, start, drag your music in. On the first start StemMaker downloads ffmpeg and the separation model by itself.</p>
+    <h2>Everything you need, no Python to install</h2>
+    <p class="sub">Install or unzip, start, drag your music in. On the first start StemMaker downloads ffmpeg and the separation model by itself.</p>
     <div class="grid">
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Four real stems</h3><p>Drums, Bass, Other (melody) and Vox, plus the original as master track, in the format Traktor expects. Names and colours are adjustable.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Quality on par with Traktor</h3><p>Uses the open-source Demucs v4 model (htdemucs). In a side-by-side test against a stem file made by Traktor Pro 4, drums, vocals and level came out practically the same. Three models to pick from: htdemucs_ft for the best quality, Demucs v3 when you want it quicker.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Built for whole collections</h3><p>Add complete folders, see a time estimate before you start, let it run overnight. The list is saved after every file, so a crash or a power cut costs you one track, not the run. In our own stress test 400 files in nested folders came out complete, even after cancelling and killing the program in between, with the folder tree rebuilt one to one.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Tags and cover art kept</h3><p>Title, artist, album, genre, year, track number, BPM, key, label and cover are copied from your MP3, so the stem file looks right in your Traktor collection.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The whole program is a 4 MB Windows exe, the separation engine is C++ (demucs.cpp) instead of Python and PyTorch. Nothing to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The whole program is a 4 MB Windows exe, the separation engine is C++ (demucs.cpp) instead of Python and PyTorch. No Python or drivers to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read and a stem does not drop in volume when you bring it into your set. Low bass that the model leaves in the melody stem is moved into the bass stem, like Traktor does, so the kick and bass stay solid.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Picks the fastest build for your processor (AVX2, AVX or generic), keeps the PC awake during long runs and can shut it down when done.</p></div>
     </div>
@@ -127,7 +127,7 @@
     <h2>How it works</h2>
     <p class="sub">Three steps from your own music file to a stem file you can load in Traktor.</p>
     <ol class="steps">
-      <li><strong>Download and unzip</strong>Get the ZIP from GitHub and unzip it anywhere, for example to <code>C:\Tools\StemMaker</code>. No installer, no admin rights.</li>
+      <li><strong>Download and install</strong>Get the installer (<code>StemMaker-&lt;version&gt;-Setup.exe</code>) from GitHub for a Start menu entry, or the portable ZIP to unzip anywhere, for example to <code>C:\Tools\StemMaker</code>. No admin rights needed either way.</li>
       <li><strong>Drag your music in</strong>Drop MP3, WAV, FLAC, AIFF, M4A or OGG files or whole folders into the window, then click Start.</li>
       <li><strong>Load it in Traktor</strong>Each track becomes <code>Title.stem.mp4</code> next to the original or in a folder of your choice. Load it into a stem deck and play.</li>
     </ol>
@@ -244,7 +244,7 @@
 <section>
   <div class="wrap" style="text-align:center">
     <h2>Ready to make your own stems?</h2>
-    <p class="sub" style="margin:0 auto 26px">Download the ZIP, unzip it and drag in your first track.</p>
+    <p class="sub" style="margin:0 auto 26px">Download the installer or the ZIP and drag in your first track.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download StemMaker</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker#readme">Read the guide</a>

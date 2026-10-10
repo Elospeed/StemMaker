@@ -5,7 +5,7 @@
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
-It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setup: a single Lazarus program that downloads everything it needs on first start.
+It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setting up a Python environment: a single Lazarus program that downloads everything it needs on first start. Available as an installer or as a portable ZIP.
 
 **Why StemMaker**
 
@@ -29,8 +29,12 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 
 ## Getting started
 
-1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
-2. Run `StemMaker.exe`. If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
+There are two downloads on the [release page](https://github.com/Elospeed/StemMaker/releases/latest), with the same program inside:
+- **`StemMaker-<version>-Setup.exe`** (installer): installs for your Windows user only, without admin rights, to `%LOCALAPPDATA%\Programs\StemMaker`, with a Start menu entry and an uninstall entry under "Apps & features". When you uninstall by hand, it asks whether the downloaded models, ffmpeg and settings should be deleted too.
+- **`StemMaker-<version>.zip`** (portable): unzip anywhere, e.g. to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
+
+1. Run the installer, or unzip the archive.
+2. Run `StemMaker.exe` (Start menu entry "StemMaker" after the installer). If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
 **On the first start on a PC** a window shows the disclaimer and the license notes. Tick the box and click **"I agree - start StemMaker"**. This is asked once per PC: if you copy the StemMaker folder to another PC, it asks again there (this is not copy protection, copying is allowed under the MIT License). `AddOns\StemCLI.exe` asks for the same confirmation once with `--accept`. You can read the text again any time under **Info → Licenses**.
 
@@ -45,7 +49,7 @@ If you pick a model in the main window that isn't installed yet (e.g. htdemucs_f
 
 ## Windows warning ("Windows protected your PC")
 
-StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
+StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
 
 **To start it anyway:**
 1. Click **"More info"** in the blue window.
