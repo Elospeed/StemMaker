@@ -107,6 +107,15 @@ jobs:
           cp installer/Output/StemMaker-Setup-Test.exe ausgabe/
           (cd ausgabe && sha256sum StemMaker-Setup-Test.exe >> SHA256SUMS.txt && cat SHA256SUMS.txt)
 
+      - name: Download-ZIP für das Test-Tool "5.1 -> Stem" bauen
+        # Komplettes ZIP für Leute ohne StemMaker: Stem51.exe, Anleitung DE/EN,
+        # ffmpeg (LGPL, aus unserem Release) und eine kleine 5.1-Testdatei.
+        run: |
+          set -e
+          VER=$(sed -n "s/^ *APP_VER *= *'\(.*\)';.*/\1/p" src/AddOns/StemDecks/stem51form.pas | head -n 1 | tr -d '\r')
+          bash src/AddOns/StemDecks/stem51-zip.sh ausgabe/Stem51.exe "$VER" ausgabe
+          (cd ausgabe && sha256sum Elospeed-5.1-Stem-*.zip >> SHA256SUMS.txt && cat SHA256SUMS.txt)
+
       - name: Exes als Workflow-Artefakt ablegen
         uses: actions/upload-artifact@v4
         with:
@@ -166,6 +175,9 @@ jobs:
             echo "- [StemPlayer.exe]($BASIS/StemPlayer.exe) (gehört in den Ordner \`AddOns\\\`)"
             echo "- [StemDecks.exe]($BASIS/StemDecks.exe) (Test 5.1 auf vier Decks, gehört in den Ordner \`AddOns\\\`, nicht im Setup)"
             echo "- [Stem51.exe]($BASIS/Stem51.exe) (Test: 5.1-Datei als eine Stem-Datei, ohne KI, nicht im Setup)"
+            for Z in ausgabe/Elospeed-5.1-Stem-*.zip; do
+              if [ -f "$Z" ]; then echo "- [$(basename "$Z")]($BASIS/$(basename "$Z")) (Test-Tool 5.1 -> Stem komplett: Stem51.exe, Anleitung DE/EN, ffmpeg, Testdatei; ohne StemMaker nutzbar)"; fi
+            done
             echo "- [StemMaker-Setup-Test.exe]($BASIS/StemMaker-Setup-Test.exe) (Installer mit Startmenü-Eintrag, installiert nach %LOCALAPPDATA%\\Programs\\StemMaker)"
             echo "- [SHA256SUMS.txt]($BASIS/SHA256SUMS.txt)"
             echo
@@ -180,7 +192,7 @@ jobs:
           # Altes Vor-Release mit demselben Tag samt Tag löschen (falls vorhanden)
           gh release delete "$TAG" --cleanup-tag --yes --repo "${{ github.repository }}" || true
 
-          gh release create "$TAG" ausgabe/*.exe ausgabe/SHA256SUMS.txt \
+          gh release create "$TAG" ausgabe/*.exe ausgabe/*.zip ausgabe/SHA256SUMS.txt \
             --repo "${{ github.repository }}" \
             --target "$COMMIT" \
             --prerelease \
