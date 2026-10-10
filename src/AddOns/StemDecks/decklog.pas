@@ -12,7 +12,7 @@
 
   Protokoll (Echtzeit-Log):
     Jede Zeile geht sofort
-      - in die Datei  logs\StemDecks.log  neben der exe
+      - in die Datei  logs\<Name der exe>.log  neben der exe
         (ist der Ordner schreibgeschützt: %APPDATA%\ElospeedStemDecks\logs\)
       - und in das Log-Fenster (Knopf LOG), falls es offen ist.
     Wird die Datei grösser als 2 MB, wird sie beim Start zu
@@ -136,7 +136,9 @@ begin
     Dir := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')) +
            'ElospeedStemDecks' + PathDelim + 'logs';
   ForceDirectories(Dir);
-  FLogFile := IncludeTrailingPathDelimiter(Dir) + 'StemDecks.log';
+  { Name wie die exe: StemDecks.log bzw. Stem51.log }
+  FLogFile := IncludeTrailingPathDelimiter(Dir) +
+              ChangeFileExt(ExtractFileName(Application.ExeName), '.log');
   { Zu gross geworden? Alte Datei beiseite legen }
   try
     if FileExists(FLogFile) and (FileSizeUtf8(FLogFile) > 2 * 1024 * 1024) then
@@ -206,7 +208,7 @@ begin
   begin
     FButtons := TLogButtons.Create;
     FLogForm := TForm.CreateNew(Application);
-    FLogForm.Caption := 'StemDecks - Log';
+    FLogForm.Caption := ChangeFileExt(ExtractFileName(Application.ExeName), '') + ' - Log';
     FLogForm.Width := 820;
     FLogForm.Height := 480;
     FLogForm.Position := poScreenCenter;
