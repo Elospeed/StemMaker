@@ -21,6 +21,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ### StemPlayer 1.4
 - **Falsche Dateien werden abgewiesen:** Per Drag & Drop (oder „Alle Dateien“ im Öffnen-Dialog) liess sich jede Datei laden, z. B. eine MP3 oder ein Video. Die laufende Wiedergabe brach dann ab, und es kam ein unverständlicher Fehler. Jetzt prüft der Player die Datei vorher und zeigt eine klare Meldung auf Deutsch und Englisch. Der gerade geladene Track bleibt erhalten. Ein reingezogener Ordner wird ebenfalls mit Hinweis abgewiesen.
+- **CLIP sieht nicht mehr wie ein Knopf aus:** Die Übersteuerungs-Anzeige hellte sich beim Drüberfahren auf und reagierte auf Klicks wie ein Knopf. Jetzt ist sie eine flache Anzeige, die nur bei Übersteuerung rot leuchtet.
 
 ## 1.7 – 6. Oktober 2026
 
