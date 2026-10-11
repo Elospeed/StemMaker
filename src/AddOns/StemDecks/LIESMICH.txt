@@ -1,0 +1,59 @@
+Elospeed StemDecks 0.3 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+=====================================================================
+
+Macht aus einem 5.1-Mitschnitt (z.B. Konzert-DVD) Traktor-Stems.
+Testversion, kein fertiges Programm. English: README.txt
+
+DIE VIER 5.1-TEILE
+  FRONT L/R      vorne links/rechts (Stereo)
+  CENTER         Mitte (mono, auf beide Seiten gelegt)
+  LFE (SUB)      Subwoofer (mono, auf Wunsch auf 0 dB Spitzenpegel angehoben)
+  SURROUND L/R   hinten/seitlich links/rechts (Stereo)
+  Standard-Zuordnung:  A / Slot 1 = Front,  B / Slot 2 = LFE,
+                       C / Slot 3 = Center, D / Slot 4 = Surround
+  Änderbar unter EINSTELLUNGEN (gespeichert in StemDecks.ini).
+
+INSTALLATION
+  Ordner entpacken, StemDecks.exe starten. Gebraucht wird ffmpeg.exe:
+  liegt sie nicht daneben (oder in tools\), fragt das Programm einmal
+  danach. Für "5.1 -> 4 DECKS" zusätzlich StemCLI.exe aus StemMaker
+  (am einfachsten StemDecks.exe in den Ordner AddOns\ von StemMaker legen).
+
+1) 5.1 -> 1 STEM  (ohne KI, schnell)
+  Die vier Teile werden direkt Stem 1..4 einer Datei <Name>.stem.mp4.
+  Master = gleich wie Slot 1 oder still (EINSTELLUNGEN).
+
+2) 5.1 -> 4 DECKS  (mit KI)
+  Schreibt A_/B_/C_/D_<Name>.wav und trennt jede mit StemCLI in 4 Stems
+  (ohne Club-Pegel) -> A_/B_/C_/D_<Name>.stem.mp4 = 16 Stems auf 4 Decks.
+
+  Hat die Datei mehrere 5.1-Tonspuren (DVD: AC3 und DTS), wird gefragt,
+  welche. Auf Wunsch nur die ersten 3 Minuten (schneller zum Testen).
+  Dateitypen: mkv, mka, mp4, m4v, m4a, mov, ac3, eac3, dts, thd, wav, flac,
+  vob, ts, m2ts, mts, avi, webm, ogg, opus.
+  DVD: die grossen VOB-Dateien des Films (VTS_01_1.VOB ...). Kopiergeschützte
+  DVDs kann ffmpeg nicht lesen.
+
+3) AUSSCHNITT (zum Verschicken an uns)
+  Datei aufs Fenster ziehen (oder Knopf AUSSCHNITT) und "Ausschnitt zum
+  Verschicken" wählen. Start (z.B. 1:00) und Länge (z.B. 45 s) eingeben.
+  Es entsteht <Name>-sample.mka neben der Quelle: alle Tonspuren im
+  Original, ohne Neukodierung, ohne Bild. Der Ordner geht danach auf.
+  Diese Datei und logs\StemDecks.log z.B. über WeTransfer schicken.
+
+4) VIER DECKS ABSPIELEN
+  "DECKS LADEN" und eine A_-Datei wählen: B_/C_/D_ aus demselben Ordner
+  kommen automatisch auf Deck B..D. Ein gemeinsames Play/Pause, alle Decks
+  laufen sampelgenau synchron.
+
+  Leertaste / P  Play / Pause     1 .. 4   Deck A..D stumm an/aus
+  Pfeile         -/+ 5 Sekunden   Pos1     an den Anfang
+  Strg+O         Decks laden
+
+PROTOKOLL (LOG)
+  Alles, was passiert, steht in logs\StemDecks.log neben der exe
+  (Knopf LOG zeigt es an). Bei Problemen bitte diese Datei schicken.
+
+HINWEIS
+  Der Player dekodiert die Stems in den Temp-Ordner (ca. 10 MB pro Stem und
+  Minute). Beim Schliessen wird alles wieder gelöscht.

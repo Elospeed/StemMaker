@@ -1,6 +1,7 @@
 # Build output (Lazarus / Free Pascal)
 bin/
 lib/
+lib51/
 backup/
 *.exe
 *.o
@@ -18,6 +19,8 @@ tools/ffmpeg.exe
 # User data created next to the exe
 StemMaker.ini
 StemPlayer.ini
+StemDecks.ini
+Stem51.ini
 StemMaker_queue.txt
 StemMaker_queue.txt.tmp
 logs/

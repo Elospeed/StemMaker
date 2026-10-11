@@ -82,6 +82,7 @@ type
     FLitColor: TColor;
     FGlyph: TDJGlyph;
     FHover: Boolean;
+    FIndicator: Boolean;
     FPressed: Boolean;
     procedure SetDown(AValue: Boolean);
     procedure SetLitColor(AValue: TColor);
@@ -100,6 +101,9 @@ type
     { True = rastet bei jedem Klick ein/aus (Mute, Solo).
       False = Down wird nur vom Programm gesetzt (Modus-Buttons, CLIP). }
     property Toggle: Boolean read FToggle write FToggle;
+    { True = reine Anzeige (z. B. CLIP): reagiert nicht auf die Maus und
+      sieht im Ruhezustand flach aus, damit niemand sie für einen Knopf hält }
+    property Indicator: Boolean read FIndicator write FIndicator;
     property LitColor: TColor read FLitColor write SetLitColor;
     property Glyph: TDJGlyph read FGlyph write SetGlyph;
     property Caption;
@@ -292,6 +296,7 @@ end;
 
 procedure TDJButton.Click;
 begin
+  if FIndicator then Exit;   // Anzeige: Klicks ignorieren
   if FToggle then
   begin
     FDown := not FDown;
@@ -303,6 +308,7 @@ end;
 procedure TDJButton.MouseEnter;
 begin
   inherited MouseEnter;
+  if FIndicator then Exit;   // Anzeige: kein Aufhellen beim Drüberfahren
   FHover := True;
   Invalidate;
 end;
@@ -318,7 +324,7 @@ end;
 procedure TDJButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if Button = mbLeft then
+  if (Button = mbLeft) and not FIndicator then
   begin
     FPressed := True;
     Invalidate;
@@ -349,6 +355,13 @@ begin
     Bg := BlendColor(DJ_BTN, DJ_BG, 0.5);
     Bd := DJ_BORDER;
     Fg := BlendColor(DJ_DIM, DJ_BG, 0.4);
+  end
+  else if FIndicator and not FDown then
+  begin
+    { Anzeige aus: flach und dunkel wie ein Lämpchen, nicht wie ein Knopf }
+    Bg := BlendColor(DJ_BTN, DJ_BG, 0.6);
+    Bd := DJ_BORDER;
+    Fg := DJ_DIM;
   end
   else if FDown and (FLitColor = clNone) then
   begin
