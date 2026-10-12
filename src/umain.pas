@@ -9,7 +9,8 @@
 
   Das Hauptfenster. Hier passiert alles, was der Benutzer sieht:
     - Dateiliste (Dateien hinzufügen, per Drag & Drop, ganze Ordner)
-    - Einstellungen (Ausgabeordner, Modell, Format, Stem-Namen/-Farben)
+    - Einstellungen (Ausgabeordner, Modell, Format, Klang-Optionen);
+      alles Weitere im Fenster "Einstellungen" (Zahnrad, uSettings)
     - Start / Abbrechen, Fortschrittsbalken und Protokoll
 
   Die eigentliche Umwandlung macht uStemJob. Weil die pro Song mehrere
@@ -34,7 +35,8 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
-  uPower, uLang, uLangUI, uQueue, Process, UTF8Process, uUpdate, uUpdateUI;
+  uPower, uLang, uLangUI, uQueue, Process, UTF8Process, uUpdate, uUpdateUI,
+  uSettings;
 
 const
   APP_VERSION = '1.7';
@@ -101,34 +103,20 @@ type
     btnCancel: TButton;
     btnOpenOut: TButton;
     btnListen: TButton;
+    btnSettings: TBitBtn;
     chkOpenWhenDone: TCheckBox;
     cbModel: TComboBox;
     cbFormat: TComboBox;
     chkBeside: TCheckBox;
-    chkOverwrite: TCheckBox;
-    chkAutoThreads: TCheckBox;
-    chkKeepAwake: TCheckBox;
-    chkKeepTree: TCheckBox;
     chkShutdown: TCheckBox;
     chkNormalize: TCheckBox;
     chkBassFix: TCheckBox;
-    lblCores: TLabel;
-    clr1: TColorButton;
-    clr2: TColorButton;
-    clr3: TColorButton;
-    clr4: TColorButton;
     edtOut: TDirectoryEdit;
-    edtStem1: TEdit;
-    edtStem2: TEdit;
-    edtStem3: TEdit;
-    edtStem4: TEdit;
     gbSettings: TGroupBox;
     lblDrop: TLabel;
     lblOut: TLabel;
     lblModel: TLabel;
-    lblThreads: TLabel;
     lblFormat: TLabel;
-    lblStems: TLabel;
     lblTools: TLabel;
     lblStage: TLabel;
     lblTotal: TLabel;
@@ -141,7 +129,6 @@ type
     pnlRun: TPanel;
     pbFile: TProgressBar;
     pbTotal: TProgressBar;
-    seThreads: TSpinEdit;
     splLog: TSplitter;
     tmrTime: TTimer;
     procedure btnAddFilesClick(Sender: TObject);
@@ -155,8 +142,7 @@ type
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
-    procedure chkAutoThreadsChange(Sender: TObject);
-    procedure seThreadsChange(Sender: TObject);
+    procedure btnSettingsClick(Sender: TObject);
     procedure cbModelChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
@@ -170,6 +156,7 @@ type
     FTotal : Integer;              // Anzahl Dateien im aktuellen Durchlauf
     FIniName: string;
     FToolFFmpeg, FToolDemucs, FToolModels: string;   // Werkzeug-Pfade
+    FPrefs: TStemPrefs;            // Werte aus dem Fenster "Einstellungen" (uSettings)
     { für die Zeitanzeige unter den Balken: }
     FRunStart  : QWord;            // Startzeitpunkt des ganzen Durchlaufs (ms)
     FFileStart : QWord;            // Startzeitpunkt der aktuellen Datei (ms)
@@ -512,8 +499,7 @@ begin
     cbModel.Items.Add(StemModelDisplayName(M));
   cbModel.ItemIndex := 0;
   cbFormat.ItemIndex := 0;
-  seThreads.MaxValue := TThread.ProcessorCount * 2;
-  if seThreads.MaxValue < 1 then seThreads.MaxValue := 1;
+  LoadGearGlyph(btnSettings);      // Zahnrad-Symbol (uSettings)
 
   FIniName := StemIniFileName;
   LoadSettings;
@@ -657,15 +643,10 @@ procedure TfrmMain.LoadSettings;
 var
   Ini: TIniFile;
   D: TStemSettings;
-  Edits: array[0..3] of TEdit;
-  Clrs: array[0..3] of TColorButton;
   I: Integer;
 begin
   D := DefaultStemSettings;
-  { die 4 Namensfelder und Farbbuttons in Arrays, damit man sie in einer
-    Schleife bearbeiten kann }
-  Edits[0] := edtStem1; Edits[1] := edtStem2; Edits[2] := edtStem3; Edits[3] := edtStem4;
-  Clrs[0] := clr1; Clrs[1] := clr2; Clrs[2] := clr3; Clrs[3] := clr4;
+  FPrefs := DefaultStemPrefs;
   Ini := TIniFile.Create(FIniName);
   try
     edtOut.Directory := Ini.ReadString('Main', 'OutputDir', '');
@@ -677,14 +658,14 @@ begin
       deshalb nicht mehr gelesen - alle starten mit "automatisch". }
     cbFormat.ItemIndex := Ini.ReadInteger('Main', 'FormatV2', 0);
     if cbFormat.ItemIndex < 0 then cbFormat.ItemIndex := 0;
-    seThreads.Value := Ini.ReadInteger('Main', 'Threads', D.Threads);
+    FPrefs.Threads := Ini.ReadInteger('Main', 'Threads', D.Threads);
     { "Auto" ist Standard: dann wird bei JEDEM Start neu für den aktuellen
       Rechner gerechnet (wichtig, wenn der Ordner auf einen anderen PC
       kopiert wird) }
-    chkAutoThreads.Checked := Ini.ReadBool('Main', 'ThreadsAuto', True);
-    chkOverwrite.Checked := Ini.ReadBool('Main', 'Overwrite', False);
-    chkKeepTree.Checked := Ini.ReadBool('Main', 'KeepTree', True);
-    chkKeepAwake.Checked := Ini.ReadBool('Main', 'KeepAwake', True);
+    FPrefs.ThreadsAuto := Ini.ReadBool('Main', 'ThreadsAuto', True);
+    FPrefs.Overwrite := Ini.ReadBool('Main', 'Overwrite', False);
+    FPrefs.KeepTree := Ini.ReadBool('Main', 'KeepTree', True);
+    FPrefs.KeepAwake := Ini.ReadBool('Main', 'KeepAwake', True);
     { Klang-Optionen (ab 1.7), Standard an }
     chkNormalize.Checked := Ini.ReadBool('Main', 'Normalize', D.Normalize);
     chkBassFix.Checked := Ini.ReadBool('Main', 'BassFix', D.BassFix);
@@ -692,8 +673,8 @@ begin
     chkOpenWhenDone.Checked := Ini.ReadBool('Main', 'OpenWhenDone', True);
     for I := 0 to 3 do
     begin
-      Edits[I].Text := Ini.ReadString('Stems', 'Name' + IntToStr(I + 1), D.Stems[I].Name);
-      Clrs[I].ButtonColor := HexToColor(
+      FPrefs.StemNames[I] := Ini.ReadString('Stems', 'Name' + IntToStr(I + 1), D.Stems[I].Name);
+      FPrefs.StemColors[I] := HexToColor(
         Ini.ReadString('Stems', 'Color' + IntToStr(I + 1), D.Stems[I].Color),
         HexToColor(D.Stems[I].Color, clBlack));
     end;
@@ -707,8 +688,12 @@ begin
   finally
     Ini.Free;
   end;
+  { "Auto": Teile passend zu diesem PC neu ausrechnen }
+  if FPrefs.ThreadsAuto then
+    FPrefs.Threads := AutoThreads;
+  if FPrefs.Threads < 1 then
+    FPrefs.Threads := 1;
   chkBesideChange(nil);
-  chkAutoThreadsChange(nil);
 end;
 
 procedure TfrmMain.SaveSettings;
@@ -725,11 +710,11 @@ begin
       Ini.WriteBool('Main', 'BesideInput', chkBeside.Checked);
       Ini.WriteInteger('Main', 'Model', cbModel.ItemIndex);
       Ini.WriteInteger('Main', 'FormatV2', cbFormat.ItemIndex);
-      Ini.WriteInteger('Main', 'Threads', seThreads.Value);
-      Ini.WriteBool('Main', 'ThreadsAuto', chkAutoThreads.Checked);
-      Ini.WriteBool('Main', 'Overwrite', chkOverwrite.Checked);
-      Ini.WriteBool('Main', 'KeepTree', chkKeepTree.Checked);
-      Ini.WriteBool('Main', 'KeepAwake', chkKeepAwake.Checked);
+      Ini.WriteInteger('Main', 'Threads', FPrefs.Threads);
+      Ini.WriteBool('Main', 'ThreadsAuto', FPrefs.ThreadsAuto);
+      Ini.WriteBool('Main', 'Overwrite', FPrefs.Overwrite);
+      Ini.WriteBool('Main', 'KeepTree', FPrefs.KeepTree);
+      Ini.WriteBool('Main', 'KeepAwake', FPrefs.KeepAwake);
       Ini.WriteBool('Main', 'Normalize', chkNormalize.Checked);
       Ini.WriteBool('Main', 'BassFix', chkBassFix.Checked);
       Ini.WriteBool('Main', 'OpenWhenDone', chkOpenWhenDone.Checked);
@@ -754,6 +739,8 @@ end;
 
 { Sammelt alle Einstellungen aus dem Fenster in einen TStemSettings-Record }
 function TfrmMain.CurrentSettings: TStemSettings;
+var
+  I: Integer;
 begin
   Result := DefaultStemSettings;
   Result.FFmpegExe := FToolFFmpeg;
@@ -764,7 +751,7 @@ begin
   else
     Result.OutputDir := edtOut.Directory;
   Result.Model := TStemModel(cbModel.ItemIndex);
-  Result.Threads := seThreads.Value;
+  Result.Threads := FPrefs.Threads;
   { 0 = AAC automatisch, 1 = AAC 256, 2 = AAC 320, 3 = ALAC }
   Result.AACAuto := False;
   case cbFormat.ItemIndex of
@@ -774,13 +761,14 @@ begin
   else
     begin Result.Codec := scAAC; Result.AACBitrate := 320; Result.AACAuto := True; end;
   end;
-  Result.Overwrite := chkOverwrite.Checked;
+  Result.Overwrite := FPrefs.Overwrite;
   Result.Normalize := chkNormalize.Checked;
   Result.BassFix := chkBassFix.Checked;
-  Result.Stems[0].Name := Trim(edtStem1.Text); Result.Stems[0].Color := ColorToHex(clr1.ButtonColor);
-  Result.Stems[1].Name := Trim(edtStem2.Text); Result.Stems[1].Color := ColorToHex(clr2.ButtonColor);
-  Result.Stems[2].Name := Trim(edtStem3.Text); Result.Stems[2].Color := ColorToHex(clr3.ButtonColor);
-  Result.Stems[3].Name := Trim(edtStem4.Text); Result.Stems[3].Color := ColorToHex(clr4.ButtonColor);
+  for I := 0 to 3 do
+  begin
+    Result.Stems[I].Name := Trim(FPrefs.StemNames[I]);
+    Result.Stems[I].Color := ColorToHex(FPrefs.StemColors[I]);
+  end;
 end;
 
 { grüne/rote Statuszeile unter den Einstellungen aktualisieren }
@@ -831,47 +819,23 @@ begin
   UpdateEstimate;                  // anderes Modell = andere Dauer
 end;
 
-{ "Auto" an: Wert ausrechnen und Eingabefeld sperren }
-procedure TfrmMain.chkAutoThreadsChange(Sender: TObject);
+{ Zahnrad "Weitere Einstellungen...": Fenster aus uSettings zeigen.
+  Bei OK sofort in StemMaker.ini speichern (falls StemMaker später
+  abstürzt, ist die Änderung trotzdem da). }
+procedure TfrmMain.btnSettingsClick(Sender: TObject);
 begin
-  if chkAutoThreads.Checked then
-    seThreads.Value := AutoThreads;
-  seThreads.Enabled := not chkAutoThreads.Checked;
-  seThreadsChange(nil);
-end;
-
-{ Neben dem Feld "Teile" anzeigen, wie viele Kerne jeder Teil bekommt.
-  Gleiche Rechnung wie in uStemJob (TStemJob.OmpThreads):
-  echte Kerne geteilt durch Teile, mindestens 1.
-  Beispiel i7-12700KF: 12 Kerne / 4 Teile -> "je 3 Kerne = 12 von 12" }
-procedure TfrmMain.seThreadsChange(Sender: TObject);
-var
-  Per, Used: Integer;
-begin
-  if seThreads.Value < 1 then Exit;
-  Per := PhysicalCoreCount div seThreads.Value;
-  if Per < 1 then Per := 1;
-  Used := Per * seThreads.Value;
-  if Per = 1 then
-    lblCores.Caption := Format(_('je 1 Kern (%d von %d)'), [Used, PhysicalCoreCount])
-  else
-    lblCores.Caption := Format(_('je %d Kerne (%d von %d)'), [Per, Used, PhysicalCoreCount]);
-  { mehr Teile als der RAM verkraftet? -> rot als Warnung }
-  if seThreads.Value > AutoThreadsRAMLimit then
+  if ShowSettingsDialog(FPrefs, chkBeside.Checked, FToolFFmpeg, FToolDemucs,
+    FToolModels) then
   begin
-    lblCores.Font.Color := clRed;
-    lblCores.Caption := lblCores.Caption + ' ' + _('RAM knapp!');
-  end
-  else
-    lblCores.Font.Color := clDefault;
+    SaveSettings;
+    UpdateEstimate;                // andere Teile-Zahl = andere Dauer
+  end;
 end;
 
 procedure TfrmMain.chkBesideChange(Sender: TObject);
 begin
   { "neben Originaldatei" an -> Ausgabeordner-Feld ausgrauen }
   edtOut.Enabled := not chkBeside.Checked;
-  { Unterordner nachbauen geht nur mit eigenem Ausgabeordner }
-  chkKeepTree.Enabled := not chkBeside.Checked;
 end;
 
 { ---------------------------------------------------------------------------
@@ -1312,7 +1276,7 @@ begin
   begin
     Result := edtOut.Directory;
     Root := Item.SubItems[2];
-    if chkKeepTree.Checked and (Result <> '') and (Root <> '') then
+    if FPrefs.KeepTree and (Result <> '') and (Root <> '') then
       Result := IncludeTrailingPathDelimiter(Result) +
         ExtractRelativePath(IncludeTrailingPathDelimiter(Root),
           ExtractFilePath(Item.SubItems[1]));
@@ -1590,7 +1554,7 @@ begin
       'bremst dann die CPU - am Netzteil geht es deutlich schneller.'), [PowerSourceText]));
   { Schlafsperre setzen und ggf. den Energiesparmodus aussetzen.
     Ist "PC wach halten" aus, wird nur gemessen (Standby-Erkennung). }
-  FPower := PowerBeginRun(chkKeepAwake.Checked, FIniName);
+  FPower := PowerBeginRun(FPrefs.KeepAwake, FIniName);
   if FPower.SchemeSet then
     AddLog(Format(_('Energiesparplan "%s" vorübergehend auf "%s" ' +
       'gestellt - wird nach der Konvertierung zurückgestellt.'),
