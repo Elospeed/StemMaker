@@ -43,7 +43,7 @@ Then the **startup check window** opens. It ticks off, one by one: processor, ff
 - **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
 
-**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update or Info window or `AutoCheck=0` (see below).
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update window, under **More settings** or with `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
@@ -148,6 +148,8 @@ The graphics card is only listed. demucs.cpp computes on the CPU only.
 
 ### Settings
 
+The main window only shows what you change per conversion: output folder, separation model, audio format, club level, bass fix and shutdown. Everything you set once sits behind the gear button **"More settings..."**: parts, overwrite, rebuild subfolders, keep the PC awake, stem names and colors, language, update check at startup, and the paths to ffmpeg, demucs.cpp and the models (display only). **"Restore defaults"** there resets everything to the shipped state.
+
 | Setting | Meaning |
 |---|---|
 | Separation model | **htdemucs**: default, good quality. **htdemucs_ft**: best quality, approx. 4× slower, 4 model files. **hdemucs_mmi (v3)**: faster, slightly worse. |
@@ -220,7 +222,7 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Languages
 
-On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time in the Info window under "Language:". The new language applies from the next start.
+On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time under **More settings** (gear button) → "Language:". The new language applies from the next start.
 
 The language files are in the `lang\` folder (gettext, `.po`). To add a language, copy `lang\StemMaker.pot` to e.g. `lang\fr.po` and translate it with [Poedit](https://poedit.net).
 
@@ -240,6 +242,7 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
   | `ulogui.pas` | catches unexpected errors and writes them to the log |
   | `udonate.pas` | donation window before startup |
   | `uinfo.pas` | Info window |
+  | `usettings.pas` | "More settings" window (gear button) |
   | `upower.pas` | keep the PC awake, power plan, battery, sleep detection |
   | `ulang.pas` | multilingual support: `_()` function and `.po` reader |
   | `ulangui.pas` | language picker at first start, translates forms |

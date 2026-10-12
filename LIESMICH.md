@@ -41,7 +41,7 @@ Danach öffnet sich das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, 
 - **Beim allerersten Start** fehlen ffmpeg (ca. 56 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Jeder Download wird mit der SHA-256-Prüfsumme aus `update.json` kontrolliert; eine kaputte oder ausgetauschte Datei wird verworfen. Danach wird neu geprüft, und StemMaker startet.
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
 
-**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Geht beim Kopieren etwas schief, dreht StemMaker alles zurück und bleibt auf der alten Version. Von Hand suchen: **Info → Nach Updates suchen** (zeigt auch eine übersprungene Version wieder an). Abschalten über das Häkchen im Update- oder Info-Fenster oder `AutoCheck=0` (siehe unten).
+**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Geht beim Kopieren etwas schief, dreht StemMaker alles zurück und bleibt auf der alten Version. Von Hand suchen: **Info → Nach Updates suchen** (zeigt auch eine übersprungene Version wieder an). Abschalten über das Häkchen im Update-Fenster, unter **Weitere Einstellungen** oder mit `AutoCheck=0` (siehe unten).
 
 Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htdemucs_ft), fragt StemMaker, ob es jetzt geladen werden soll.
 
@@ -146,6 +146,8 @@ Die Grafikkarte wird nur aufgeführt. demucs.cpp rechnet ausschliesslich mit der
 
 ### Einstellungen
 
+Im Hauptfenster steht nur, was man pro Umwandlung ändert: Ausgabeordner, Trenn-Modell, Audio-Format, Club-Pegel, Bass-Fix und Herunterfahren. Alles, was man einmal einstellt, liegt hinter dem Zahnrad **„Weitere Einstellungen...“**: Teile, Überschreiben, Unterordner nachbauen, PC wach halten, Stem-Namen und Farben, Sprache, Update-Prüfung beim Start sowie die Pfade zu ffmpeg, demucs.cpp und den Modellen (nur Anzeige). **„Standard wiederherstellen“** setzt dort alles auf den Auslieferungszustand zurück.
+
 | Einstellung | Bedeutung |
 |---|---|
 | Trenn-Modell | **htdemucs**: Standard, gute Qualität. **htdemucs_ft**: beste Qualität, ca. 4× langsamer, 4 Modelldateien. **hdemucs_mmi (v3)**: schneller, etwas schlechter. |
@@ -218,7 +220,7 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Sprachen
 
-Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit im Info-Fenster unter „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
+Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 
 Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Sprache `lang\StemMaker.pot` kopieren, z. B. nach `lang\fr.po`, und mit [Poedit](https://poedit.net) übersetzen.
 
@@ -238,6 +240,7 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
   | `ulogui.pas` | fängt unerwartete Fehler ab und schreibt sie ins Log |
   | `udonate.pas` | Spendenfenster vor dem Start |
   | `uinfo.pas` | Info-Fenster |
+  | `usettings.pas` | Fenster „Weitere Einstellungen“ (Zahnrad) |
   | `upower.pas` | PC wach halten, Energiesparplan, Akku, Ruhezustand erkennen |
   | `ulang.pas` | Mehrsprachigkeit: Funktion `_()` und `.po`-Dateien lesen |
   | `ulangui.pas` | Sprachwahl beim ersten Start, Fenster übersetzen |
