@@ -181,7 +181,7 @@ msgstr "%s was not found."
 msgid "(Tempo dieses PCs)"
 msgstr "(this PC's speed)"
 
-#: usettings.pas:295
+#: usettings.pas:309
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(applies after the next start)"
 
@@ -265,7 +265,7 @@ msgstr "AVX (medium version)"
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (fast version)"
 
-#: uinit.pas:581 umain.pas:2054 usettings.pas:335
+#: uinit.pas:581 umain.pas:2054 usettings.pas:349
 msgid "Abbrechen"
 msgstr "Cancel"
 
@@ -361,11 +361,11 @@ msgstr "Cannot create output folder"
 msgid "Ausgabeordner:"
 msgstr "Output folder:"
 
-#: usettings.pas:243
+#: usettings.pas:244
 msgid "Auto"
 msgstr "Auto"
 
-#: usettings.pas:244
+#: usettings.pas:245
 msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
 msgstr "Auto: as many parts as the processor has physical cores (at most 4) and the RAM can handle"
 
@@ -389,11 +389,11 @@ msgstr "Bass fix: move low bass from Other to Bass"
 msgid "Beenden"
 msgstr "Quit"
 
-#: usettings.pas:251
+#: usettings.pas:252
 msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
 msgstr "For whole folders: Music\\House\\2024\\track.mp3 becomes <output folder>\\House\\2024\\track.stem.mp4"
 
-#: usettings.pas:297 uupdateui.pas:445
+#: usettings.pas:311 uupdateui.pas:445
 msgid "Beim Start nach Updates suchen"
 msgstr "Check for updates at startup"
 
@@ -437,7 +437,7 @@ msgstr "Please read before first use"
 msgid "Breche ab ..."
 msgstr "Cancelling ..."
 
-#: usettings.pas:263
+#: usettings.pas:264
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "Afterwards everything is set back as before. The screen may turn off."
 
@@ -505,13 +505,17 @@ msgstr "The list is empty - add some files first."
 msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
 msgstr "The checksum (SHA-256) of the update does not match. The file was discarded, nothing in StemMaker was changed."
 
-#: usettings.pas:406
+#: usettings.pas:420
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "The language will change the next time you start StemMaker."
 
 #: uinfo.pas:329
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "Checking for updates failed: %s"
+
+#: usettings.pas:293
+msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
+msgstr "Traktor shows the icons fixed by slot 1-4, they cannot be changed."
 
 #: uupdate.pas:395
 msgid "Die alte Version wurde wiederhergestellt."
@@ -561,7 +565,7 @@ msgstr "Download incomplete"
 msgid "Du hast die neueste Version (%s)."
 msgstr "You have the latest version (%s)."
 
-#: usettings.pas:221 umain.lfm:139
+#: usettings.pas:222 umain.lfm:139
 msgid "Einstellungen"
 msgstr "Settings"
 
@@ -621,7 +625,7 @@ msgstr "ERROR in background: %s (details in the log)"
 msgid "FEHLER: "
 msgstr "ERROR: "
 
-#: usettings.pas:280
+#: usettings.pas:281
 msgid "Farbe wählen"
 msgstr "Choose colour"
 
@@ -709,7 +713,7 @@ msgstr "Note: true peak above 0 dBFS - the master track may clip slightly during
 msgid "Höchstleistung"
 msgstr "High performance"
 
-#: usettings.pas:327
+#: usettings.pas:341
 msgid "INI-Ordner öffnen"
 msgstr "Open INI folder"
 
@@ -869,7 +873,7 @@ msgstr "Model missing: %s"
 msgid "Modell nicht installiert"
 msgstr "Model not installed"
 
-#: usettings.pas:304
+#: usettings.pas:318
 msgid "Modelle:"
 msgstr "Models:"
 
@@ -885,11 +889,11 @@ msgstr "Plugged in"
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr "No stem file for \"%s\" yet - convert it first."
 
-#: usettings.pas:257
+#: usettings.pas:258
 msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
 msgstr "Only with a separate output folder (\"save next to the original file\" is on in the main window)."
 
-#: usettings.pas:343
+#: usettings.pas:357
 msgid "OK"
 msgstr "OK"
 
@@ -929,7 +933,7 @@ msgstr "Shut down the PC when finished"
 msgid "PC wird heruntergefahren ..."
 msgstr "Shutting down the PC ..."
 
-#: usettings.pas:261
+#: usettings.pas:262
 msgid "PC während der Konvertierung wach halten (kein Standby)"
 msgstr "Keep the PC awake during the conversion (no sleep)"
 
@@ -949,7 +953,7 @@ msgstr "Path too long (%d characters, Windows allows at most %d). Please move th
 msgid "Problem gefunden"
 msgstr "Problem found"
 
-#: usettings.pas:285
+#: usettings.pas:299
 msgid "Programm"
 msgstr "Program"
 
@@ -969,7 +973,7 @@ msgstr "Source: %s -> stem file AAC %d kbit/s"
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "Source: %s -> stem file AAC %d kbit/s (automatic)"
 
-#: usettings.pas:440
+#: usettings.pas:454
 msgid "RAM knapp!"
 msgstr "low RAM!"
 
@@ -985,11 +989,15 @@ msgstr "Close"
 msgid "Server meldet HTTP %d"
 msgstr "Server returned HTTP %d"
 
-#: usettings.pas:320
+#: usettings.pas:291
+msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
+msgstr "Sets the 4 colours to the values from Traktor's own stem files (orange, purple, green, light blue). The names stay."
+
+#: usettings.pas:334
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr "Resets the values in this window to the defaults (language stays)."
 
-#: usettings.pas:286
+#: usettings.pas:300
 msgid "Sprache:"
 msgstr "Language:"
 
@@ -1001,7 +1009,7 @@ msgstr "Tracks : "
 msgid "Später"
 msgstr "Later"
 
-#: usettings.pas:319
+#: usettings.pas:333
 msgid "Standard wiederherstellen"
 msgstr "Restore defaults"
 
@@ -1121,7 +1129,7 @@ msgstr "StemPlayer could not be started: %s"
 msgid "StemPlayer nicht gefunden:%s%s"
 msgstr "StemPlayer not found:%s%s"
 
-#: usettings.pas:267
+#: usettings.pas:268
 msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
 msgstr "Stems (names and colours as shown in Traktor)"
 
@@ -1141,7 +1149,7 @@ msgstr "Source tags: BPM %s, key %s"
 msgid "Tags der Quelle: BPM %s, keine Tonart"
 msgstr "Source tags: BPM %s, no key"
 
-#: usettings.pas:232
+#: usettings.pas:233
 msgid "Teile:"
 msgstr "Parts:"
 
@@ -1173,6 +1181,10 @@ msgstr "Tools: ffmpeg, demucs.cpp and model found"
 msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
 msgstr "Traktor and STEMS are trademarks of Native Instruments GmbH. StemMaker is an independent project and is not affiliated with Native Instruments."
 
+#: usettings.pas:290
+msgid "Traktor-Farben"
+msgstr "Traktor colours"
+
 #: umain.lfm:176
 msgid "Trenn-Modell:"
 msgstr "Separation model:"
@@ -1185,7 +1197,7 @@ msgstr "Start anyway"
 msgid "Ultimative Leistung"
 msgstr "Ultimate performance"
 
-#: usettings.pas:229
+#: usettings.pas:230
 msgid "Umwandlung"
 msgstr "Conversion"
 
@@ -1193,7 +1205,7 @@ msgstr "Conversion"
 msgid "Unerwarteter Fehler"
 msgstr "Unexpected error"
 
-#: usettings.pas:250
+#: usettings.pas:251
 msgid "Unterordner im Ausgabeordner nachbauen"
 msgstr "Recreate subfolders in the output folder"
 
@@ -1217,7 +1229,7 @@ msgstr "Update could not be installed: %s"
 msgid "Verbindung fehlgeschlagen (Fehler %d)"
 msgstr "Connection failed (error %d)"
 
-#: usettings.pas:262
+#: usettings.pas:263
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "Prevents sleep and temporarily suspends the power saving plan."
 
@@ -1241,11 +1253,11 @@ msgstr "When all files are done, the PC shuts down after 60 seconds (can be canc
 msgid "Wenn es dir Zeit spart oder einfach Spass macht, freue ich mich über einen kleinen, freiwilligen Beitrag - er hilft, StemMaker weiter zu pflegen und zu verbessern. Danke!"
 msgstr "If it saves you time or is simply fun to use, a small voluntary tip would make my day - it helps keep StemMaker maintained and improving. Thank you!"
 
-#: usettings.pas:301
+#: usettings.pas:315
 msgid "Werkzeuge"
 msgstr "Tools"
 
-#: usettings.pas:230
+#: usettings.pas:231
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "How many parts of the song demucs processes at the same time. Each part also uses several cores and needs a good 2 GB of RAM."
 
@@ -1349,11 +1361,11 @@ msgstr "htdemucs (default, Demucs v4)"
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (best quality, approx. 4x slower)"
 
-#: usettings.pas:435
+#: usettings.pas:449
 msgid "je %d Kerne (%d von %d)"
 msgstr "%d cores each (%d of %d)"
 
-#: usettings.pas:433
+#: usettings.pas:447
 msgid "je 1 Kern (%d von %d)"
 msgstr "1 core each (%d of %d)"
 
@@ -1405,7 +1417,7 @@ msgstr "elapsed %s   |   remaining %s   |   %.1f MB/s"
 msgid "von %s  ·  Traktor-Stem-Dateien aus MP3  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "by %s  ·  Traktor stem files from MP3  ·  free && open source  ·  Build: %s"
 
-#: usettings.pas:248
+#: usettings.pas:249
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "overwrite existing stem files"
 
@@ -1421,11 +1433,11 @@ msgstr "waiting (interrupted)"
 msgid "wird berechnet ..."
 msgstr "calculating ..."
 
-#: usettings.pas:305
+#: usettings.pas:319
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "Change only if needed: StemMaker.ini, section [Tools] (with StemMaker closed)."
 
-#: usettings.pas:328
+#: usettings.pas:342
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Opens the folder that contains StemMaker.ini"
 

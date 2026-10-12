@@ -86,6 +86,7 @@ type
     procedure chkAutoThreadsChange(Sender: TObject);
     procedure seThreadsChange(Sender: TObject);
     procedure btnDefaultsClick(Sender: TObject);
+    procedure btnTraktorColorsClick(Sender: TObject);
     procedure btnProgDirClick(Sender: TObject);
     function NewGroup(const ACaption: string; AHeight: Integer): TGroupBox;
     function NewCheck(AParent: TWinControl; X, Y: Integer;
@@ -197,7 +198,7 @@ const
 var
   gb: TGroupBox;
   pnlBottom: TPanel;
-  btnOK, btnCancel, btnDefaults, btnProgDir: TButton;
+  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor: TButton;
   lbl: TLabel;
   edt: TEdit;
   I: Integer;
@@ -222,7 +223,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 560;
+  Height := 586;
   ShowHint := True;
 
   { --- Umwandlung --- }
@@ -264,7 +265,7 @@ begin
     'eingestellt wie vorher. Der Bildschirm darf ausgehen.'));
 
   { --- Stems --- }
-  gb := NewGroup(_('Stems (Namen und Farben, so zeigt Traktor sie an)'), 92);
+  gb := NewGroup(_('Stems (Namen und Farben, so zeigt Traktor sie an)'), 118);
   for I := 0 to 3 do
   begin
     NewLabel(gb, COL_X[I], ROW_Y[I] + 4, IntToStr(I + 1) + ':');
@@ -280,6 +281,19 @@ begin
     clrStem[I].Hint := _('Farbe wählen');
     clrStem[I].ShowHint := True;
   end;
+  { Knopf: Farben wie in Traktors eigenen Stem-Dateien. Die Symbole
+    (Trommel, Lautsprecher, Welle, Mikrofon) zeigt Traktor fest nach
+    Platz 1-4, das Stem-Format kennt nur Name und Farbe. }
+  btnTraktor := TButton.Create(Self);
+  btnTraktor.Parent := gb;
+  btnTraktor.SetBounds(12, 72, 190, 26);
+  btnTraktor.Caption := _('Traktor-Farben');
+  btnTraktor.Hint := _('Setzt die 4 Farben auf die Werte aus Traktors ' +
+    'eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen ' +
+    'bleiben.') + LineEnding + _('Die Symbole zeigt Traktor fest nach ' +
+    'Platz 1-4, sie lassen sich nicht ändern.');
+  btnTraktor.ShowHint := True;
+  btnTraktor.OnClick := @btnTraktorColorsClick;
 
   { --- Programm --- }
   gb := NewGroup(_('Programm'), 92);
@@ -447,6 +461,20 @@ procedure TfrmSettings.btnDefaultsClick(Sender: TObject);
 begin
   ShowPrefs(DefaultStemPrefs);
   chkAutoUpdate.Checked := True;
+end;
+
+{ Farben aus einer echten Traktor-Pro-4-Stem-Datei (Atom 'stem', Version 2):
+  Drums #FD6C38, Bass #D232F4, Other #00FFAC, Vocals #45DAFD.
+  Gilt erst bei OK, wie alle Werte in diesem Fenster. }
+procedure TfrmSettings.btnTraktorColorsClick(Sender: TObject);
+const
+  TRAKTOR_COLORS: array[0..3] of string =
+    ('#FD6C38', '#D232F4', '#00FFAC', '#45DAFD');
+var
+  I: Integer;
+begin
+  for I := 0 to 3 do
+    clrStem[I].ButtonColor := HexToCol(TRAKTOR_COLORS[I]);
 end;
 
 procedure TfrmSettings.btnProgDirClick(Sender: TObject);
