@@ -197,6 +197,7 @@ type
     procedure AppMinimize(Sender: TObject);
     procedure AppActivate(Sender: TObject);
     procedure TrayNotifyDone(OK, Skipped, Failed: Integer; const Total: string);
+    procedure AppEndSession(Sender: TObject);
     procedure UpdateFound(const Info: TUpdateInfo);
     procedure OfferUpdate(Data: PtrInt);
     function ItemOutFile(Index: Integer): string;
@@ -2114,6 +2115,7 @@ begin
 
   Application.OnMinimize := @AppMinimize;
   Application.OnActivate := @AppActivate;
+  Application.OnEndSession := @AppEndSession;
   SingleInstanceShowWanted;                // Signal für den zweiten Start anlegen
 end;
 
@@ -2227,6 +2229,41 @@ begin
     FTray.BalloonFlags := bfInfo;
   FTray.BalloonTimeout := 10000;
   FTray.ShowBalloonHint;
+end;
+
+{ ---------------------------------------------------------------------------
+  Windows wird heruntergefahren (oder der Benutzer meldet sich ab)
+
+  Windows beendet StemMaker danach nach wenigen Sekunden hart - unser
+  normales Ende (FormDestroy, LogClose in StemMaker.lpr) kommt dann nie.
+  Ohne diese Funktion hiess das beim nächsten Start: Log "_ABSTURZ",
+  Frage nach einem Fehlerbericht, Energiesparplan erst dann zurück.
+  Darum hier schnell alles Wichtige erledigen:
+    - laufende Umwandlung abbrechen (demucs/ffmpeg beenden). NICHT auf
+      den Thread warten, dafür reicht die Zeit nicht. Die angefangene
+      Datei steht in der Liste als "läuft" und wird beim nächsten Start
+      wieder von vorne gemacht (wie nach "Abbrechen").
+    - Energiesparplan/Schlafsperre zurückstellen
+    - Liste und Einstellungen speichern, Symbol neben der Uhr entfernen
+    - Log normal abschliessen (kein "_ABSTURZ")
+  Geht auch, wenn das Fenster ins Symbol versteckt ist.
+  --------------------------------------------------------------------------- }
+procedure TfrmMain.AppEndSession(Sender: TObject);
+begin
+  LogLine('Windows wird beendet (Herunterfahren oder Abmelden)');
+  if FWorker <> nil then
+  begin
+    LogLine('Laufende Umwandlung wird abgebrochen, die angefangene Datei ' +
+      'kommt beim nächsten Start noch einmal dran');
+    FWorker.OnTerminate := nil;    // WorkerDone soll nicht mehr kommen
+    FWorker.Cancel;
+  end;
+  EndPower;
+  SaveQueueNow;
+  SaveSettings;
+  if FTray <> nil then
+    FTray.Visible := False;
+  LogClose;
 end;
 
 { ---------------------------------------------------------------------------
