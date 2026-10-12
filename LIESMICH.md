@@ -142,6 +142,15 @@ Im Log stehen:
 - bei Fehlern die Aufrufkette mit Datei und Zeilennummer im Quellcode
 - am Ende eines Durchlaufs eine Zusammenfassung: Gesamtzeit, Schnitt pro Track, genutzte Kerne und der höchste RAM-Bedarf von demucs
 
+#### Fehlerbericht senden
+
+Nach einem Absturz fragt StemMaker beim nächsten Start, ob du einen Fehlerbericht schicken möchtest. Dasselbe geht im Fenster „Unerwarteter Fehler“ und jederzeit über **Info → Fehlerbericht senden...**. Es wird nichts automatisch gesendet: Das Fenster zeigt genau den Text, der den PC verlässt. Dein Benutzerordner (`C:\Users\<Name>`) wird darin durch `%USERPROFILE%` ersetzt, die Dateinamen deiner Songs bleiben drin.
+
+- **Per E-Mail senden:** Der Bericht wird als Datei im Ordner `logs` gespeichert und im Explorer markiert, dazu öffnet sich eine fertige Mail an elospeed.dev@gmail.com. Die Datei ziehst du selbst in die Mail. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an diese Adresse.
+- **Als GitHub-Issue (öffentlich):** öffnet ein vorausgefülltes Issue im Browser. Dafür brauchst du ein GitHub-Konto, und jeder kann das Issue lesen.
+
+In beiden Fällen liegt der ganze Bericht zusätzlich in der Zwischenablage (Strg+V).
+
 Die Grafikkarte wird nur aufgeführt. demucs.cpp rechnet ausschliesslich mit der CPU.
 
 ### Einstellungen

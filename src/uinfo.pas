@@ -44,7 +44,7 @@ procedure ShowInfoDialog(const Version, Author: string;
 implementation
 
 uses
-  Dialogs, uStemJob, uLang, uLicense;
+  Dialogs, uStemJob, uLang, uLicense, uReport;
 
 type
   TfrmInfo = class(TForm)
@@ -54,6 +54,7 @@ type
     procedure btnUpdateClick(Sender: TObject);
     procedure btnDonateClick(Sender: TObject);
     procedure btnLogsClick(Sender: TObject);
+    procedure btnReportClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
   public
     FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
@@ -185,7 +186,7 @@ var
   pcText: TPageControl;
   tsHelp, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
-  btnDonate, btnLogs, btnClose: TButton;
+  btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
   inherited CreateNew(nil);
   FVersion := Version;
@@ -267,6 +268,16 @@ begin
   btnUpdate.Caption := _('Nach Updates suchen');
   btnUpdate.OnClick := @btnUpdateClick;
 
+  { Fehlerbericht von Hand, z.B. wenn eine Umwandlung schiefging }
+  btnReport := TButton.Create(Self);
+  btnReport.Parent := pnlUpdate;
+  btnReport.SetBounds(220, 8, 200, 32);
+  btnReport.Caption := _('Fehlerbericht senden...');
+  btnReport.Hint := _('Zeigt ein Log an und hilft, es per Mail oder GitHub ' +
+    'an Elospeed zu schicken. Nichts wird automatisch gesendet.');
+  btnReport.ShowHint := True;
+  btnReport.OnClick := @btnReportClick;
+
   { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
@@ -339,6 +350,11 @@ end;
 procedure TfrmInfo.btnLogsClick(Sender: TObject);
 begin
   OpenDocument(LogDir);
+end;
+
+procedure TfrmInfo.btnReportClick(Sender: TObject);
+begin
+  ShowErrorReport('', '');
 end;
 
 procedure TfrmInfo.btnCloseClick(Sender: TObject);
