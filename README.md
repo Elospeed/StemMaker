@@ -144,6 +144,15 @@ The log contains:
 - for errors, the call stack with file and line number in the source code
 - at the end of a run, a summary: total time, average per track, cores used and the peak RAM usage of demucs
 
+#### Sending an error report
+
+After a crash, StemMaker asks on the next start whether you want to send an error report. The same is offered in the "Unexpected error" window and at any time via **Info → Send error report...**. Nothing is sent automatically: the window shows exactly the text that leaves your PC. Your user folder (`C:\Users\<name>`) is replaced with `%USERPROFILE%`, the file names of your songs stay in.
+
+- **Send by e-mail:** the report is saved as a file in the `logs` folder and selected in Explorer, and a ready-made e-mail to elospeed.dev@gmail.com opens. You drag the file into the e-mail yourself. If no e-mail opens (e.g. with webmail), simply send the file to that address.
+- **As GitHub issue (public):** opens a prefilled issue in your browser. You need a GitHub account, and anyone can read the issue.
+
+Either way, the whole report is also on the clipboard (Ctrl+V).
+
 The graphics card is only listed. demucs.cpp computes on the CPU only.
 
 ### Settings

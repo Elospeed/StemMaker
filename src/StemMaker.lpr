@@ -23,6 +23,7 @@
     uDownload  Download (WinINet) und ZIP entpacken
     uLog       Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos
     uLogUI     fängt unerwartete Fehler ab und schreibt sie ins Log
+    uReport    Fenster "Fehlerbericht senden" (Mail / GitHub, nur auf Wunsch)
     uDonate    Spendenfenster vor dem Start
     uLicense   Haftungsausschluss/Lizenz: Text, PC-Kennung, INI (ohne Oberfläche)
     uLicenseUI Fenster dazu (einmal pro PC bestätigen)
@@ -43,7 +44,7 @@ uses
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
-  uSettings;
+  uSettings, uReport;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 

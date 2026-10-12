@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
-  uPower, uLang, uLangUI, uQueue, Process, UTF8Process, uUpdate, uUpdateUI,
+  uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
   uSettings;
 
 const
@@ -191,6 +191,7 @@ type
     procedure WriteRunSummary(W: TStemWorker);
     procedure TestError(Data: PtrInt);
     procedure TestCrash(Data: PtrInt);
+    procedure OfferCrashReport(Data: PtrInt);
     procedure AddInput(const FileName: string; const Root: string = '');
     procedure AddFolder(const Dir: string);
     { Sammlungs-Funktionen (Warteschlange merken, Längen, Schätzung) }
@@ -514,6 +515,10 @@ begin
     Application.QueueAsyncCall(@TestError, 0);
   if Application.HasOption('test-absturz') then
     Application.QueueAsyncCall(@TestCrash, 0);
+  ReportAppVersion := APP_VERSION;   // für den Kopf des Fehlerberichts
+  { nach einem Absturz einmal fragen, ob ein Fehlerbericht gesendet werden soll }
+  if LogLastCrashFile <> '' then
+    Application.QueueAsyncCall(@OfferCrashReport, 0);
   if LogCrashesFound > 0 then
     if LogCrashesFound = 1 then
       AddLog(_('Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im ' +
@@ -598,6 +603,19 @@ begin
   {$ELSE}
   Halt(99);
   {$ENDIF}
+end;
+
+{ Beim Start ein "_ABSTURZ"-Log gefunden: Fehlerbericht anbieten.
+  Nur eine Frage - gesendet wird erst im Fenster "Fehlerbericht senden",
+  und auch dort nur, wenn der Nutzer selbst auf Mail/GitHub klickt. }
+procedure TfrmMain.OfferCrashReport(Data: PtrInt);
+begin
+  if QuestionDlg(_('Unerwartet beendet'),
+    _('StemMaker wurde beim letzten Mal unerwartet beendet.') + LineEnding +
+    LineEnding + _('Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst ' +
+    'den Bericht vorher, es wird nichts automatisch gesendet.'), mtInformation,
+    [mrYes, _('Bericht ansehen...'), mrNo, _('Nein, danke'), 'IsDefault'], 0) = mrYes then
+    ShowErrorReport(LogLastCrashFile, _('Programm wurde unerwartet beendet'));
 end;
 
 procedure TfrmMain.btnInfoClick(Sender: TObject);

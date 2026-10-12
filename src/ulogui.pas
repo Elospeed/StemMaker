@@ -10,7 +10,8 @@
   Fängt alle Fehler im Programm ab, die sonst nur als Meldungsfenster
   erscheinen würden, und schreibt sie mit "Aufrufkette" ins Log - also
   WO im Code der Fehler passiert ist (Datei + Zeilennummer).
-  Danach erscheint eine verständliche Meldung auf Deutsch.
+  Danach erscheint eine verständliche Meldung auf Deutsch, mit dem Knopf
+  "Fehlerbericht senden..." (Unit uReport - nur auf Wunsch des Nutzers).
 
   Das steht in einer eigenen Unit, weil es die Oberfläche (Unit Forms)
   braucht. uLog selbst bleibt ohne Oberfläche, damit auch die
@@ -23,12 +24,15 @@ unit uLogUI;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, uLog, uLang;
+  Classes, SysUtils, Forms, Controls, Dialogs, uLog, uLang;
 
 { Fehler-Abfangen einschalten (einmal beim Programmstart aufrufen) }
 procedure LogInstallExceptionHandler;
 
 implementation
+
+uses
+  uReport;
 
 type
   { Application.OnException braucht eine Methode eines Objekts -
@@ -46,13 +50,15 @@ begin
   LogLine('!!! UNERWARTETER FEHLER: ' + E.ClassName + ': ' + E.Message);
   LogLine('    Aufrufkette:' + LineEnding + ExceptionStackText);
   { verständliche Meldung auf Deutsch statt der englischen Standardmeldung }
-  MessageDlg(_('Unerwarteter Fehler'),
+  if QuestionDlg(_('Unerwarteter Fehler'),
     _('Es ist ein unerwarteter Fehler aufgetreten:') + LineEnding + LineEnding +
     E.Message + LineEnding + LineEnding +
     _('Die Details stehen im Log:') + LineEnding + ExtractFileName(LogFileName) +
     LineEnding + LineEnding +
     _('StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, ' +
-    'bitte das Programm neu starten.'), mtError, [mbOK], 0);
+    'bitte das Programm neu starten.'), mtError,
+    [mrYes, _('Fehlerbericht senden...'), mrOK, 'OK', 'IsDefault'], 0) = mrYes then
+    ShowErrorReport(LogFileName, E.ClassName + ': ' + E.Message);
 end;
 
 procedure LogInstallExceptionHandler;
