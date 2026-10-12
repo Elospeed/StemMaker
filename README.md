@@ -120,6 +120,7 @@ StemMaker is built for preparing an entire music collection in one go, e.g. over
 - **Recreate subfolders in the output folder:** If you add a whole folder, e.g. `D:\Music\House`, then `D:\Music\House\2024\track.mp3` ends up as `<output folder>\House\2024\track.stem.mp4`. Only applies with your own output folder.
 - **Shut down the PC when finished:** When all files are done, a 60-second countdown with "Cancel" appears. Then StemMaker closes cleanly and Windows shuts down. The checkbox only applies to the next run. If you cancel the run, the PC does not shut down.
 - **Keep the PC awake** (see Settings) stops Windows from going to sleep halfway through.
+- **Icon next to the clock:** During a conversion StemMaker shows an icon in the notification area. Hover over it to see the progress (e.g. "StemMaker - 45 % (file 3 of 12)"), click it to bring the window back. When everything is done and StemMaker is not in the foreground, a notification appears. In Settings you can choose that minimizing only leaves the icon (off by default), and turn the notification off.
 - Stem files that already exist are skipped (unless "overwrite existing stem files" is on).
 
 ### Logs and troubleshooting

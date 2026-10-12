@@ -118,6 +118,7 @@ StemMaker ist dafür gemacht, eine ganze Musiksammlung am Stück vorzubereiten, 
 - **Unterordner im Ausgabeordner nachbauen:** Fügst du einen ganzen Ordner hinzu, z. B. `D:\Musik\House`, landet `D:\Musik\House\2024\track.mp3` als `<Ausgabeordner>\House\2024\track.stem.mp4`. Gilt nur mit eigenem Ausgabeordner.
 - **PC nach Abschluss herunterfahren:** Sind alle Dateien fertig, erscheint ein 60-Sekunden-Countdown mit „Abbrechen“. Danach beendet sich StemMaker sauber und Windows fährt herunter. Das Häkchen gilt nur für den nächsten Durchlauf. Wird abgebrochen, fährt der PC nicht herunter.
 - **PC wach halten** (siehe Einstellungen) verhindert, dass Windows mittendrin einschläft.
+- **Symbol neben der Uhr:** Während einer Umwandlung zeigt StemMaker ein Symbol im Infobereich der Taskleiste. Maus drüber zeigt den Fortschritt (z. B. „StemMaker - 45 % (Datei 3 von 12)“), ein Klick holt das Fenster zurück. Ist alles fertig und StemMaker gerade nicht im Vordergrund, kommt eine Meldung. In den Einstellungen lässt sich wählen, dass beim Minimieren nur das Symbol bleibt (Standard aus), und die Meldung abschalten.
 - Schon fertige Stem-Dateien werden übersprungen (ausser „vorhandene Stem-Dateien überschreiben“ ist an).
 
 ### Logs und Fehlersuche

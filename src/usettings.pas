@@ -15,7 +15,8 @@
     - Umwandlung: Teile (Kerne), Überschreiben, Unterordner nachbauen,
                   PC wach halten
     - Stems:      Namen und Farben der 4 Stems (so zeigt Traktor sie an)
-    - Programm:   Sprache, beim Start nach Updates suchen
+    - Programm:   Sprache, beim Start nach Updates suchen, Symbol im
+                  Infobereich (neben der Uhr, siehe uMain)
     - Werkzeuge:  wo ffmpeg, demucs.cpp und die Modelle liegen (nur Anzeige,
                   ändern geht wie bisher in StemMaker.ini, Abschnitt [Tools])
   Unten: "Standard wiederherstellen", OK, Abbrechen.
@@ -46,6 +47,8 @@ type
     Overwrite  : Boolean;                 // vorhandene .stem.mp4 überschreiben
     KeepTree   : Boolean;                 // Unterordner im Ausgabeordner nachbauen
     KeepAwake  : Boolean;                 // PC während der Arbeit wach halten
+    TrayMinimize: Boolean;                // minimiert: nur noch Symbol neben der Uhr
+    TrayNotify : Boolean;                 // Meldung neben der Uhr, wenn alles fertig ist
     StemNames  : array[0..3] of string;   // Drums, Bass, Other, Vox
     StemColors : array[0..3] of TColor;
   end;
@@ -83,6 +86,7 @@ type
     clrStem: array[0..3] of TColorButton;
     cbLang: TComboBox;
     chkAutoUpdate: TCheckBox;
+    chkTrayMinimize, chkTrayNotify: TCheckBox;
     procedure chkAutoThreadsChange(Sender: TObject);
     procedure seThreadsChange(Sender: TObject);
     procedure btnDefaultsClick(Sender: TObject);
@@ -124,6 +128,8 @@ begin
   Result.Overwrite := False;
   Result.KeepTree := True;
   Result.KeepAwake := True;
+  Result.TrayMinimize := False;    // aus: sonst sucht man das Fenster
+  Result.TrayNotify := True;
   for I := 0 to 3 do
   begin
     Result.StemNames[I] := D.Stems[I].Name;
@@ -223,7 +229,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 586;
+  Height := 634;
   ShowHint := True;
 
   { --- Umwandlung --- }
@@ -296,7 +302,7 @@ begin
   btnTraktor.OnClick := @btnTraktorColorsClick;
 
   { --- Programm --- }
-  gb := NewGroup(_('Programm'), 92);
+  gb := NewGroup(_('Programm'), 140);
   lbl := NewLabel(gb, 12, 10, _('Sprache:'));
   cbLang := TComboBox.Create(Self);
   cbLang.Parent := gb;
@@ -310,6 +316,14 @@ begin
   lbl.Font.Color := clGrayText;
   chkAutoUpdate := NewCheck(gb, 12, 40, _('Beim Start nach Updates suchen'), '');
   chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);
+  chkTrayMinimize := NewCheck(gb, 12, 64,
+    _('Beim Minimieren nur das Symbol neben der Uhr zeigen'),
+    _('Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol ' +
+    'neben der Uhr holt es zurück.') + LineEnding + _('Fährt man mit der ' +
+    'Maus über das Symbol, steht dort der Fortschritt.'));
+  chkTrayNotify := NewCheck(gb, 12, 88,
+    _('Meldung neben der Uhr, wenn die Umwandlung fertig ist'),
+    _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
   { --- Werkzeuge (nur Anzeige) --- }
   gb := NewGroup(_('Werkzeuge'), 150);
@@ -378,6 +392,8 @@ begin
   chkOverwrite.Checked := P.Overwrite;
   chkKeepTree.Checked := P.KeepTree;
   chkKeepAwake.Checked := P.KeepAwake;
+  chkTrayMinimize.Checked := P.TrayMinimize;
+  chkTrayNotify.Checked := P.TrayNotify;
   for I := 0 to 3 do
   begin
     edtStem[I].Text := P.StemNames[I];
@@ -400,6 +416,8 @@ begin
   Result.Overwrite := chkOverwrite.Checked;
   Result.KeepTree := chkKeepTree.Checked;
   Result.KeepAwake := chkKeepAwake.Checked;
+  Result.TrayMinimize := chkTrayMinimize.Checked;
+  Result.TrayNotify := chkTrayNotify.Checked;
   for I := 0 to 3 do
   begin
     Result.StemNames[I] := Trim(edtStem[I].Text);
