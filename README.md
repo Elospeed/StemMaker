@@ -224,6 +224,7 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Problems?
 
+- **Questions, ideas, showing your results:** ask in [GitHub Discussions](https://github.com/Elospeed/StemMaker/discussions). You can attach screenshots, logs and files there. Reading works without an account, writing needs a GitHub account. Bugs can also go to an [issue](https://github.com/Elospeed/StemMaker/issues).
 - **Download fails:** Check your internet connection, firewall or proxy. If necessary, download manually:
   - ffmpeg: <https://www.gyan.dev/ffmpeg/builds/> ("release essentials"). Copy `ffmpeg.exe` to `tools\`.
   - Models: <https://huggingface.co/datasets/Retrobear/demucs.cpp/tree/main>. Put the `.bin` files in `models\`.
