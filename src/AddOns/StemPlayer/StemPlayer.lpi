@@ -22,8 +22,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="4"/>
-      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPlayer - Testplayer fuer Traktor-Stems" InternalName="StemPlayer" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPlayer.exe" ProductName="Elospeed StemPlayer" ProductVersion="1.4"/>
+      <MinorVersionNr Value="5"/>
+      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPlayer - Testplayer fuer Traktor-Stems" InternalName="StemPlayer" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPlayer.exe" ProductName="Elospeed StemPlayer" ProductVersion="1.5"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -58,6 +58,10 @@
       </Unit>
       <Unit>
         <Filename Value="djcontrols.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="wellenform.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
