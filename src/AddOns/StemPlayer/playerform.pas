@@ -481,6 +481,7 @@ begin
   BtnClip := MakeButton(PnlMaster, 'CLIP', W - 60, 17, 48, 26);
   BtnClip.Anchors := [akTop, akRight];
   BtnClip.LitColor := DJ_RED;
+  BtnClip.Indicator := True;   // nur Anzeige, kein Knopf
   BtnClip.Font.Size := 7;
   BtnClip.Hint := 'Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)';
   BtnClip.ShowHint := True;

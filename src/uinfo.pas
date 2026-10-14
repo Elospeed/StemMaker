@@ -13,19 +13,16 @@
         "Anleitung": der Inhalt von LIESMICH.md bzw. README.md
         "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
                      THIRD-PARTY-NOTICES.md (ab 1.7)
-    - darüber: "Nach Updates suchen" und das Häkchen "Beim Start nach
-      Updates suchen" (ab 1.7)
-    - unten: "Logs-Ordner öffnen", "Jetzt spenden", Sprachauswahl,
-      "Schließen"
+    - darüber: "Nach Updates suchen" (ab 1.7)
+    - unten: "Logs-Ordner öffnen", "Jetzt spenden", "Schließen"
 
   Die Anleitung wird aus dem Programmordner gelesen:
     Sprache Deutsch ('de')  -> LIESMICH.md
     jede andere Sprache     -> README.md (fehlt sie: LIESMICH.md)
   Fehlt die Datei ganz, wird ein kurzer Ersatztext angezeigt.
 
-  Sprachauswahl: Die gewählte Sprache wird sofort in StemMaker.ini
-  gespeichert, wirkt aber erst beim nächsten Programmstart (die Texte
-  der schon offenen Fenster werden nicht umgebaut).
+  Sprachauswahl und "Beim Start nach Updates suchen" waren bis 1.7 hier,
+  seit 1.7.1 stehen sie im Fenster "Einstellungen" (uSettings).
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei).
   ============================================================================ }
 unit uInfo;
@@ -47,28 +44,22 @@ procedure ShowInfoDialog(const Version, Author: string;
 implementation
 
 uses
-  Dialogs, uStemJob, uLang, uLangUI, uLicense;
+  Dialogs, uStemJob, uLang, uLicense, uReport;
 
 type
   TfrmInfo = class(TForm)
   private
-    FLangCodes: TStringList;      // Sprach-Codes ('de', 'en', ...) in der
-                                  // gleichen Reihenfolge wie in cbLang
-    cbLang: TComboBox;            // Sprachauswahl unten im Fenster
     btnUpdate: TButton;           // "Nach Updates suchen"
-    chkAutoUpdate: TCheckBox;     // "Beim Start nach Updates suchen"
     FVersion: string;
     procedure btnUpdateClick(Sender: TObject);
-    procedure chkAutoUpdateChange(Sender: TObject);
     procedure btnDonateClick(Sender: TObject);
     procedure btnLogsClick(Sender: TObject);
+    procedure btnReportClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
-    procedure cbLangChange(Sender: TObject);
   public
     FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
     FoundInfo: TUpdateInfo;
     constructor CreateInfo(const Version, Author: string);
-    destructor Destroy; override;
   end;
 
 { Markdown-Link "[Text](https://...)" -> "Text (https://...)"
@@ -195,9 +186,7 @@ var
   pcText: TPageControl;
   tsHelp, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
-  btnDonate, btnLogs, btnClose: TButton;
-  lblLang: TLabel;
-  I: Integer;
+  btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
   inherited CreateNew(nil);
   FVersion := Version;
@@ -206,7 +195,7 @@ begin
   Width := 720;
   Height := 560;
   { Mindestbreite so gewählt, dass die Button-Leiste unten (zwei Buttons
-    links, Sprachauswahl, Schließen rechts) nie übereinander rutscht }
+    links, Schließen rechts) nie übereinander rutscht }
   Constraints.MinWidth := 700;
   Constraints.MinHeight := 360;
 
@@ -262,45 +251,10 @@ begin
   btnDonate.Hint := DONATE_URL;
   btnDonate.ShowHint := True;
 
-  { --- Sprachauswahl (zwischen "Jetzt spenden" und "Schließen") ---
-    Platzaufteilung der Leiste bei Fensterbreite 720 (Innenbreite ca. 704):
-      10..160   Logs-Ordner öffnen
-      170..320  Jetzt spenden
-      334..     Label "Sprache:" (Breite je nach Sprache, ca. 50-70)
-      danach    ComboBox, 6 Pixel rechts vom Label, 150 breit
-                -> endet spätestens bei ca. 560
-      ab ~594   Schließen (rechts verankert)
-    Die ComboBox hängt per Anker am rechten Rand des Labels, damit ein
-    längeres Wort (andere Sprache) sie automatisch weiterschiebt. }
-  lblLang := TLabel.Create(Self);
-  lblLang.Parent := pnlBottom;
-  lblLang.Left := 334;
-  lblLang.Top := 16;                               // mittig zu den Buttons
-  lblLang.Caption := _('Sprache:');
-
-  cbLang := TComboBox.Create(Self);
-  cbLang.Parent := pnlBottom;
-  cbLang.Style := csDropDownList;                  // nur auswählen, nicht tippen
-  cbLang.Top := 12;
-  cbLang.Width := 150;
-  cbLang.AnchorSideLeft.Control := lblLang;
-  cbLang.AnchorSideLeft.Side := asrRight;
-  cbLang.BorderSpacing.Left := 6;
-  cbLang.Anchors := [akTop, akLeft];
-
-  { alle vorhandenen Sprachen eintragen, die aktuelle vorauswählen.
-    Die Codes merken wir uns in FLangCodes (gleiche Reihenfolge). }
-  FLangCodes := LangAvailable;
-  for I := 0 to FLangCodes.Count - 1 do
-    cbLang.Items.Add(LangDisplayName(FLangCodes[I]));
-  cbLang.ItemIndex := FLangCodes.IndexOf(LangCode);
-  { OnChange erst NACH der Vorauswahl setzen, sonst käme die Meldung
-    schon beim Öffnen des Fensters }
-  cbLang.OnChange := @cbLangChange;
-
   { --- Updates (Zeile über den Buttons) ---
-    Wer im Update-Fenster "Beim Start nach Updates suchen" abgehakt oder
-    eine Version übersprungen hat, kommt hier wieder dran. }
+    Wer im Update-Fenster eine Version übersprungen hat, kommt hier
+    wieder dran. Das Häkchen "Beim Start nach Updates suchen" steht im
+    Fenster "Einstellungen". }
   pnlUpdate := TPanel.Create(Self);
   pnlUpdate.Parent := Self;
   pnlUpdate.Align := alBottom;
@@ -314,13 +268,15 @@ begin
   btnUpdate.Caption := _('Nach Updates suchen');
   btnUpdate.OnClick := @btnUpdateClick;
 
-  chkAutoUpdate := TCheckBox.Create(Self);
-  chkAutoUpdate.Parent := pnlUpdate;
-  chkAutoUpdate.Left := 224;
-  chkAutoUpdate.Top := 14;
-  chkAutoUpdate.Caption := _('Beim Start nach Updates suchen');
-  chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);
-  chkAutoUpdate.OnChange := @chkAutoUpdateChange;  // erst nach Checked setzen
+  { Fehlerbericht von Hand, z.B. wenn eine Umwandlung schiefging }
+  btnReport := TButton.Create(Self);
+  btnReport.Parent := pnlUpdate;
+  btnReport.SetBounds(220, 8, 200, 32);
+  btnReport.Caption := _('Fehlerbericht senden...');
+  btnReport.Hint := _('Zeigt ein Log an und hilft, es per Mail oder GitHub ' +
+    'an Elospeed zu schicken. Nichts wird automatisch gesendet.');
+  btnReport.ShowHint := True;
+  btnReport.OnClick := @btnReportClick;
 
   { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
@@ -350,28 +306,6 @@ begin
   memLic.Text := LoadLicenses;
 
   pcText.ActivePage := tsHelp;
-end;
-
-destructor TfrmInfo.Destroy;
-begin
-  FLangCodes.Free;
-  inherited Destroy;
-end;
-
-{ Andere Sprache gewählt: in StemMaker.ini speichern und Hinweis zeigen.
-  Umgeschaltet wird erst beim nächsten Programmstart. }
-procedure TfrmInfo.cbLangChange(Sender: TObject);
-begin
-  if (cbLang.ItemIndex < 0) or (cbLang.ItemIndex >= FLangCodes.Count) then
-    Exit;
-  LangSaveChoice(StemIniFileName, FLangCodes[cbLang.ItemIndex]);
-  MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
-    mtInformation, [mbOK], 0);
-end;
-
-procedure TfrmInfo.chkAutoUpdateChange(Sender: TObject);
-begin
-  UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
 end;
 
 { Von Hand suchen. Neue Version: Fenster zu, das Hauptfenster bietet sie
@@ -416,6 +350,11 @@ end;
 procedure TfrmInfo.btnLogsClick(Sender: TObject);
 begin
   OpenDocument(LogDir);
+end;
+
+procedure TfrmInfo.btnReportClick(Sender: TObject);
+begin
+  ShowErrorReport('', '');
 end;
 
 procedure TfrmInfo.btnCloseClick(Sender: TObject);

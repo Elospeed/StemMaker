@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : usingleinstance.pas  (Unit uSingleInstance)
-  Version : 1.6
+  Version : 1.7.1
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -57,6 +57,13 @@ interface
   damit der zweite Start nichts an Log, INI oder Warteschlange anfasst. }
 function SingleInstanceCheck(const IniName: string): Boolean;
 
+{ Für den laufenden StemMaker, wenn sein Fenster ins Symbol neben der Uhr
+  versteckt ist (dann findet ein zweiter Start kein sichtbares Fenster).
+  Der zweite Start setzt ein Signal, das hier abgefragt wird.
+  True = ein zweiter Start möchte, dass wir uns zeigen. Das Signal ist
+  danach wieder zurückgesetzt. Der erste Aufruf legt das Signal an. }
+function SingleInstanceShowWanted: Boolean;
+
 implementation
 
 uses
@@ -67,6 +74,9 @@ const
   { "Local\" = gilt pro Windows-Anmeldung. Meldet sich am selben PC ein
     zweiter Benutzer an, darf der seinen eigenen StemMaker starten. }
   MUTEX_NAME = 'Local\Elospeed.StemMaker.EinzigeInstanz';
+  { Signal "zeig dich" für ein verstecktes Fenster (SingleInstanceShowWanted) }
+  SHOW_EVENT_NAME = 'Local\Elospeed.StemMaker.Zeigen';
+  ASFW_ANY = DWORD(-1);
   PROCESS_QUERY_LIMITED_INFORMATION = $1000;
 
 type
@@ -75,12 +85,18 @@ type
 
 var
   GMutex: THandle = 0;        // bleibt offen, solange das Programm läuft
+  GShowEvent: THandle = 0;    // Signal "zeig dich" (nur im ersten StemMaker)
 
   { Ergebnis der Fenstersuche (EnumWindows ruft eine Funktion pro Fenster
     auf, darum über globale Variablen) }
   GFoundWnd  : HWND = 0;      // bestes Fenster zum Nach-vorne-Holen
   GIconicWnd : HWND = 0;      // minimiertes Fenster (Taskleiste), falls vorhanden
   GExeName   : string = '';   // z.B. 'stemmaker.exe' (klein geschrieben)
+
+{ erlaubt einem anderen Programm, sein Fenster nach vorne zu holen
+  (ab Windows 2000 vorhanden) }
+function AllowSetForegroundWindow(dwProcessId: DWORD): BOOL; stdcall;
+  external 'user32.dll' name 'AllowSetForegroundWindow';
 
 { Dateiname der Exe eines anderen Prozesses (nur der Name, klein), '' bei
   Fehler. QueryFullProcessImageNameW gibt es ab Vista - dynamisch geladen,
@@ -141,7 +157,21 @@ end;
 
 { das Fenster des laufenden StemMaker suchen und nach vorne holen }
 procedure BringOtherInstanceToFront;
+var
+  E: THandle;
 begin
+  { Ist das Fenster ins Symbol neben der Uhr versteckt, findet die Suche
+    unten nichts. Darum zuerst das Signal setzen - der laufende StemMaker
+    zeigt sich dann selbst. Wir dürfen gerade nach vorne holen und geben
+    dieses Recht an ihn weiter. }
+  E := OpenEventW(EVENT_MODIFY_STATE, False, PWideChar(WideString(SHOW_EVENT_NAME)));
+  if E <> 0 then
+  begin
+    AllowSetForegroundWindow(ASFW_ANY);
+    SetEvent(E);
+    CloseHandle(E);
+  end;
+
   GFoundWnd := 0;
   GIconicWnd := 0;
   GExeName := LowerCase(ExtractFileName(ParamStr(0)));
@@ -182,6 +212,20 @@ begin
     Code := LangSystemDefault;
   if not LangLoad(Code) then
     LangLoad('de');
+end;
+
+function SingleInstanceShowWanted: Boolean;
+begin
+  Result := False;
+  {$IFDEF WINDOWS}
+  if GShowEvent = 0 then
+  begin
+    { automatisch zurücksetzend: nach dem Abfragen ist es wieder aus }
+    GShowEvent := CreateEventW(nil, False, False, PWideChar(WideString(SHOW_EVENT_NAME)));
+    if GShowEvent = 0 then Exit;
+  end;
+  Result := WaitForSingleObject(GShowEvent, 0) = WAIT_OBJECT_0;
+  {$ENDIF}
 end;
 
 function SingleInstanceCheck(const IniName: string): Boolean;

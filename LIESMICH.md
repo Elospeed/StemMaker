@@ -1,11 +1,11 @@
-# Elospeed StemMaker 1.7
+# Elospeed StemMaker 1.7.1
 
 **by Elospeed**
 
 🇬🇧 **English version:** [README.md](README.md)
 
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, OGG) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
-Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stemgen), nur **ohne Python** und ohne Setup: ein Lazarus-Programm, das alles Nötige beim ersten Start selbst holt.
+Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stemgen), nur **ohne Python** und ohne Python-Umgebung: ein Lazarus-Programm, das alles Nötige beim ersten Start selbst holt. Es gibt einen Installer und eine portable ZIP-Version.
 
 **Warum StemMaker**
 
@@ -27,8 +27,12 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 
 ## Loslegen
 
-1. ZIP entpacken, z. B. nach `C:\Tools\StemMaker`.
-2. `StemMaker.exe` starten. Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
+Auf der [Release-Seite](https://github.com/Elospeed/StemMaker/releases/latest) gibt es zwei Downloads mit demselben Programm:
+- **`StemMaker-<Version>-Setup.exe`** (Installer): installiert nur für deinen Windows-Benutzer, ohne Administratorrechte, nach `%LOCALAPPDATA%\Programs\StemMaker`, mit Startmenü-Eintrag und Eintrag zum Deinstallieren unter „Apps & Features“. Beim Deinstallieren von Hand fragt er, ob die heruntergeladenen Modelle, ffmpeg und die Einstellungen auch weg sollen.
+- **`StemMaker-<Version>.zip`** (portabel): irgendwohin entpacken, z. B. nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
+
+1. Installer ausführen oder ZIP entpacken.
+2. `StemMaker.exe` starten (nach dem Installer: Startmenü-Eintrag „StemMaker“). Zeigt Windows ein blaues Warnfenster, siehe [Windows-Warnung](#windows-warnung-der-computer-wurde-durch-windows-geschützt).
 
 **Beim ersten Start auf einem PC** zeigt ein Fenster den Haftungsausschluss und die Lizenzhinweise. Häkchen setzen und **„Einverstanden - StemMaker starten“** klicken. Das kommt einmal pro PC: Wird der StemMaker-Ordner auf einen anderen PC kopiert, fragt er dort noch einmal (kein Kopierschutz, Kopieren ist nach der MIT-Lizenz erlaubt). `AddOns\StemCLI.exe` will dieselbe Bestätigung einmal mit `--accept`. Den Text findest du jederzeit wieder unter **Info → Lizenzen**.
 
@@ -37,13 +41,13 @@ Danach öffnet sich das **Prüffenster**. Es hakt der Reihe nach ab: Prozessor, 
 - **Beim allerersten Start** fehlen ffmpeg (ca. 56 MB) und das Trenn-Modell (81 MB). Ein Klick auf **„Herunterladen“** lädt beides mit Fortschrittsbalken. Jeder Download wird mit der SHA-256-Prüfsumme aus `update.json` kontrolliert; eine kaputte oder ausgetauschte Datei wird verworfen. Danach wird neu geprüft, und StemMaker startet.
 - **Etwas ist rot und lässt sich nicht herunterladen** (z. B. fehlt eine demucs-Datei): Das ZIP bitte komplett neu entpacken. Über der roten Zeile steht beim Überfahren mit der Maus der genaue Grund.
 
-**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Geht beim Kopieren etwas schief, dreht StemMaker alles zurück und bleibt auf der alten Version. Von Hand suchen: **Info → Nach Updates suchen** (zeigt auch eine übersprungene Version wieder an). Abschalten über das Häkchen im Update- oder Info-Fenster oder `AutoCheck=0` (siehe unten).
+**Updates:** Beim Start schaut StemMaker im Hintergrund (max. 5 Sekunden), ob es eine neuere Version gibt. Wenn ja, kommt **Jetzt aktualisieren / Später / Diese Version überspringen**. Das Update wird mit seiner SHA-256-Prüfsumme kontrolliert; Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten. Nie während einer Umwandlung. Geht beim Kopieren etwas schief, dreht StemMaker alles zurück und bleibt auf der alten Version. Von Hand suchen: **Info → Nach Updates suchen** (zeigt auch eine übersprungene Version wieder an). Abschalten über das Häkchen im Update-Fenster, unter **Weitere Einstellungen** oder mit `AutoCheck=0` (siehe unten).
 
 Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htdemucs_ft), fragt StemMaker, ob es jetzt geladen werden soll.
 
 ## Windows-Warnung („Der Computer wurde durch Windows geschützt“)
 
-StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
+StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
 
 **So startest du es trotzdem:**
 1. Im blauen Fenster auf **„Weitere Informationen“** klicken.
@@ -114,6 +118,7 @@ StemMaker ist dafür gemacht, eine ganze Musiksammlung am Stück vorzubereiten, 
 - **Unterordner im Ausgabeordner nachbauen:** Fügst du einen ganzen Ordner hinzu, z. B. `D:\Musik\House`, landet `D:\Musik\House\2024\track.mp3` als `<Ausgabeordner>\House\2024\track.stem.mp4`. Gilt nur mit eigenem Ausgabeordner.
 - **PC nach Abschluss herunterfahren:** Sind alle Dateien fertig, erscheint ein 60-Sekunden-Countdown mit „Abbrechen“. Danach beendet sich StemMaker sauber und Windows fährt herunter. Das Häkchen gilt nur für den nächsten Durchlauf. Wird abgebrochen, fährt der PC nicht herunter.
 - **PC wach halten** (siehe Einstellungen) verhindert, dass Windows mittendrin einschläft.
+- **Symbol neben der Uhr:** Während einer Umwandlung zeigt StemMaker ein Symbol im Infobereich der Taskleiste. Maus drüber zeigt den Fortschritt (z. B. „StemMaker - 45 % (Datei 3 von 12)“), ein Klick holt das Fenster zurück. Ist alles fertig und StemMaker gerade nicht im Vordergrund, kommt eine Meldung. In den Einstellungen lässt sich wählen, dass beim Minimieren nur das Symbol bleibt (Standard aus), und die Meldung abschalten.
 - Schon fertige Stem-Dateien werden übersprungen (ausser „vorhandene Stem-Dateien überschreiben“ ist an).
 
 ### Logs und Fehlersuche
@@ -138,16 +143,27 @@ Im Log stehen:
 - bei Fehlern die Aufrufkette mit Datei und Zeilennummer im Quellcode
 - am Ende eines Durchlaufs eine Zusammenfassung: Gesamtzeit, Schnitt pro Track, genutzte Kerne und der höchste RAM-Bedarf von demucs
 
+#### Fehlerbericht senden
+
+Nach einem Absturz fragt StemMaker beim nächsten Start, ob du einen Fehlerbericht schicken möchtest. Dasselbe geht im Fenster „Unerwarteter Fehler“ und jederzeit über **Info → Fehlerbericht senden...**. Es wird nichts automatisch gesendet: Das Fenster zeigt genau den Text, der den PC verlässt. Dein Benutzerordner (`C:\Users\<Name>`) wird darin durch `%USERPROFILE%` ersetzt, die Dateinamen deiner Songs bleiben drin.
+
+- **Per E-Mail senden:** Der Bericht wird als Datei im Ordner `logs` gespeichert und im Explorer markiert, dazu öffnet sich eine fertige Mail an elospeed.dev@gmail.com. Die Datei ziehst du selbst in die Mail. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an diese Adresse.
+- **Als GitHub-Issue (öffentlich):** öffnet ein vorausgefülltes Issue im Browser. Dafür brauchst du ein GitHub-Konto, und jeder kann das Issue lesen.
+
+In beiden Fällen liegt der ganze Bericht zusätzlich in der Zwischenablage (Strg+V).
+
 Die Grafikkarte wird nur aufgeführt. demucs.cpp rechnet ausschliesslich mit der CPU.
 
 ### Einstellungen
+
+Im Hauptfenster steht nur, was man pro Umwandlung ändert: Ausgabeordner, Trenn-Modell, Audio-Format, Club-Pegel, Bass-Fix und Herunterfahren. Alles, was man einmal einstellt, liegt hinter dem Zahnrad **„Weitere Einstellungen...“**: Teile, Überschreiben, Unterordner nachbauen, PC wach halten, Stem-Namen und Farben, Sprache, Update-Prüfung beim Start sowie die Pfade zu ffmpeg, demucs.cpp und den Modellen (nur Anzeige). **„Standard wiederherstellen“** setzt dort alles auf den Auslieferungszustand zurück.
 
 | Einstellung | Bedeutung |
 |---|---|
 | Trenn-Modell | **htdemucs**: Standard, gute Qualität. **htdemucs_ft**: beste Qualität, ca. 4× langsamer, 4 Modelldateien. **hdemucs_mmi (v3)**: schneller, etwas schlechter. |
 | Teile / Auto | Wie viele Teile des Songs parallel getrennt werden. **Auto** (Standard) rechnet bei jedem Start neu: so viele Teile wie der Prozessor echte Kerne hat, höchstens 4 – und nur so viele, wie der Arbeitsspeicher verkraftet (jeder Teil braucht gut 2 GB: bei 8 GB RAM also höchstens 2). Jeder Teil nutzt zusätzlich weitere Kerne, das wird automatisch verteilt. Ohne Häkchen gilt die eingestellte Zahl. |
 | Audio-Format | **AAC automatisch** (Standard): Die Stem-Datei bekommt die Bitrate der Quelle, z. B. MP3 256 → AAC 256, MP3 320 → AAC 320. Grösser bringt nichts, besser als die Quelle wird es nie. Quellen unter 192 kbit/s bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht. Verlustfreie Quellen (WAV/FLAC) bekommen 320. **AAC 256**: NI-Standard, fest. **AAC 320**: fest. **ALAC**: verlustfrei, sehr gross, nur bei WAV/FLAC-Quellen sinnvoll. Im Log steht pro Datei „Quelle: mp3 320 kbit/s → Stem-Datei AAC 320 kbit/s“. |
-| Stems Name/Farbe | So erscheinen die Stems in Traktor. Standard sind dieselben Farben wie bei Stemgen. |
+| Stems Name/Farbe | So erscheinen die Stems in Traktor. Standard sind dieselben Farben wie bei Stemgen, der Knopf **„Traktor-Farben“** setzt die Farben aus Traktors eigenen Stem-Dateien. Die Symbole (Trommel, Lautsprecher, Welle, Mikrofon) zeigt Traktor fest nach Platz 1–4, sie lassen sich nicht ändern. |
 | Lautstärke angleichen (Club-Pegel) | Standardmässig an. Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. −1 dB). Alle 5 Spuren bekommen denselben Wert, ohne Limiter – die Dynamik bleibt wie im Original. Laute Club-Tracks ändern sich kaum. Vorteil: In Traktor sind die Wellenformen der Stems gross und gut lesbar (Autogain hebt nur die Wiedergabe an, nicht die Grafik). Im Log steht z. B. „Lautstärke angleichen: +11.6 dB“. |
 | Bass-Fix | Standardmässig an. Den Tiefbass unter 80 Hz, den die Trennung im Stem „Other“ lässt, schiebt StemMaker in den Bass-Stem. Der Bass-Stem klingt dadurch voller, so wie bei Traktors eigenen Stems; alle Stems zusammen klingen unverändert. Bei Dateien über 20 Minuten (DJ-Mixe) wird er ausgelassen, weil er die ganze Spur im Arbeitsspeicher braucht. |
 | PC wach halten | Standardmässig an. Während der Konvertierung geht der PC nicht in den Ruhezustand (der Bildschirm darf ausgehen). Steht Windows auf **Energiesparmodus** (oder bei Windows 11 der Energiemodus auf „Beste Energieeffizienz“), wird für die Dauer der Konvertierung auf mehr Leistung umgestellt. Danach ist alles wieder wie vorher, auch nach einem Absturz: Dann stellt StemMaker den alten Plan beim nächsten Start zurück. „Ausbalanciert“ wird nicht angefasst. |
@@ -207,6 +223,7 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Probleme?
 
+- **Fragen, Ideen, eigene Ergebnisse zeigen:** in den [GitHub Discussions](https://github.com/Elospeed/StemMaker/discussions) fragen. Dort kannst du Screenshots, Logs und Dateien anhängen. Mitlesen geht ohne Konto, zum Schreiben brauchst du ein GitHub-Konto. Fehler gehen auch als [Issue](https://github.com/Elospeed/StemMaker/issues).
 - **Download klappt nicht:** Internetverbindung, Firewall oder Proxy prüfen. Notfalls von Hand laden:
   - ffmpeg: <https://www.gyan.dev/ffmpeg/builds/> („release essentials“). `ffmpeg.exe` nach `tools\` kopieren.
   - Modelle: <https://huggingface.co/datasets/Retrobear/demucs.cpp/tree/main>. Die `.bin`-Dateien nach `models\` legen.
@@ -214,7 +231,7 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Sprachen
 
-Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit im Info-Fenster unter „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
+Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 
 Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Sprache `lang\StemMaker.pot` kopieren, z. B. nach `lang\fr.po`, und mit [Poedit](https://poedit.net) übersetzen.
 
@@ -234,6 +251,7 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
   | `ulogui.pas` | fängt unerwartete Fehler ab und schreibt sie ins Log |
   | `udonate.pas` | Spendenfenster vor dem Start |
   | `uinfo.pas` | Info-Fenster |
+  | `usettings.pas` | Fenster „Weitere Einstellungen“ (Zahnrad) |
   | `upower.pas` | PC wach halten, Energiesparplan, Akku, Ruhezustand erkennen |
   | `ulang.pas` | Mehrsprachigkeit: Funktion `_()` und `.po`-Dateien lesen |
   | `ulangui.pas` | Sprachwahl beim ersten Start, Fenster übersetzen |
@@ -246,11 +264,8 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
 
 ## Entwicklung
 
-- [Roadmap](ROADMAP.md): woran gerade gearbeitet wird und was als Nächstes kommt
 - [Changelog](CHANGELOG.md): was erledigt ist, pro Version
-- [TODO](TODO.md): was als Nächstes getestet, entschieden oder gebaut werden muss
 - [Entwicklungslog](docs/ENTWICKLUNGSLOG.md): aufgetretene Probleme und ihre Lösungen
-- [Ideen für künftige Versionen](docs/IDEEN.md)
 
 ## Lizenzen / Credits
 

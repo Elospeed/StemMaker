@@ -23,6 +23,7 @@
     uDownload  Download (WinINet) und ZIP entpacken
     uLog       Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos
     uLogUI     fängt unerwartete Fehler ab und schreibt sie ins Log
+    uReport    Fenster "Fehlerbericht senden" (Mail / GitHub, nur auf Wunsch)
     uDonate    Spendenfenster vor dem Start
     uLicense   Haftungsausschluss/Lizenz: Text, PC-Kennung, INI (ohne Oberfläche)
     uLicenseUI Fenster dazu (einmal pro PC bestätigen)
@@ -42,7 +43,8 @@ uses
   {$ENDIF}
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
-  uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI;
+  uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
+  uSettings, uReport;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -94,6 +96,11 @@ begin
 
   { 0a4. Reste eines Updates (*.old) wegräumen }
   CleanupOldFiles(AppBaseDir);
+
+  { 0a4b. Mit dem Setup installiert? Dann die Versionsnummer unter
+          "Apps & Features" (und für winget) auf diese Version setzen.
+          Nötig nach einem Update aus StemMaker heraus, siehe uUpdate. }
+  SyncSetupVersion(AppBaseDir, APP_VERSION);
 
   { 0a5. Arbeitsordner in %TEMP%\StemMaker, die ein Absturz hinterlassen
          hat, löschen (pro Song einige hundert MB, siehe uStemJob) }

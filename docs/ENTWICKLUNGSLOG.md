@@ -6,6 +6,18 @@ Neueste Einträge oben.
 
 ---
 
+## Lange Pfade über 260 Zeichen (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Was passiert mit Pfaden über 260 Zeichen? Unter Wine nicht prüfbar, Wine kennt die Windows-Grenze nicht. | Am 8. Oktober 2026 auf Windows getestet, mit 5 Fällen (MP3-Pfad 120, 250, 256, 275 und 300 Zeichen). Bis 259 Zeichen geht alles. Darüber gibt es einen Fehler („Datei nicht gefunden“ bzw. „Kann Zieldatei nicht schreiben“), aber keinen Absturz und kein falsches „OK“. Ein Ordner über der Grenze wird beim Durchsuchen **still übersprungen**, die Musik darin fehlt ohne Hinweis in der Liste. |
+| Klare Meldung statt allgemeinem Fehler. | `PathTooLong` in `ustemjob.pas` prüft vor der Arbeit Quell- und Zielpfad und meldet „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“. Gilt auch für StemCLI. Die Stem-Datei ist 5 Zeichen länger als die MP3 (`.mp3` → `.stem.mp4`), darum kann nur das Ziel zu lang sein. |
+| Übersprungene Ordner melden. | `AddFolder` in `umain.pas` sucht nach dem Hinzufügen alle Unterordner, deren Pfad + `\*` über 259 Zeichen liegt (so sucht Windows beim Auflisten), schreibt sie ins Log und zeigt einen Hinweis. |
+| Zeichen zählen. | Windows zählt UTF-16-Zeichen, Pascal-Strings sind UTF-8 (ein Umlaut = 2 Bytes). Darum `Length(UTF8Decode(S))` in `PathLength`, nie `Length(S)`. |
+| Warum keine echte Unterstützung für lange Pfade? | Das bräuchte `longPathAware` im Manifest **und** den Registry-Schalter `LongPathsEnabled`, den Nutzer selbst setzen müssten, dazu müssten ffmpeg und demucs mitspielen. Viel Aufwand für einen seltenen Fall. Abhilfe für Nutzer: Ordner weiter oben ablegen. |
+
+---
+
 ## Tags der Quelldatei übernehmen (Oktober 2026)
 
 | Problem | Lösung |
@@ -41,6 +53,7 @@ Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt 
 | Vor-Releases dürfen die Update-Prüfung nicht stören. | Die Update-Prüfung liest nur `update.json`, nicht die GitHub-Releases. Zusätzlich werden Vor-Releases mit `--latest=false` angelegt. |
 | Schreibrecht für Releases im Workflow. | `permissions: contents: write` im Workflow reicht, eine Repo-Einstellung ist dafür nicht nötig. PRs aus fremden Forks bekommen nur das Build-Artefakt, kein Vor-Release. |
 | Gebaute Exes sind mit Debug-Infos sehr gross. | Im Workflow mit `strip.exe` aus der FPC-Installation verkleinern (wie früher von Hand). |
+| Vor-Releases `test-main` / `test-pr-<Nummer>` waren öffentlich: jede halbfertige Testversion war für alle sichtbar und füllte die Release-Liste. | Seit 13.10.2026 baut der Workflow weiter bei jedem PR, legt die Dateien aber nur noch als Artefakt ab. Testversionen gehen als ZIP mit Anleitung privat an die Tester. Der Job `aufraeumen` löscht alte `test-...`-Vor-Releases. |
 
 ---
 
@@ -104,7 +117,6 @@ Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt 
 
 | Problem | Lösung |
 |---|---|
-| Den Überblick behalten: was läuft, was ist fertig, was muss getestet werden? | Drei Dateien im Hauptordner: `ROADMAP.md` (Plan), `CHANGELOG.md` (erledigt), `TODO.md` (nächste Tests, Entscheidungen, Bauschritte). Jede Aufgabe trägt sich dort selbst ein und aus. |
 | Testversionen (fertige exe) sollen im Repo liegen, `.gitignore` schliesst aber alle exe aus. | Ausnahme nur für `Temp/`: `!Temp/**/*.exe`. Achtung: jede eingecheckte exe bleibt für immer im Git-Verlauf. *Ab Oktober 2026 abgelöst durch Vor-Releases aus dem automatischen Build (siehe oben).* |
 | Windows SmartScreen warnt beim Start („Herausgeber: Unbekannt“). | Code-Signing vorerst verworfen (Kosten; kostenloses SignPath würde „SignPath Foundation“ als Herausgeber zeigen). Stattdessen Abschnitt „Windows-Warnung“ in README/LIESMICH. |
 | Spenden-Button auf GitHub fehlte. | `.github/FUNDING.yml` mit `ko_fi: elospeed` angelegt; zusätzlich in den Repository-Einstellungen „Sponsorships“ einschalten. |

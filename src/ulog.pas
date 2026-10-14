@@ -66,6 +66,8 @@ function LogDir: string;
 function LogFileName: string;
 { Liste der Abstürze, die beim Start gefunden wurden (für einen Hinweis) }
 function LogCrashesFound: Integer;
+{ voller Pfad des neuesten "_ABSTURZ"-Logs aus diesem Start ('' = keins) }
+function LogLastCrashFile: string;
 
 { ---- Statistik (logs\statistik.csv) ----
   Eine Zeile pro umgewandelter Datei, zum Auswerten in Excel/LibreOffice.
@@ -97,6 +99,7 @@ var
   GHadError : Boolean = False;
   GCrashes  : Integer = 0;
   GLogDir   : string = '';
+  GLastCrash: string = '';           // neuestes Absturz-Log (für den Fehlerbericht)
 
 const
   RUNNING_TAG = '_LAEUFT';
@@ -128,6 +131,11 @@ end;
 function LogCrashesFound: Integer;
 begin
   Result := GCrashes;
+end;
+
+function LogLastCrashFile: string;
+begin
+  Result := GLastCrash;
 end;
 
 { ---------------------------------------------------------------------------
@@ -172,7 +180,12 @@ begin
         end;
         NewName := StringReplace(F, RUNNING_TAG + '.log', '_ABSTURZ.log', []);
         if RenameFile(F, NewName) then
+        begin
           Inc(GCrashes);
+          { Namen beginnen mit Datum/Uhrzeit -> größter Name = neuester }
+          if NewName > GLastCrash then
+            GLastCrash := NewName;
+        end;
       end;
     end;
   finally
@@ -185,6 +198,21 @@ begin
     L.Sort;                       // ältestes zuerst
     I := 0;
     while L.Count - I > MAX_LOGS - 1 do
+    begin
+      SysUtils.DeleteFile(L[I]);
+      Inc(I);
+    end;
+  finally
+    L.Free;
+  end;
+
+  { 3. gespeicherte Fehlerberichte (Fenster "Fehlerbericht senden"):
+    nur die neuesten 5 behalten }
+  L := FindAllFiles(LogDir, 'Fehlerbericht_*.txt', False);
+  try
+    L.Sort;
+    I := 0;
+    while L.Count - I > 5 do
     begin
       SysUtils.DeleteFile(L[I]);
       Inc(I);

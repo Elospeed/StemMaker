@@ -1,11 +1,11 @@
-# Elospeed StemMaker 1.7
+# Elospeed StemMaker 1.7.1
 
 **by Elospeed**
 
 🇩🇪 **Deutsche Anleitung:** [LIESMICH.md](LIESMICH.md)
 
 Turns MP3s (also WAV, FLAC, AIFF, M4A, OGG) into **Traktor stem files (`*.stem.mp4`)** with 4 tracks: Drums, Bass, Other (melody) and Vox.
-It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setup: a single Lazarus program that downloads everything it needs on first start.
+It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), just **without Python** and without setting up a Python environment: a single Lazarus program that downloads everything it needs on first start. Available as an installer or as a portable ZIP.
 
 **Why StemMaker**
 
@@ -29,8 +29,12 @@ MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / 
 
 ## Getting started
 
-1. Unzip the archive, e.g. to `C:\Tools\StemMaker`.
-2. Run `StemMaker.exe`. If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
+There are two downloads on the [release page](https://github.com/Elospeed/StemMaker/releases/latest), with the same program inside:
+- **`StemMaker-<version>-Setup.exe`** (installer): installs for your Windows user only, without admin rights, to `%LOCALAPPDATA%\Programs\StemMaker`, with a Start menu entry and an uninstall entry under "Apps & features". When you uninstall by hand, it asks whether the downloaded models, ffmpeg and settings should be deleted too.
+- **`StemMaker-<version>.zip`** (portable): unzip anywhere, e.g. to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
+
+1. Run the installer, or unzip the archive.
+2. Run `StemMaker.exe` (Start menu entry "StemMaker" after the installer). If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
 **On the first start on a PC** a window shows the disclaimer and the license notes. Tick the box and click **"I agree - start StemMaker"**. This is asked once per PC: if you copy the StemMaker folder to another PC, it asks again there (this is not copy protection, copying is allowed under the MIT License). `AddOns\StemCLI.exe` asks for the same confirmation once with `--accept`. You can read the text again any time under **Info → Licenses**.
 
@@ -39,13 +43,13 @@ Then the **startup check window** opens. It ticks off, one by one: processor, ff
 - **On the very first start** ffmpeg (approx. 56 MB) and the separation model (81 MB) are missing. Click **"Download"** to fetch both with a progress bar. Every download is checked against the SHA-256 checksum from `update.json`; a damaged or swapped file is discarded. StemMaker then checks again and starts.
 - **Something is red and can't be downloaded** (e.g. a demucs file is missing): Unzip the whole archive again. Hover over the red line to see the exact reason.
 
-**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update or Info window or `AutoCheck=0` (see below).
+**Updates:** At startup StemMaker checks in the background (max. 5 seconds) whether a newer version exists. If so, it offers **Update now / Later / Skip this version**. The update is checked with its SHA-256 checksum; settings, list, logs, models and ffmpeg are kept. Never during a conversion. If copying fails halfway, StemMaker rolls everything back and stays on the old version. Check by hand: **Info → Check for updates** (also shows a skipped version again). Turn it off with the checkbox in the update window, under **More settings** or with `AutoCheck=0` (see below).
 
 If you pick a model in the main window that isn't installed yet (e.g. htdemucs_ft), StemMaker asks whether to download it now.
 
 ## Windows warning ("Windows protected your PC")
 
-StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
+StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
 
 **To start it anyway:**
 1. Click **"More info"** in the blue window.
@@ -116,6 +120,7 @@ StemMaker is built for preparing an entire music collection in one go, e.g. over
 - **Recreate subfolders in the output folder:** If you add a whole folder, e.g. `D:\Music\House`, then `D:\Music\House\2024\track.mp3` ends up as `<output folder>\House\2024\track.stem.mp4`. Only applies with your own output folder.
 - **Shut down the PC when finished:** When all files are done, a 60-second countdown with "Cancel" appears. Then StemMaker closes cleanly and Windows shuts down. The checkbox only applies to the next run. If you cancel the run, the PC does not shut down.
 - **Keep the PC awake** (see Settings) stops Windows from going to sleep halfway through.
+- **Icon next to the clock:** During a conversion StemMaker shows an icon in the notification area. Hover over it to see the progress (e.g. "StemMaker - 45 % (file 3 of 12)"), click it to bring the window back. When everything is done and StemMaker is not in the foreground, a notification appears. In Settings you can choose that minimizing only leaves the icon (off by default), and turn the notification off.
 - Stem files that already exist are skipped (unless "overwrite existing stem files" is on).
 
 ### Logs and troubleshooting
@@ -140,16 +145,27 @@ The log contains:
 - for errors, the call stack with file and line number in the source code
 - at the end of a run, a summary: total time, average per track, cores used and the peak RAM usage of demucs
 
+#### Sending an error report
+
+After a crash, StemMaker asks on the next start whether you want to send an error report. The same is offered in the "Unexpected error" window and at any time via **Info → Send error report...**. Nothing is sent automatically: the window shows exactly the text that leaves your PC. Your user folder (`C:\Users\<name>`) is replaced with `%USERPROFILE%`, the file names of your songs stay in.
+
+- **Send by e-mail:** the report is saved as a file in the `logs` folder and selected in Explorer, and a ready-made e-mail to elospeed.dev@gmail.com opens. You drag the file into the e-mail yourself. If no e-mail opens (e.g. with webmail), simply send the file to that address.
+- **As GitHub issue (public):** opens a prefilled issue in your browser. You need a GitHub account, and anyone can read the issue.
+
+Either way, the whole report is also on the clipboard (Ctrl+V).
+
 The graphics card is only listed. demucs.cpp computes on the CPU only.
 
 ### Settings
+
+The main window only shows what you change per conversion: output folder, separation model, audio format, club level, bass fix and shutdown. Everything you set once sits behind the gear button **"More settings..."**: parts, overwrite, rebuild subfolders, keep the PC awake, stem names and colors, language, update check at startup, and the paths to ffmpeg, demucs.cpp and the models (display only). **"Restore defaults"** there resets everything to the shipped state.
 
 | Setting | Meaning |
 |---|---|
 | Separation model | **htdemucs**: default, good quality. **htdemucs_ft**: best quality, approx. 4× slower, 4 model files. **hdemucs_mmi (v3)**: faster, slightly worse. |
 | Parts / Auto | How many parts of the song are separated in parallel. **Auto** (default) recalculates on every start: as many parts as the processor has physical cores, at most 4 – and only as many as the RAM can handle (each part needs a good 2 GB, so with 8 GB RAM at most 2). Each part also uses additional cores; this is distributed automatically. Without the tick, the number you set applies. |
 | Audio format | **AAC automatic** (default): the stem file gets the bitrate of the source, e.g. MP3 256 → AAC 256, MP3 320 → AAC 320. Going higher gains nothing; it can never be better than the source. Sources below 192 kbit/s get 192, so nothing extra is lost when re-encoding. Lossless sources (WAV/FLAC) get 320. **AAC 256**: NI standard, fixed. **AAC 320**: fixed. **ALAC**: lossless, very large, only worthwhile for WAV/FLAC sources. The log shows per file e.g. "Source: mp3 320 kbit/s → stem file AAC 320 kbit/s". |
-| Stem names/colors | How the stems appear in Traktor. The defaults use the same colors as Stemgen. |
+| Stem names/colors | How the stems appear in Traktor. The defaults use the same colors as Stemgen; the **"Traktor colours"** button sets the colors from Traktor's own stem files. Traktor shows the icons (drum, speaker, wave, microphone) fixed by slot 1–4, they cannot be changed. |
 | Normalize loudness (club level) | On by default. Quiet files are raised until the loudest point is just below 0 dB (about −1 dB). All 5 tracks get the same value, no limiter – the dynamics stay as in the original. Loud club tracks hardly change. Benefit: in Traktor the stem waveforms are big and easy to read (Autogain only raises playback, not the display). The log shows e.g. "Normalize loudness: +11.6 dB". |
 | Bass fix | On by default. The low bass below 80 Hz that the separation leaves in the "Other" stem is moved to the Bass stem. The Bass stem sounds fuller, like Traktor's own stems; all stems together sound unchanged. Skipped for files over 20 minutes (DJ mixes), because it needs the whole track in memory. |
 | Keep the PC awake during conversion | On by default. During conversion the PC won't go to sleep (the screen may turn off). If Windows is set to the **Power saver** plan (or, on Windows 11, the power mode is "Best power efficiency"), it switches to more performance for the duration of the conversion. Afterwards everything is back to how it was, even after a crash: in that case StemMaker restores the old power plan on the next start. "Balanced" is left untouched. |
@@ -209,6 +225,7 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Problems?
 
+- **Questions, ideas, showing your results:** ask in [GitHub Discussions](https://github.com/Elospeed/StemMaker/discussions). You can attach screenshots, logs and files there. Reading works without an account, writing needs a GitHub account. Bugs can also go to an [issue](https://github.com/Elospeed/StemMaker/issues).
 - **Download fails:** Check your internet connection, firewall or proxy. If necessary, download manually:
   - ffmpeg: <https://www.gyan.dev/ffmpeg/builds/> ("release essentials"). Copy `ffmpeg.exe` to `tools\`.
   - Models: <https://huggingface.co/datasets/Retrobear/demucs.cpp/tree/main>. Put the `.bin` files in `models\`.
@@ -216,7 +233,7 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Languages
 
-On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time in the Info window under "Language:". The new language applies from the next start.
+On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time under **More settings** (gear button) → "Language:". The new language applies from the next start.
 
 The language files are in the `lang\` folder (gettext, `.po`). To add a language, copy `lang\StemMaker.pot` to e.g. `lang\fr.po` and translate it with [Poedit](https://poedit.net).
 
@@ -236,6 +253,7 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
   | `ulogui.pas` | catches unexpected errors and writes them to the log |
   | `udonate.pas` | donation window before startup |
   | `uinfo.pas` | Info window |
+  | `usettings.pas` | "More settings" window (gear button) |
   | `upower.pas` | keep the PC awake, power plan, battery, sleep detection |
   | `ulang.pas` | multilingual support: `_()` function and `.po` reader |
   | `ulangui.pas` | language picker at first start, translates forms |
@@ -248,11 +266,8 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 
 ## Development
 
-- [Roadmap](ROADMAP.md) (German): what is being worked on and what is planned next
 - [Changelog](CHANGELOG.md) (German): what is done, per version
-- [TODO](TODO.md) (German): what needs to be tested, decided or built next
 - [Development log](docs/ENTWICKLUNGSLOG.md) (German): problems found during development and how they were solved
-- [Ideas for future versions](docs/IDEEN.md) (German)
 
 ## Licenses / Credits
 

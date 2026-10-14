@@ -1,0 +1,56 @@
+# Baut zu einem Release die Setup-Exe (Inno Setup) und hängt sie ans Release an.
+#
+# Was passiert wann:
+# - Sobald ein Release veröffentlicht wird (nicht bei Vor-Releases/Testversionen),
+#   holt dieser Workflow das ZIP des Releases (StemMaker-<Version>.zip), baut
+#   daraus StemMaker-<Version>-Setup.exe, testet es (still installieren, Update,
+#   deinstallieren) und lädt es zum Release hoch.
+# - Von Hand starten (Actions -> Setup zum Release -> Run workflow) geht auch, z. B.
+#   für ein Release, das schon draussen ist. Als Tag z. B. "v1.7" eintragen.
+#
+# Die SHA-256 des Setups steht danach in der Zusammenfassung des Laufs. Die braucht
+# das winget-Manifest.
+
+name: Setup zum Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag des Releases, z. B. v1.7"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Release-ZIP holen, Setup bauen und testen
+        # Tag kommt über eine Umgebungsvariable ins Skript, nicht direkt per ${{ }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -e
+          VERSION="${TAG#v}"
+          gh release download "$TAG" --repo "$REPO" --pattern "StemMaker-$VERSION.zip" --clobber
+          bash installer/setup-bauen.sh "StemMaker-$VERSION.zip" "$VERSION" "StemMaker-$VERSION-Setup"
+          pwsh -File installer/setup-testen.ps1 "installer/Output/StemMaker-$VERSION-Setup.exe"
+          gh release upload "$TAG" "installer/Output/StemMaker-$VERSION-Setup.exe" --repo "$REPO" --clobber
+          SHA=$(sha256sum "installer/Output/StemMaker-$VERSION-Setup.exe" | cut -d' ' -f1)
+          {
+            echo "### StemMaker-$VERSION-Setup.exe hochgeladen"
+            echo "SHA-256 (für das winget-Manifest): \`${SHA^^}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

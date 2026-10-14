@@ -1,6 +1,6 @@
 # Namenskonvention für den StemMaker-Quelltext (Vorschlag)
 
-Stand: 5. Oktober 2026 · nur Vorschlag. Speedy hat entschieden: vorerst bleibt der Code, wie er ist. Steht in der [Ideen-Liste](IDEEN.md).
+Stand: 5. Oktober 2026 · nur Vorschlag. Speedy hat entschieden: vorerst bleibt der Code, wie er ist. Steht in der internen Ideenliste.
 
 ## 1. Wie es heute aussieht
 

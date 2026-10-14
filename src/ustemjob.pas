@@ -197,6 +197,23 @@ function NewUsedNameList: TStringList;
   Ordner, FreedMB = freigegebener Platz. }
 function CleanupStaleTempDirs(out FreedMB: Int64): Integer;
 
+{ ---- Lange Pfade ----
+  Windows erlaubt ohne Langpfad-Unterstützung höchstens 259 Zeichen pro
+  Pfad (MAX_PATH = 260, das letzte Zeichen ist das Endzeichen). StemMaker,
+  ffmpeg und demucs können längere Pfade nicht öffnen. Getestet auf
+  Windows am 8.10.2026: bis 259 geht alles, darüber kommt ein Fehler, und
+  Ordner über der Grenze werden beim Durchsuchen still übersprungen. }
+const
+  MAX_PATH_CHARS = 259;
+{ Länge eines Pfads so, wie Windows zählt (UTF-16-Zeichen, nicht Bytes:
+  ein Umlaut ist in UTF-8 zwei Bytes, für Windows aber ein Zeichen) }
+function PathLength(const S: string): Integer;
+{ Ist der Pfad zu lang für Windows? }
+function PathTooLong(const FileName: string): Boolean;
+{ Kann Windows den Inhalt dieses Ordners nicht auflisten? Zum Auflisten
+  wird intern "<Ordner>\*" gesucht, das sind 2 Zeichen mehr. }
+function DirTooLongToList(const Dir: string): Boolean;
+
 { Name der Einstellungsdatei: StemMaker.ini neben der Exe (portabel).
   Ist der Programmordner schreibgeschützt (z.B. unter C:\Programme),
   wird stattdessen der Benutzer-Konfigurationsordner genommen. }
@@ -499,6 +516,21 @@ begin
   else
     Dir := IncludeTrailingPathDelimiter(OutputDir);
   Result := Dir + ExtractFileNameOnly(InputFile) + '.stem.mp4';
+end;
+
+function PathLength(const S: string): Integer;
+begin
+  Result := Length(UTF8Decode(S));
+end;
+
+function PathTooLong(const FileName: string): Boolean;
+begin
+  Result := PathLength(FileName) > MAX_PATH_CHARS;
+end;
+
+function DirTooLongToList(const Dir: string): Boolean;
+begin
+  Result := PathLength(ExcludeTrailingPathDelimiter(Dir)) + 2 > MAX_PATH_CHARS;
 end;
 
 function NewUsedNameList: TStringList;
@@ -1575,6 +1607,17 @@ begin
   try
     try
       { ---- Vorprüfungen ------------------------------------------------- }
+      { Pfade über 259 Zeichen kann Windows nicht öffnen. Ohne diese Prüfung
+        käme "Datei nicht gefunden" bzw. "Kann Zieldatei nicht schreiben",
+        und niemand wüsste, warum. }
+      if PathTooLong(InputFile) then
+        raise Exception.Create(Format(_('Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). ' +
+          'Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben.'),
+          [PathLength(InputFile), MAX_PATH_CHARS]));
+      if PathTooLong(OutFile) then
+        raise Exception.Create(Format(_('Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). ' +
+          'Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen.'),
+          [PathLength(OutFile), MAX_PATH_CHARS]));
       if not FileExists(InputFile) then
         raise Exception.Create(Format(_('Datei nicht gefunden: %s'), [InputFile]));
       if not CheckTools(Problems) then

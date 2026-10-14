@@ -1,0 +1,73 @@
+Elospeed 5.1 -> Stem  0.1 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+=======================================================================
+
+Macht aus dem 5.1-Ton einer DVD (oder jeder 5.1-Datei) EINE Traktor-
+Stem-Datei. Ohne KI und ohne Installation: die vier 5.1-Teile kommen
+direkt in die vier Stem-Slots.  English: README.txt
+
+    Stem 1 = FRONT L/R      vorne links/rechts (Stereo)
+    Stem 2 = LFE (SUB)      Subwoofer (mono auf beiden Seiten, auf 0 dB angehoben)
+    Stem 3 = CENTER         Mitte (mono auf beiden Seiten)
+    Stem 4 = SURROUND L/R   hinten/seitlich links/rechts (Stereo)
+    Master = gleich wie Stem 1 (oder still, siehe Einstellungen)
+
+Die Reihenfolge lässt sich unter "Einstellungen ..." ändern.
+
+
+SO GEHT'S
+---------
+1. Den ganzen Ordner entpacken (z.B. auf den Desktop). Der Ordner "tools"
+   mit ffmpeg.exe muss neben Stem51.exe bleiben.
+2. Stem51.exe starten. Kommt "Der Computer wurde durch Windows
+   geschützt" (Programm ist nicht signiert): "Weitere Informationen" ->
+   "Trotzdem ausführen".
+3. Die 5.1-Datei aufs Fenster ziehen (oder "Datei öffnen ...").
+   Geht mit VOB, MKV, MP4, M4V, MOV, TS, M2TS, DTS, AC3, EAC3, THD, WAV,
+   FLAC und mehr.
+4. Hat die Datei mehrere 5.1-Tonspuren (DVD: oft AC3 und DTS), die
+   gewünschte wählen.
+5. Fertig: <Name>.stem.mp4 liegt neben der Datei, der Ordner geht auf.
+   In Traktor wie jede Stem-Datei laden.
+
+Es wird immer die ganze Datei umgewandelt (ein Konzert: einige Minuten).
+
+
+DVD-TIPPS
+---------
+- Der Film liegt im Ordner VIDEO_TS in den grossen Dateien VTS_01_1.VOB,
+  VTS_01_2.VOB ... (je ca. 1 GB), nicht in VIDEO_TS.VOB. Jede VOB-Datei
+  ergibt eine eigene Stem-Datei.
+- Kopiergeschützte DVDs lassen sich nicht direkt lesen. Liegt die DVD
+  schon als MKV oder VOB auf der Festplatte, diese nehmen.
+- Zum Ausprobieren: 5.1-test-file.mkv (liegt bei), mit Stereo-, AC3-5.1-
+  und DTS-5.1-Spur und einem eigenen Testton pro Kanal.
+
+
+EINSTELLUNGEN
+-------------
+- Welcher 5.1-Teil in welchen Stem. "Standard" setzt Front / LFE /
+  Center / Surround zurück.
+- LFE auf 0 dB Spitzenpegel anheben (Standard an): der Subwoofer-Kanal
+  ist auf DVDs meist sehr leise.
+- Master-Spur: gleich wie Stem 1 oder still.
+- Sprache: automatisch, Deutsch oder English.
+Gespeichert in Stem51.ini neben dem Programm.
+
+
+WENN ETWAS NICHT KLAPPT
+-----------------------
+Alles, was das Programm tut, steht in logs\Stem51.log neben Stem51.exe.
+"Log anzeigen" -> "Log-Ordner öffnen" und diese Datei schicken.
+
+
+INHALT DES ORDNERS
+------------------
+  Stem51.exe                  das Programm
+  README.txt / LIESMICH.txt   diese Anleitung (Englisch / Deutsch)
+  5.1-test-file.mkv           kleine Testdatei (20 Sekunden)
+  tools\ffmpeg.exe            FFmpeg (LGPL), macht die eigentliche Tonarbeit
+  tools\FFMPEG-LICENSE.txt    Lizenz von FFmpeg
+  tools\FFMPEG-SOURCE.txt     Quellcode von FFmpeg
+
+Freie Software von Elospeed. FFmpeg ist eine Marke von Fabrice Bellard,
+https://ffmpeg.org - das Programm startet ffmpeg.exe als eigenes Programm.
