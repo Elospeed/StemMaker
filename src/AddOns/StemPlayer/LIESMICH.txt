@@ -24,12 +24,15 @@ BEDIENUNG
   0              alles zurücksetzen
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
-  W              Wellenformen aus/ein (z.B. auf kleinen Bildschirmen)
+  W              Ansicht Kompakt / Wellenform umschalten
 
 WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
   Wellenform des Originals. Der rote Strich zeigt, wo die Wiedergabe
   gerade ist. Klicken oder Ziehen in eine Wellenform springt dorthin.
+  Oben rechts wählt man KOMPAKT (wie bis 1.4, ohne Wellenformen) oder
+  WELLENFORM. Die Wahl wird in StemPlayer.ini gespeichert und beim
+  nächsten Start übernommen.
   Stumme Stems werden grau gezeichnet. Ein Stem, der an einer Stelle
   still sein sollte (z.B. Vocals im Instrumentalteil), aber dort noch
   Ausschläge zeigt, hat Reste anderer Instrumente abbekommen.
@@ -67,4 +70,5 @@ VERSIONEN
   1.4  Falsche Dateien (z.B. MP3, Video, Ordner) werden mit einer
        klaren Meldung abgewiesen, der geladene Track spielt weiter
   1.5  Wellenform unter jedem Stem und vom Original, mitlaufender
-       Abspielkopf, Klick in die Wellenform springt dorthin, Taste W
+       Abspielkopf, Klick in die Wellenform springt dorthin, Umschalter
+       Kompakt / Wellenform (Taste W), Wahl wird gespeichert

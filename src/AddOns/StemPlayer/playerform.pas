@@ -66,8 +66,9 @@
                        in der Stemfarbe, oben die Wellenform des Originals statt
                        der Balkenleiste, roter Abspielkopf läuft überall mit.
                        Klick oder Ziehen in eine Wellenform springt dorthin.
-                       Taste W blendet die Wellenformen aus/ein (kleine
-                       Bildschirme). Berechnung im Hintergrund (wellenform.pas).
+                       Oben rechts Umschalter KOMPAKT / WELLENFORM (oder Taste W),
+                       die Wahl wird gespeichert und beim nächsten Start
+                       übernommen. Berechnung im Hintergrund (wellenform.pas).
   ============================================================================ }
 unit playerform;
 
@@ -112,6 +113,8 @@ type
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
     LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
+    BtnViewCompact: TDJButton; // Ansicht: kompakt (ohne Wellenformen)
+    BtnViewWave   : TDJButton; // Ansicht: mit Wellenformen
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
     BtnPlay     : TDJButton;
@@ -185,6 +188,8 @@ type
     procedure UpdateGains;
     procedure UpdateRowLook;
     procedure SetWavesVisible(AShow: Boolean);
+    procedure SaveViewSetting;
+    procedure ViewClick(Sender: TObject);
     procedure StopPeakThread;
     procedure ApplyPeaks;
     procedure TogglePlay;
@@ -240,6 +245,9 @@ const
   ============================================================================ }
 
 constructor TMainForm.Create(TheOwner: TComponent);
+var
+  Ini: TIniFile;
+  ShowWaves: Boolean;
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
@@ -266,10 +274,26 @@ begin
   BuildUI;
   UpdateGains;
 
-  { Wellenformen: an, ausser der Bildschirm ist zu niedrig (dann mit W einschalten) }
+  { Ansicht wie beim letzten Mal (StemPlayer.ini [Ansicht] Wellenform=1/0).
+    Erster Start: mit Wellenformen. Passt das grössere Fenster nicht auf den
+    Bildschirm, startet er trotzdem kompakt (gespeichert wird das nicht). }
   FShowWaves := False;
-  if Screen.WorkAreaHeight >= BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA + 40 then
-    SetWavesVisible(True);
+  ShowWaves := True;
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      ShowWaves := Ini.ReadBool('Ansicht', 'Wellenform', True);
+    finally
+      Ini.Free;
+    end;
+  except
+    { INI nicht lesbar -> Standard }
+  end;
+  if ShowWaves and
+     (Screen.WorkAreaHeight >= BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA + 40) then
+    SetWavesVisible(True)
+  else
+    SetWavesVisible(False);
 
   OpenDlg := TOpenDialog.Create(Self);
   OpenDlg.Title := 'Stem-Datei öffnen';
@@ -365,7 +389,19 @@ begin
   LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
-  LblFile.SetBounds(110, 8, W - 110, 24);
+  LblFile.SetBounds(110, 8, W - 110 - 236, 24);
+
+  { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
+  BtnViewCompact := MakeButton(PnlTop, 'KOMPAKT', W - 228, 14, 104, 28);
+  BtnViewWave    := MakeButton(PnlTop, 'WELLENFORM', W - 125, 14, 124, 28);
+  BtnViewCompact.Anchors := [akTop, akRight];
+  BtnViewWave.Anchors := [akTop, akRight];
+  BtnViewCompact.Hint := 'Kompakte Ansicht ohne Wellenformen (Taste W)';
+  BtnViewWave.Hint := 'Ansicht mit Wellenform unter jedem Stem (Taste W)';
+  BtnViewCompact.ShowHint := True;
+  BtnViewWave.ShowHint := True;
+  BtnViewCompact.OnClick := @ViewClick;
+  BtnViewWave.OnClick := @ViewClick;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -585,6 +621,8 @@ procedure TMainForm.SetWavesVisible(AShow: Boolean);
 var
   i, Delta: Integer;
 begin
+  BtnViewCompact.Down := not AShow;
+  BtnViewWave.Down := AShow;
   if AShow = FShowWaves then Exit;
   FShowWaves := AShow;
   Delta := STEM_COUNT * WAVE_EXTRA;
@@ -635,9 +673,19 @@ end;
   ffmpeg finden
   ============================================================================ }
 
+{ StemPlayer.ini neben der exe. Ist der Ordner schreibgeschützt (Setup-
+  Installation unter C:\Programme), dann %APPDATA%\StemMaker\StemPlayer.ini -
+  gleiches Vorgehen wie StemMaker.ini (siehe ustemjob.StemIniFileName). }
 function TMainForm.IniFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.ini');
+  if not DirectoryIsWritable(ExtractFilePath(Result)) then
+  begin
+    Result := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')) +
+      'StemMaker' + PathDelim;
+    ForceDirectories(Result);
+    Result := Result + ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
+  end;
 end;
 
 function TMainForm.FindFFmpeg: string;
@@ -692,6 +740,28 @@ end;
   Reihenfolge ist wichtig: zuerst den Audio-Thread beenden (er schliesst
   dabei seine .raw-Dateien), erst dann löschen - unter Windows lassen sich
   geöffnete Dateien nicht löschen. }
+{ Gewählte Ansicht merken, damit der nächste Start gleich so aussieht }
+procedure TMainForm.SaveViewSetting;
+var Ini: TIniFile;
+begin
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      Ini.WriteBool('Ansicht', 'Wellenform', FShowWaves);
+    finally
+      Ini.Free;
+    end;
+  except
+    { nicht schreibbar -> nächstes Mal eben wieder mit Standard }
+  end;
+end;
+
+procedure TMainForm.ViewClick(Sender: TObject);
+begin
+  SetWavesVisible(Sender = BtnViewWave);
+  SaveViewSetting;
+end;
+
 { Wellenform-Berechnung abbrechen und warten, bis der Thread seine
   .raw-Dateien geschlossen hat (sonst lassen sie sich nicht löschen). }
 procedure TMainForm.StopPeakThread;
@@ -1434,7 +1504,7 @@ begin
     VK_LEFT:  begin SeekRelative(-5); Key := 0; end;
     VK_RIGHT: begin SeekRelative(5); Key := 0; end;
     VK_HOME:  begin if Engine <> nil then Engine.SeekTo := 0; Key := 0; end;
-    VK_W:     begin SetWavesVisible(not FShowWaves); Key := 0; end;
+    VK_W:     begin SetWavesVisible(not FShowWaves); SaveViewSetting; Key := 0; end;
   end;
 end;
 
