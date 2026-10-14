@@ -34,6 +34,8 @@
 
   Versionen:
     1.0  (14.10.2026)  Erste Version (Testversion StemPlayer 1.5)
+    1.1  (14.10.2026)  Flüssiger Abspielkopf: NowSeconds (genaue Uhr) und
+                       Strich mit Kantenglättung in 1/4-Pixel-Schritten
   ============================================================================ }
 unit wellenform;
 
@@ -82,7 +84,7 @@ type
     FColor    : TColor;      // Farbe der Wellenform (Stemfarbe)
     FActive   : Boolean;     // False -> grau (Stem stumm / anderer Modus)
     FPosition : Single;      // Abspielkopf 0..1
-    FHeadX    : Integer;     // zuletzt gezeichnete Pixel-Position des Kopfes
+    FHeadX    : Integer;     // zuletzt gezeichnete Position des Kopfes in 1/4 Pixel
     FPlayed   : TBitmap;     // zwischengespeichert: gespielter Teil (hell)
     FRest     : TBitmap;     // zwischengespeichert: noch nicht gespielt (dunkel)
     FDirty    : Boolean;     // Bilder müssen neu berechnet werden
@@ -116,6 +118,10 @@ type
 { Höchster Betrag (|Lo| oder |Hi|) einer Hüllkurve, für den Massstab }
 function PeakMax(const P: TPeakData): Single;
 
+{ Genaue Uhr in Sekunden (Windows-Leistungszähler, Auflösung < 1 µs).
+  GetTickCount wäre zu grob: es springt unter Windows in 15,6-ms-Stufen. }
+function NowSeconds: Double;
+
 implementation
 
 const
@@ -129,6 +135,28 @@ begin
     Round(Green(C1) * A + Green(C2) * (1 - A)),
     Round(Blue(C1)  * A + Blue(C2)  * (1 - A)));
 end;
+
+{$IFDEF WINDOWS}
+function QueryPerformanceCounter(out Count: Int64): LongBool; stdcall;
+  external 'kernel32.dll' name 'QueryPerformanceCounter';
+function QueryPerformanceFrequency(out Freq: Int64): LongBool; stdcall;
+  external 'kernel32.dll' name 'QueryPerformanceFrequency';
+{$ENDIF}
+
+function NowSeconds: Double;
+{$IFDEF WINDOWS}
+var C, F: Int64;
+begin
+  if QueryPerformanceFrequency(F) and (F > 0) and QueryPerformanceCounter(C) then
+    Result := C / F
+  else
+    Result := GetTickCount64 / 1000;
+end;
+{$ELSE}
+begin
+  Result := GetTickCount64 / 1000;
+end;
+{$ENDIF}
 
 function PeakMax(const P: TPeakData): Single;
 var i: Integer;
@@ -308,8 +336,9 @@ begin
   if AValue < 0 then AValue := 0;
   if AValue > 1 then AValue := 1;
   FPosition := AValue;
-  { Nur neu zeichnen, wenn sich der Kopf um mindestens ein Pixel bewegt }
-  X := Round(FPosition * (Width - 1));
+  { Nur neu zeichnen, wenn sich der Kopf um mindestens 1/4 Pixel bewegt
+    (der Strich wird mit Zwischenstufen gezeichnet, siehe Paint) }
+  X := Round(FPosition * (Width - 1) * 4);
   if X <> FHeadX then Invalidate;
 end;
 
@@ -387,12 +416,14 @@ end;
 
 procedure TWaveView.Paint;
 var
-  X: Integer;
+  X, C: Integer;
+  Xf, Fr: Single;
 begin
   if FDirty or (FPlayed.Width <> Width) or (FPlayed.Height <> Height) then
     RenderCache;
-  X := Round(FPosition * (Width - 1));
-  FHeadX := X;
+  Xf := FPosition * (Width - 1);
+  FHeadX := Round(Xf * 4);
+  X := Round(Xf);
   { links vom Kopf: gespielt (hell), rechts: noch nicht gespielt (dunkel) }
   if X > 0 then
     Canvas.CopyRect(Rect(0, 0, X, Height), FPlayed.Canvas, Rect(0, 0, X, Height));
@@ -402,11 +433,31 @@ begin
   Canvas.Pen.Color := DJ_BORDER;
   Canvas.Rectangle(0, 0, Width, Height);
   Canvas.Brush.Style := bsSolid;
-  { Abspielkopf: 2 Pixel breiter roter Strich (nur wenn eine Datei geladen ist) }
+  { Abspielkopf: 2 Pixel breiter roter Strich (nur wenn eine Datei geladen ist).
+    Er steht genau bei Xf-1 .. Xf+1, also meist zwischen zwei Pixeln. Die
+    beiden Randspalten bekommen darum nur so viel Rot, wie der Strich sie
+    bedeckt (Kantenglättung). So wandert er auch bei langen Tracks, wo er nur
+    alle paar hundert Millisekunden ein ganzes Pixel weiterkommt, gleitend
+    statt in sichtbaren Sprüngen. }
   if FPeaks.Valid then
   begin
-    Canvas.Brush.Color := DJ_PLAYHEAD;
-    Canvas.FillRect(Max(0, X - 1), 0, Min(Width, X + 1), Height);
+    C := Trunc(Xf - 1);          // erste (teilweise) bedeckte Spalte
+    Fr := (Xf - 1) - C;          // 0..1: wie weit der Strich in sie hineinragt
+    if (C >= 0) and (C < Width) then
+    begin
+      Canvas.Brush.Color := Blend(DJ_PLAYHEAD, WAVE_BG, 1 - Fr);
+      Canvas.FillRect(C, 0, C + 1, Height);
+    end;
+    if (C + 1 >= 0) and (C + 1 < Width) then
+    begin
+      Canvas.Brush.Color := DJ_PLAYHEAD;
+      Canvas.FillRect(C + 1, 0, C + 2, Height);
+    end;
+    if (Fr > 0.02) and (C + 2 >= 0) and (C + 2 < Width) then
+    begin
+      Canvas.Brush.Color := Blend(DJ_PLAYHEAD, WAVE_BG, Fr);
+      Canvas.FillRect(C + 2, 0, C + 3, Height);
+    end;
   end;
 end;
 

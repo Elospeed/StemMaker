@@ -69,6 +69,9 @@
                        Oben rechts Umschalter KOMPAKT / WELLENFORM (oder Taste W),
                        die Wahl wird gespeichert und beim nächsten Start
                        übernommen. Berechnung im Hintergrund (wellenform.pas).
+                       Abspielkopf flüssig: eigener schneller Timer (~60 Bilder/s)
+                       und eine geglättete Uhr statt der stufigen Geräteposition
+                       (siehe HeadTimerTick).
   ============================================================================ }
 unit playerform;
 
@@ -142,6 +145,7 @@ type
     LblKofi     : TLabel;
     { --- Sonstiges --- }
     Timer       : TTimer;
+    HeadTimer   : TTimer;      // schneller Timer nur für den Abspielkopf
     OpenDlg     : TOpenDialog;
 
     Engine      : TStemEngine;
@@ -161,6 +165,9 @@ type
     FClipTicks  : Integer;
     FPeakThread : TPeakThread; // berechnet die Wellenformen im Hintergrund
     FShowWaves  : Boolean;     // Wellenformen sichtbar (Taste W)
+    FHeadPos    : Double;      // geglättete Anzeigeposition in Frames
+    FHeadTime   : Double;      // Zeitpunkt (NowSeconds) dieser Position
+    FHeadRunning: Boolean;     // lief die Uhr schon beim letzten Tick?
 
     procedure BuildUI;
     procedure BuildStemRow(Idx: Integer);
@@ -215,6 +222,7 @@ type
     procedure MeterPaint(Sender: TObject);
     procedure OutMeterPaint(Sender: TObject);
     procedure TimerTick(Sender: TObject);
+    procedure HeadTimerTick(Sender: TObject);
     procedure KofiClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -303,6 +311,13 @@ begin
   Timer.Interval := 30;
   Timer.OnTimer := @TimerTick;
   Timer.Enabled := True;
+
+  { Abspielkopf separat und schneller (15 ms ~ 60 Bilder/s), damit die
+    LED-Meter mit ihrem gewohnten 30-ms-Abklingen unverändert bleiben }
+  HeadTimer := TTimer.Create(Self);
+  HeadTimer.Interval := 15;
+  HeadTimer.OnTimer := @HeadTimerTick;
+  HeadTimer.Enabled := True;
 
   { Reste früherer Abstürze aus dem Temp-Ordner entfernen }
   CleanupOrphanTempDirs;
@@ -1391,7 +1406,7 @@ end;
 procedure TMainForm.TimerTick(Sender: TObject);
 var
   i: Integer;
-  L, F: Single;
+  L: Single;
   Playing: Boolean;
 begin
   if Engine = nil then Exit;
@@ -1421,14 +1436,6 @@ begin
   end;
   LblTime.Caption := FormatTime(Engine.PlayPos);
 
-  { Abspielkopf in allen Wellenformen (zeichnet nur bei Pixel-Änderung neu) }
-  if Engine.TotalFrames > 0 then
-  begin
-    F := Engine.PlayPos / Engine.TotalFrames;
-    WaveMaster.Position := F;
-    for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
-  end;
-
   { Pegel: schnell hoch, langsam runter (klassisches Peak-Meter-Verhalten) }
   for i := 1 to STEM_COUNT do
   begin
@@ -1453,6 +1460,50 @@ begin
   end;
   if FClipTicks > 0 then Dec(FClipTicks);
   BtnClip.Down := FClipTicks > 0;
+end;
+
+{ Abspielkopf in allen Wellenformen bewegen.
+
+  Warum nicht einfach Engine.PlayPos anzeigen? Die Position vom Audiogerät
+  (waveOutGetPosition) kommt in Stufen: der Engine-Thread fragt sie nur nach
+  jedem Puffer (~23 ms) ab, und viele Windows-Treiber zählen selbst nur in
+  Blöcken weiter. Zusammen mit einem Timer, der auch nur ungefähr alle
+  15/30 ms kommt, springt der Strich mal 1, mal 2 Stufen -> ruckelig.
+
+  Darum läuft hier eine eigene, geglättete Uhr: Beim Abspielen wächst die
+  Anzeigeposition gleichmässig mit der echten Zeit (44100 Frames pro
+  Sekunde) und wird nur sanft an die Geräteposition herangezogen. Bei einem
+  Sprung (Klick, Pfeiltasten, Stop) oder grosser Abweichung wird sie sofort
+  übernommen. Pause: Geräteposition direkt. }
+procedure TMainForm.HeadTimerTick(Sender: TObject);
+var
+  T, Dev, Diff: Double;
+  F: Single;
+  i: Integer;
+begin
+  if (Engine = nil) or (Engine.TotalFrames <= 0) then Exit;
+  T := NowSeconds;
+  Dev := Engine.PlayPos;
+  if Engine.Playing and not Engine.EndReached and FHeadRunning then
+  begin
+    FHeadPos := FHeadPos + (T - FHeadTime) * SAMPLE_RATE;
+    Diff := Dev - FHeadPos;
+    if Abs(Diff) > SAMPLE_RATE * 0.25 then
+      FHeadPos := Dev                      // Sprung oder Aussetzer: übernehmen
+    else
+      FHeadPos := FHeadPos + Diff * 0.08;  // sanft nachführen, kein Zurückspringen
+  end
+  else
+    FHeadPos := Dev;                       // Pause, Ende oder gerade gestartet
+  FHeadRunning := Engine.Playing and not Engine.EndReached;
+  FHeadTime := T;
+  if FHeadPos < 0 then FHeadPos := 0;
+  if FHeadPos > Engine.TotalFrames then FHeadPos := Engine.TotalFrames;
+
+  { zeichnet nur neu, wenn sich der Strich um ein Pixel bewegt }
+  F := FHeadPos / Engine.TotalFrames;
+  WaveMaster.Position := F;
+  for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
@@ -1533,6 +1584,7 @@ end;
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   Timer.Enabled := False;
+  HeadTimer.Enabled := False;
   UnloadFile;          // Thread beenden + Track-Ordner löschen
   ReleaseInstanceDir;  // Sperrdatei schliessen + Instanz-Ordner löschen
 end;
