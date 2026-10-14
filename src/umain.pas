@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : umain.pas  (Unit uMain, Hauptfenster; Layout in umain.lfm)
-  Version : 1.7
+  Version : 1.7.1
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -12,6 +12,8 @@
     - Einstellungen (Ausgabeordner, Modell, Format, Klang-Optionen);
       alles Weitere im Fenster "Einstellungen" (Zahnrad, uSettings)
     - Start / Abbrechen, Fortschrittsbalken und Protokoll
+    - Symbol im Infobereich (neben der Uhr): Fortschritt beim Drüberfahren,
+      Meldung wenn fertig, auf Wunsch "minimieren nur dorthin"
 
   Die eigentliche Umwandlung macht uStemJob. Weil die pro Song mehrere
   Minuten dauert, läuft sie in einem eigenen Thread (TStemWorker).
@@ -34,7 +36,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
-  Clipbrd, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
+  Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
   uSettings;
 
@@ -179,6 +181,23 @@ type
     FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
     FUpdate    : TUpdateInfo;      // gefundenes Update (ohne ModelHashes)
     FHasUpdate : Boolean;          // ... wartet darauf, angeboten zu werden
+    { Symbol im Infobereich (neben der Uhr), siehe "Symbol neben der Uhr" }
+    FTray      : TTrayIcon;
+    FTrayTimer : TTimer;           // fragt ab, ob ein zweiter Start "zeig dich" will
+    FInTray    : Boolean;          // Fenster ist gerade ins Symbol versteckt
+    FTrayNotice: Boolean;          // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
+    procedure SetupTray;
+    procedure UpdateTray;
+    procedure TrayProgress;
+    procedure HideToTray;
+    procedure ShowFromTray;
+    procedure TrayClick(Sender: TObject);
+    procedure TrayQuitClick(Sender: TObject);
+    procedure TrayTimerTick(Sender: TObject);
+    procedure AppMinimize(Sender: TObject);
+    procedure AppActivate(Sender: TObject);
+    procedure TrayNotifyDone(OK, Skipped, Failed: Integer; const Total: string);
+    procedure AppEndSession(Sender: TObject);
     procedure UpdateFound(const Info: TUpdateInfo);
     procedure OfferUpdate(Data: PtrInt);
     function ItemOutFile(Index: Integer): string;
@@ -504,6 +523,7 @@ begin
 
   FIniName := StemIniFileName;
   LoadSettings;
+  SetupTray;
   UpdateToolStatus;
   SetRunning(False);
   AddLog(Format(_('%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen.'),
@@ -684,6 +704,9 @@ begin
     FPrefs.Overwrite := Ini.ReadBool('Main', 'Overwrite', False);
     FPrefs.KeepTree := Ini.ReadBool('Main', 'KeepTree', True);
     FPrefs.KeepAwake := Ini.ReadBool('Main', 'KeepAwake', True);
+    { Symbol neben der Uhr (ab 1.7.1) }
+    FPrefs.TrayMinimize := Ini.ReadBool('Main', 'TrayMinimize', False);
+    FPrefs.TrayNotify := Ini.ReadBool('Main', 'TrayNotify', True);
     { Klang-Optionen (ab 1.7), Standard an }
     chkNormalize.Checked := Ini.ReadBool('Main', 'Normalize', D.Normalize);
     chkBassFix.Checked := Ini.ReadBool('Main', 'BassFix', D.BassFix);
@@ -733,6 +756,8 @@ begin
       Ini.WriteBool('Main', 'Overwrite', FPrefs.Overwrite);
       Ini.WriteBool('Main', 'KeepTree', FPrefs.KeepTree);
       Ini.WriteBool('Main', 'KeepAwake', FPrefs.KeepAwake);
+      Ini.WriteBool('Main', 'TrayMinimize', FPrefs.TrayMinimize);
+      Ini.WriteBool('Main', 'TrayNotify', FPrefs.TrayNotify);
       Ini.WriteBool('Main', 'Normalize', chkNormalize.Checked);
       Ini.WriteBool('Main', 'BassFix', chkBassFix.Checked);
       Ini.WriteBool('Main', 'OpenWhenDone', chkOpenWhenDone.Checked);
@@ -886,6 +911,7 @@ begin
   if FTotal > 0 then
     pbTotal.Position := Round((FFilesDone * 100 + Percent) / FTotal);
   UpdateTimes;
+  TrayProgress;
 end;
 
 { Status einer Datei in der Liste setzen ("läuft...", "OK", "Fehler", ...).
@@ -1596,6 +1622,9 @@ begin
   SetRunning(True);
   FWorker.OnTerminate := @WorkerDone;   // wird aufgerufen, wenn alles fertig ist
   FWorker.Start;
+  FTrayNotice := False;
+  UpdateTray;                          // Symbol neben der Uhr mit Fortschritt
+  TrayProgress;
 end;
 
 procedure TfrmMain.btnCancelClick(Sender: TObject);
@@ -1617,6 +1646,10 @@ begin
   Total := FormatDuration(GetTickCount64 - FRunStart);
   AddLog(Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
     [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]));
+  { Meldung neben der Uhr (nur wenn nicht abgebrochen und StemMaker
+    gerade nicht vorne ist) }
+  if not FUserCancelled then
+    TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
   lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total]);
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
@@ -1627,6 +1660,7 @@ begin
   Application.QueueAsyncCall(@FreeWorker, PtrInt(FWorker));
   FWorker := nil;
   SetRunning(False);
+  UpdateTray;                     // Symbol weg, wenn es nicht mehr gebraucht wird
   SaveQueueNow;
 
   { "Ordner nach der Umwandlung öffnen": die zuletzt fertige Stem-Datei im
@@ -2021,6 +2055,215 @@ begin
     S := S + Format(_(' - %d Längen noch unbekannt'), [Unknown]);
   lblTotal.ShowHint := True;
   lblTotal.Caption := S;
+end;
+
+{ ---------------------------------------------------------------------------
+  Symbol neben der Uhr (Infobereich der Taskleiste)
+
+  Eine Umwandlung dauert pro Song Minuten, ein ganzer Ordner Stunden. In
+  der Zeit arbeitet man meist etwas anderes. Das Symbol hilft dabei:
+    - Maus drüber: Fortschritt, z.B. "StemMaker - 45 % (Datei 3 von 12)"
+    - Meldung, wenn alles fertig ist (nur wenn StemMaker nicht vorne ist,
+      abschaltbar unter Einstellungen -> Programm)
+    - auf Wunsch (Einstellungen -> Programm, Standard aus): beim Minimieren
+      verschwindet das Fenster aus der Taskleiste, nur das Symbol bleibt
+    - Klick aufs Symbol holt das Fenster zurück, Rechtsklick: Menü
+
+  Das Symbol ist nur da, solange es etwas zu sagen hat: während einer
+  Umwandlung, solange das Fenster versteckt ist, und nach der
+  "fertig"-Meldung bis man StemMaker wieder anschaut.
+
+  Minimieren bei Lazarus unter Windows: Den Eintrag in der Taskleiste hat
+  nicht das Hauptfenster, sondern ein unsichtbares "Anwendungsfenster"
+  (Application.Handle). Beim Minimieren versteckt Lazarus das Hauptfenster
+  und minimiert dieses Anwendungsfenster. Wir verstecken danach auch das
+  Anwendungsfenster -> der Eintrag in der Taskleiste verschwindet.
+  Zurück: Anwendungsfenster zeigen, Application.Restore holt das
+  Hauptfenster wieder hervor.
+
+  Zweiter Start, während das Fenster versteckt ist: uSingleInstance findet
+  kein sichtbares Fenster und meldet sich stattdessen über ein Signal
+  (SingleInstanceShowWanted). Ein Timer fragt das alle 0,5 s ab, aber nur
+  solange das Fenster versteckt ist.
+  --------------------------------------------------------------------------- }
+procedure TfrmMain.SetupTray;
+var
+  Pop: TPopupMenu;
+  Item: TMenuItem;
+begin
+  FTray := TTrayIcon.Create(Self);
+  FTray.Icon.Assign(Application.Icon);
+  FTray.Hint := APP_NAME;
+  FTray.OnClick := @TrayClick;
+
+  Pop := TPopupMenu.Create(Self);
+  Item := TMenuItem.Create(Pop);
+  Item.Caption := _('StemMaker anzeigen');
+  Item.Default := True;                    // fett, wie bei Windows üblich
+  Item.OnClick := @TrayClick;
+  Pop.Items.Add(Item);
+  Item := TMenuItem.Create(Pop);
+  Item.Caption := _('Beenden');
+  Item.OnClick := @TrayQuitClick;
+  Pop.Items.Add(Item);
+  FTray.PopUpMenu := Pop;
+
+  FTrayTimer := TTimer.Create(Self);
+  FTrayTimer.Enabled := False;
+  FTrayTimer.Interval := 500;
+  FTrayTimer.OnTimer := @TrayTimerTick;
+
+  Application.OnMinimize := @AppMinimize;
+  Application.OnActivate := @AppActivate;
+  Application.OnEndSession := @AppEndSession;
+  SingleInstanceShowWanted;                // Signal für den zweiten Start anlegen
+end;
+
+{ Symbol zeigen oder verstecken, je nach Lage }
+procedure TfrmMain.UpdateTray;
+begin
+  if FTray = nil then Exit;
+  if FWorker = nil then
+    FTray.Hint := APP_NAME;
+  FTray.Visible := (FWorker <> nil) or FInTray or FTrayNotice;
+end;
+
+{ Fortschritt in den Hinweis des Symbols (Maus drüber). Windows zeigt
+  höchstens 127 Zeichen - das reicht locker. }
+procedure TfrmMain.TrayProgress;
+var
+  S: string;
+  Pct, Cur: Integer;
+begin
+  if (FTray = nil) or (FWorker = nil) or (FTotal <= 0) then Exit;
+  Pct := Round((FFilesDone * 100 + FFilePct) / FTotal);
+  Cur := FFilesDone + 1;
+  if Cur > FTotal then Cur := FTotal;
+  S := Format(_('%s - %d %% (Datei %d von %d)'), [APP_NAME, Pct, Cur, FTotal]);
+  if S <> FTray.Hint then                  // nur bei Änderung neu setzen
+    FTray.Hint := S;
+end;
+
+procedure TfrmMain.HideToTray;
+begin
+  FInTray := True;
+  UpdateTray;
+  TrayProgress;
+  {$IFDEF WINDOWS}
+  { Taskleisten-Eintrag weg (siehe oben: gehört dem Anwendungsfenster) }
+  ShowWindow(Application.Handle, SW_HIDE);
+  {$ENDIF}
+  SingleInstanceShowWanted;                // altes Signal verwerfen
+  FTrayTimer.Enabled := True;
+end;
+
+procedure TfrmMain.ShowFromTray;
+begin
+  FTrayTimer.Enabled := False;
+  if FInTray then
+  begin
+    FInTray := False;
+    {$IFDEF WINDOWS}
+    ShowWindow(Application.Handle, SW_SHOW);
+    {$ENDIF}
+  end;
+  FTrayNotice := False;
+  Application.Restore;                     // war minimiert -> wiederherstellen
+  if WindowState = wsMinimized then
+    WindowState := wsNormal;
+  Application.BringToFront;
+  UpdateTray;
+end;
+
+procedure TfrmMain.TrayClick(Sender: TObject);
+begin
+  ShowFromTray;
+end;
+
+{ "Beenden" im Menü: erst das Fenster zeigen, damit die Frage "Umwandlung
+  läuft noch - abbrechen?" (FormCloseQuery) sichtbar ist }
+procedure TfrmMain.TrayQuitClick(Sender: TObject);
+begin
+  ShowFromTray;
+  Close;
+end;
+
+{ Ein zweiter StemMaker-Start möchte, dass wir uns zeigen }
+procedure TfrmMain.TrayTimerTick(Sender: TObject);
+begin
+  if SingleInstanceShowWanted then
+    ShowFromTray;
+end;
+
+procedure TfrmMain.AppMinimize(Sender: TObject);
+begin
+  if FPrefs.TrayMinimize then
+    HideToTray;
+end;
+
+{ StemMaker ist wieder vorne -> die "fertig"-Meldung ist gesehen }
+procedure TfrmMain.AppActivate(Sender: TObject);
+begin
+  if FTrayNotice then
+  begin
+    FTrayNotice := False;
+    UpdateTray;
+  end;
+end;
+
+{ Meldung neben der Uhr, wenn alles fertig ist. Nur wenn eingeschaltet
+  und StemMaker gerade nicht vorne ist (wer zuschaut, braucht sie nicht). }
+procedure TfrmMain.TrayNotifyDone(OK, Skipped, Failed: Integer; const Total: string);
+begin
+  if (FTray = nil) or not FPrefs.TrayNotify then Exit;
+  if Application.Active and not FInTray and (WindowState <> wsMinimized) then Exit;
+  FTrayNotice := True;
+  FTray.Hint := APP_NAME;
+  FTray.Visible := True;
+  FTray.BalloonTitle := _('StemMaker ist fertig');
+  FTray.BalloonHint := Format(_('%d erfolgreich, %d übersprungen, %d fehlgeschlagen' +
+    ' - Gesamtzeit %s'), [OK, Skipped, Failed, Total]);
+  if Failed > 0 then
+    FTray.BalloonFlags := bfWarning
+  else
+    FTray.BalloonFlags := bfInfo;
+  FTray.BalloonTimeout := 10000;
+  FTray.ShowBalloonHint;
+end;
+
+{ ---------------------------------------------------------------------------
+  Windows wird heruntergefahren (oder der Benutzer meldet sich ab)
+
+  Windows beendet StemMaker danach nach wenigen Sekunden hart - unser
+  normales Ende (FormDestroy, LogClose in StemMaker.lpr) kommt dann nie.
+  Ohne diese Funktion hiess das beim nächsten Start: Log "_ABSTURZ",
+  Frage nach einem Fehlerbericht, Energiesparplan erst dann zurück.
+  Darum hier schnell alles Wichtige erledigen:
+    - laufende Umwandlung abbrechen (demucs/ffmpeg beenden). NICHT auf
+      den Thread warten, dafür reicht die Zeit nicht. Die angefangene
+      Datei steht in der Liste als "läuft" und wird beim nächsten Start
+      wieder von vorne gemacht (wie nach "Abbrechen").
+    - Energiesparplan/Schlafsperre zurückstellen
+    - Liste und Einstellungen speichern, Symbol neben der Uhr entfernen
+    - Log normal abschliessen (kein "_ABSTURZ")
+  Geht auch, wenn das Fenster ins Symbol versteckt ist.
+  --------------------------------------------------------------------------- }
+procedure TfrmMain.AppEndSession(Sender: TObject);
+begin
+  LogLine('Windows wird beendet (Herunterfahren oder Abmelden)');
+  if FWorker <> nil then
+  begin
+    LogLine('Laufende Umwandlung wird abgebrochen, die angefangene Datei ' +
+      'kommt beim nächsten Start noch einmal dran');
+    FWorker.OnTerminate := nil;    // WorkerDone soll nicht mehr kommen
+    FWorker.Cancel;
+  end;
+  EndPower;
+  SaveQueueNow;
+  SaveSettings;
+  if FTray <> nil then
+    FTray.Visible := False;
+  LogClose;
 end;
 
 { ---------------------------------------------------------------------------
