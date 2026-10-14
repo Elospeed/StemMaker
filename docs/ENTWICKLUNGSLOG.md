@@ -53,6 +53,7 @@ Test: 100 Ordner, 400 MP3s, alle Optionen, mehrmals abgebrochen und abgestürzt 
 | Vor-Releases dürfen die Update-Prüfung nicht stören. | Die Update-Prüfung liest nur `update.json`, nicht die GitHub-Releases. Zusätzlich werden Vor-Releases mit `--latest=false` angelegt. |
 | Schreibrecht für Releases im Workflow. | `permissions: contents: write` im Workflow reicht, eine Repo-Einstellung ist dafür nicht nötig. PRs aus fremden Forks bekommen nur das Build-Artefakt, kein Vor-Release. |
 | Gebaute Exes sind mit Debug-Infos sehr gross. | Im Workflow mit `strip.exe` aus der FPC-Installation verkleinern (wie früher von Hand). |
+| Vor-Releases `test-main` / `test-pr-<Nummer>` waren öffentlich: jede halbfertige Testversion war für alle sichtbar und füllte die Release-Liste. | Seit 13.10.2026 baut der Workflow weiter bei jedem PR, legt die Dateien aber nur noch als Artefakt ab. Testversionen gehen als ZIP mit Anleitung privat an die Tester. Der Job `aufraeumen` löscht alte `test-...`-Vor-Releases. |
 
 ---
 

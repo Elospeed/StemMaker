@@ -223,6 +223,7 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Probleme?
 
+- **Fragen, Ideen, eigene Ergebnisse zeigen:** in den [GitHub Discussions](https://github.com/Elospeed/StemMaker/discussions) fragen. Dort kannst du Screenshots, Logs und Dateien anhängen. Mitlesen geht ohne Konto, zum Schreiben brauchst du ein GitHub-Konto. Fehler gehen auch als [Issue](https://github.com/Elospeed/StemMaker/issues).
 - **Download klappt nicht:** Internetverbindung, Firewall oder Proxy prüfen. Notfalls von Hand laden:
   - ffmpeg: <https://www.gyan.dev/ffmpeg/builds/> („release essentials“). `ffmpeg.exe` nach `tools\` kopieren.
   - Modelle: <https://huggingface.co/datasets/Retrobear/demucs.cpp/tree/main>. Die `.bin`-Dateien nach `models\` legen.
