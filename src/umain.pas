@@ -41,7 +41,7 @@ uses
   uSettings;
 
 const
-  APP_VERSION = '1.7';
+  APP_VERSION = '1.7.1';
   APP_AUTHOR  = 'Elospeed';
 
 type

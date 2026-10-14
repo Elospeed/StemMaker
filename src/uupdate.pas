@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uupdate.pas  (Unit uUpdate, ohne Oberfläche)
-  Version : 1.7
+  Version : 1.7.1
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -36,6 +36,17 @@
     SkipVersion=1.8    diese Version nicht mehr anbieten ("Überspringen")
     [Download]
     UpdateJsonURL=...  andere Adresse für update.json (zum Testen)
+
+  VERSION IM INSTALLER-EINTRAG (SyncSetupVersion, ab 1.7.1)
+    Wer StemMaker mit dem Setup installiert hat, findet es unter "Apps &
+    Features", und winget liest dort die Versionsnummer (DisplayVersion).
+    Ein Update aus StemMaker heraus tauscht nur die Dateien aus, der Eintrag
+    zeigte danach weiter die alte Nummer. Deshalb prüft StemMaker bei jedem
+    Start: Gibt es den Eintrag des Setups (feste AppId aus
+    installer/StemMaker.iss) und zeigt er auf GENAU diesen Ordner? Dann wird
+    DisplayVersion auf die laufende Version gesetzt. Das macht die NEUE
+    Version nach dem Neustart selbst, es klappt also auch beim Update von
+    1.7 auf 1.7.1. Ein ZIP in einem anderen Ordner lässt den Eintrag in Ruhe.
   ============================================================================ }
 unit uUpdate;
 
@@ -45,7 +56,7 @@ interface
 
 uses
   Classes, SysUtils, IniFiles, fpjson, jsonparser, FileUtil, LazFileUtils,
-  Math, uDownload, uLang, uStemJob;
+  Math, {$IFDEF WINDOWS}Registry,{$ENDIF} uDownload, uLang, uLog, uStemJob;
 
 const
   DEF_UPDATE_JSON_URL =
@@ -94,6 +105,10 @@ function InstallUpdate(const ZipFile, AppDir: string; out ErrMsg: string): Boole
 
 { *.old von einem früheren Update wegräumen, dazu Download-Reste im Temp-Ordner }
 procedure CleanupOldFiles(const AppDir: string);
+
+{ Versionsnummer im Eintrag des Installers (Apps & Features, winget) an die
+  laufende Version anpassen. Siehe "VERSION IM INSTALLER-EINTRAG" oben. }
+procedure SyncSetupVersion(const AppDir, Version: string);
 
 implementation
 
@@ -425,6 +440,47 @@ begin
   finally
     L.Free;
   end;
+end;
+
+{ Schlüssel, den Inno Setup bei "nur für mich" (ohne Adminrechte) anlegt:
+  HKCU\...\Uninstall\{AppId}_is1. Die AppId steht in installer/StemMaker.iss
+  und ändert sich nie. }
+const
+  SETUP_UNINSTALL_KEY = '\Software\Microsoft\Windows\CurrentVersion\Uninstall\' +
+    '{B0A07F78-C1C4-4721-8EBD-C7CEC8A2258E}_is1';
+
+procedure SyncSetupVersion(const AppDir, Version: string);
+{$IFDEF WINDOWS}
+var
+  Reg: TRegistry;
+  Loc, Old: string;
+{$ENDIF}
+begin
+  {$IFDEF WINDOWS}
+  Reg := TRegistry.Create(KEY_READ or KEY_WRITE);
+  try
+    try
+      Reg.RootKey := HKEY_CURRENT_USER;
+      { kein Eintrag -> StemMaker läuft aus dem ZIP, nichts zu tun }
+      if not Reg.OpenKey(SETUP_UNINSTALL_KEY, False) then Exit;
+      { nur, wenn das Setup genau in diesen Ordner installiert hat. Sonst
+        würde ein zusätzlich entpacktes ZIP den Eintrag verbiegen. }
+      Loc := Reg.ReadString('InstallLocation');
+      if (Loc = '') or not SameText(IncludeTrailingPathDelimiter(Loc),
+        IncludeTrailingPathDelimiter(AppDir)) then Exit;
+      Old := Reg.ReadString('DisplayVersion');
+      if Old = Version then Exit;
+      Reg.WriteString('DisplayVersion', Version);
+      LogLine(Format('  Setup-Eintrag  : Version %s -> %s (Apps & Features, winget)',
+        [Old, Version]));
+    except
+      on E: Exception do
+        LogLine('  Setup-Eintrag  : nicht geändert (' + E.Message + ')');
+    end;
+  finally
+    Reg.Free;
+  end;
+  {$ENDIF}
 end;
 
 end.

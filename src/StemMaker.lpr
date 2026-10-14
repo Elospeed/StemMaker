@@ -97,6 +97,11 @@ begin
   { 0a4. Reste eines Updates (*.old) wegräumen }
   CleanupOldFiles(AppBaseDir);
 
+  { 0a4b. Mit dem Setup installiert? Dann die Versionsnummer unter
+          "Apps & Features" (und für winget) auf diese Version setzen.
+          Nötig nach einem Update aus StemMaker heraus, siehe uUpdate. }
+  SyncSetupVersion(AppBaseDir, APP_VERSION);
+
   { 0a5. Arbeitsordner in %TEMP%\StemMaker, die ein Absturz hinterlassen
          hat, löschen (pro Song einige hundert MB, siehe uStemJob) }
   TempDirs := CleanupStaleTempDirs(TempMB);
