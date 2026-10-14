@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Unveröffentlicht
+## 1.7.1 – 14. Oktober 2026
 
 ### StemMaker
 - **Zahnrad „Weitere Einstellungen...“:** Das Hauptfenster ist aufgeräumt. Dort bleibt nur, was man pro Umwandlung ändert (Ausgabeordner, Modell, Format, Club-Pegel, Bass-Fix, Herunterfahren). Teile, Überschreiben, Unterordner, PC wach halten, Stem-Namen und Farben, Sprache und die Update-Prüfung beim Start stehen jetzt gesammelt in einem eigenen Fenster, dazu die Pfade zu ffmpeg, demucs.cpp und den Modellen und ein Knopf „Standard wiederherstellen“. Sprache und Update-Häkchen sind dafür aus dem Info-Fenster verschwunden. Bisherige Einstellungen bleiben erhalten.
@@ -18,6 +18,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Windows herunterfahren während einer Umwandlung:** StemMaker bricht sauber ab, stellt den Energiesparplan zurück und merkt sich die Liste. Beim nächsten Start kommt die angefangene Datei noch einmal dran, ohne Absturz-Hinweis und ohne Frage nach einem Fehlerbericht.
 - **Klare Meldung bei Pfaden über 260 Zeichen:** Windows kann längere Pfade nicht öffnen. Bisher hiess es dann „Datei nicht gefunden“ oder „Kann Zieldatei nicht schreiben“. Jetzt steht in der Liste „Pfad zu lang (… Zeichen, Windows erlaubt höchstens 259)“ mit einem Tipp, was zu tun ist. Gilt auch für StemCLI.
 - **Hinweis auf übersprungene Ordner:** Liegt beim Hinzufügen eines Ordners ein Unterordner über der Grenze, fehlte die Musik darin bisher ohne Hinweis. Jetzt kommt eine Meldung, und die Ordner stehen im Log.
+- **Richtige Versionsnummer unter „Apps & Features“:** Wer mit dem Setup installiert hat und dann aus StemMaker heraus aktualisiert, sah dort (und bei `winget list`) bisher weiter die alte Nummer. Jetzt passt StemMaker den Eintrag beim Start selbst an.
 
 ### Sicherheit
 - **Keine ungeprüften Downloads mehr, wenn `update.json` nicht erreichbar ist:** Bisher lud StemMaker dann ffmpeg als täglich wechselndes „latest“-ZIP und die Modelle ohne Prüfsumme. Jetzt kommt ffmpeg auch in diesem Fall aus dem eigenen Release `ffmpeg-9.0.2`, und für ffmpeg sowie die Modelle v4 und v3 sind die SHA-256-Prüfsummen fest eingebaut.

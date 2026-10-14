@@ -186,7 +186,7 @@ begin
   PartFile := DestFile + '.part';
 
   { 1. Sitzung öffnen }
-  hNet := InternetOpenW('StemMaker/1.7', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  hNet := InternetOpenW('StemMaker/1.7.1', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hNet = nil then
   begin
     ErrMsg := _('Internet-Zugriff nicht möglich (WinINet)');
