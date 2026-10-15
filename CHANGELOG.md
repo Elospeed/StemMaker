@@ -7,6 +7,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## Nächste Version (noch nicht veröffentlicht)
+
+### StemMaker
+- **Spenden-Hinweis nur noch, wenn StemMaker gerade geholfen hat:** Das Spendenfenster vor jedem Programmstart ist weg. Stattdessen kommt nach einem fehlerfreien Durchlauf bei runden Zahlen fertiger Tracks (10, 50, 100, 250, 500, 1000, danach alle 1000) ein kurzes Dankeschön mit einem Ko-fi-Knopf. „Weiter“ geht einfach weiter, „Nicht mehr fragen“ schaltet es ab. Wer das alte Startfenster schon abgeschaltet hatte, wird auch hier nicht gefragt. Spenden geht weiterhin jederzeit über **Info → Jetzt spenden**.
+
 ## 1.7.1 – 14. Oktober 2026
 
 ### StemMaker

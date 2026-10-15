@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings;
+  uSettings, uDonate;
 
 const
   APP_VERSION = '1.7.1';
@@ -186,6 +186,8 @@ type
     FTrayTimer : TTimer;           // fragt ab, ob ein zweiter Start "zeig dich" will
     FInTray    : Boolean;          // Fenster ist gerade ins Symbol versteckt
     FTrayNotice: Boolean;          // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
+    FDonatePending: Boolean;       // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    procedure ShowDonate(Data: PtrInt);
     procedure SetupTray;
     procedure UpdateTray;
     procedure TrayProgress;
@@ -1654,6 +1656,12 @@ begin
   lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total]);
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
+  { Fertige Tracks zählen. Ist eine "runde" Zahl erreicht (10, 50, 100 ...),
+    kommt der Spenden-Hinweis - aber nur nach einem Durchlauf ohne Fehler,
+    ohne Abbruch und ohne anschliessendes Herunterfahren (siehe uDonate). }
+  if CountStemsForDonate(FWorker.OKCount, FOKAudioMS,
+    (not FUserCancelled) and (FWorker.FailCount = 0) and not chkShutdown.Checked) then
+    FDonatePending := True;
   { Wir sind hier noch IM Ende-Ereignis des Threads - ihn jetzt schon
     freizugeben würde knallen. Deshalb kurz danach über die
     Nachrichtenschlange freigeben (FreeWorker). }
@@ -1682,7 +1690,22 @@ begin
   end
   else if FHasUpdate then
     { Update kam während der Umwandlung - jetzt anbieten }
-    Application.QueueAsyncCall(@OfferUpdate, 0);
+    Application.QueueAsyncCall(@OfferUpdate, 0)
+  else if FDonatePending then
+    { Spenden-Hinweis: wie oben NICHT direkt hier (Ende-Ereignis des Threads) }
+    Application.QueueAsyncCall(@ShowDonate, 0);
+end;
+
+{ Spenden-Hinweis zeigen - aber nur, wenn man StemMaker gerade anschaut.
+  Ist das Fenster im Symbol neben der Uhr oder im Hintergrund, wartet der
+  Hinweis, bis StemMaker wieder vorne ist (AppActivate). So springt nie
+  ein Fenster über ein anderes Programm. }
+procedure TfrmMain.ShowDonate(Data: PtrInt);
+begin
+  if (not FDonatePending) or (FWorker <> nil) then Exit;
+  if not Application.Active or FInTray or (WindowState = wsMinimized) then Exit;
+  FDonatePending := False;
+  ShowDonateThanks;
 end;
 
 procedure TfrmMain.AskShutdown(Data: PtrInt);
@@ -2204,6 +2227,8 @@ end;
 { StemMaker ist wieder vorne -> die "fertig"-Meldung ist gesehen }
 procedure TfrmMain.AppActivate(Sender: TObject);
 begin
+  if FDonatePending and (FWorker = nil) then
+    Application.QueueAsyncCall(@ShowDonate, 0);
   if FTrayNotice then
   begin
     FTrayNotice := False;
