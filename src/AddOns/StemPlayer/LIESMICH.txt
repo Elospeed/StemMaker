@@ -1,8 +1,8 @@
-Elospeed StemPlayer 1.2  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemPlayer 1.5  -  von Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
-Jeder der 4 Stems lässt sich stummschalten, solo hören (auch mehrere
+Jeder der 4 Stems lässt sich stummschalten, solo hören (mit Strg auch mehrere
 gleichzeitig) und in der Lautstärke ändern.
 
 INSTALLATION
@@ -20,10 +20,25 @@ BEDIENUNG
 
   Leertaste      Play / Pause
   1 .. 4         Stem stumm an/aus
-  Shift+1 .. 4   Solo an/aus (mehrere Solos möglich)
+  Shift+1 .. 4   Solo an/aus: nur dieser Stem (ein neues Solo löst
+                 das vorherige ab)
+  Strg+Shift+1 .. 4  Solo dazunehmen (mehrere Solos), ebenso Strg+Klick
+                 auf einen S-Knopf
   0              alles zurücksetzen
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
+  W              Ansicht Kompakt / Wellenform umschalten
+
+WELLENFORM
+  Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
+  Wellenform des Originals. Der rote Strich zeigt, wo die Wiedergabe
+  gerade ist. Klicken oder Ziehen in eine Wellenform springt dorthin.
+  Oben rechts wählt man KOMPAKT (wie bis 1.4, ohne Wellenformen) oder
+  WELLENFORM. Die Wahl wird in StemPlayer.ini gespeichert und beim
+  nächsten Start übernommen.
+  Stumme Stems werden grau gezeichnet. Ein Stem, der an einer Stelle
+  still sein sollte (z.B. Vocals im Instrumentalteil), aber dort noch
+  Ausschläge zeigt, hat Reste anderer Instrumente abbekommen.
 
 MODI
   Stems     Die 4 Stems gemischt (mit Mute/Solo/Fader)
@@ -57,3 +72,7 @@ VERSIONEN
        diesem Ordner (Knopf "Anhören" in StemMaker)
   1.4  Falsche Dateien (z.B. MP3, Video, Ordner) werden mit einer
        klaren Meldung abgewiesen, der geladene Track spielt weiter
+  1.5  Wellenform unter jedem Stem und vom Original, mitlaufender
+       Abspielkopf, Klick in die Wellenform springt dorthin, Umschalter
+       Kompakt / Wellenform (Taste W), Wahl wird gespeichert.
+       Solo ist exklusiv (mehrere Solos mit Strg)
