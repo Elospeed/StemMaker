@@ -1501,7 +1501,6 @@ begin
   OpenInPlayer(Dir);
 end;
 
-{ Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
 { ---------------------------------------------------------------------------
   Farb-Akzente (Zeichnen selbst: uStatusDraw)
   --------------------------------------------------------------------------- }
@@ -1553,6 +1552,7 @@ begin
   DefaultDraw := False;            // Windows soll diese Zelle nicht übermalen
 end;
 
+{ Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
 procedure TfrmMain.lvFilesDblClick(Sender: TObject);
 var
   F: string;
