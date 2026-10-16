@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uqueue.pas  (Unit uQueue)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -42,7 +42,7 @@ unit uQueue;
 interface
 
 uses
-  Classes, SysUtils, IniFiles, Process, UTF8Process, uStemJob, uLog;
+  Classes, SysUtils, IniFiles, Process, UTF8Process, uStemJob, uStemMP4, uLog;
 
 type
   TQueueEntry = record
@@ -104,9 +104,11 @@ begin
   Result := ExtractFilePath(StemIniFileName) + 'StemMaker_queue.txt';
 end;
 
-{ Speichern: zuerst in eine Hilfsdatei schreiben, dann umbenennen.
-  So ist die Liste nie halb geschrieben, auch wenn genau in dem Moment
-  der Strom ausfällt. }
+{ Speichern: zuerst in eine Hilfsdatei schreiben, dann mit ReplaceFileSafe
+  (uStemMP4) an die Stelle der alten Liste setzen. So ist die Liste nie
+  halb geschrieben, und es gibt keinen Moment ohne vollständige Liste:
+  fällt genau dann der Strom aus, liegt sie als ".neu" oder ".alt" da und
+  QueueLoad nimmt diese. }
 procedure QueueSave(const Entries: TQueueEntries);
 var
   L: TStringList;
@@ -126,9 +128,11 @@ begin
     Tmp := QueueFileName + '.tmp';
     try
       L.SaveToFile(Tmp);
-      if FileExists(QueueFileName) then
-        SysUtils.DeleteFile(QueueFileName);
-      RenameFile(Tmp, QueueFileName);
+      if not ReplaceFileSafe(Tmp, QueueFileName) then
+      begin
+        LogLine('Warteschlange konnte nicht gespeichert werden (Umbenennen ging nicht)');
+        SysUtils.DeleteFile(Tmp);
+      end;
     except
       on E: Exception do
         LogLine('Warteschlange konnte nicht gespeichert werden: ' + E.Message);
@@ -142,14 +146,22 @@ function QueueLoad: TQueueEntries;
 var
   L, F: TStringList;
   I, N: Integer;
+  Name: string;
 begin
   Result := nil;
-  if not FileExists(QueueFileName) then Exit;
+  { normalerweise die Liste selbst. Fehlt sie, wurde das Speichern genau
+    beim Austauschen unterbrochen (Stromausfall): dann ist ".neu" die
+    neuere vollständige Liste, ".alt" die vorherige. Die ".tmp" wird nie
+    gelesen - die kann halb geschrieben sein. }
+  Name := QueueFileName;
+  if not FileExists(Name) then Name := QueueFileName + '.neu';
+  if not FileExists(Name) then Name := QueueFileName + '.alt';
+  if not FileExists(Name) then Exit;
   L := TStringList.Create;
   F := TStringList.Create;
   try
     try
-      L.LoadFromFile(QueueFileName);
+      L.LoadFromFile(Name);
     except
       Exit;
     end;
@@ -175,9 +187,15 @@ begin
 end;
 
 procedure QueueDelete;
+const
+  { die Liste und eventuelle Reste eines unterbrochenen Speicherns }
+  EXTS: array[0..3] of string = ('', '.neu', '.alt', '.tmp');
+var
+  I: Integer;
 begin
-  if FileExists(QueueFileName) then
-    SysUtils.DeleteFile(QueueFileName);
+  for I := Low(EXTS) to High(EXTS) do
+    if FileExists(QueueFileName + EXTS[I]) then
+      SysUtils.DeleteFile(QueueFileName + EXTS[I]);
 end;
 
 { ---------------------------------------------------------------------------

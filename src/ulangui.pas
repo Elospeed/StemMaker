@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : ulangui.pas  (Unit uLangUI)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -19,7 +19,7 @@
      Ein kleines Fenster "Sprache / Language" mit einer Liste aller
      vorhandenen Sprachen. Vorausgewählt ist die Sprache von Windows.
      Die Wahl wird in StemMaker.ini gespeichert ([Main] Language=en).
-     Ändern kann man sie später im Info-Fenster.
+     Ändern kann man sie später im Fenster "Einstellungen" (uSettings).
   ============================================================================ }
 unit uLangUI;
 

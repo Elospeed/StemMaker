@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : umain.pas  (Unit uMain, Hauptfenster; Layout in umain.lfm)
-  Version : 1.7.1
+  Version : siehe APP_VERSION weiter unten (einzige Stelle im Code)
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -82,6 +82,7 @@ type
     procedure Execute; override;
   public
     OKCount, FailCount, SkipCount: Integer;   // Zähler für die Zusammenfassung
+    CancelCount: Integer;                      // abgebrochen (zählt nicht als Fehler)
     MaxPeakMemMB: Integer;                     // höchster RAM-Bedarf von demucs
     OmpPerPart  : Integer;                     // Kerne pro demucs-Teilstück
     constructor Create(AForm: TfrmMain; const ASettings: TStemSettings);
@@ -462,13 +463,19 @@ begin
     end
     else
     begin
-      Inc(FailCount);
       { Abbruch erkennen: am eigenen Flag und - falls uStemJob den Text
-        übersetzt - sowohl am deutschen als auch am übersetzten Text }
+        übersetzt - sowohl am deutschen als auch am übersetzten Text.
+        Ein Abbruch ist kein Fehler und wird deshalb extra gezählt. }
       if FCancelled or (Err = 'Abgebrochen') or (Err = _('Abgebrochen')) then
-        FSyncStatus := isCancelled
+      begin
+        Inc(CancelCount);
+        FSyncStatus := isCancelled;
+      end
       else
+      begin
+        Inc(FailCount);
         FSyncStatus := isFailed;
+      end;
     end;
     FSyncItem := FIndexes[I];
     FSyncDone := I + 1;
@@ -983,14 +990,12 @@ end;
     unterer Balken (alle Dateien):
       "Gesamt (Datei 2 von 5):  vergangen 8:40   |   verbleibend ca. 21:00"
 
-  So wird geschätzt:
-    - aktuelle Datei: aus dem Tempo bisher (vergangen / Prozent)
-    - Gesamt: Rest der aktuellen Datei
-              + Anzahl noch wartender Dateien x durchschnittliche Dauer
-      Der Durchschnitt kommt aus den schon fertigen Dateien. Ist noch
-      keine fertig, nehmen wir die geschätzte Dauer der aktuellen Datei.
-      (Sind die Songs sehr unterschiedlich lang, ist das nur ein grober
-      Richtwert - es wird mit jeder fertigen Datei genauer.)
+  So wird geschätzt (Einzelheiten bei den Kommentaren unten):
+    - aktuelle Datei: aus dem Tempo des laufenden Arbeitsschritts, oder
+      solange es das noch nicht gibt, aus Song-Länge x gelerntem Tempo
+    - Gesamt: Rest der aktuellen Datei + Länge aller wartenden Songs x
+      Tempo. Sind noch nicht alle Längen bekannt, ersatzweise Anzahl
+      wartender Dateien x durchschnittliche Dauer der fertigen Dateien.
 
   Wird bei jeder Fortschrittsmeldung UND jede Sekunde vom Timer
   aufgerufen - so läuft die Uhr auch weiter, wenn demucs gerade länger
@@ -999,7 +1004,7 @@ end;
 procedure TfrmMain.UpdateTimes;
 var
   Now64, FileMS, RunMS: QWord;
-  FileFrac, FileTotalMS, FileRestMS, AvgMS, TotalRestMS: Double;
+  FileTotalMS, FileRestMS, AvgMS, TotalRestMS: Double;
   StageMS: QWord;
   StageGain: Integer;
   Waiting, Current: Integer;
@@ -1014,7 +1019,6 @@ begin
   Now64 := GetTickCount64;
   FileMS := Now64 - FFileStart;
   RunMS := Now64 - FRunStart;
-  FileFrac := FFilePct / 100;
 
   { --- aktuelle Datei ---
     Die Restzeit wird aus dem Tempo des AKTUELLEN Arbeitsschritts
@@ -1570,13 +1574,23 @@ begin
     if (lvFiles.Items.Count > 0) and (MessageDlg(
       _('Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?'),
       mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+    begin
+      { "Nochmals" heisst: die vorhandenen Stem-Dateien neu erzeugen.
+        Ohne "überschreiben" würde uStemJob sonst jede Datei als
+        "existiert schon" überspringen. Deshalb nur für diesen Durchlauf
+        mit Überschreiben einen neuen Worker anlegen (die gespeicherte
+        Einstellung bleibt, wie sie ist). }
+      FreeAndNil(FWorker);
+      S.Overwrite := True;
+      FWorker := TStemWorker.Create(Self, S);
       for I := 0 to lvFiles.Items.Count - 1 do
       begin
         FWorker.AddFile(lvFiles.Items[I].SubItems[1], Planned[I], I);
         SetState(lvFiles.Items[I], ST_WAIT);
         lvFiles.Items[I].SubItems[0] := _('wartet');
         Inc(FTotal);
-      end
+      end;
+    end
     else
     begin
       if lvFiles.Items.Count = 0 then
@@ -1646,6 +1660,8 @@ begin
   Total := FormatDuration(GetTickCount64 - FRunStart);
   AddLog(Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
     [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]));
+  if FWorker.CancelCount > 0 then
+    AddLog(Format(_('Abgebrochen: %d Datei(en)'), [FWorker.CancelCount]));
   { Meldung neben der Uhr (nur wenn nicht abgebrochen und StemMaker
     gerade nicht vorne ist) }
   if not FUserCancelled then
@@ -1747,6 +1763,8 @@ begin
   AddLog(_('=== Zusammenfassung ==='));
   AddLog(Format(_('  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)'),
     [FTotal, W.OKCount, W.SkipCount, W.FailCount]));
+  if W.CancelCount > 0 then
+    AddLog(Format(_('  Abgebrochen    : %d'), [W.CancelCount]));
   AddLog(Format(_('  Gesamtzeit     : %s'), [FormatDuration(RunMS)]));
   AddLog(Format(_('  Schnitt/Track  : %s  (nur erfolgreiche Tracks)'), [Avg]));
   { Tempo über alle fertigen Dateien: Rechenzeit pro Minute Musik.
