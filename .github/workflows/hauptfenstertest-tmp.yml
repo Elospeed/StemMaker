@@ -22,12 +22,15 @@ jobs:
       - name: Bauen
         run: lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 tmp-hauptfenster/hauptfenstertest.lpi
       - name: LCL-Quelltext ansehen (Custom Draw)
+        continue-on-error: true
         run: |
-          F=$(find /c/lazarus /d/a/_temp -iname win32wscustomlistview.inc 2>/dev/null | head -n 1)
-          echo "$F"
-          grep -n -i "CDDS_\|CDRF_\|IntfCustomDraw\|Canvas.Handle\|nmcd.hdc" "$F" | head -60
-          C=$(find /c/lazarus /d/a/_temp -iname customlistview.inc 2>/dev/null | head -n 1)
-          grep -n -i -A25 "function TCustomListView.IntfCustomDraw" "$C" | head -60
+          set +e +o pipefail
+          L=/d/a/_temp/installers/lazarus/lcl
+          F=$L/interfaces/win32/win32wscustomlistview.inc
+          grep -n -i "CDDS_\|CDRF_\|IntfCustomDraw\|Canvas.Handle\|nmcd.hdc\|uItemState" "$F" | head -60
+          grep -n -i -B3 -A40 "function TCustomListView.IntfCustomDraw" $L/include/customlistview.inc | head -80
+          grep -n -i -A30 "function TCustomListView.CustomDrawSubItem" $L/include/customlistview.inc | head -40
+          true
       - name: Laufen
         run: |
           cd tmp-hauptfenster
