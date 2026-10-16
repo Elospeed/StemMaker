@@ -41,7 +41,8 @@
 
   Tastatur:
     Leertaste  Play / Pause          1..4        Stem stumm an/aus
-    Shift+1..4 Solo an/aus           0           Mute/Solo zurücksetzen
+    Shift+1..4 Solo (nur dieser)     0           Mute/Solo zurücksetzen
+    Strg+Shift+1..4  Solo dazunehmen (mehrere Solos), ebenso Strg+Klick auf S
     S / O / R  Stems / Original / Rest           Pfeil links/rechts  -/+ 5 s
     Pos1       an den Anfang         Strg+O      Datei öffnen
     W          Wellenformen aus/ein  Klick in Wellenform  dorthin springen
@@ -72,6 +73,9 @@
                        Abspielkopf flüssig: eigener schneller Timer (~60 Bilder/s)
                        und eine geglättete Uhr statt der stufigen Geräteposition
                        (siehe HeadTimerTick).
+                       Solo ist jetzt exklusiv: ein neues Solo löst das vorherige
+                       ab (wie am DJ-Mixer). Mehrere Solos gleichzeitig nur mit
+                       Strg+Klick bzw. Strg+Shift+1..4.
   ============================================================================ }
 unit playerform;
 
@@ -193,6 +197,7 @@ type
 
     { Steuerung }
     procedure UpdateGains;
+    procedure ApplySolo(Idx: Integer; Additive: Boolean);
     procedure UpdateRowLook;
     procedure SetWavesVisible(AShow: Boolean);
     procedure SaveViewSetting;
@@ -595,7 +600,8 @@ begin
   R^.BtnSolo.LitColor := DJ_YELLOW;
   R^.BtnSolo.Tag := 100 + Idx;
   R^.BtnSolo.OnClick := @MuteSoloClick;
-  R^.BtnSolo.Hint := Format('Solo: nur Solo-Stems hören - mehrere möglich (Shift+%d)', [Idx]);
+  R^.BtnSolo.Hint := Format('Solo: nur diesen Stem hören (Shift+%d).' + LineEnding +
+    'Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)', [Idx]);
   R^.BtnSolo.ShowHint := True;
 
   R^.TrkVol := MakeFader(R^.Panel, 224, 14, 200, R^.Color);
@@ -1319,8 +1325,25 @@ begin
   else SetMode(pmStems);
 end;
 
-procedure TMainForm.MuteSoloClick(Sender: TObject);
+{ Solo-Logik wie am DJ-Mixer: Solo heisst "nur dieser Stem". Wird ein Solo
+  eingeschaltet, gehen alle anderen Solos aus. Mit Additive (Strg gedrückt)
+  bleiben die anderen an -> mehrere Stems gleichzeitig solo.
+  Erwartet, dass Rows[Idx].BtnSolo.Down schon den neuen Zustand hat. }
+procedure TMainForm.ApplySolo(Idx: Integer; Additive: Boolean);
+var i: Integer;
 begin
+  if Rows[Idx].BtnSolo.Down and not Additive then
+    for i := 1 to STEM_COUNT do
+      if i <> Idx then Rows[i].BtnSolo.Down := False;
+end;
+
+procedure TMainForm.MuteSoloClick(Sender: TObject);
+var BtnTag: Integer;
+begin
+  { Solo-Knöpfe haben Tag 100 + Stem-Nummer (siehe BuildStemRow) }
+  BtnTag := TComponent(Sender).Tag;
+  if BtnTag > 100 then
+    ApplySolo(BtnTag - 100, GetKeyState(VK_CONTROL) < 0);
   { Wer Mute/Solo drückt, will Stems hören -> Modus automatisch auf Stems }
   if not BtnModeStems.Down then SetMode(pmStems);
   UpdateGains;
@@ -1525,7 +1548,10 @@ begin
       begin
         i := Key - VK_1 + 1;
         if ssShift in Shift then
-          Rows[i].BtnSolo.Down := not Rows[i].BtnSolo.Down
+        begin
+          Rows[i].BtnSolo.Down := not Rows[i].BtnSolo.Down;
+          ApplySolo(i, ssCtrl in Shift);   // Strg+Shift = dazunehmen
+        end
         else
           Rows[i].BtnMute.Down := not Rows[i].BtnMute.Down;
         if not BtnModeStems.Down then SetMode(pmStems);

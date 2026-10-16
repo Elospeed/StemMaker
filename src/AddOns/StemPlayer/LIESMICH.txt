@@ -2,7 +2,7 @@ Elospeed StemPlayer 1.5  -  von Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
-Jeder der 4 Stems lässt sich stummschalten, solo hören (auch mehrere
+Jeder der 4 Stems lässt sich stummschalten, solo hören (mit Strg auch mehrere
 gleichzeitig) und in der Lautstärke ändern.
 
 INSTALLATION
@@ -20,7 +20,10 @@ BEDIENUNG
 
   Leertaste      Play / Pause
   1 .. 4         Stem stumm an/aus
-  Shift+1 .. 4   Solo an/aus (mehrere Solos möglich)
+  Shift+1 .. 4   Solo an/aus: nur dieser Stem (ein neues Solo löst
+                 das vorherige ab)
+  Strg+Shift+1 .. 4  Solo dazunehmen (mehrere Solos), ebenso Strg+Klick
+                 auf einen S-Knopf
   0              alles zurücksetzen
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
@@ -71,4 +74,5 @@ VERSIONEN
        klaren Meldung abgewiesen, der geladene Track spielt weiter
   1.5  Wellenform unter jedem Stem und vom Original, mitlaufender
        Abspielkopf, Klick in die Wellenform springt dorthin, Umschalter
-       Kompakt / Wellenform (Taste W), Wahl wird gespeichert
+       Kompakt / Wellenform (Taste W), Wahl wird gespeichert.
+       Solo ist exklusiv (mehrere Solos mit Strg)
