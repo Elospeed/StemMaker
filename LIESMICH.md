@@ -17,6 +17,8 @@ Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stem
 - **Qualität:** Im direkten Vergleich mit einer Stem-Datei, die Traktor Pro 4 aus demselben Track gemacht hat, waren Drums, Kick, Gesang und Pegel praktisch gleich.
 - **Deine Musik bleibt lokal:** kein Konto, keine Cloud, keine Telemetrie, nichts, was im Hintergrund läuft.
 
+StemMaker ist ein Ein-Personen-Hobbyprojekt, entstanden an vielen Abenden. Wenn es dir einen Abend Handarbeit spart, kannst du mir auf [Ko-fi](https://ko-fi.com/elospeed) einen Kaffee spendieren ☕. Ganz freiwillig, das Tool bleibt so oder so kostenlos.
+
 ```
 MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / other / vocals
                                                      │
@@ -64,9 +66,15 @@ Windows merkt sich das, das Fenster kommt pro Programm nur einmal.
 - Wenn in den Release-Notizen eine SHA-256-Prüfsumme steht, in PowerShell vergleichen: `Get-FileHash .\StemMaker-1.7.zip` (Dateinamen anpassen).
 - Der komplette Quellcode liegt in diesem Repository. Du kannst StemMaker selbst kompilieren (siehe [Selber kompilieren](#selber-kompilieren)).
 
-## Spenden
+## StemMaker unterstützen
 
-StemMaker ist kostenlos und quelloffen. Vor dem Start erscheint ein kleines Fenster mit der Bitte um eine freiwillige Spende über [Ko-fi](https://ko-fi.com/elospeed). „Tool starten“ geht einfach weiter. Mit dem Häkchen „Beim Start nicht mehr anzeigen“ verschwindet das Fenster dauerhaft. Spenden geht danach weiterhin über **Info → Jetzt spenden**.
+StemMaker ist kostenlos und quelloffen, ohne Werbung, ohne Konto und ohne Bezahlversion, und das bleibt so. Dahinter stecke nur ich, in meiner Freizeit. Wenn dir StemMaker nützt, kannst du auf drei Arten etwas zurückgeben:
+
+- **Einen Kaffee spendieren** über [Ko-fi](https://ko-fi.com/elospeed) (auch über den Knopf „Sponsor“ oben auf dieser Seite oder im Programm über **Info → Jetzt spenden**).
+- **Dem Repository einen Stern geben** auf GitHub. Das kostet nichts und hilft anderen DJs, StemMaker zu finden.
+- **Weitersagen**, oder einen Fehler oder eine Idee in den [Discussions](https://github.com/Elospeed/StemMaker/discussions) melden.
+
+Beim Start fragt das Programm nie. Nur wenn du eine runde Zahl fertiger Tracks erreichst (10, 50, 100, 250, 500, 1000, danach alle 1000), und nur nach einem Durchlauf ohne Fehler, erscheint ein kurzes Dankeschön mit einem Ko-fi-Knopf. „Weiter“ geht einfach weiter, „Nicht mehr fragen“ schaltet den Hinweis dauerhaft ab.
 
 ## Ordnerstruktur
 

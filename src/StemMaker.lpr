@@ -8,7 +8,7 @@
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
     0. Log starten, Sprache, Haftungsausschluss/Lizenz bestätigen
-       (einmal pro PC), Spendenfenster zeigen (abschaltbar)
+       (einmal pro PC)
     1. Einstellungen lesen (welches Modell ist gewählt?)
     2. Startfenster mit den Prüfungen zeigen (uInit).
        Fehlt etwas, wird es dort heruntergeladen.
@@ -24,7 +24,7 @@
     uLog       Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos
     uLogUI     fängt unerwartete Fehler ab und schreibt sie ins Log
     uReport    Fenster "Fehlerbericht senden" (Mail / GitHub, nur auf Wunsch)
-    uDonate    Spendenfenster vor dem Start
+    uDonate    Spenden-Hinweis nach erfolgreichen Durchläufen
     uLicense   Haftungsausschluss/Lizenz: Text, PC-Kennung, INI (ohne Oberfläche)
     uLicenseUI Fenster dazu (einmal pro PC bestätigen)
     uUpdate    update.json lesen, Prüfsummen, Update installieren (ohne Oberfläche)
@@ -112,8 +112,8 @@ begin
         konnte ihn nicht mehr zurückstellen? Dann jetzt nachholen. }
   PowerRestoreAfterCrash(StemIniFileName);
 
-  { 0b. Spendenfenster (falls nicht abgeschaltet) }
-  ShowDonateDialogIfWanted;
+  { 0b. (Das Spendenfenster vor dem Start gibt es seit 1.7.2 nicht mehr -
+        der Hinweis kommt jetzt nach erfolgreichen Durchläufen, siehe uDonate) }
 
   { 1. gewähltes Modell aus der INI holen }
   Settings := DefaultStemSettings;
