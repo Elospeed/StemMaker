@@ -55,7 +55,8 @@ begin
   if Item.Index in [0, 2] then
     WriteLn('Zeile ', Item.Index, ': Selected=', Item.Selected, ' Focused=', LV.Focused,
       ' cdsSelected=', cdsSelected in State, ' cdsFocused=', cdsFocused in State,
-      ' GetFocus=LV ', GetFocus = LV.Handle, ' ItemState=', SendMessage(LV.Handle, $102C {LVM_GETITEMSTATE}, Item.Index, 3));
+      ' GetFocus=LV ', GetFocus = LV.Handle, ' Back=', IntToHex(ColorToRGB(Back), 6),
+      ' Pixel=', IntToHex(Sender.Canvas.Pixels[R.Left + 2, R.Top + 2], 6));
 end;
 
 procedure SaveScreen(Fm: TForm; const Name: string);
@@ -64,7 +65,9 @@ var
 begin
   { Bildschirm direkt abgreifen geht auf dem GitHub-Rechner nicht (schwarz),
     darum das Fenster sich selbst zeichnen lassen }
+  WriteLn('--- Foto Anfang');
   B := Fm.GetFormImage;
+  WriteLn('--- Foto Ende');
   P := TPortableNetworkGraphic.Create;
   try
     P.Assign(B);

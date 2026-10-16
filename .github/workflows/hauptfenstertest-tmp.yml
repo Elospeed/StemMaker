@@ -21,6 +21,13 @@ jobs:
           with-cache: false
       - name: Bauen
         run: lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 tmp-hauptfenster/hauptfenstertest.lpi
+      - name: LCL-Quelltext ansehen (Custom Draw)
+        run: |
+          F=$(find /c/lazarus /d/a/_temp -iname win32wscustomlistview.inc 2>/dev/null | head -n 1)
+          echo "$F"
+          grep -n -i "CDDS_\|CDRF_\|IntfCustomDraw\|Canvas.Handle\|nmcd.hdc" "$F" | head -60
+          C=$(find /c/lazarus /d/a/_temp -iname customlistview.inc 2>/dev/null | head -n 1)
+          grep -n -i -A25 "function TCustomListView.IntfCustomDraw" "$C" | head -60
       - name: Laufen
         run: |
           cd tmp-hauptfenster
