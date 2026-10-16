@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings;
+  uSettings, uStatusDraw;
 
 const
   APP_VERSION = '1.7.1';
@@ -128,6 +128,7 @@ type
     dlgOpen: TOpenDialog;
     dlgFolder: TSelectDirectoryDialog;
     pnlTop: TPanel;
+    pbAccent: TPaintBox;
     pnlRun: TPanel;
     pbFile: TProgressBar;
     pbTotal: TProgressBar;
@@ -141,6 +142,9 @@ type
     procedure btnOpenOutClick(Sender: TObject);
     procedure btnListenClick(Sender: TObject);
     procedure lvFilesDblClick(Sender: TObject);
+    procedure lvFilesCustomDrawSubItem(Sender: TCustomListView; Item: TListItem;
+      SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure pbAccentPaint(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
@@ -872,6 +876,8 @@ begin
   begin
     SaveSettings;
     UpdateEstimate;                // andere Teile-Zahl = andere Dauer
+    pbAccent.Invalidate;           // Stem-Farben können sich geändert haben
+    lvFiles.Invalidate;
   end;
 end;
 
@@ -896,6 +902,8 @@ end;
   aktuellen Datei". Beispiel: 5 Dateien, 2 fertig, aktuelle bei 50 %
   -> (2*100 + 50) / 5 = 50 % gesamt. }
 procedure TfrmMain.SetFileProgress(Percent: Integer; const Stage: string);
+var
+  S: string;
 begin
   { neuer Arbeitsschritt? -> Startzeit und Startprozent merken (für die
     Restzeit-Schätzung, siehe UpdateTimes) }
@@ -907,6 +915,16 @@ begin
   end;
   FFilePct := Percent;
   pbFile.Position := Percent;
+  { Prozent auch in die Zeile der Liste schreiben. Gezeichnet wird dort ein
+    kleiner Balken (lvFilesCustomDrawSubItem); der Text ändert sich nur, damit
+    die Zeile neu gezeichnet wird, und bleibt für Bildschirmleser lesbar. }
+  if (FCurIndex >= 0) and (FCurIndex < lvFiles.Items.Count) and
+     (ItemState(lvFiles.Items[FCurIndex]) = ST_RUN) then
+  begin
+    S := Format('%s %d %%', [_('läuft...'), Percent]);
+    if lvFiles.Items[FCurIndex].SubItems[0] <> S then
+      lvFiles.Items[FCurIndex].SubItems[0] := S;
+  end;
   lblStage.Caption := Format('%s  (%d %%)', [Stage, Percent]);
   if FTotal > 0 then
     pbTotal.Position := Round((FFilesDone * 100 + Percent) / FTotal);
@@ -1484,6 +1502,72 @@ begin
 end;
 
 { Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
+{ ---------------------------------------------------------------------------
+  Farb-Akzente (Zeichnen selbst: uStatusDraw)
+  --------------------------------------------------------------------------- }
+
+{ Streifen in den vier Stem-Farben unter der Knopfleiste }
+procedure TfrmMain.pbAccentPaint(Sender: TObject);
+begin
+  DrawAccentStrip(pbAccent.Canvas, pbAccent.ClientRect, FPrefs.StemColors);
+end;
+
+{ Spalte "Status" der Dateiliste selbst zeichnen (Balken, Häkchen, Farben).
+  Alle anderen Spalten zeichnet Windows wie immer. }
+procedure TfrmMain.lvFilesCustomDrawSubItem(Sender: TCustomListView;
+  Item: TListItem; SubItem: Integer; State: TCustomDrawState;
+  var DefaultDraw: Boolean);
+var
+  R: TRect;
+  Look: TStatusLook;
+  Back, Fore: TColor;
+  Sel: Boolean;
+  Pct: Integer;
+begin
+  if SubItem <> 1 then Exit;       // 0 = Datei, 1 = Status, 2 = Pfad
+  if Item.SubItems.Count = 0 then Exit;
+  R := Item.DisplayRectSubItem(1, drBounds);
+  if (R.Right <= R.Left) or (R.Bottom <= R.Top) then Exit;
+
+  { Zustand steht im Data-Feld (nicht am Text erkennen, siehe ItemState) }
+  Pct := 0;
+  case ItemState(Item) of
+    ST_WAIT: Look := slWait;
+    ST_RUN:
+      begin
+        Look := slRun;
+        if Item.Index = FCurIndex then Pct := FFilePct;
+      end;
+    ST_OK:   Look := slOK;
+    ST_FAIL: Look := slFail;
+  else
+    Look := slOther;
+  end;
+
+  { Auswahl so hinterlegen, wie Windows es bei den anderen Spalten tut }
+  Sel := Item.Selected and (lvFiles.Focused or not lvFiles.HideSelection);
+  if Sel and lvFiles.Focused then
+  begin
+    Back := clHighlight;
+    Fore := clHighlightText;
+  end
+  else if Sel then
+  begin
+    Back := clBtnFace;
+    Fore := clBtnText;
+  end
+  else
+  begin
+    Back := clWindow;
+    Fore := clWindowText;
+  end;
+
+  Sender.Canvas.Font.Assign(lvFiles.Font);
+  DrawStatusCell(Sender.Canvas, R, Look, Pct, Item.SubItems[0], FPrefs.StemColors,
+    Back, Fore, Sel and lvFiles.Focused, Screen.PixelsPerInch);
+  DefaultDraw := False;            // Windows soll diese Zelle nicht übermalen
+end;
+
 procedure TfrmMain.lvFilesDblClick(Sender: TObject);
 var
   F: string;
@@ -1617,6 +1701,7 @@ begin
   SaveQueueNow;
   lblFileTime.Caption := '';
   lblTotal.Caption := '';
+  lblTotal.Font.Color := clDefault;     // Farbe der letzten Zusammenfassung weg
   tmrTime.Interval := 1000;
   tmrTime.Enabled := True;
   SetRunning(True);
@@ -1651,7 +1736,18 @@ begin
   if not FUserCancelled then
     TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
-  lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total]);
+  if FUserCancelled then
+    lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total])
+  else
+  begin
+    { Zusammenfassung unten: grün = alles gut, rot = mindestens ein Fehler }
+    lblTotal.Caption := Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
+      [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]);
+    if FWorker.FailCount > 0 then
+      lblTotal.Font.Color := CLR_FAIL_TEXT
+    else
+      lblTotal.Font.Color := CLR_OK_TEXT;
+  end;
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Wir sind hier noch IM Ende-Ereignis des Threads - ihn jetzt schon
@@ -2012,6 +2108,7 @@ var
   S: string;
 begin
   if FWorker <> nil then Exit;     // während der Arbeit zeigt UpdateTimes die Zeiten
+  lblTotal.Font.Color := clDefault;  // grün/rot gilt nur für die Zusammenfassung
   Open := 0;
   Unknown := 0;
   Audio := 0;

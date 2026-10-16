@@ -1,0 +1,34 @@
+# Vorübergehend: neue Statusspalte und Farbstreifen auf Windows zeigen und
+# fotografieren. Wird vor dem Mergen wieder entfernt.
+name: Hauptfenstertest (vorübergehend)
+on:
+  push:
+    branches: [elospeed/hauptfenster-akzente-entwurf-bqshmv]
+    paths: [tmp-hauptfenster/**, src/ustatusdraw.pas, .github/workflows/hauptfenstertest-tmp.yml]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gcarreno/setup-lazarus@3ee9d77e0c771b37c1069f218cb68bd5ce7c30fe # v3.4.1
+        with:
+          lazarus-version: "3.8"
+          with-cache: false
+      - name: Bauen
+        run: lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 tmp-hauptfenster/hauptfenstertest.lpi
+      - name: Laufen
+        run: |
+          cd tmp-hauptfenster
+          ./hauptfenstertest.exe
+          ls -la *.png
+      - name: Foto a
+        run: cd tmp-hauptfenster && i=0; base64 -w 3500 a-laeuft.png | while read -r l; do i=$((i+1)); echo "::notice title=a-laeuft.png $i::$l"; done
+      - name: Foto b
+        run: cd tmp-hauptfenster && i=0; base64 -w 3500 b-ok-markiert.png | while read -r l; do i=$((i+1)); echo "::notice title=b-ok-markiert.png $i::$l"; done
+      - name: Foto c
+        run: cd tmp-hauptfenster && i=0; base64 -w 3500 c-ohne-fokus.png | while read -r l; do i=$((i+1)); echo "::notice title=c-ohne-fokus.png $i::$l"; done
