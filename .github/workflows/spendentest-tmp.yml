@@ -29,7 +29,7 @@ jobs:
           rm -f StemMaker.ini
           ./spendentest.exe en
           ls -la *.png
-      - name: Fotos ins Log (Base64)
+      - name: Fotos als Hinweise (Base64, lesbar über die API)
         run: |
           cd tmp-spendentest
-          for f in *.png; do echo "=== BEGIN $f"; base64 -w 900 "$f" | sed 's/^/B64 /'; echo "=== END $f"; done
+          for f in *.png; do i=0; base64 -w 3500 "$f" | while read -r l; do i=$((i+1)); echo "::notice title=$f $i::$l"; done; done
