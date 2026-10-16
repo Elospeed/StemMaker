@@ -1520,8 +1520,6 @@ procedure TfrmMain.lvFilesCustomDrawSubItem(Sender: TCustomListView;
 var
   R: TRect;
   Look: TStatusLook;
-  Back, Fore: TColor;
-  Sel: Boolean;
   Pct: Integer;
 begin
   if SubItem <> 1 then Exit;       // 0 = Datei, 1 = Status, 2 = Pfad
@@ -1544,27 +1542,14 @@ begin
     Look := slOther;
   end;
 
-  { Auswahl so hinterlegen, wie Windows es bei den anderen Spalten tut }
-  Sel := Item.Selected and (lvFiles.Focused or not lvFiles.HideSelection);
-  if Sel and lvFiles.Focused then
-  begin
-    Back := clHighlight;
-    Fore := clHighlightText;
-  end
-  else if Sel then
-  begin
-    Back := clBtnFace;
-    Fore := clBtnText;
-  end
-  else
-  begin
-    Back := clWindow;
-    Fore := clWindowText;
-  end;
+  { Ausgewählte Zeilen zeichnet Windows selbst (blau hinterlegt, mit Text).
+    Eigene Farbe auf dem blauen Hintergrund geht hier nicht zuverlässig:
+    Windows legt die Auswahl nachträglich darüber und die Zelle wird weiss. }
+  if Item.Selected and (lvFiles.Focused or not lvFiles.HideSelection) then Exit;
 
   Sender.Canvas.Font.Assign(lvFiles.Font);
   DrawStatusCell(Sender.Canvas, R, Look, Pct, Item.SubItems[0], FPrefs.StemColors,
-    Back, Fore, Sel and lvFiles.Focused, Screen.PixelsPerInch);
+    clWindow, clWindowText, False, Screen.PixelsPerInch);
   DefaultDraw := False;            // Windows soll diese Zelle nicht übermalen
 end;
 

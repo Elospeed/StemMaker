@@ -37,26 +37,18 @@ end;
 procedure TTest.Draw(Sender: TCustomListView; Item: TListItem; SubItem: Integer;
   State: TCustomDrawState; var DefaultDraw: Boolean);
 var
-  R: TRect; Look: TStatusLook; Back, Fore: TColor; Sel: Boolean;
+  R: TRect; Look: TStatusLook;
 begin
   if SubItem <> 1 then Exit;
   R := Item.DisplayRectSubItem(1, drBounds);
   case PtrInt(Item.Data) of
     0: Look := slWait; 1: Look := slOK; 3: Look := slFail; 5: Look := slRun;
   else Look := slOther; end;
-  Sel := Item.Selected and (LV.Focused or not LV.HideSelection);
-  if Sel and LV.Focused then begin Back := clHighlight; Fore := clHighlightText; end
-  else if Sel then begin Back := clBtnFace; Fore := clBtnText; end
-  else begin Back := clWindow; Fore := clWindowText; end;
+  if Item.Selected and (LV.Focused or not LV.HideSelection) then Exit;
   Sender.Canvas.Font.Assign(LV.Font);
-  DrawStatusCell(Sender.Canvas, R, Look, 62, Item.SubItems[0], COLS, Back, Fore,
-    Sel and LV.Focused, Screen.PixelsPerInch);
+  DrawStatusCell(Sender.Canvas, R, Look, 62, Item.SubItems[0], COLS, clWindow, clWindowText,
+    False, Screen.PixelsPerInch);
   DefaultDraw := False;
-  if Item.Index in [0, 2] then
-    WriteLn('Zeile ', Item.Index, ': Selected=', Item.Selected, ' Focused=', LV.Focused,
-      ' cdsSelected=', cdsSelected in State, ' cdsFocused=', cdsFocused in State,
-      ' GetFocus=LV ', GetFocus = LV.Handle, ' Back=', IntToHex(ColorToRGB(Back), 6),
-      ' Pixel=', IntToHex(Sender.Canvas.Pixels[R.Left + 2, R.Top + 2], 6));
 end;
 
 procedure SaveScreen(Fm: TForm; const Name: string);
