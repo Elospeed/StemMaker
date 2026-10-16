@@ -52,7 +52,10 @@ begin
   DrawStatusCell(Sender.Canvas, R, Look, 62, Item.SubItems[0], COLS, Back, Fore,
     Sel and LV.Focused, Screen.PixelsPerInch);
   DefaultDraw := False;
-  WriteLn('gezeichnet: ', Item.Caption, '  R=', R.Left, ',', R.Top, ',', R.Right, ',', R.Bottom);
+  if Item.Index in [0, 2] then
+    WriteLn('Zeile ', Item.Index, ': Selected=', Item.Selected, ' Focused=', LV.Focused,
+      ' cdsSelected=', cdsSelected in State, ' cdsFocused=', cdsFocused in State,
+      ' GetFocus=LV ', GetFocus = LV.Handle, ' ItemState=', SendMessage(LV.Handle, $102C {LVM_GETITEMSTATE}, Item.Index, 3));
 end;
 
 procedure SaveScreen(Fm: TForm; const Name: string);
