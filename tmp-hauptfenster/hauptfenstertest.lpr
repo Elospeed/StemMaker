@@ -57,16 +57,13 @@ end;
 
 procedure SaveScreen(Fm: TForm; const Name: string);
 var
-  B: TBitmap; P: TPortableNetworkGraphic; DC: HDC; Pt: TPoint;
+  B: TBitmap; P: TPortableNetworkGraphic;
 begin
-  B := TBitmap.Create;
+  { Bildschirm direkt abgreifen geht auf dem GitHub-Rechner nicht (schwarz),
+    darum das Fenster sich selbst zeichnen lassen }
+  B := Fm.GetFormImage;
   P := TPortableNetworkGraphic.Create;
   try
-    Pt := Fm.ClientToScreen(Point(0, 0));
-    B.SetSize(Fm.ClientWidth, Fm.ClientHeight);
-    DC := GetDC(0);
-    BitBlt(B.Canvas.Handle, 0, 0, B.Width, B.Height, DC, Pt.X, Pt.Y, SRCCOPY);
-    ReleaseDC(0, DC);
     P.Assign(B);
     P.SaveToFile(Name);
     WriteLn('Foto: ', Name);
