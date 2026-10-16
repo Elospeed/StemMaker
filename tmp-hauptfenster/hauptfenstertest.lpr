@@ -12,7 +12,7 @@ type
     F: TForm;
     Strip: TPaintBox;
     LV: TListView;
-    Lbl: TLabel;
+    Lbl: TButton;
     T: TTimer;
     Step: Integer;
     procedure StripPaint(Sender: TObject);
@@ -86,7 +86,7 @@ begin
     2: SaveScreen(F, 'a-laeuft.png');
     3: begin LV.Items[2].Selected := False; LV.Items[0].Selected := True; LV.Items[0].Focused := True; end;
     4: SaveScreen(F, 'b-ok-markiert.png');
-    5: begin Lbl.Caption := 'ohne Fokus'; F.ActiveControl := nil; Lbl.SetFocus; end;
+    5: begin Lbl.Caption := 'ohne Fokus'; Lbl.SetFocus; end;
     6: SaveScreen(F, 'c-ohne-fokus.png');
   else
     T.Enabled := False;
@@ -105,7 +105,7 @@ begin
   Application.CreateForm(TForm, X.F);
   X.F.Caption := 'Test';
   X.F.SetBounds(20, 20, 700, 230);
-  X.Lbl := TLabel.Create(X.F); X.Lbl.Parent := X.F; X.Lbl.Align := alTop; X.Lbl.Caption := ' Knopfleiste';
+  X.Lbl := TButton.Create(X.F); X.Lbl.Parent := X.F; X.Lbl.Align := alTop; X.Lbl.Caption := ' Knopfleiste';
   X.Lbl.Height := 30;
   X.Strip := TPaintBox.Create(X.F); X.Strip.Parent := X.F; X.Strip.Align := alTop; X.Strip.Height := 3;
   X.Strip.Top := 40;
