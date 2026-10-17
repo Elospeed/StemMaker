@@ -103,10 +103,18 @@ object frmMain: TfrmMain
       ParentFont = False
     end
   end
+  object pbAccent: TPaintBox
+    Left = 0
+    Height = 3
+    Top = 42
+    Width = 860
+    Align = alTop
+    OnPaint = pbAccentPaint
+  end
   object lvFiles: TListView
     Left = 0
-    Height = 282
-    Top = 42
+    Height = 279
+    Top = 45
     Width = 860
     Align = alClient
     Columns = <
@@ -127,6 +135,7 @@ object frmMain: TfrmMain
     ReadOnly = True
     RowSelect = True
     TabOrder = 1
+    OnCustomDrawSubItem = lvFilesCustomDrawSubItem
     OnDblClick = lvFilesDblClick
     ViewStyle = vsReport
   end
