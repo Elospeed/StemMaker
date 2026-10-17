@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : udonate.pas  (Unit uDonate)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 

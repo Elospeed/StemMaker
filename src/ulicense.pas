@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : ulicense.pas  (Unit uLicense, ohne Oberfläche)
-  Version : 1.7
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 

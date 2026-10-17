@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uupdate.pas  (Unit uUpdate, ohne Oberfläche)
-  Version : 1.7.1
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 

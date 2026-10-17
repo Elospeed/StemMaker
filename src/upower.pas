@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : upower.pas  (Unit uPower)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -346,10 +346,14 @@ begin
     Ini := TIniFile.Create(IniName);
     try
       S := Ini.ReadString('Power', 'RestoreScheme', '');
+      { TryStringToGUID statt StringToGUID: ein kaputter Eintrag (von Hand
+        verändert) würde sonst bei jedem Start einen Fehler werfen und nie
+        gelöscht. Der Eintrag wird in jedem Fall entfernt. }
       if S <> '' then
       begin
-        G := StringToGUID(S);
-        if SetActiveScheme(G) then
+        if not TryStringToGUID(S, G) then
+          LogLine('Energie: Ungültiger Eintrag RestoreScheme=' + S + ' - wird entfernt.')
+        else if SetActiveScheme(G) then
           LogLine('Energie: Der letzte Lauf konnte den Energiesparplan nicht ' +
             'zurückstellen - jetzt wieder auf "' + SchemeName(G) + '" gestellt.')
         else
@@ -360,8 +364,9 @@ begin
       S := Ini.ReadString('Power', 'RestoreOverlay', '');
       if S <> '' then
       begin
-        G := StringToGUID(S);
-        if SetOverlay(G) then
+        if not TryStringToGUID(S, G) then
+          LogLine('Energie: Ungültiger Eintrag RestoreOverlay=' + S + ' - wird entfernt.')
+        else if SetOverlay(G) then
           LogLine('Energie: Windows-Energiemodus wieder auf "' + OverlayName(G) +
             '" gestellt (letzter Lauf wurde unterbrochen).');
         Ini.DeleteKey('Power', 'RestoreOverlay');
