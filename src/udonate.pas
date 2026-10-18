@@ -21,7 +21,8 @@
       10, 50, 100, 250, 500, 1000, danach alle 1000 Tracks
 
   Also höchstens ein paarmal im ganzen Leben einer Installation, nie beim
-  Start, nie nach einem Durchlauf mit Fehlern und nie bei einem Abbruch.
+  Start, nie bei einem Abbruch und nie nach einem Durchlauf, in dem mehr
+  als 10 % der Dateien fehlgeschlagen sind.
   Der Hinweis nennt, was StemMaker schon geleistet hat (Anzahl Tracks,
   Stunden Musik), sagt ehrlich, dass dahinter ein Hobbyprojekt steckt, und
   sagt ausdrücklich, dass "nein" völlig in Ordnung ist.
@@ -57,7 +58,8 @@ const
 
 { Nach einem Durchlauf aufrufen: zählt die fertigen Tracks dazu.
   OKCount = erfolgreich erstellte Dateien, AudioMS = deren Musik-Länge.
-  HappyRun = True, wenn der Durchlauf ohne Fehler und ohne Abbruch lief.
+  HappyRun = True, wenn der Durchlauf gut lief (kein Abbruch, höchstens
+  10 % Fehler - entscheidet uMain.WorkerDone).
   Gibt True zurück, wenn jetzt eine neue Marke erreicht ist und der
   Hinweis gezeigt werden soll (dann ShowDonateThanks aufrufen). }
 function CountStemsForDonate(OKCount: Integer; AudioMS: Int64;
@@ -139,10 +141,9 @@ begin
       Ini.WriteInt64('Main', 'StemsAudioSec',
         Ini.ReadInt64('Main', 'StemsAudioSec', 0) + AudioMS div 1000);
 
-      { Hinweis nur nach einem Durchlauf ohne Fehler/Abbruch - der Moment,
-        in dem StemMaker gerade sichtbar geholfen hat. Eine Marke, die bei
-        einem Durchlauf mit Fehlern erreicht wurde, kommt beim nächsten
-        guten Durchlauf nach. }
+      { Hinweis nur nach einem guten Durchlauf - der Moment, in dem
+        StemMaker gerade sichtbar geholfen hat. Eine Marke, die bei einem
+        schlechten Durchlauf erreicht wurde, kommt beim nächsten guten nach. }
       if not HappyRun then Exit;
       if Ini.ReadBool('Main', 'HideDonate', False) then Exit;
       Mark := MilestoneFor(Stems);

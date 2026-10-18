@@ -76,7 +76,7 @@ StemMaker is free and open source, with no ads, no account and no paid version, 
 - **Star the repository** on GitHub. It costs nothing and helps other DJs find StemMaker.
 - **Tell others** about it, or report a bug or an idea in the [Discussions](https://github.com/Elospeed/StemMaker/discussions).
 
-The program never asks at startup. Only when you reach a round number of finished tracks (10, 50, 100, 250, 500, 1000, then every 1000), and only after a run without errors, a short thank-you note appears with a Ko-fi button. "Continue" simply carries on, and "Don't ask again" switches the note off for good.
+The program never asks at startup. Only when you reach a round number of finished tracks (10, 50, 100, 250, 500, 1000, then every 1000), and only after a run in which at least 90% of the files succeeded, a short thank-you note appears with a Ko-fi button. "Continue" simply carries on, and "Don't ask again" switches the note off for good.
 
 ## Folder structure
 

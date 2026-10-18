@@ -1657,10 +1657,14 @@ begin
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Fertige Tracks zählen. Ist eine "runde" Zahl erreicht (10, 50, 100 ...),
-    kommt der Spenden-Hinweis - aber nur nach einem Durchlauf ohne Fehler,
-    ohne Abbruch und ohne anschliessendes Herunterfahren (siehe uDonate). }
+    kommt der Spenden-Hinweis - aber nur nach einem guten Durchlauf: ohne
+    Abbruch, ohne anschliessendes Herunterfahren und mit höchstens 10 %
+    fehlgeschlagenen Dateien (siehe uDonate). Bei langen Listen (z. B.
+    1000 MP3s) ist eine kaputte Datei normal und soll den Hinweis nicht
+    verhindern. Übersprungene Dateien zählen nicht als Fehler. }
   if CountStemsForDonate(FWorker.OKCount, FOKAudioMS,
-    (not FUserCancelled) and (FWorker.FailCount = 0) and not chkShutdown.Checked) then
+    (not FUserCancelled) and not chkShutdown.Checked and
+    (FWorker.FailCount * 10 <= FWorker.OKCount + FWorker.FailCount)) then
     FDonatePending := True;
   { Wir sind hier noch IM Ende-Ereignis des Threads - ihn jetzt schon
     freizugeben würde knallen. Deshalb kurz danach über die

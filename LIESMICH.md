@@ -74,7 +74,7 @@ StemMaker ist kostenlos und quelloffen, ohne Werbung, ohne Konto und ohne Bezahl
 - **Dem Repository einen Stern geben** auf GitHub. Das kostet nichts und hilft anderen DJs, StemMaker zu finden.
 - **Weitersagen**, oder einen Fehler oder eine Idee in den [Discussions](https://github.com/Elospeed/StemMaker/discussions) melden.
 
-Beim Start fragt das Programm nie. Nur wenn du eine runde Zahl fertiger Tracks erreichst (10, 50, 100, 250, 500, 1000, danach alle 1000), und nur nach einem Durchlauf ohne Fehler, erscheint ein kurzes Dankeschön mit einem Ko-fi-Knopf. „Weiter“ geht einfach weiter, „Nicht mehr fragen“ schaltet den Hinweis dauerhaft ab.
+Beim Start fragt das Programm nie. Nur wenn du eine runde Zahl fertiger Tracks erreichst (10, 50, 100, 250, 500, 1000, danach alle 1000), und nur nach einem Durchlauf, in dem mindestens 90 % der Dateien geklappt haben, erscheint ein kurzes Dankeschön mit einem Ko-fi-Knopf. „Weiter“ geht einfach weiter, „Nicht mehr fragen“ schaltet den Hinweis dauerhaft ab.
 
 ## Ordnerstruktur
 
