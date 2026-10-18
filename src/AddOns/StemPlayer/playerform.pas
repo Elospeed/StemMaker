@@ -63,7 +63,7 @@
                        einfach 5 Spuren an, die laufende Wiedergabe brach ab und
                        ffmpeg meldete einen unverständlichen Fehler. Jetzt kommt
                        eine klare Meldung (DE/EN), der geladene Track bleibt.
-    1.5  (14.10.2026)  TESTVERSION Wellenform: unter jedem Stem seine Wellenform
+    1.5  (14.10.2026)  Wellenform: unter jedem Stem seine Wellenform
                        in der Stemfarbe, oben die Wellenform des Originals statt
                        der Balkenleiste, roter Abspielkopf läuft überall mit.
                        Klick oder Ziehen in eine Wellenform springt dorthin.

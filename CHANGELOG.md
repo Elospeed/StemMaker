@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Unveröffentlicht
+## 1.8 – 18. Oktober 2026
 
 ### StemMaker – Hauptfenster mit etwas Farbe
 - **Fortschritt direkt in der Liste:** Die laufende Datei zeigt in der Spalte „Status“ einen grünen Balken mit Prozent. Wartende Dateien sind grau.

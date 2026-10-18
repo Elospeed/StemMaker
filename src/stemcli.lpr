@@ -214,7 +214,7 @@ begin
     { keine Dateien -> kurze Hilfe }
     if Files.Count = 0 then
     begin
-      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), ['1.7.1']));
+      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), ['1.8']));
       WriteLn(_('Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]'));
       WriteLn(_('        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]'));
       WriteLn(_('        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)'));

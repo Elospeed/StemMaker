@@ -41,7 +41,7 @@ uses
   uSettings, uStatusDraw, uDonate;
 
 const
-  APP_VERSION = '1.7.1';
+  APP_VERSION = '1.8';
   APP_AUTHOR  = 'Elospeed';
 
 type
