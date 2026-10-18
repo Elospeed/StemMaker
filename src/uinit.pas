@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uinit.pas  (Unit uInit)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -201,7 +201,8 @@ begin
 end;
 
 { Eingebaute Prüfsumme für einen Download-Auftrag ('' = keine bekannt).
-  Wird nur genommen, wenn update.json nicht erreichbar ist. Hat jemand in
+  Wird genommen, wenn update.json nicht erreichbar ist oder (bei Modellen)
+  dort keine Prüfsumme steht. Hat jemand in
   der INI eine eigene Adresse eingetragen, gibt es keine eingebaute
   Prüfsumme - die eigene Quelle kann ja eine andere Datei liefern. }
 function BuiltinHash(const IniKey, Dest: string): string;
@@ -459,6 +460,12 @@ begin
           FJobs[I].URL := IncludeTrailingURLDelim(Info.ModelBaseURL) +
             ExtractFileName(FJobs[I].Dest);
         Hash := ModelHash(Info, FJobs[I].Dest);
+        { update.json kennt für dieses Modell (noch) keine Prüfsumme: dann
+          die eingebaute nehmen, statt die Datei ungeprüft zu verwenden.
+          Gleicher Dateiname = gleiche Datei. Nur bei Modellen - bei ffmpeg
+          bringt eine neue Adresse meist auch eine neue Version. }
+        if Hash = '' then
+          Hash := BuiltinHash(FJobs[I].IniKey, FJobs[I].Dest);
       end;
     end
     else

@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uinfo.pas  (Unit uInfo)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -79,8 +79,16 @@ begin
     Result := Copy(Result, 1, Q - 1) + Copy(Result, Q + 1, P - Q - 1) + ' (' +
       Copy(Result, P + 2, R - P - 2) + ')' + Copy(Result, R + 1, MaxInt);
   until False;
-  Result := StringReplace(Result, '<http', 'http', [rfReplaceAll]);
-  Result := StringReplace(Result, '>', '', [rfReplaceAll]);
+  { <http...> -> http... : nur die spitzen Klammern um eine Adresse
+    entfernen, andere '>' (z. B. in "->") bleiben stehen }
+  repeat
+    P := Pos('<http', Result);
+    if P = 0 then Break;
+    R := PosEx('>', Result, P);
+    if R = 0 then Break;
+    Result := Copy(Result, 1, P - 1) + Copy(Result, P + 1, R - P - 1) +
+      Copy(Result, R + 1, MaxInt);
+  until False;
 end;
 
 { Eine Markdown-Datei für die Anzeige etwas vereinfachen:
@@ -101,12 +109,13 @@ begin
     for I := 0 to L.Count - 1 do
     begin
       S := L[I];
+      { Code-Block-Markierungen (```, ```text) weglassen. Das muss vor dem
+        Entfernen der Backticks geprüft werden, sonst bliebe "text" stehen. }
+      if Copy(TrimLeft(S), 1, 3) = '```' then Continue;
       S := StringReplace(S, '**', '', [rfReplaceAll]);
       S := StringReplace(S, '`', '', [rfReplaceAll]);
       if Pos('|---', S) = 1 then Continue;    // Tabellen-Trennzeile weglassen
       S := CleanLinks(S);
-      if (S = '```') or (Copy(S, 1, 3) = '```') then
-        Continue;                          // Code-Block-Markierungen weglassen
       if Copy(S, 1, 1) = '#' then
       begin
         { "## Titel" -> "Titel" + Linie }

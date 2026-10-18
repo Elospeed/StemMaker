@@ -112,13 +112,25 @@ header.top nav .lang {
   border: 1px solid var(--line); border-radius: var(--radius);
   overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
 }
+/* Titelleiste wie unter Windows 11: Symbol und Titel links, Minimieren/Maximieren/Schliessen rechts */
 .shot .bar {
-  display: flex; align-items: center; gap: 7px;
-  height: 32px; padding: 0 12px; background: #0f1011;
-  font-size: 13px; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+  height: 32px; padding: 0 0 0 10px; background: #202020;
+  font: 12px "Segoe UI", system-ui, sans-serif; color: #e8e8e8;
 }
-.shot .bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.shot .bar b { width: 11px; height: 11px; border-radius: 50%; background: #3a3d42; flex: none; }
+.shot.light .bar { background: #f3f3f3; color: #1b1b1b; border-bottom: 1px solid #e5e5e5; }
+.shot .bar img { width: 16px; height: 16px; flex: none; }
+.shot .bar span { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.shot .bar i { position: relative; width: 46px; height: 32px; flex: none; }
+.shot .bar i::before, .shot .bar i::after {
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
+.shot .bar .min::before { width: 10px; height: 1px; background: currentColor; }
+.shot .bar .max::before { width: 8px; height: 8px; border: 1px solid currentColor; border-radius: 1px; }
+.shot .bar .cls::before, .shot .bar .cls::after { width: 13px; height: 1px; background: currentColor; }
+.shot .bar .cls::before { transform: translate(-50%, -50%) rotate(45deg); }
+.shot .bar .cls::after { transform: translate(-50%, -50%) rotate(-45deg); }
+@media (max-width: 560px) { .shot .bar i { width: 32px; } }
 .shot img { width: 100%; }
 figcaption { color: var(--muted); font-size: 14px; text-align: center; margin-top: 12px; }
 .hero-shot { max-width: 900px; margin: 46px auto 0; }

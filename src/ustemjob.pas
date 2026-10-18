@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : ustemjob.pas  (Unit uStemJob)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -1906,14 +1906,12 @@ begin
       end;
 
       { ---- 5. an den Zielort verschieben --------------------------------
-        RenameFile klappt nur auf dem gleichen Laufwerk. Liegt das Ziel auf
-        einem anderen Laufwerk (z.B. D:), wird stattdessen kopiert. }
-      if FileExists(OutFile) then
-        if not SysUtils.DeleteFile(OutFile) then
-          raise Exception.Create(_('Bestehende Zieldatei kann nicht ersetzt werden'));
-      if not RenameFile(TmpMp4, OutFile) then
-        if not FileUtil.CopyFile(TmpMp4, OutFile) then
-          raise Exception.Create(Format(_('Kann Zieldatei nicht schreiben: %s'), [OutFile]));
+        ReplaceFileSafe (uStemMP4) verschiebt die fertige Datei an den
+        Zielort, auch auf ein anderes Laufwerk (dann wird kopiert). Eine
+        schon vorhandene Stem-Datei wird erst gelöscht, wenn die neue sicher
+        angekommen ist - geht etwas schief, bleibt die alte erhalten. }
+      if not ReplaceFileSafe(TmpMp4, OutFile) then
+        raise Exception.Create(Format(_('Kann Zieldatei nicht schreiben: %s'), [OutFile]));
 
       Progress(100, _('Fertig'));
       Log('  -> ' + OutFile);

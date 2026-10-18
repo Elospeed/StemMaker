@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : uupdateui.pas  (Unit uUpdateUI)
-  Version : 1.7
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -443,7 +443,9 @@ begin
     chk.Parent := F;
     chk.SetBounds(16, 268, 528, 22);
     chk.Caption := _('Beim Start nach Updates suchen');
-    chk.Checked := True;
+    { aktuellen Stand aus der INI zeigen: wer die Startprüfung abgeschaltet
+      hat und von Hand sucht, soll sie nicht ungewollt wieder einschalten }
+    chk.Checked := UpdateAutoCheck(StemIniFileName);
 
     pnl := TPanel.Create(F);
     pnl.Parent := F;
