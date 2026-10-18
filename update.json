@@ -1,12 +1,12 @@
 {
   "_info": "Wird von StemMaker beim Start gelesen (ab 1.7). Aufbau und Pflege: docs/UPDATE-JSON.md",
-  "version": "1.7.1",
-  "date": "2026-10-14",
+  "version": "1.8",
+  "date": "2026-10-18",
   "page": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "notes_de": "Neues Fenster „Weitere Einstellungen...“ (Zahnrad)\nSymbol neben der Uhr: Fortschritt und Meldung, wenn fertig\nKnopf „Traktor-Farben“\nFehlerbericht senden (nur wenn du willst)\nSauberer Abbruch beim Herunterfahren, klare Meldung bei zu langen Pfaden\nStemPlayer 1.4 und sicherere Downloads",
-  "notes_en": "New \"More settings...\" window (gear icon)\nTray icon: progress and notification when done\n\"Traktor colors\" button\nSend error report (only if you want)\nClean stop on Windows shutdown, clear message for too long paths\nStemPlayer 1.4 and safer downloads",
-  "zip_url": "https://github.com/Elospeed/StemMaker/releases/download/v1.7.1/StemMaker-1.7.1.zip",
-  "zip_sha256": "196771296dacb029dd0872013143ae691061dd2c8375968b117bc9cff65a56d3",
+  "notes_de": "Hauptfenster mit Farbe: Fortschrittsbalken in der Liste, Häkchen und Stem-Farbpunkte bei fertigen Dateien\nStemPlayer 1.5: Wellenform pro Stem, Solo wie am DJ-Mixer\n„Nochmals konvertieren“ wandelt wirklich nochmals um, Abbrüche zählen nicht als Fehler\nVorhandene Stem-Datei geht beim Überschreiben nicht mehr verloren\nViele kleine Korrekturen",
+  "notes_en": "Main window with colour: progress bar in the list, check mark and stem colour dots for finished files\nStemPlayer 1.5: waveform per stem, solo like on a DJ mixer\n\"Convert again\" really converts again, cancelled songs no longer count as errors\nExisting stem file is no longer lost when overwriting\nMany small fixes",
+  "zip_url": "https://github.com/Elospeed/StemMaker/releases/download/v1.8/StemMaker-1.8.zip",
+  "zip_sha256": "5574d45a1e88384ba8a7f90564aaf12c86eb801998788c14e9c8260a0d8ca7fd",
   "ffmpeg": {
     "version": "9.0.2",
     "url": "https://github.com/Elospeed/StemMaker/releases/download/ffmpeg-9.0.2/ffmpeg-9.0.2-win64-lgpl.zip",
