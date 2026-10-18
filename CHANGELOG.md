@@ -9,6 +9,12 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker – Hauptfenster mit etwas Farbe
+- **Fortschritt direkt in der Liste:** Die laufende Datei zeigt in der Spalte „Status“ einen grünen Balken mit Prozent. Wartende Dateien sind grau.
+- **Fertige Dateien auf einen Blick:** Grünes Häkchen, Dauer und vier Farbpunkte für die vier Stems. Fehler stehen in Rot.
+- **Farbstreifen** in den vier Stem-Farben unter der Knopfleiste (dieselben Farben wie in Traktor bzw. wie in den Einstellungen gewählt).
+- **Zusammenfassung** am Ende grün, wenn alles geklappt hat, und rot, wenn etwas fehlgeschlagen ist.
+
 ### StemMaker – kleinere Fehler behoben
 - **„Nochmals konvertieren?“ wandelt jetzt wirklich nochmals um:** Waren alle Dateien der Liste schon fertig und man bestätigte die Frage mit „Ja“, wurde ohne die Einstellung „Überschreiben“ jede Datei als „existiert schon“ übersprungen. Jetzt werden die Stem-Dateien neu erzeugt. Die gespeicherte Einstellung bleibt unverändert.
 - **Abgebrochene Songs zählen nicht mehr als Fehler:** Die Zusammenfassung nach einem Abbruch nennt sie jetzt als „Abgebrochen“ statt unter „fehlgeschlagen“.
