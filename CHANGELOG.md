@@ -21,6 +21,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Kein falscher Absturz-Hinweis mehr,** wenn Windows das Log beim Beenden kurz gesperrt hatte (z. B. Virenscanner).
 - **Tab-Reihenfolge im Hauptfenster** geht jetzt Zeile für Zeile durch die Einstellungen.
 
+### StemPlayer 1.5
+- **Wellenform pro Stem:** Unter Drums, Bass, Other und Vocals steht die Wellenform der Spur in ihrer Stemfarbe, oben die Wellenform des Originals. Ein roter Strich läuft in allen Spuren mit, der gespielte Teil ist hell. Klicken oder Ziehen in eine Wellenform springt an diese Stelle. Stumme Stems werden grau.
+- **Ansicht Kompakt / Wellenform:** Oben rechts umschaltbar (oder Taste W). Kompakt ist so klein wie bisher. Die Wahl wird gespeichert und beim nächsten Start übernommen.
+- **Solo wie am DJ-Mixer:** Solo heisst jetzt „nur dieser Stem“. Ein neues Solo löst das vorherige ab. Wer mehrere Stems gleichzeitig solo hören will, hält Strg gedrückt (Strg+Klick auf S oder Strg+Shift+1–4).
+
 ## 1.7.1 – 14. Oktober 2026
 
 ### StemMaker

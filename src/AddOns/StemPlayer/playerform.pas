@@ -41,9 +41,11 @@
 
   Tastatur:
     Leertaste  Play / Pause          1..4        Stem stumm an/aus
-    Shift+1..4 Solo an/aus           0           Mute/Solo zurücksetzen
+    Shift+1..4 Solo (nur dieser)     0           Mute/Solo zurücksetzen
+    Strg+Shift+1..4  Solo dazunehmen (mehrere Solos), ebenso Strg+Klick auf S
     S / O / R  Stems / Original / Rest           Pfeil links/rechts  -/+ 5 s
     Pos1       an den Anfang         Strg+O      Datei öffnen
+    W          Wellenformen aus/ein  Klick in Wellenform  dorthin springen
 
   Versionen:
     1.0  (01.10.2026)  Erste Version: Mute/Solo/Fader, Modi Stems/Original/Rest
@@ -61,6 +63,19 @@
                        einfach 5 Spuren an, die laufende Wiedergabe brach ab und
                        ffmpeg meldete einen unverständlichen Fehler. Jetzt kommt
                        eine klare Meldung (DE/EN), der geladene Track bleibt.
+    1.5  (14.10.2026)  TESTVERSION Wellenform: unter jedem Stem seine Wellenform
+                       in der Stemfarbe, oben die Wellenform des Originals statt
+                       der Balkenleiste, roter Abspielkopf läuft überall mit.
+                       Klick oder Ziehen in eine Wellenform springt dorthin.
+                       Oben rechts Umschalter KOMPAKT / WELLENFORM (oder Taste W),
+                       die Wahl wird gespeichert und beim nächsten Start
+                       übernommen. Berechnung im Hintergrund (wellenform.pas).
+                       Abspielkopf flüssig: eigener schneller Timer (~60 Bilder/s)
+                       und eine geglättete Uhr statt der stufigen Geräteposition
+                       (siehe HeadTimerTick).
+                       Solo ist jetzt exklusiv: ein neues Solo löst das vorherige
+                       ab (wie am DJ-Mixer). Mehrere Solos gleichzeitig nur mit
+                       Strg+Klick bzw. Strg+Shift+1..4.
   ============================================================================ }
 unit playerform;
 
@@ -71,11 +86,11 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, mp4stem, stemengine, djcontrols;
+  LazFileUtils, IniFiles, mp4stem, stemengine, djcontrols, wellenform;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.4';
+  APP_VER   = '1.5';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -91,6 +106,7 @@ type
     TrkVol   : TDJSlider;
     LblVol   : TLabel;
     Meter    : TPaintBox;
+    Wave     : TWaveView;  // Wellenform unter der Zeile
     Color    : TColor;
     Level    : Single;     // geglätteter Anzeigepegel 0..1
   end;
@@ -104,11 +120,14 @@ type
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
     LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
+    BtnViewCompact: TDJButton; // Ansicht: kompakt (ohne Wellenformen)
+    BtnViewWave   : TDJButton; // Ansicht: mit Wellenformen
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
     BtnPlay     : TDJButton;
     BtnStop     : TDJButton;
-    TrkPos      : TDJSlider;
+    TrkPos      : TDJSlider;   // Positionsleiste, bis die Wellenform fertig ist
+    WaveMaster  : TWaveView;   // Wellenform des Originals (ersetzt dann TrkPos)
     LblTime     : TLabel;      // aktuelle Position (gross)
     LblTotal    : TLabel;      // Gesamtlänge (klein, gedimmt)
     BtnModeStems: TDJButton;
@@ -130,6 +149,7 @@ type
     LblKofi     : TLabel;
     { --- Sonstiges --- }
     Timer       : TTimer;
+    HeadTimer   : TTimer;      // schneller Timer nur für den Abspielkopf
     OpenDlg     : TOpenDialog;
 
     Engine      : TStemEngine;
@@ -147,6 +167,11 @@ type
     FOutLevel   : array[0..1] of Single;
     FLastClip   : Integer;
     FClipTicks  : Integer;
+    FPeakThread : TPeakThread; // berechnet die Wellenformen im Hintergrund
+    FShowWaves  : Boolean;     // Wellenformen sichtbar (Taste W)
+    FHeadPos    : Double;      // geglättete Anzeigeposition in Frames
+    FHeadTime   : Double;      // Zeitpunkt (NowSeconds) dieser Position
+    FHeadRunning: Boolean;     // lief die Uhr schon beim letzten Tick?
 
     procedure BuildUI;
     procedure BuildStemRow(Idx: Integer);
@@ -172,7 +197,13 @@ type
 
     { Steuerung }
     procedure UpdateGains;
+    procedure ApplySolo(Idx: Integer; Additive: Boolean);
     procedure UpdateRowLook;
+    procedure SetWavesVisible(AShow: Boolean);
+    procedure SaveViewSetting;
+    procedure ViewClick(Sender: TObject);
+    procedure StopPeakThread;
+    procedure ApplyPeaks;
     procedure TogglePlay;
     procedure StopPlay;
     procedure SeekRelative(Seconds: Integer);
@@ -192,9 +223,11 @@ type
     procedure PosChange(Sender: TObject);
     procedure PosMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure PosMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure WaveSeek(Sender: TObject; Fraction: Single);
     procedure MeterPaint(Sender: TObject);
     procedure OutMeterPaint(Sender: TObject);
     procedure TimerTick(Sender: TObject);
+    procedure HeadTimerTick(Sender: TObject);
     procedure KofiClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -213,7 +246,10 @@ implementation
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
-  ROW_HEIGHT  = 54;   // Höhe einer Stem-Zeile
+  ROW_HEIGHT  = 54;   // Höhe einer Stem-Zeile (ohne Wellenform)
+  WAVE_HEIGHT = 36;   // Höhe der Wellenform unter einer Stem-Zeile
+  WAVE_EXTRA  = WAVE_HEIGHT + 8;   // so viel wird jede Zeile mit Wellenform höher
+  BASE_HEIGHT = 590;  // Fensterhöhe ohne Wellenformen
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
 
@@ -222,14 +258,17 @@ const
   ============================================================================ }
 
 constructor TMainForm.Create(TheOwner: TComponent);
+var
+  Ini: TIniFile;
+  ShowWaves: Boolean;
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
   Caption := APP_TITLE + ' ' + APP_VER + '  -  von Elospeed';
   Width := 820;
-  Height := 590;
+  Height := BASE_HEIGHT;
   Constraints.MinWidth := 720;
-  Constraints.MinHeight := 590;
+  Constraints.MinHeight := BASE_HEIGHT;
   Position := poScreenCenter;
   Color := DJ_BG;
   Font.Name := 'Segoe UI';
@@ -248,6 +287,27 @@ begin
   BuildUI;
   UpdateGains;
 
+  { Ansicht wie beim letzten Mal (StemPlayer.ini [Ansicht] Wellenform=1/0).
+    Erster Start: mit Wellenformen. Passt das grössere Fenster nicht auf den
+    Bildschirm, startet er trotzdem kompakt (gespeichert wird das nicht). }
+  FShowWaves := False;
+  ShowWaves := True;
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      ShowWaves := Ini.ReadBool('Ansicht', 'Wellenform', True);
+    finally
+      Ini.Free;
+    end;
+  except
+    { INI nicht lesbar -> Standard }
+  end;
+  if ShowWaves and
+     (Screen.WorkAreaHeight >= BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA + 40) then
+    SetWavesVisible(True)
+  else
+    SetWavesVisible(False);
+
   OpenDlg := TOpenDialog.Create(Self);
   OpenDlg.Title := 'Stem-Datei öffnen';
   OpenDlg.Filter := 'Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*';
@@ -256,6 +316,13 @@ begin
   Timer.Interval := 30;
   Timer.OnTimer := @TimerTick;
   Timer.Enabled := True;
+
+  { Abspielkopf separat und schneller (15 ms ~ 60 Bilder/s), damit die
+    LED-Meter mit ihrem gewohnten 30-ms-Abklingen unverändert bleiben }
+  HeadTimer := TTimer.Create(Self);
+  HeadTimer.Interval := 15;
+  HeadTimer.OnTimer := @HeadTimerTick;
+  HeadTimer.Enabled := True;
 
   { Reste früherer Abstürze aus dem Temp-Ordner entfernen }
   CleanupOrphanTempDirs;
@@ -342,7 +409,19 @@ begin
   LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
-  LblFile.SetBounds(110, 8, W - 110, 24);
+  LblFile.SetBounds(110, 8, W - 110 - 236, 24);
+
+  { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
+  BtnViewCompact := MakeButton(PnlTop, 'KOMPAKT', W - 228, 14, 104, 28);
+  BtnViewWave    := MakeButton(PnlTop, 'WELLENFORM', W - 125, 14, 124, 28);
+  BtnViewCompact.Anchors := [akTop, akRight];
+  BtnViewWave.Anchors := [akTop, akRight];
+  BtnViewCompact.Hint := 'Kompakte Ansicht ohne Wellenformen (Taste W)';
+  BtnViewWave.Hint := 'Ansicht mit Wellenform unter jedem Stem (Taste W)';
+  BtnViewCompact.ShowHint := True;
+  BtnViewWave.ShowHint := True;
+  BtnViewCompact.OnClick := @ViewClick;
+  BtnViewWave.OnClick := @ViewClick;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -376,6 +455,18 @@ begin
   TrkPos.OnChange := @PosChange;
   TrkPos.OnMouseDown := @PosMouseDown;
   TrkPos.OnMouseUp := @PosMouseUp;
+
+  { Gleicher Platz wie TrkPos. Wird erst sichtbar, wenn die Wellenform des
+    Originals berechnet ist (bis dahin bleibt die alte Leiste). }
+  WaveMaster := TWaveView.Create(Self);
+  WaveMaster.Parent := PnlDeck;
+  WaveMaster.SetBounds(120, 12, W - 120 - 172, 34);
+  WaveMaster.Anchors := [akLeft, akTop, akRight];
+  WaveMaster.WaveColor := $00D0D0D0;
+  WaveMaster.Visible := False;
+  WaveMaster.OnSeek := @WaveSeek;
+  WaveMaster.Hint := 'Original - klicken oder ziehen, um an diese Stelle zu springen';
+  WaveMaster.ShowHint := True;
 
   { Zeit: aktuelle Position gross, Gesamtlänge klein daneben }
   LblTime := MakeLabel(PnlDeck, '00:00', 0, 12, 18, True);
@@ -461,7 +552,7 @@ begin
 
   LblHelp := MakeLabel(PnlBottom,
     'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 zurücksetzen  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  Pos1 Anfang', 12, 6, 0, False);
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  Klick in Wellenform springt  ·  W Wellenform', 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -509,7 +600,8 @@ begin
   R^.BtnSolo.LitColor := DJ_YELLOW;
   R^.BtnSolo.Tag := 100 + Idx;
   R^.BtnSolo.OnClick := @MuteSoloClick;
-  R^.BtnSolo.Hint := Format('Solo: nur Solo-Stems hören - mehrere möglich (Shift+%d)', [Idx]);
+  R^.BtnSolo.Hint := Format('Solo: nur diesen Stem hören (Shift+%d).' + LineEnding +
+    'Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)', [Idx]);
   R^.BtnSolo.ShowHint := True;
 
   R^.TrkVol := MakeFader(R^.Panel, 224, 14, 200, R^.Color);
@@ -530,6 +622,52 @@ begin
   R^.Meter.Anchors := [akLeft, akTop, akRight];
   R^.Meter.Tag := Idx;
   R^.Meter.OnPaint := @MeterPaint;
+
+  { Wellenform unter der Zeile, gleiche Einrückung wie der Name.
+    Unsichtbar, solange die Wellenformen ausgeblendet sind (SetWavesVisible). }
+  R^.Wave := TWaveView.Create(Self);
+  R^.Wave.Parent := R^.Panel;
+  R^.Wave.SetBounds(20, ROW_HEIGHT - 2, W - 20 - 12, WAVE_HEIGHT);
+  R^.Wave.Anchors := [akLeft, akTop, akRight];
+  R^.Wave.WaveColor := R^.Color;
+  R^.Wave.Visible := False;
+  R^.Wave.OnSeek := @WaveSeek;
+  R^.Wave.Hint := 'Klicken oder ziehen, um an diese Stelle zu springen';
+  R^.Wave.ShowHint := True;
+end;
+
+{ Wellenformen ein- oder ausblenden. Jede Stem-Zeile wird um WAVE_EXTRA
+  höher bzw. niedriger, das Fenster wächst bzw. schrumpft entsprechend. }
+procedure TMainForm.SetWavesVisible(AShow: Boolean);
+var
+  i, Delta: Integer;
+begin
+  BtnViewCompact.Down := not AShow;
+  BtnViewWave.Down := AShow;
+  if AShow = FShowWaves then Exit;
+  FShowWaves := AShow;
+  Delta := STEM_COUNT * WAVE_EXTRA;
+  DisableAlign;
+  try
+    for i := 1 to STEM_COUNT do
+    begin
+      if AShow then Rows[i].Panel.Height := ROW_HEIGHT + WAVE_EXTRA
+      else Rows[i].Panel.Height := ROW_HEIGHT;
+      Rows[i].Wave.Visible := AShow;
+    end;
+    if AShow then
+    begin
+      Constraints.MinHeight := BASE_HEIGHT + Delta;
+      Height := Height + Delta;
+    end
+    else
+    begin
+      Constraints.MinHeight := BASE_HEIGHT;
+      Height := Max(BASE_HEIGHT, Height - Delta);
+    end;
+  finally
+    EnableAlign;
+  end;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -556,9 +694,19 @@ end;
   ffmpeg finden
   ============================================================================ }
 
+{ StemPlayer.ini neben der exe. Ist der Ordner schreibgeschützt (Setup-
+  Installation unter C:\Programme), dann %APPDATA%\StemMaker\StemPlayer.ini -
+  gleiches Vorgehen wie StemMaker.ini (siehe ustemjob.StemIniFileName). }
 function TMainForm.IniFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.ini');
+  if not DirectoryIsWritable(ExtractFilePath(Result)) then
+  begin
+    Result := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')) +
+      'StemMaker' + PathDelim;
+    ForceDirectories(Result);
+    Result := Result + ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
+  end;
 end;
 
 function TMainForm.FindFFmpeg: string;
@@ -613,8 +761,71 @@ end;
   Reihenfolge ist wichtig: zuerst den Audio-Thread beenden (er schliesst
   dabei seine .raw-Dateien), erst dann löschen - unter Windows lassen sich
   geöffnete Dateien nicht löschen. }
-procedure TMainForm.UnloadFile;
+{ Gewählte Ansicht merken, damit der nächste Start gleich so aussieht }
+procedure TMainForm.SaveViewSetting;
+var Ini: TIniFile;
 begin
+  try
+    Ini := TIniFile.Create(IniFileName);
+    try
+      Ini.WriteBool('Ansicht', 'Wellenform', FShowWaves);
+    finally
+      Ini.Free;
+    end;
+  except
+    { nicht schreibbar -> nächstes Mal eben wieder mit Standard }
+  end;
+end;
+
+procedure TMainForm.ViewClick(Sender: TObject);
+begin
+  SetWavesVisible(Sender = BtnViewWave);
+  SaveViewSetting;
+end;
+
+{ Wellenform-Berechnung abbrechen und warten, bis der Thread seine
+  .raw-Dateien geschlossen hat (sonst lassen sie sich nicht löschen). }
+procedure TMainForm.StopPeakThread;
+begin
+  if FPeakThread = nil then Exit;
+  FPeakThread.Terminate;
+  FPeakThread.WaitFor;
+  FreeAndNil(FPeakThread);
+end;
+
+{ Thread ist fertig -> Hüllkurven an die Anzeigen übergeben.
+  Alle 4 Stems bekommen den GLEICHEN Massstab (lautester Stem füllt die Höhe),
+  damit ein leiser Stem auch leise aussieht. Das Original hat seinen eigenen. }
+procedure TMainForm.ApplyPeaks;
+var
+  i: Integer;
+  M: Single;
+begin
+  M := 0;
+  for i := 1 to STEM_COUNT do
+    M := Max(M, PeakMax(FPeakThread.Peaks[i]));
+  if M < 0.05 then M := 0.05;   // fast stille Datei nicht riesig aufblasen
+  for i := 1 to STEM_COUNT do
+    if FPeakThread.Peaks[i].Valid then
+      Rows[i].Wave.SetPeaks(FPeakThread.Peaks[i], 1 / M);
+  if FPeakThread.Peaks[0].Valid then
+  begin
+    M := Max(0.05, PeakMax(FPeakThread.Peaks[0]));
+    WaveMaster.SetPeaks(FPeakThread.Peaks[0], 1 / M);
+    WaveMaster.Visible := True;
+    TrkPos.Visible := False;
+  end;
+  FreeAndNil(FPeakThread);
+end;
+
+procedure TMainForm.UnloadFile;
+var i: Integer;
+begin
+  StopPeakThread;
+  for i := 1 to STEM_COUNT do Rows[i].Wave.ClearPeaks;
+  WaveMaster.ClearPeaks;
+  WaveMaster.Visible := False;
+  TrkPos.Visible := True;
   if Engine <> nil then
   begin
     Engine.Free;           // stoppt Thread, schliesst Audiogerät und Dateien
@@ -894,6 +1105,8 @@ begin
     if Engine.OpenError <> '' then
       MessageDlg(APP_TITLE, Engine.OpenError, mtError, [mbOK], 0);
     FFileName := FileName;
+    { Wellenformen im Hintergrund berechnen, die Musik startet trotzdem sofort }
+    FPeakThread := TPeakThread.Create(Raw, Engine.TotalFrames);
 
     { 4) Oberfläche anpassen }
     for i := 1 to STEM_COUNT do
@@ -1015,6 +1228,9 @@ begin
       Rows[i].TrkVol.FillColor := DJ_OFF;
     end;
     Rows[i].Meter.Invalidate;
+    { Wellenform: hörbar = Stemfarbe, sonst grau (wie die Pegelanzeige) }
+    Rows[i].Wave.WaveColor := Rows[i].Color;
+    Rows[i].Wave.Active := IsOn and StemMode;
   end;
 end;
 
@@ -1109,8 +1325,25 @@ begin
   else SetMode(pmStems);
 end;
 
-procedure TMainForm.MuteSoloClick(Sender: TObject);
+{ Solo-Logik wie am DJ-Mixer: Solo heisst "nur dieser Stem". Wird ein Solo
+  eingeschaltet, gehen alle anderen Solos aus. Mit Additive (Strg gedrückt)
+  bleiben die anderen an -> mehrere Stems gleichzeitig solo.
+  Erwartet, dass Rows[Idx].BtnSolo.Down schon den neuen Zustand hat. }
+procedure TMainForm.ApplySolo(Idx: Integer; Additive: Boolean);
+var i: Integer;
 begin
+  if Rows[Idx].BtnSolo.Down and not Additive then
+    for i := 1 to STEM_COUNT do
+      if i <> Idx then Rows[i].BtnSolo.Down := False;
+end;
+
+procedure TMainForm.MuteSoloClick(Sender: TObject);
+var BtnTag: Integer;
+begin
+  { Solo-Knöpfe haben Tag 100 + Stem-Nummer (siehe BuildStemRow) }
+  BtnTag := TComponent(Sender).Tag;
+  if BtnTag > 100 then
+    ApplySolo(BtnTag - 100, GetKeyState(VK_CONTROL) < 0);
   { Wer Mute/Solo drückt, will Stems hören -> Modus automatisch auf Stems }
   if not BtnModeStems.Down then SetMode(pmStems);
   UpdateGains;
@@ -1148,6 +1381,13 @@ procedure TMainForm.PosMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   FDraggingPos := False;
+end;
+
+{ Klick/Ziehen in eine Wellenform (Stem oder Original): dorthin springen }
+procedure TMainForm.WaveSeek(Sender: TObject; Fraction: Single);
+begin
+  if (Engine = nil) or (Engine.TotalFrames <= 0) then Exit;
+  Engine.SeekTo := Round(Fraction * (Engine.TotalFrames - 1));
 end;
 
 procedure TMainForm.MeterPaint(Sender: TObject);
@@ -1194,6 +1434,9 @@ var
 begin
   if Engine = nil then Exit;
   Playing := Engine.Playing;
+
+  { Wellenformen fertig berechnet? }
+  if (FPeakThread <> nil) and FPeakThread.Done then ApplyPeaks;
 
   { Ende erreicht -> anhalten und an den Anfang }
   if Engine.EndReached and Playing then
@@ -1242,6 +1485,50 @@ begin
   BtnClip.Down := FClipTicks > 0;
 end;
 
+{ Abspielkopf in allen Wellenformen bewegen.
+
+  Warum nicht einfach Engine.PlayPos anzeigen? Die Position vom Audiogerät
+  (waveOutGetPosition) kommt in Stufen: der Engine-Thread fragt sie nur nach
+  jedem Puffer (~23 ms) ab, und viele Windows-Treiber zählen selbst nur in
+  Blöcken weiter. Zusammen mit einem Timer, der auch nur ungefähr alle
+  15/30 ms kommt, springt der Strich mal 1, mal 2 Stufen -> ruckelig.
+
+  Darum läuft hier eine eigene, geglättete Uhr: Beim Abspielen wächst die
+  Anzeigeposition gleichmässig mit der echten Zeit (44100 Frames pro
+  Sekunde) und wird nur sanft an die Geräteposition herangezogen. Bei einem
+  Sprung (Klick, Pfeiltasten, Stop) oder grosser Abweichung wird sie sofort
+  übernommen. Pause: Geräteposition direkt. }
+procedure TMainForm.HeadTimerTick(Sender: TObject);
+var
+  T, Dev, Diff: Double;
+  F: Single;
+  i: Integer;
+begin
+  if (Engine = nil) or (Engine.TotalFrames <= 0) then Exit;
+  T := NowSeconds;
+  Dev := Engine.PlayPos;
+  if Engine.Playing and not Engine.EndReached and FHeadRunning then
+  begin
+    FHeadPos := FHeadPos + (T - FHeadTime) * SAMPLE_RATE;
+    Diff := Dev - FHeadPos;
+    if Abs(Diff) > SAMPLE_RATE * 0.25 then
+      FHeadPos := Dev                      // Sprung oder Aussetzer: übernehmen
+    else
+      FHeadPos := FHeadPos + Diff * 0.08;  // sanft nachführen, kein Zurückspringen
+  end
+  else
+    FHeadPos := Dev;                       // Pause, Ende oder gerade gestartet
+  FHeadRunning := Engine.Playing and not Engine.EndReached;
+  FHeadTime := T;
+  if FHeadPos < 0 then FHeadPos := 0;
+  if FHeadPos > Engine.TotalFrames then FHeadPos := Engine.TotalFrames;
+
+  { zeichnet nur neu, wenn sich der Strich um ein Pixel bewegt }
+  F := FHeadPos / Engine.TotalFrames;
+  WaveMaster.Position := F;
+  for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
+end;
+
 procedure TMainForm.KofiClick(Sender: TObject);
 begin
   OpenURL(KOFI_URL);
@@ -1261,7 +1548,10 @@ begin
       begin
         i := Key - VK_1 + 1;
         if ssShift in Shift then
-          Rows[i].BtnSolo.Down := not Rows[i].BtnSolo.Down
+        begin
+          Rows[i].BtnSolo.Down := not Rows[i].BtnSolo.Down;
+          ApplySolo(i, ssCtrl in Shift);   // Strg+Shift = dazunehmen
+        end
         else
           Rows[i].BtnMute.Down := not Rows[i].BtnMute.Down;
         if not BtnModeStems.Down then SetMode(pmStems);
@@ -1291,6 +1581,7 @@ begin
     VK_LEFT:  begin SeekRelative(-5); Key := 0; end;
     VK_RIGHT: begin SeekRelative(5); Key := 0; end;
     VK_HOME:  begin if Engine <> nil then Engine.SeekTo := 0; Key := 0; end;
+    VK_W:     begin SetWavesVisible(not FShowWaves); SaveViewSetting; Key := 0; end;
   end;
 end;
 
@@ -1319,6 +1610,7 @@ end;
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   Timer.Enabled := False;
+  HeadTimer.Enabled := False;
   UnloadFile;          // Thread beenden + Track-Ordner löschen
   ReleaseInstanceDir;  // Sperrdatei schliessen + Instanz-Ordner löschen
 end;
