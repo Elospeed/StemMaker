@@ -17,6 +17,8 @@ It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), ju
 - **Quality:** in a side-by-side test against a stem file made by Traktor Pro 4 from the same track, drums, kick, vocals and level came out practically the same.
 - **Your music stays local:** no account, no cloud, no telemetry, nothing running in the background.
 
+StemMaker is a one-person hobby project, built in the evenings. If it saves you an evening of work, you can [buy me a coffee on Ko-fi](https://ko-fi.com/elospeed) ☕. Entirely optional, the tool stays free either way.
+
 The German version of this guide is `LIESMICH.md`.
 
 ```
@@ -66,9 +68,15 @@ Windows remembers this, so the window only appears once per program.
 - If the release notes list a SHA-256 checksum, compare it in PowerShell: `Get-FileHash .\StemMaker-1.7.zip` (adjust the file name).
 - The full source code is in this repository. You can build StemMaker yourself (see [Build it yourself](#build-it-yourself)).
 
-## Donations
+## Support StemMaker
 
-StemMaker is free and open source. Before it starts, a small window asks for a voluntary donation via [Ko-fi](https://ko-fi.com/elospeed). "Start tool" simply carries on. Tick "Don't show at startup" to hide the window for good. You can still donate any time via **Info → Donate now**.
+StemMaker is free and open source, with no ads, no account and no paid version, and it stays that way. Behind it is just me, working on it in my spare time. If StemMaker is useful to you, there are three ways to give something back:
+
+- **Buy me a coffee** on [Ko-fi](https://ko-fi.com/elospeed) (also via the "Sponsor" button at the top of this page or **Info → Donate now** in the program).
+- **Star the repository** on GitHub. It costs nothing and helps other DJs find StemMaker.
+- **Tell others** about it, or report a bug or an idea in the [Discussions](https://github.com/Elospeed/StemMaker/discussions).
+
+The program never asks at startup. Only when you reach a round number of finished tracks (10, 50, 100, 250, 500, 1000, then every 1000), and only after a run in which at least 90% of the files succeeded, a short thank-you note appears with a Ko-fi button. "Continue" simply carries on, and "Don't ask again" switches the note off for good.
 
 ## Folder structure
 
