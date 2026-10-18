@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : StemMaker.lpr  (Hauptprogramm)
-  Version : 1.7
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
@@ -44,7 +44,7 @@ uses
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
-  uSettings, uReport;
+  uSettings, uReport, uStatusDraw;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -70,6 +70,7 @@ begin
   LogInit;
   LogInstallExceptionHandler;
   LogLine('=== ' + APP_NAME + ' ' + APP_VERSION + ' gestartet ===');
+  DownloadUserAgent := 'StemMaker/' + APP_VERSION;   // für alle Downloads (uDownload)
   LogLine('Programm: ' + ParamStr(0));
   LogLine('Rechner:' + LineEnding + SystemInfoText);
   LogLine(Format('  Echte Kerne    : %d   (Auto-Einstellung: %d Teile, RAM reicht für max. %d)',

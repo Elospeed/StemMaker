@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : ulog.pas  (Unit uLog)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -103,6 +103,34 @@ var
 
 const
   RUNNING_TAG = '_LAEUFT';
+  NORMAL_END  = '=== Programm normal beendet ===';  // letzte Zeile von LogClose
+
+{ Endet die Log-Datei mit der Zeile von LogClose? Dann wurde StemMaker
+  normal beendet, nur das Umbenennen hatte damals nicht geklappt. }
+function LogEndedNormally(const FileName: string): Boolean;
+var
+  FS: TFileStream;
+  Tail: string;
+  N: Int64;
+begin
+  Result := False;
+  try
+    FS := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    try
+      N := FS.Size;
+      if N > 200 then N := 200;            // die letzten 200 Byte reichen
+      FS.Seek(-N, soEnd);
+      SetLength(Tail, N);
+      if N > 0 then
+        FS.ReadBuffer(Tail[1], N);
+    finally
+      FS.Free;
+    end;
+    Result := Pos(NORMAL_END, Tail) > 0;
+  except
+    Result := False;
+  end;
+end;
 
 { ---------------------------------------------------------------------------
   Ordner bestimmen: "logs" neben der Exe. Ist der Programmordner
@@ -161,6 +189,12 @@ begin
       F := L[I];
       if Pos(RUNNING_TAG + '.log', ExtractFileName(F)) > 0 then
       begin
+        { normal beendet, nur nicht umbenannt (siehe LogClose) -> kein Absturz }
+        if LogEndedNormally(F) then
+        begin
+          RenameFile(F, StringReplace(F, RUNNING_TAG + '.log', '.log', []));
+          Continue;
+        end;
         try
           FS := TFileStream.Create(F, fmOpenReadWrite or fmShareDenyNone);
           try
@@ -365,9 +399,10 @@ end;
 procedure LogClose;
 var
   Running, Final: string;
+  Try_: Integer;
 begin
   if GStream = nil then Exit;
-  LogLine('=== Programm normal beendet ===');
+  LogLine(NORMAL_END);
   EnterCriticalSection(GLock);
   try
     Running := LogFileName;
@@ -376,7 +411,15 @@ begin
       Final := LogDir + GBaseName + '_FEHLER.log'
     else
       Final := LogDir + GBaseName + '.log';
-    RenameFile(Running, Final);
+    { Umbenennen kann kurz scheitern, wenn z.B. ein Virenscanner die Datei
+      gerade prüft - deshalb ein paar Mal versuchen. Klappt es gar nicht,
+      bleibt "_LAEUFT" stehen; CleanupOldLogs erkennt beim nächsten Start
+      an der letzten Zeile, dass es kein Absturz war. }
+    for Try_ := 1 to 5 do
+    begin
+      if RenameFile(Running, Final) then Break;
+      Sleep(100);
+    end;
   finally
     LeaveCriticalSection(GLock);
   end;

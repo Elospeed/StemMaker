@@ -103,10 +103,18 @@ object frmMain: TfrmMain
       ParentFont = False
     end
   end
+  object pbAccent: TPaintBox
+    Left = 0
+    Height = 3
+    Top = 42
+    Width = 860
+    Align = alTop
+    OnPaint = pbAccentPaint
+  end
   object lvFiles: TListView
     Left = 0
-    Height = 282
-    Top = 42
+    Height = 279
+    Top = 45
     Width = 860
     Align = alClient
     Columns = <
@@ -127,6 +135,7 @@ object frmMain: TfrmMain
     ReadOnly = True
     RowSelect = True
     TabOrder = 1
+    OnCustomDrawSubItem = lvFilesCustomDrawSubItem
     OnDblClick = lvFilesDblClick
     ViewStyle = vsReport
   end
@@ -221,7 +230,7 @@ object frmMain: TfrmMain
       Hint = 'Stem-Namen und Farben, Teile/Kerne, '#220'berschreiben, Unterordner, Standby, Sprache, Updates, Werkzeuge'
       OnClick = btnSettingsClick
       Spacing = 6
-      TabOrder = 16
+      TabOrder = 6
     end
     object lblTools: TLabel
       Left = 8
@@ -241,7 +250,7 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
       Hint = 'Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar).'
-      TabOrder = 13
+      TabOrder = 7
     end
     object chkNormalize: TCheckBox
       Left = 470
@@ -252,7 +261,7 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
       Hint = 'Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).'#13#10'Alle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.'#13#10'Laute Club-Tracks '#228'ndern sich kaum. Vorteil in Traktor: gr'#246#223'ere, besser lesbare Wellenformen.'
-      TabOrder = 14
+      TabOrder = 3
     end
     object chkBassFix: TCheckBox
       Left = 470
@@ -263,7 +272,7 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
       Hint = 'Der Tiefbass unter 80 Hz, den die Trennung im Stem "Other" l'#228'sst, wird in den Bass-Stem verschoben.'#13#10'Der Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unver'#228'ndert.'
-      TabOrder = 15
+      TabOrder = 5
     end
   end
   object pnlRun: TPanel

@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : ustemmp4.pas  (Unit uStemMP4)
-  Version : 1.6
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -101,6 +101,12 @@ function ReadStemJSON(const FileName: string): string;
 
 { Zählt die Spuren ('trak'-Boxen). Eine gültige Stem-Datei hat 5. }
 function CountTracks(const FileName: string): Integer;
+
+{ Ersetzt die Datei Target durch NewFile, ohne dass zwischendurch beide
+  weg sein können. Klappt auch, wenn NewFile auf einem anderen Laufwerk
+  liegt (dann wird kopiert). False = nichts ersetzt, die alte Datei ist
+  (wenn es sie gab) noch da. }
+function ReplaceFileSafe(const NewFile, Target: string): Boolean;
 
 implementation
 
@@ -406,8 +412,14 @@ begin
       Box := TBox(Stbl.Children[J]);
       if (Box.BoxType = 'stco') and (Length(Box.Payload) >= 8) then
       begin
-        { Aufbau: 4 Byte Version/Flags, 4 Byte Anzahl, dann je 4 Byte Position }
+        { Aufbau: 4 Byte Version/Flags, 4 Byte Anzahl, dann je 4 Byte Position.
+          Die Anzahl wird gegen die Länge geprüft: eine kaputte Datei darf
+          nicht dazu führen, dass hinter dem Ende gelesen wird. N = 0 wird
+          übersprungen (N - 1 wäre bei LongWord sonst riesig). }
         N := GetBE32(Box.Payload, 4);
+        if Int64(N) > (Length(Box.Payload) - 8) div 4 then
+          raise Exception.Create('stco-Tabelle ist kürzer als angegeben');
+        if N > 0 then
         for K := 0 to N - 1 do
         begin
           V := GetBE32(Box.Payload, 8 + K * 4);
@@ -424,6 +436,9 @@ begin
       begin
         { wie stco, nur mit 8 Byte pro Position (für Dateien > 4 GB) }
         N := GetBE32(Box.Payload, 4);
+        if Int64(N) > (Length(Box.Payload) - 8) div 8 then
+          raise Exception.Create('co64-Tabelle ist kürzer als angegeben');
+        if N > 0 then
         for K := 0 to N - 1 do
         begin
           V := Int64(GetBE64(Box.Payload, 8 + K * 8));
@@ -871,11 +886,11 @@ begin
         Src.Free;
       end;
 
-      { erst jetzt, wo alles geklappt hat, das Original ersetzen }
-      if not DeleteFile(FileName) then
+      { erst jetzt, wo alles geklappt hat, das Original ersetzen.
+        ReplaceFileSafe löscht das Original nicht vorher, sondern legt es
+        kurz beiseite - so ist nie beides weg. }
+      if not ReplaceFileSafe(TmpName, FileName) then
         raise Exception.Create('Originaldatei kann nicht ersetzt werden');
-      if not RenameFile(TmpName, FileName) then
-        raise Exception.Create('Umbenennen der temporären Datei fehlgeschlagen');
       Result := True;
     except
       on E: Exception do
@@ -941,6 +956,111 @@ begin
     Moov.Free;
     S.Free;
   end;
+end;
+
+{ ---------------------------------------------------------------------------
+  Datei sicher ersetzen
+
+  Früher: Ziel löschen, dann die neue Datei hinschieben. Ging das Hinschieben
+  schief (anderes Laufwerk und Platte voll), waren alte UND neue Datei weg.
+  Jetzt in drei Schritten, von denen jeder rückgängig gemacht werden kann:
+    1. neue Datei als "<Ziel>.neu" neben das Ziel bringen
+       (umbenennen, oder kopieren wenn sie auf einem anderen Laufwerk liegt)
+    2. altes Ziel in "<Ziel>.alt" umbenennen
+    3. "<Ziel>.neu" in "<Ziel>" umbenennen, danach "<Ziel>.alt" löschen
+  Umbenennen im selben Ordner braucht keinen Platz und klappt praktisch
+  immer. Scheitert trotzdem ein Schritt, wird der alte Zustand
+  wiederhergestellt.
+  --------------------------------------------------------------------------- }
+
+{ Datei Byte für Byte kopieren (ohne FileUtil, diese Unit soll schlank
+  bleiben). Bei einem Fehler wird die halbe Kopie wieder gelöscht. }
+function CopyFileRaw(const Src, Dst: string): Boolean;
+var
+  InS, OutS: TFileStream;
+begin
+  Result := False;
+  try
+    InS := TFileStream.Create(Src, fmOpenRead or fmShareDenyWrite);
+    try
+      OutS := TFileStream.Create(Dst, fmCreate);
+      try
+        OutS.CopyFrom(InS, 0);           // 0 = ganze Datei
+      finally
+        OutS.Free;
+      end;
+    finally
+      InS.Free;
+    end;
+    Result := True;
+  except
+    { z.B. Platte voll: halbe Kopie wegräumen }
+    if FileExists(Dst) then
+      DeleteFile(Dst);
+  end;
+end;
+
+function ReplaceFileSafe(const NewFile, Target: string): Boolean;
+var
+  NewSide, Bak: string;
+  Copied: Boolean;
+begin
+  Result := False;
+  NewSide := Target + '.neu';
+  Bak := Target + '.alt';
+
+  { 1. neue Datei neben das Ziel bringen (Reste eines früheren Versuchs
+       vorher wegräumen) }
+  if FileExists(NewSide) then
+    DeleteFile(NewSide);
+  Copied := False;
+  if not RenameFile(NewFile, NewSide) then
+  begin
+    if not CopyFileRaw(NewFile, NewSide) then
+      Exit;                              // Ziel unverändert
+    Copied := True;
+  end;
+
+  { 2. + 3. altes Ziel beiseitelegen, neue Datei an seinen Platz }
+  if FileExists(Target) then
+  begin
+    if FileExists(Bak) then
+      DeleteFile(Bak);
+    if not RenameFile(Target, Bak) then
+    begin
+      { altes Ziel lässt sich nicht bewegen (z.B. gerade in Traktor offen):
+        neue Datei dorthin zurück, wo sie herkam }
+      if Copied then
+        DeleteFile(NewSide)
+      else
+        RenameFile(NewSide, NewFile);
+      Exit;
+    end;
+    if not RenameFile(NewSide, Target) then
+    begin
+      RenameFile(Bak, Target);           // alten Zustand wiederherstellen
+      if Copied then
+        DeleteFile(NewSide)
+      else
+        RenameFile(NewSide, NewFile);
+      Exit;
+    end;
+    DeleteFile(Bak);
+  end
+  else if not RenameFile(NewSide, Target) then
+  begin
+    if Copied then
+      DeleteFile(NewSide)
+    else
+      RenameFile(NewSide, NewFile);
+    Exit;
+  end;
+
+  { kopiert statt umbenannt: das Original auf dem anderen Laufwerk ist
+    jetzt überflüssig }
+  if Copied then
+    DeleteFile(NewFile);
+  Result := True;
 end;
 
 end.

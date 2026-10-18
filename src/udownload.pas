@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : udownload.pas  (Unit uDownload)
-  Version : 1.7
+  Version : wie StemMaker, siehe APP_VERSION in umain.pas
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -57,6 +57,12 @@ type
   { wird regelmäßig gefragt: "soll abgebrochen werden?" }
   TDlCancelQuery = function: Boolean of object;
 
+var
+  { Programmname, den der Server bei jedem Download sieht (User-Agent).
+    Das Hauptprogramm setzt beim Start "StemMaker/<Version>" ein, damit die
+    Versionsnummer nur an einer Stelle im Code steht (APP_VERSION). }
+  DownloadUserAgent: string = 'StemMaker';
+
 { Lädt URL herunter und speichert sie als DestFile.
   Rückgabe False = Fehler oder Abbruch, der Grund steht in ErrMsg. }
 function HttpDownload(const URL, DestFile: string; OnProgress: TDlProgressEvent;
@@ -81,6 +87,9 @@ implementation
 
 uses
   {$IFDEF WINDOWS}Windows,{$ENDIF} uLang;
+
+const
+  DL_TIMEOUT_MS = 30000;          // Downloads: so lange ohne Daten = Fehler
 
 {$IFDEF WINDOWS}
 
@@ -123,7 +132,6 @@ const
   INTERNET_OPTION_CONNECT_TIMEOUT = 2;
   INTERNET_OPTION_SEND_TIMEOUT    = 5;
   INTERNET_OPTION_RECEIVE_TIMEOUT = 6;
-  DL_TIMEOUT_MS = 30000;          // Downloads: so lange ohne Daten = Fehler
 
 { ---------------------------------------------------------------------------
   bcrypt.dll (Windows-Krypto, "CNG") - nur das, was für SHA-256 nötig ist
@@ -186,7 +194,8 @@ begin
   PartFile := DestFile + '.part';
 
   { 1. Sitzung öffnen }
-  hNet := InternetOpenW('StemMaker/1.7.1', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  hNet := InternetOpenW(PWideChar(UnicodeString(DownloadUserAgent)),
+    INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hNet = nil then
   begin
     ErrMsg := _('Internet-Zugriff nicht möglich (WinINet)');
@@ -219,40 +228,50 @@ begin
       if not QueryNumber(hUrl, HTTP_QUERY_CONTENT_LENGTH, Total) then
         Total := -1;               // Größe unbekannt -> Balken ohne Prozent
 
-      { 4. Daten lesen und speichern }
-      FS := TFileStream.Create(PartFile, fmCreate);
+      { 4. Daten lesen und speichern. Eine Ausnahme (z.B. Platte voll beim
+           Schreiben) wird zur normalen Fehlermeldung - so räumt der
+           finally-Teil unten die halbe .part-Datei auch dann weg. }
       try
-        Done := 0;
-        LastReport := 0;
-        repeat
-          if Assigned(IsCancelled) and IsCancelled() then
-          begin
-            ErrMsg := _('Abgebrochen');
-            Exit;
-          end;
-          Got := 0;
-          if not InternetReadFile(hUrl, @Buf[0], SizeOf(Buf), Got) then
-          begin
-            ErrMsg := Format(_('Lesefehler beim Download (Fehler %d)'), [GetLastError]);
-            Exit;
-          end;
-          if Got > 0 then
-          begin
-            FS.WriteBuffer(Buf[0], Got);
-            Inc(Done, Got);
-            { Fortschritt nicht bei jedem Stück melden, sondern max. alle
-              150 ms - sonst bremst die Anzeige den Download }
-            if Assigned(OnProgress) and (GetTickCount64 - LastReport > 150) then
+        FS := TFileStream.Create(PartFile, fmCreate);
+        try
+          Done := 0;
+          LastReport := 0;
+          repeat
+            if Assigned(IsCancelled) and IsCancelled() then
             begin
-              OnProgress(Done, Total);
-              LastReport := GetTickCount64;
+              ErrMsg := _('Abgebrochen');
+              Exit;
             end;
-          end;
-        until Got = 0;             // 0 Bytes gelesen = Datei ist komplett
-        if Assigned(OnProgress) then
-          OnProgress(Done, Total);
-      finally
-        FS.Free;
+            Got := 0;
+            if not InternetReadFile(hUrl, @Buf[0], SizeOf(Buf), Got) then
+            begin
+              ErrMsg := Format(_('Lesefehler beim Download (Fehler %d)'), [GetLastError]);
+              Exit;
+            end;
+            if Got > 0 then
+            begin
+              FS.WriteBuffer(Buf[0], Got);
+              Inc(Done, Got);
+              { Fortschritt nicht bei jedem Stück melden, sondern max. alle
+                150 ms - sonst bremst die Anzeige den Download }
+              if Assigned(OnProgress) and (GetTickCount64 - LastReport > 150) then
+              begin
+                OnProgress(Done, Total);
+                LastReport := GetTickCount64;
+              end;
+            end;
+          until Got = 0;             // 0 Bytes gelesen = Datei ist komplett
+          if Assigned(OnProgress) then
+            OnProgress(Done, Total);
+        finally
+          FS.Free;
+        end;
+      except
+        on E: Exception do
+        begin
+          ErrMsg := Format(_('Datei kann nicht gespeichert werden: %s'), [E.Message]);
+          Exit;
+        end;
       end;
 
       { 5. Kontrolle: haben wir so viel bekommen, wie angekündigt? }
@@ -294,7 +313,8 @@ begin
   Result := False;
   Text := '';
   ErrMsg := '';
-  hNet := InternetOpenW('StemMaker', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+  hNet := InternetOpenW(PWideChar(UnicodeString(DownloadUserAgent)),
+    INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hNet = nil then
   begin
     ErrMsg := _('Internet-Zugriff nicht möglich (WinINet)');
@@ -331,7 +351,7 @@ begin
           MS.WriteBuffer(Buf[0], Got);
         if MS.Size > 1024 * 1024 then
         begin
-          ErrMsg := 'zu gross';
+          ErrMsg := _('Antwort zu gross');
           Exit;
         end;
       until Got = 0;
@@ -374,8 +394,15 @@ begin
       Exit;
     end;
     { -L = Weiterleitungen folgen, --fail = bei HTTP-Fehler abbrechen,
-      -s -S = still, aber Fehler anzeigen, -o = Zieldatei }
-    P.Parameters.AddStrings(['-L', '--fail', '-s', '-S', '-o', PartFile, URL]);
+      -s -S = still, aber Fehler anzeigen, -o = Zieldatei.
+      Zeitlimits wie bei WinINet (DL_TIMEOUT_MS): höchstens 30 s für den
+      Verbindungsaufbau, und kommen 30 s lang praktisch keine Daten mehr
+      (unter 1 Byte/s), bricht curl ab - sonst hinge der Download bei
+      einer toten Verbindung ewig. -A = derselbe User-Agent. }
+    P.Parameters.AddStrings(['-L', '--fail', '-s', '-S',
+      '--connect-timeout', IntToStr(DL_TIMEOUT_MS div 1000),
+      '--speed-time', IntToStr(DL_TIMEOUT_MS div 1000), '--speed-limit', '1',
+      '-A', DownloadUserAgent, '-o', PartFile, URL]);
     P.Options := [poNoConsole];
     P.Execute;
     while P.Running do
@@ -564,7 +591,7 @@ begin
         if not SafeZipEntry(UZ.Entries[I].ArchiveFileName) then
         begin
           ErrMsg := Format(_('ZIP-Fehler: %s'),
-            ['unerlaubter Pfad ' + UZ.Entries[I].ArchiveFileName]);
+            [_('unerlaubter Pfad') + ' ' + UZ.Entries[I].ArchiveFileName]);
           Exit;
         end;
       ForceDirectories(DestDir);
@@ -623,7 +650,7 @@ begin
       end;
       if not SafeZipEntry(Entry) then
       begin
-        ErrMsg := Format(_('ZIP-Fehler: %s'), ['unerlaubter Pfad ' + Entry]);
+        ErrMsg := Format(_('ZIP-Fehler: %s'), [_('unerlaubter Pfad') + ' ' + Entry]);
         Exit;
       end;
       { 3. nur diesen einen Eintrag entpacken }

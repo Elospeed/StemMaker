@@ -7,7 +7,19 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Nächste Version (noch nicht veröffentlicht)
+## Unveröffentlicht
+
+### StemMaker – kleinere Fehler behoben
+- **„Nochmals konvertieren?“ wandelt jetzt wirklich nochmals um:** Waren alle Dateien der Liste schon fertig und man bestätigte die Frage mit „Ja“, wurde ohne die Einstellung „Überschreiben“ jede Datei als „existiert schon“ übersprungen. Jetzt werden die Stem-Dateien neu erzeugt. Die gespeicherte Einstellung bleibt unverändert.
+- **Abgebrochene Songs zählen nicht mehr als Fehler:** Die Zusammenfassung nach einem Abbruch nennt sie jetzt als „Abgebrochen“ statt unter „fehlgeschlagen“.
+- **Update-Fenster lässt die Startprüfung in Ruhe:** Wer „Beim Start nach Updates suchen“ abgeschaltet hatte und von Hand nach Updates suchte, hatte sie danach wieder an. Das Häkchen zeigt jetzt die eigene Einstellung.
+- **Anleitung im Info-Fenster:** Code-Blöcke zeigen nicht mehr das Wort „text“, und Pfeile wie „->“ bleiben stehen.
+- **Vorhandene Stem-Datei geht nicht mehr verloren:** Beim Überschreiben wurde die alte Datei gelöscht, bevor die neue sicher am Ziel war. Ging das Kopieren schief (z. B. Ziel auf einem anderen Laufwerk und Platte voll), waren beide weg. Jetzt wird die alte erst entfernt, wenn die neue da ist.
+- **Liste übersteht Stromausfall beim Speichern:** Die gemerkte Dateiliste konnte verloren gehen, wenn der Strom genau beim Speichern ausfiel. Das ist jetzt abgesichert.
+- **Downloads:** Bricht ein Download wegen voller Platte ab, bleibt keine halbe `.part`-Datei mehr liegen. Der Notweg über curl hängt bei toter Verbindung nicht mehr endlos, sondern bricht nach 30 Sekunden ohne Daten ab.
+- **Modelle immer mit Prüfsumme:** Steht in `update.json` für ein Modell keine Prüfsumme, nimmt StemMaker die eingebaute, statt die Datei ungeprüft zu verwenden.
+- **Kein falscher Absturz-Hinweis mehr,** wenn Windows das Log beim Beenden kurz gesperrt hatte (z. B. Virenscanner).
+- **Tab-Reihenfolge im Hauptfenster** geht jetzt Zeile für Zeile durch die Einstellungen.
 
 ### StemPlayer 1.5
 - **Wellenform pro Stem:** Unter Drums, Bass, Other und Vocals steht die Wellenform der Spur in ihrer Stemfarbe, oben die Wellenform des Originals. Ein roter Strich läuft in allen Spuren mit, der gespielte Teil ist hell. Klicken oder Ziehen in eine Wellenform springt an diese Stelle. Stumme Stems werden grau.

@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : umain.pas  (Unit uMain, Hauptfenster; Layout in umain.lfm)
-  Version : 1.7.1
+  Version : siehe APP_VERSION weiter unten (einzige Stelle im Code)
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings;
+  uSettings, uStatusDraw;
 
 const
   APP_VERSION = '1.7.1';
@@ -82,6 +82,7 @@ type
     procedure Execute; override;
   public
     OKCount, FailCount, SkipCount: Integer;   // Zähler für die Zusammenfassung
+    CancelCount: Integer;                      // abgebrochen (zählt nicht als Fehler)
     MaxPeakMemMB: Integer;                     // höchster RAM-Bedarf von demucs
     OmpPerPart  : Integer;                     // Kerne pro demucs-Teilstück
     constructor Create(AForm: TfrmMain; const ASettings: TStemSettings);
@@ -128,6 +129,7 @@ type
     dlgOpen: TOpenDialog;
     dlgFolder: TSelectDirectoryDialog;
     pnlTop: TPanel;
+    pbAccent: TPaintBox;
     pnlRun: TPanel;
     pbFile: TProgressBar;
     pbTotal: TProgressBar;
@@ -141,6 +143,9 @@ type
     procedure btnOpenOutClick(Sender: TObject);
     procedure btnListenClick(Sender: TObject);
     procedure lvFilesDblClick(Sender: TObject);
+    procedure lvFilesCustomDrawSubItem(Sender: TCustomListView; Item: TListItem;
+      SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure pbAccentPaint(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
@@ -462,13 +467,19 @@ begin
     end
     else
     begin
-      Inc(FailCount);
       { Abbruch erkennen: am eigenen Flag und - falls uStemJob den Text
-        übersetzt - sowohl am deutschen als auch am übersetzten Text }
+        übersetzt - sowohl am deutschen als auch am übersetzten Text.
+        Ein Abbruch ist kein Fehler und wird deshalb extra gezählt. }
       if FCancelled or (Err = 'Abgebrochen') or (Err = _('Abgebrochen')) then
-        FSyncStatus := isCancelled
+      begin
+        Inc(CancelCount);
+        FSyncStatus := isCancelled;
+      end
       else
+      begin
+        Inc(FailCount);
         FSyncStatus := isFailed;
+      end;
     end;
     FSyncItem := FIndexes[I];
     FSyncDone := I + 1;
@@ -872,6 +883,8 @@ begin
   begin
     SaveSettings;
     UpdateEstimate;                // andere Teile-Zahl = andere Dauer
+    pbAccent.Invalidate;           // Stem-Farben können sich geändert haben
+    lvFiles.Invalidate;
   end;
 end;
 
@@ -896,6 +909,8 @@ end;
   aktuellen Datei". Beispiel: 5 Dateien, 2 fertig, aktuelle bei 50 %
   -> (2*100 + 50) / 5 = 50 % gesamt. }
 procedure TfrmMain.SetFileProgress(Percent: Integer; const Stage: string);
+var
+  S: string;
 begin
   { neuer Arbeitsschritt? -> Startzeit und Startprozent merken (für die
     Restzeit-Schätzung, siehe UpdateTimes) }
@@ -907,6 +922,16 @@ begin
   end;
   FFilePct := Percent;
   pbFile.Position := Percent;
+  { Prozent auch in die Zeile der Liste schreiben. Gezeichnet wird dort ein
+    kleiner Balken (lvFilesCustomDrawSubItem); der Text ändert sich nur, damit
+    die Zeile neu gezeichnet wird, und bleibt für Bildschirmleser lesbar. }
+  if (FCurIndex >= 0) and (FCurIndex < lvFiles.Items.Count) and
+     (ItemState(lvFiles.Items[FCurIndex]) = ST_RUN) then
+  begin
+    S := Format('%s %d %%', [_('läuft...'), Percent]);
+    if lvFiles.Items[FCurIndex].SubItems[0] <> S then
+      lvFiles.Items[FCurIndex].SubItems[0] := S;
+  end;
   lblStage.Caption := Format('%s  (%d %%)', [Stage, Percent]);
   if FTotal > 0 then
     pbTotal.Position := Round((FFilesDone * 100 + Percent) / FTotal);
@@ -983,14 +1008,12 @@ end;
     unterer Balken (alle Dateien):
       "Gesamt (Datei 2 von 5):  vergangen 8:40   |   verbleibend ca. 21:00"
 
-  So wird geschätzt:
-    - aktuelle Datei: aus dem Tempo bisher (vergangen / Prozent)
-    - Gesamt: Rest der aktuellen Datei
-              + Anzahl noch wartender Dateien x durchschnittliche Dauer
-      Der Durchschnitt kommt aus den schon fertigen Dateien. Ist noch
-      keine fertig, nehmen wir die geschätzte Dauer der aktuellen Datei.
-      (Sind die Songs sehr unterschiedlich lang, ist das nur ein grober
-      Richtwert - es wird mit jeder fertigen Datei genauer.)
+  So wird geschätzt (Einzelheiten bei den Kommentaren unten):
+    - aktuelle Datei: aus dem Tempo des laufenden Arbeitsschritts, oder
+      solange es das noch nicht gibt, aus Song-Länge x gelerntem Tempo
+    - Gesamt: Rest der aktuellen Datei + Länge aller wartenden Songs x
+      Tempo. Sind noch nicht alle Längen bekannt, ersatzweise Anzahl
+      wartender Dateien x durchschnittliche Dauer der fertigen Dateien.
 
   Wird bei jeder Fortschrittsmeldung UND jede Sekunde vom Timer
   aufgerufen - so läuft die Uhr auch weiter, wenn demucs gerade länger
@@ -999,7 +1022,7 @@ end;
 procedure TfrmMain.UpdateTimes;
 var
   Now64, FileMS, RunMS: QWord;
-  FileFrac, FileTotalMS, FileRestMS, AvgMS, TotalRestMS: Double;
+  FileTotalMS, FileRestMS, AvgMS, TotalRestMS: Double;
   StageMS: QWord;
   StageGain: Integer;
   Waiting, Current: Integer;
@@ -1014,7 +1037,6 @@ begin
   Now64 := GetTickCount64;
   FileMS := Now64 - FFileStart;
   RunMS := Now64 - FRunStart;
-  FileFrac := FFilePct / 100;
 
   { --- aktuelle Datei ---
     Die Restzeit wird aus dem Tempo des AKTUELLEN Arbeitsschritts
@@ -1483,6 +1505,57 @@ begin
   OpenInPlayer(Dir);
 end;
 
+{ ---------------------------------------------------------------------------
+  Farb-Akzente (Zeichnen selbst: uStatusDraw)
+  --------------------------------------------------------------------------- }
+
+{ Streifen in den vier Stem-Farben unter der Knopfleiste }
+procedure TfrmMain.pbAccentPaint(Sender: TObject);
+begin
+  DrawAccentStrip(pbAccent.Canvas, pbAccent.ClientRect, FPrefs.StemColors);
+end;
+
+{ Spalte "Status" der Dateiliste selbst zeichnen (Balken, Häkchen, Farben).
+  Alle anderen Spalten zeichnet Windows wie immer. }
+procedure TfrmMain.lvFilesCustomDrawSubItem(Sender: TCustomListView;
+  Item: TListItem; SubItem: Integer; State: TCustomDrawState;
+  var DefaultDraw: Boolean);
+var
+  R: TRect;
+  Look: TStatusLook;
+  Pct: Integer;
+begin
+  if SubItem <> 1 then Exit;       // 0 = Datei, 1 = Status, 2 = Pfad
+  if Item.SubItems.Count = 0 then Exit;
+  R := Item.DisplayRectSubItem(1, drBounds);
+  if (R.Right <= R.Left) or (R.Bottom <= R.Top) then Exit;
+
+  { Zustand steht im Data-Feld (nicht am Text erkennen, siehe ItemState) }
+  Pct := 0;
+  case ItemState(Item) of
+    ST_WAIT: Look := slWait;
+    ST_RUN:
+      begin
+        Look := slRun;
+        if Item.Index = FCurIndex then Pct := FFilePct;
+      end;
+    ST_OK:   Look := slOK;
+    ST_FAIL: Look := slFail;
+  else
+    Look := slOther;
+  end;
+
+  { Ausgewählte Zeilen zeichnet Windows selbst (blau hinterlegt, mit Text).
+    Eigene Farbe auf dem blauen Hintergrund geht hier nicht zuverlässig:
+    Windows legt die Auswahl nachträglich darüber und die Zelle wird weiss. }
+  if Item.Selected and (lvFiles.Focused or not lvFiles.HideSelection) then Exit;
+
+  Sender.Canvas.Font.Assign(lvFiles.Font);
+  DrawStatusCell(Sender.Canvas, R, Look, Pct, Item.SubItems[0], FPrefs.StemColors,
+    clWindow, clWindowText, False, Screen.PixelsPerInch);
+  DefaultDraw := False;            // Windows soll diese Zelle nicht übermalen
+end;
+
 { Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
 procedure TfrmMain.lvFilesDblClick(Sender: TObject);
 var
@@ -1570,13 +1643,23 @@ begin
     if (lvFiles.Items.Count > 0) and (MessageDlg(
       _('Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?'),
       mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+    begin
+      { "Nochmals" heisst: die vorhandenen Stem-Dateien neu erzeugen.
+        Ohne "überschreiben" würde uStemJob sonst jede Datei als
+        "existiert schon" überspringen. Deshalb nur für diesen Durchlauf
+        mit Überschreiben einen neuen Worker anlegen (die gespeicherte
+        Einstellung bleibt, wie sie ist). }
+      FreeAndNil(FWorker);
+      S.Overwrite := True;
+      FWorker := TStemWorker.Create(Self, S);
       for I := 0 to lvFiles.Items.Count - 1 do
       begin
         FWorker.AddFile(lvFiles.Items[I].SubItems[1], Planned[I], I);
         SetState(lvFiles.Items[I], ST_WAIT);
         lvFiles.Items[I].SubItems[0] := _('wartet');
         Inc(FTotal);
-      end
+      end;
+    end
     else
     begin
       if lvFiles.Items.Count = 0 then
@@ -1617,6 +1700,7 @@ begin
   SaveQueueNow;
   lblFileTime.Caption := '';
   lblTotal.Caption := '';
+  lblTotal.Font.Color := clDefault;     // Farbe der letzten Zusammenfassung weg
   tmrTime.Interval := 1000;
   tmrTime.Enabled := True;
   SetRunning(True);
@@ -1646,12 +1730,25 @@ begin
   Total := FormatDuration(GetTickCount64 - FRunStart);
   AddLog(Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
     [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]));
+  if FWorker.CancelCount > 0 then
+    AddLog(Format(_('Abgebrochen: %d Datei(en)'), [FWorker.CancelCount]));
   { Meldung neben der Uhr (nur wenn nicht abgebrochen und StemMaker
     gerade nicht vorne ist) }
   if not FUserCancelled then
     TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
-  lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total]);
+  if FUserCancelled then
+    lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total])
+  else
+  begin
+    { Zusammenfassung unten: grün = alles gut, rot = mindestens ein Fehler }
+    lblTotal.Caption := Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
+      [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]);
+    if FWorker.FailCount > 0 then
+      lblTotal.Font.Color := CLR_FAIL_TEXT
+    else
+      lblTotal.Font.Color := CLR_OK_TEXT;
+  end;
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Wir sind hier noch IM Ende-Ereignis des Threads - ihn jetzt schon
@@ -1747,6 +1844,8 @@ begin
   AddLog(_('=== Zusammenfassung ==='));
   AddLog(Format(_('  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)'),
     [FTotal, W.OKCount, W.SkipCount, W.FailCount]));
+  if W.CancelCount > 0 then
+    AddLog(Format(_('  Abgebrochen    : %d'), [W.CancelCount]));
   AddLog(Format(_('  Gesamtzeit     : %s'), [FormatDuration(RunMS)]));
   AddLog(Format(_('  Schnitt/Track  : %s  (nur erfolgreiche Tracks)'), [Avg]));
   { Tempo über alle fertigen Dateien: Rechenzeit pro Minute Musik.
@@ -2012,6 +2111,7 @@ var
   S: string;
 begin
   if FWorker <> nil then Exit;     // während der Arbeit zeigt UpdateTimes die Zeiten
+  lblTotal.Font.Color := clDefault;  // grün/rot gilt nur für die Zusammenfassung
   Open := 0;
   Unknown := 0;
   Audio := 0;
