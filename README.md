@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.7.1
+# Elospeed StemMaker 1.8
 
 **by Elospeed**
 
