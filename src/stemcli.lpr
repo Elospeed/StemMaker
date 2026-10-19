@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : stemcli.lpr  (Programm StemCLI - Kommandozeilen-Version)
-  Version : wie StemMaker, siehe APP_VERSION in umain.pas
+  Version : wie StemMaker, siehe APP_VERSION in version.inc
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
@@ -46,6 +46,8 @@ uses
   uLang, uLicense;
 
 {$R *.res}           // Programmsymbol + Versionsinfo
+
+{$I version.inc}     // APP_VERSION, dieselbe Nummer wie StemMaker.exe
 
 type
   { kleine Hilfsklasse, weil OnLog/OnProgress Methoden eines Objekts
@@ -214,7 +216,7 @@ begin
     { keine Dateien -> kurze Hilfe }
     if Files.Count = 0 then
     begin
-      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), ['1.8']));
+      WriteLn(Format(_('StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)'), [APP_VERSION]));
       WriteLn(_('Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]'));
       WriteLn(_('        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]'));
       WriteLn(_('        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)'));

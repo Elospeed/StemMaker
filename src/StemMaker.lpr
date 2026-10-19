@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : StemMaker.lpr  (Hauptprogramm)
-  Version : wie StemMaker, siehe APP_VERSION in umain.pas
+  Version : wie StemMaker, siehe APP_VERSION in version.inc
   ----------------------------------------------------------------------------
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.

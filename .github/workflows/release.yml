@@ -2,7 +2,8 @@
 #
 # So geht's: Actions -> "Release erstellen" -> Run workflow -> Version eintragen
 # (z. B. 1.7.2, ohne "v"). Vorher muss auf main schon alles für diese Version
-# drin sein: APP_VERSION in src/umain.pas, die Versionsinfo in src/StemMaker.lpi
+# drin sein: APP_VERSION in src/version.inc, die Versionsinfo in src/StemMaker.lpi
+# und src/StemCLI.lpi
 # (Projekt -> Projektoptionen -> Versionsinfo) und ein Abschnitt "## <Version> – ..."
 # im CHANGELOG.
 #
@@ -62,10 +63,12 @@ jobs:
           VERSION=$(printf '%s' "$VERSION" | tr -d ' \r')
           VERSION="${VERSION#v}"
           echo "$VERSION" | grep -qE '^[0-9]+(\.[0-9]+)+$' || { echo "::error::Version '$VERSION' ist keine Versionsnummer wie 1.7.2"; exit 1; }
-          APP=$(sed -n "s/^ *APP_VERSION *= *'\(.*\)';.*/\1/p" src/umain.pas | head -n 1 | tr -d '\r')
-          [ "$APP" = "$VERSION" ] || { echo "::error::src/umain.pas hat APP_VERSION '$APP', nicht '$VERSION'"; exit 1; }
+          APP=$(sed -n "s/^ *APP_VERSION *= *'\(.*\)';.*/\1/p" src/version.inc | head -n 1 | tr -d '\r')
+          [ "$APP" = "$VERSION" ] || { echo "::error::src/version.inc hat APP_VERSION '$APP', nicht '$VERSION'"; exit 1; }
           # Versionsinfo der Exe (Eigenschaften -> Details) muss dazu passen
-          grep -q "ProductVersion=\"$VERSION\"" src/StemMaker.lpi || { echo "::error::src/StemMaker.lpi hat nicht ProductVersion=\"$VERSION\""; exit 1; }
+          for LPI in src/StemMaker.lpi src/StemCLI.lpi; do
+            grep -q "ProductVersion=\"$VERSION\"" "$LPI" || { echo "::error::$LPI hat nicht ProductVersion=\"$VERSION\""; exit 1; }
+          done
           grep -q "^## $VERSION " CHANGELOG.md || { echo "::error::Im CHANGELOG fehlt der Abschnitt '## $VERSION – ...'"; exit 1; }
           if gh release view "v$VERSION" --repo "$REPO" > /dev/null 2>&1; then
             echo "::error::Release v$VERSION gibt es schon"; exit 1

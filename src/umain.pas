@@ -40,8 +40,9 @@ uses
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
   uSettings, uStatusDraw, uDonate;
 
+{$I version.inc}   // APP_VERSION
+
 const
-  APP_VERSION = '1.8';
   APP_AUTHOR  = 'Elospeed';
 
 type

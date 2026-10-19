@@ -3,7 +3,7 @@
   ----------------------------------------------------------------------------
   Autor   : Elospeed
   Datei   : udownload.pas  (Unit uDownload)
-  Version : wie StemMaker, siehe APP_VERSION in umain.pas
+  Version : wie StemMaker, siehe APP_VERSION in version.inc
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
