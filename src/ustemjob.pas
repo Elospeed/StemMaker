@@ -484,6 +484,22 @@ begin
   Result := False;
 end;
 
+{ Wo stehen die Tags der Quelle? Für ffmpeg "-map_metadata".
+  Normalerweise in der Datei selbst ('0' = Eingang 0, globale Tags).
+  Bei OGG und Opus stehen sie aber in der Tonspur (Vorbis-Kommentare),
+  dann heisst es '0:s:a:0' = erste Audiospur von Eingang 0. Ohne das
+  fehlen Titel, Interpret und BPM in der Stem-Datei. }
+function TagSourceSpec(const FileName: string): string;
+var
+  E: string;
+begin
+  E := LowerCase(ExtractFileExt(FileName));
+  if (E = '.ogg') or (E = '.opus') then
+    Result := '0:s:a:0'
+  else
+    Result := '0';
+end;
+
 function DefaultStemSettings: TStemSettings;
 var
   AppDir: string;
@@ -1679,7 +1695,8 @@ begin
         fehl, ist das kein Fehler der Umwandlung - dann fehlen eben BPM
         und Tonart. }
       RunTool(FSettings.FFmpegExe, ['-hide_banner', '-nostdin', '-y',
-        '-i', InputFile, '-f', 'ffmetadata', TagFile], False);
+        '-i', InputFile, '-map_metadata', TagSourceSpec(InputFile),
+        '-f', 'ffmetadata', TagFile], False);
       SrcTags := ParseFFMetadata(TagFile);
       Bpm := BpmToInt(SrcTags.BPM);
       if (Bpm > 0) or (SrcTags.Key <> '') then
@@ -1830,7 +1847,7 @@ begin
       if Bpm > 0 then
         Args.AddStrings(['-metadata', 'tmpo=' + IntToStr(Bpm)]);
       Args.AddStrings(['-ar', '44100', '-ac', '2',
-        '-map_metadata', '0',               // Tags (Titel, Artist, ...) vom Original
+        '-map_metadata', TagSourceSpec(InputFile),  // Tags (Titel, Artist, ...) vom Original
         '-map_chapters', '-1',              // keine Kapitel
         { Nur die Master-Spur ist "aktiv". Die anderen 4 werden als
           "deaktiviert" markiert - normale Player spielen dann nur den
