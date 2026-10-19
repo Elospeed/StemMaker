@@ -224,7 +224,7 @@ begin
   lblSub.BorderSpacing.Left := 10;
   lblSub.BorderSpacing.Bottom := 8;
   lblSub.Caption :=
-    Format(_('von %s  ·  Traktor-Stem-Dateien aus MP3  ·  kostenlos && quelloffen  ·  ' +
+    Format(_('von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  ' +
     'Build: %s'), [Author, {$I %DATE%}]) + LineEnding +
     Format(_('Aktuelles Log: %s'), [ExtractFileName(LogFileName)]);
   lblSub.Font.Color := clGrayText;

@@ -7,10 +7,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Unveröffentlicht
+## 1.8.1 – 19. Oktober 2026
 
 ### StemMaker – kleinere Fehler behoben
 - **Tags aus OGG- und Opus-Dateien kommen mit:** Titel, Interpret, Album und BPM fehlten bisher in der Stem-Datei, wenn die Quelle eine `.ogg`- oder `.opus`-Datei war.
+- **Fenstertitel und Info-Fenster** sagen jetzt „aus Audiodateien“ statt „aus MP3“, denn StemMaker nimmt auch WAV, FLAC, AIFF, M4A, AAC, OGG und Opus.
 
 ## 1.8 – 18. Oktober 2026
 
