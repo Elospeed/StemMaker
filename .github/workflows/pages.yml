@@ -10,6 +10,12 @@ on:
     paths: ["site/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
+env:
+  # Schlüssel für IndexNow (Bing, Yandex, Seznam, Naver ...). Die gleichnamige
+  # Datei site/<schlüssel>.txt beweist, dass die Seite uns gehört. Nie löschen.
+  INDEXNOW_KEY: 51d5564bbc6dc356db4cfe7203a41425
+  SEITE: https://elospeed.github.io/StemMaker
+
 permissions:
   contents: read
   pages: write
@@ -27,9 +33,34 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Ganze Historie, damit das Datum der letzten Änderung stimmt
+          fetch-depth: 0
+      # lastmod in der Sitemap auf das Datum der letzten Änderung in site/
+      # setzen, damit Suchmaschinen sehen, dass sich etwas getan hat.
+      - name: Sitemap-Datum aktualisieren
+        run: |
+          DATUM=$(git log -1 --format=%cs -- site)
+          sed -i "s|<lastmod>[^<]*</lastmod>|<lastmod>$DATUM</lastmod>|g" site/sitemap.xml
+          grep lastmod site/sitemap.xml
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
       - id: deployment
         uses: actions/deploy-pages@v4
+      # Neue Version sofort per IndexNow melden (Bing, Yandex, Seznam, Naver).
+      # Google nutzt IndexNow nicht, dort reicht die Sitemap in der Search Console.
+      # Ein Fehler hier bricht die Veröffentlichung nicht ab.
+      - name: Suchmaschinen per IndexNow benachrichtigen
+        continue-on-error: true
+        run: |
+          # Kurz warten, bis die neue Version ausgeliefert wird
+          sleep 30
+          URLS=$(grep -o '<loc>[^<]*</loc>' site/sitemap.xml | sed 's|</\?loc>||g' | jq -R . | jq -sc .)
+          echo "Melde: $URLS"
+          curl -sS -o antwort.txt -w "HTTP %{http_code}\n" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"elospeed.github.io\",\"key\":\"$INDEXNOW_KEY\",\"keyLocation\":\"$SEITE/$INDEXNOW_KEY.txt\",\"urlList\":$URLS}" \
+            https://api.indexnow.org/indexnow
+          cat antwort.txt
