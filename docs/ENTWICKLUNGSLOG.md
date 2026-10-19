@@ -28,6 +28,7 @@ Neueste Einträge oben.
 | Ein Tag-Name wie `©pub` ist 4 **Bytes** mit `$A9` am Anfang – in UTF-8 wären es 5 Bytes und die Box wäre kaputt. | Im Quelltext als `#$A9'pub'` schreiben, nie als `'©pub'`. |
 | Wird eine Datei zweimal bearbeitet, dürfen Tags nicht doppelt drinstehen. | Vor dem Schreiben wird ein gleichnamiger Tag entfernt. Freiform-Tags werden beim Einlesen nicht zerlegt, darum wird der Name einfach in den Bytes der `----`-Box gesucht (`FreeformHasName`). Zweimal hintereinander ausgeführt: gleiche Anzahl Tags, Audio unverändert (geprüft, auch mit einer echten 36-MB-Stem-Datei). |
 | Was macht Traktor damit? | Titel, Artist, Album, Genre, Label und Cover zeigt Traktor direkt. BPM und Tonart überschreibt Traktor mit seiner eigenen Analyse – der Tag ist für die Anzeige vor der Analyse und für andere Programme. Traktors eigene Stem-Dateien enthalten übrigens gar keine Tags (nur `NITR`). |
+| OGG- und Opus-Quellen: Titel, Interpret und BPM fehlten in der Stem-Datei (Formattest 19.10.2026, alle anderen Formate OK). Vorbis-Kommentare liegen bei ffmpeg in der Audiospur, `-map_metadata 0` und `-f ffmetadata` lesen nur die globalen Tags. | `TagSourceSpec` in `uStemJob`: bei `.ogg`/`.opus` `-map_metadata 0:s:a:0` (erste Audiospur), sonst `0`. Gilt für das Lesen der Tags und für das Zusammenbauen. |
 
 ---
 
