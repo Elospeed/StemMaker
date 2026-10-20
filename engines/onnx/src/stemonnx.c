@@ -63,7 +63,7 @@
 #include <dxgi.h>
 #include "onnxruntime_c_api.h"
 
-#define STEMONNX_VERSION "0.2"
+#define STEMONNX_VERSION "0.3"
 
 #define SR       44100
 #define SEG      343980          /* 7,8 s bei 44,1 kHz, feste Eingangslänge des Modells */
@@ -843,6 +843,7 @@ int wmain(int argc, wchar_t **argv)
      einmal versagt hat */
   char key[512], merk[256] = "aus: unbekannt";
   int try_gpu = strcmp(geraet, "cpu") != 0;
+  int bewaehrt = 0;            /* Grafikkarte hat die volle Prüfung schon bestanden */
   gpu_key(key, sizeof key);
   if (!strcmp(geraet, "auto")) {
     say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
@@ -850,6 +851,10 @@ int wmain(int argc, wchar_t **argv)
     else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strncmp(merk, "aus", 3) == 0) {
       say("Grafikkarte übersprungen, frühere Prüfung: %s (neu prüfen mit --neu-pruefen)\n", merk);
       try_gpu = 0;
+    } else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strcmp(merk, "ein") == 0) {
+      /* schon einmal gegen die CPU verglichen: der Vergleichs-Abschnitt auf
+         der CPU entfällt, die Plausibilitätsprüfung bleibt */
+      bewaehrt = 1;
     }
   }
   double t_load = 0, t_sep = 0;
@@ -880,7 +885,7 @@ int wmain(int argc, wchar_t **argv)
       fill_segment((long)probe * g_stride, in, &pst, &plen);
       double t_cpu = 0;
       OrtSession *cpu = NULL;
-      if (!strcmp(geraet, "auto")) {
+      if (!strcmp(geraet, "auto") && !bewaehrt) {
         cpu = new_session(DEV_CPU, -1);
         if (!cpu) return 4;
         if (ort_fail(run_segment(cpu, g_mem, in, res_cpu, &t_cpu), "Probe auf der CPU")) return 5;
