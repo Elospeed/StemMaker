@@ -524,7 +524,7 @@ begin
     _('Alle Dateien') + '|*.*';
   dlgFolder.Title := _('Ordner mit Audiodateien wählen');
 
-  Caption := Format(_('%s %s  -  Traktor Stems (*.stem.mp4) aus MP3'),
+  Caption := Format(_('%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien'),
     [APP_NAME, APP_VERSION]);
 
   { Modell-Auswahl füllen (Texte kommen aus uStemJob) }
