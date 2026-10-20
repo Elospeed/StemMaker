@@ -44,7 +44,7 @@
   "inLanguage": "de",
   "url": "https://elospeed.github.io/StemMaker/de/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "1.6",
+  "softwareVersion": "1.8.1",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
@@ -97,12 +97,12 @@
 <section id="video">
   <div class="wrap">
     <h2>So sieht es aus</h2>
-    <p class="sub">Von der MP3 zur Traktor-Stem-Datei und danach Probehören im StemPlayer: Stumm, Solo, A/B mit dem Original und Fader. Ton an!</p>
+    <p class="sub">Von der Musikdatei zur Traktor-Stem-Datei und danach Probehören im StemPlayer mit Wellenform für jeden Stem: Springen, Stumm, Solo, A/B mit dem Original und Fader. Ton an!</p>
     <figure class="video">
       <video controls playsinline preload="none" width="1280" height="720" poster="../video/poster-de.jpg" aria-label="Demovideo: Eine MP3 wird mit StemMaker in eine Traktor-Stem-Datei umgewandelt und im StemPlayer geprüft">
         <source src="../video/stemmaker-de.mp4" type="video/mp4">
       </video>
-      <figcaption>61 Sekunden. Die Umwandlung läuft im Zeitraffer, echt dauert sie je nach PC etwa 5 bis 15 Minuten pro Song.</figcaption>
+      <figcaption>64 Sekunden. Die Umwandlung läuft im Zeitraffer, echt dauert sie je nach PC etwa 5 bis 15 Minuten pro Song.</figcaption>
     </figure>
   </div>
 </section>
@@ -114,7 +114,7 @@
     <div class="grid">
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Vier echte Stems</h3><p>Drums, Bass, Other (Melodie) und Vox, dazu das Original als Master-Spur, genau im Format, das Traktor erwartet. Namen und Farben sind einstellbar.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Qualität wie Traktor</h3><p>Nutzt das Open-Source-Modell Demucs v4 (htdemucs). Im direkten Vergleich mit einer Stem-Datei aus Traktor Pro 4 waren Drums, Gesang und Pegel praktisch gleich. Drei Modelle zur Wahl: htdemucs_ft für die beste Qualität, Demucs v3, wenn es schneller gehen soll.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Für ganze Sammlungen gebaut</h3><p>Ganze Ordner hinzufügen, vor dem Start die geschätzte Dauer sehen und über Nacht laufen lassen. Die Liste wird nach jeder Datei gespeichert: Ein Absturz oder Stromausfall kostet einen Track, nicht den ganzen Lauf. In unserem eigenen Belastungstest kamen 400 Dateien in verschachtelten Ordnern vollständig durch, auch nach Abbrüchen und hart beendetem Programm, mit 1:1 nachgebautem Ordnerbaum.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Für ganze Sammlungen gebaut</h3><p>Ganze Ordner hinzufügen, vor dem Start die geschätzte Dauer sehen und über Nacht laufen lassen. In der Liste zeigt ein Balken den Fortschritt der laufenden Datei, fertige Dateien bekommen ein Häkchen und vier Farbpunkte. Die Liste wird nach jeder Datei gespeichert: Ein Absturz oder Stromausfall kostet einen Track, nicht den ganzen Lauf. In unserem eigenen Belastungstest kamen 400 Dateien in verschachtelten Ordnern vollständig durch, auch nach Abbrüchen und hart beendetem Programm, mit 1:1 nachgebautem Ordnerbaum.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Tags und Cover bleiben</h3><p>Titel, Interpret, Album, Genre, Jahr, Tracknummer, BPM, Tonart, Label und Cover werden aus der MP3 übernommen. So sieht die Stem-Datei in deiner Traktor-Collection richtig aus.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Nativ statt Python-Installation</h3><p>Das ganze Programm ist eine 4 MB grosse Windows-EXE, die Trennung läuft über C++-Code (demucs.cpp) statt über Python und PyTorch. Kein Python und keine Treiber zu installieren, nichts im Hintergrund, kein Konto, keine Cloud. Startet in einer Sekunde, und deine Musik verlässt den PC nie.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club-Pegel und Bass-Fix</h3><p>Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, damit die Wellenformen gut lesbar sind und ein Stem im Set nicht plötzlich im Pegel abfällt. Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem, so wie bei Traktor. Kick und Bass bleiben dadurch satt.</p></div>
@@ -163,7 +163,8 @@
       <h2>Erst reinhören, dann auflegen</h2>
       <p class="sub" style="margin-bottom:0">Mit dem mitgelieferten StemPlayer prüfst du eine fertige Stem-Datei, ohne sie vorher in Traktor zu importieren.</p>
       <ul class="ticks">
-        <li><strong>Stumm, Solo und Lautstärke</strong> für jeden Stem, mit Pegelanzeige</li>
+        <li><strong>Wellenform für jeden Stem</strong> in seiner Farbe, ein Klick springt an die Stelle (oder umschalten auf die kompakte Ansicht)</li>
+        <li><strong>Stumm, Solo und Lautstärke</strong> für jeden Stem, mit Pegelanzeige. Solo wie am DJ-Mixer, mit Strg auch mehrere</li>
         <li><strong>A/B-Vergleich</strong> mit dem Original</li>
         <li><strong>Modus „Rest“</strong> zeigt, was bei der Trennung verloren ging</li>
         <li>Öffnet per Drag &amp; Drop oder direkt aus StemMaker</li>
@@ -171,7 +172,7 @@
     </div>
     <figure class="shot">
       <div class="bar"><img src="../img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="../img/stemplayer.png" width="820" height="590" alt="StemPlayer im dunklen Traktor-Look mit Stumm, Solo und Lautstärke für Drums, Bass, Other und Vox" loading="lazy">
+      <img src="../img/stemplayer.png" width="820" height="766" alt="StemPlayer im dunklen Traktor-Look mit Wellenform, Stumm, Solo und Lautstärke für Drums, Bass, Other und Vox" loading="lazy">
     </figure>
   </div>
 </section>
