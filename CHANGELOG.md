@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 1.8.1 – 19. Oktober 2026
+## 1.8.1 – 20. Oktober 2026
 
 ### StemMaker – kleinere Fehler behoben
 - **Tags aus OGG- und Opus-Dateien kommen mit:** Titel, Interpret, Album und BPM fehlten bisher in der Stem-Datei, wenn die Quelle eine `.ogg`- oder `.opus`-Datei war.
