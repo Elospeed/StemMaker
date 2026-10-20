@@ -15,6 +15,7 @@ Gleiche Qualität wie das Original-demucs, nur schneller. Gemessen am 20.10.2026
 
 | Vergleich | drums | bass | other | vocals |
 |---|---|---|---|---|
+| StemOnnx (CPU, Windows, Werkstatt-PC) gegen Original-demucs in PyTorch | 81 dB | 67 dB | 73 dB | 88 dB |
 | StemOnnx (CPU) gegen Original-demucs in PyTorch | 81 dB | 67 dB | 73 dB | 88 dB |
 | StemOnnx (CPU) gegen StemGPU auf RTX 4060 Ti (16 Bit) | 73 dB | 62 dB | 66 dB | 66 dB |
 
@@ -28,6 +29,8 @@ Bewusst **nicht** benutzt, weil die Qualität leidet (Versuch vom 13.10.2026): i
 |---|---|---|
 | Cloud, 4 Kerne (Wine) | demucs.cpp (wie StemMaker) | 195 |
 | Cloud, 4 Kerne (Wine) | StemOnnx CPU | 31 |
+| Werkstatt, i5-2500 (Windows, 20.10.2026) | demucs.cpp v4 (wie StemMaker) | 440 bis 584 |
+| Werkstatt, i5-2500 (Windows, 20.10.2026) | StemOnnx CPU | 52 |
 | i7-12700KF (StemGPU-Versuch) | CPU | 15 |
 | i7-12700KF (StemGPU-Versuch) | RTX 4060 Ti | 4 |
 | Clubraum-PC, zum Vergleich | Traktor Pro 4 | 47 |
@@ -37,13 +40,14 @@ Bewusst **nicht** benutzt, weil die Qualität leidet (Versuch vom 13.10.2026): i
 Die ersten vier Parameter sind dieselben wie bei demucs.cpp, damit StemMaker die Engine später einfach austauschen kann:
 
 ```
-StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile] [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>]
+StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile] [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]
 ```
 
 - `<modell>`: `ggml-model-htdemucs-4s-f16.bin` aus `StemMaker\models`, oder für htdemucs_ft der Ordner mit den 4 ft-Dateien
 - `[teile]`: wird angenommen, aber nicht gebraucht (ONNX Runtime nutzt alle Kerne selbst)
 - `--geraet auto` (Standard): die Grafikkarte wird nur genommen, wenn sie einen Probe-Abschnitt **richtig** (Vergleich mit der CPU, mindestens 40 dB) **und schneller** als die CPU rechnet. Sonst CPU. Der Probe-Abschnitt wird mitbenutzt, nicht weggeworfen.
 - Fällt die Grafikkarte mitten im Song aus (z. B. setzt Windows eine schwache Karte zurück), rechnet StemOnnx auf der CPU weiter.
+- Das Ergebnis der Prüfung merkt sich StemOnnx in `%LOCALAPPDATA%\StemOnnx\geraet.txt`, zusammen mit Name und Treiber-Version der Grafikkarte. Hat die Karte versagt, wird sie beim nächsten Start gleich übersprungen (Werkstatt-PC mit GT 1030: 1,5 statt 28,5 s Start). Nach einem Treiber-Update oder mit `--neu-pruefen` wird wieder geprüft. Ohne echte Grafikkarte wird gar nicht erst probiert.
 - Ergebnis: `target_0_drums.wav`, `target_1_bass.wav`, `target_2_other.wav`, `target_3_vocals.wav` (32-Bit-Float) wie bei demucs.cpp, Fortschritt als `( 12.345%)`-Zeilen wie bei demucs.cpp.
 - hdemucs_mmi (v3) wird nicht unterstützt: Exit-Code 10, dann bleibt es bei demucs.cpp.
 

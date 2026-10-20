@@ -25,6 +25,8 @@
       --kerne <anzahl>        CPU-Kerne für ONNX Runtime (Standard: alle)
       --ergebnis <datei>      Zusammenfassung (Gerät, Zeiten) an diese
                               Textdatei anhängen, für Tests
+      --neu-pruefen           Grafikkarte neu prüfen, auch wenn sie früher
+                              versagt hat (sonst gemerkt, siehe gpu_key)
 
   Ergebnis: target_0_drums.wav, target_1_bass.wav, target_2_other.wav,
   target_3_vocals.wav (32-Bit-Float, 44,1 kHz, Stereo) wie bei demucs.cpp.
@@ -58,9 +60,10 @@
 #include <string.h>
 #include <wchar.h>
 #include <math.h>
+#include <dxgi.h>
 #include "onnxruntime_c_api.h"
 
-#define STEMONNX_VERSION "0.1"
+#define STEMONNX_VERSION "0.2"
 
 #define SR       44100
 #define SEG      343980          /* 7,8 s bei 44,1 kHz, feste Eingangslänge des Modells */
@@ -92,10 +95,12 @@ static void say(const char *fmt, ...)
 }
 
 /* Fehler von ONNX Runtime ausgeben. Rückgabe 1 = es gab einen Fehler. */
+static char g_lasterr[1024];                 /* Text des letzten Fehlers */
 static int ort_fail(OrtStatus *st, const char *was)
 {
   if (st == NULL) return 0;
-  say("[ERROR] %s: %s\n", was, g_ort->GetErrorMessage(st));
+  snprintf(g_lasterr, sizeof g_lasterr, "%s", g_ort->GetErrorMessage(st));
+  say("[ERROR] %s: %s\n", was, g_lasterr);
   g_ort->ReleaseStatus(st);
   return 1;
 }
@@ -594,6 +599,100 @@ static double snr_db(const float *ref, const float *x)
 }
 
 
+/* ---------- Grafikkarte erkennen und Ergebnis merken ----------
+   Die Prüfung der Grafikkarte kostet beim ersten Mal Zeit (auf dem
+   Werkstatt-PC mit GT 1030: 27 s, bis die Karte zweimal ausgestiegen war).
+   Das Ergebnis kommt darum in %LOCALAPPDATA%\StemOnnx\geraet.txt, zusammen
+   mit Name und Treiber-Version der Grafikkarten. Beim nächsten Start wird
+   eine Karte, die schon einmal versagt hat, gleich übersprungen. Nach einem
+   Treiber-Update oder einer neuen Karte ändert sich der Schlüssel, dann wird
+   wieder geprüft. Mit --neu-pruefen auch sonst. */
+
+/* IIDs selbst angeben, dann braucht der Build keine Zusatz-Bibliothek */
+static const GUID MY_IID_IDXGIFactory1 = {0x770aae78, 0xf26f, 0x4dba, {0xa8, 0x29, 0x25, 0x3c, 0x83, 0xd1, 0xb3, 0x87}};
+static const GUID MY_IID_IDXGIDevice = {0x54ec77fa, 0x1377, 0x44e6, {0x8c, 0x32, 0x88, 0xfd, 0x5f, 0x44, 0xc8, 0x4c}};
+
+/* Schlüssel aus allen echten Grafikkarten: "Name|Treiber;Name|Treiber".
+   Leer = keine Grafikkarte (nur Software-Anzeige, z. B. in einer VM). */
+static void gpu_key(char *key, size_t size)
+{
+  key[0] = 0;
+  HMODULE d = LoadLibraryA("dxgi.dll");
+  if (!d) return;
+  typedef HRESULT (WINAPI *CreateFn)(REFIID, void **);
+  CreateFn create = (CreateFn)GetProcAddress(d, "CreateDXGIFactory1");
+  IDXGIFactory1 *f = NULL;
+  if (!create || FAILED(create(&MY_IID_IDXGIFactory1, (void **)&f)) || !f) return;
+  IDXGIAdapter1 *a;
+  for (UINT i = 0; f->lpVtbl->EnumAdapters1(f, i, &a) == S_OK; i++) {
+    DXGI_ADAPTER_DESC1 dd;
+    LARGE_INTEGER umd = {0};
+    if (SUCCEEDED(a->lpVtbl->GetDesc1(a, &dd)) && !(dd.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+        && dd.VendorId != 0x1414) {                  /* 0x1414 = Microsoft (Basic Render Driver) */
+      a->lpVtbl->CheckInterfaceSupport(a, &MY_IID_IDXGIDevice, &umd);
+      char name[128];
+      WideCharToMultiByte(CP_UTF8, 0, dd.Description, -1, name, sizeof name, NULL, NULL);
+      size_t L = strlen(key);
+      snprintf(key + L, size - L, "%s%s|%u.%u.%u.%u", L ? ";" : "", name,
+               (unsigned)HIWORD(umd.HighPart), (unsigned)LOWORD(umd.HighPart),
+               (unsigned)HIWORD(umd.LowPart), (unsigned)LOWORD(umd.LowPart));
+    }
+    a->lpVtbl->Release(a);
+  }
+  f->lpVtbl->Release(f);
+}
+
+static wchar_t *cache_path(void)
+{
+  static wchar_t p[MAX_PATH * 2];
+  wchar_t base[MAX_PATH * 2];
+  DWORD n = GetEnvironmentVariableW(L"LOCALAPPDATA", base, MAX_PATH * 2);
+  if (n == 0 || n >= MAX_PATH * 2) return NULL;
+  swprintf(p, MAX_PATH * 2, L"%ls\\StemOnnx", base);
+  CreateDirectoryW(p, NULL);
+  swprintf(p, MAX_PATH * 2, L"%ls\\StemOnnx\\geraet.txt", base);
+  return p;
+}
+
+/* Gemerktes Ergebnis für diesen Schlüssel lesen ("ein" oder "aus: Grund").
+   Rückgabe 0 = nichts gemerkt. */
+static int cache_read(const char *key, char *status, size_t size)
+{
+  wchar_t *p = cache_path();
+  FILE *f = p ? _wfopen(p, L"r") : NULL;
+  if (!f) return 0;
+  char line[1024];
+  int found = 0;
+  while (!found && fgets(line, sizeof line, f)) {
+    line[strcspn(line, "\r\n")] = 0;
+    char *tab = strchr(line, '\t');
+    if (tab && (size_t)(tab - line) == strlen(key) && !strncmp(line, key, tab - line)) {
+      snprintf(status, size, "%s", tab + 1);
+      found = 1;
+    }
+  }
+  fclose(f);
+  return found;
+}
+
+static void cache_write(const char *key, const char *status)
+{
+  wchar_t *p = cache_path();
+  FILE *f = p ? _wfopen(p, L"w") : NULL;
+  if (!f) return;
+  fprintf(f, "%s\t%s\n", key, status);
+  fclose(f);
+}
+
+/* Windows-Fehler "Grafikkarte hängt / wurde entfernt / zurückgesetzt": dann
+   hilft auch die zweite DirectML-Variante nicht mehr */
+static int device_lost(void)
+{
+  return strstr(g_lasterr, "887A0005") || strstr(g_lasterr, "887A0006") || strstr(g_lasterr, "887A0007")
+      || strstr(g_lasterr, "887a0005") || strstr(g_lasterr, "887a0006") || strstr(g_lasterr, "887a0007");
+}
+
+
 /* ---------- Hauptprogramm ---------- */
 
 /* Abschnitt Nummer i in den Eingangspuffer kopieren. Das kurze Endstück wird
@@ -623,6 +722,7 @@ int wmain(int argc, wchar_t **argv)
   int npos = 0, gpu_id = -1;
   const char *geraet = "auto";
   const wchar_t *ergebnis = NULL;
+  int neu_pruefen = 0;
   for (int i = 1; i < argc; i++) {
     if (!wcscmp(argv[i], L"--geraet") && i + 1 < argc) {
       i++;
@@ -632,11 +732,12 @@ int wmain(int argc, wchar_t **argv)
     } else if (!wcscmp(argv[i], L"--gpu") && i + 1 < argc) gpu_id = _wtoi(argv[++i]);
     else if (!wcscmp(argv[i], L"--kerne") && i + 1 < argc) g_kerne = _wtoi(argv[++i]);
     else if (!wcscmp(argv[i], L"--ergebnis") && i + 1 < argc) ergebnis = argv[++i];
+    else if (!wcscmp(argv[i], L"--neu-pruefen")) neu_pruefen = 1;
     else if (npos < 4) pos[npos++] = argv[i];
   }
   if (npos < 3) {
     say("\nAufruf: StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile]\n"
-        "        [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>]\n\n"
+        "        [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]\n\n"
         "<modell>: ggml-model-htdemucs-4s-f16.bin oder der Ordner mit den 4 htdemucs_ft-Dateien\n");
     return 1;
   }
@@ -737,6 +838,20 @@ int wmain(int argc, wchar_t **argv)
 
   int dev = DEV_CPU;
   char dev_txt[160] = "CPU";
+
+  /* auto: Grafikkarte nur probieren, wenn es eine gibt und sie nicht schon
+     einmal versagt hat */
+  char key[512], merk[256] = "aus: unbekannt";
+  int try_gpu = strcmp(geraet, "cpu") != 0;
+  gpu_key(key, sizeof key);
+  if (!strcmp(geraet, "auto")) {
+    say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
+    if (!key[0]) try_gpu = 0;
+    else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strncmp(merk, "aus", 3) == 0) {
+      say("Grafikkarte übersprungen, frühere Prüfung: %s (neu prüfen mit --neu-pruefen)\n", merk);
+      try_gpu = 0;
+    }
+  }
   double t_load = 0, t_sep = 0;
 
   for (int mi = 0; mi < nmodels; mi++) {
@@ -756,7 +871,7 @@ int wmain(int argc, wchar_t **argv)
     const char *prefix = nmodels > 1 ? SRC_UPPER[mi] : "";
     const char *tab = nmodels > 1 ? "\t " : "";
 
-    if (mi == 0 && strcmp(geraet, "cpu") != 0) {
+    if (mi == 0 && try_gpu) {
       /* Grafikkarte probieren: jede Variante muss den Probe-Abschnitt richtig
          rechnen. Bei "auto" auch schneller als die CPU sein, und das Ergebnis
          muss mit der CPU übereinstimmen (gemessen: 56 bis 66 dB Abstand,
@@ -774,26 +889,43 @@ int wmain(int argc, wchar_t **argv)
       for (int d = DEV_DML; d <= DEV_DML_NOMETA && !sess; d++) {
         say("Probiere %s ...\n", DEV_NAMES[d]);
         OrtSession *g = new_session(d, gpu_id);
-        if (!g) continue;
+        if (!g) { snprintf(merk, sizeof merk, "aus: lässt sich nicht einschalten"); continue; }
         double t1 = 0, t2 = 0;
         float mx;
         /* zweimal: der erste Lauf richtet die Grafikkarte erst ein */
         int ok = !ort_fail(run_segment(g, g_mem, in, res, &t1), "Probe auf der Grafikkarte");
         if (ok) ok = !ort_fail(run_segment(g, g_mem, in, res, &t2), "Probe auf der Grafikkarte");
-        if (ok && !plausible(res, &mx)) { say("Probe rechnet falsch (Wert %g)\n", mx); ok = 0; }
+        if (!ok) snprintf(merk, sizeof merk, "aus: Probe abgestürzt");
+        if (ok && !plausible(res, &mx)) {
+          say("Probe rechnet falsch (Wert %g)\n", mx);
+          snprintf(merk, sizeof merk, "aus: rechnet falsch");
+          ok = 0;
+        }
         if (ok && cpu) {
           double snr = snr_db(res_cpu, res);
           say("Probe Grafikkarte: %.2f s, Abstand zur CPU %.0f dB\n", t2, snr);
-          if (snr < 40) { say("-> Grafikkarte rechnet ungenau, nicht benutzt\n"); ok = 0; }
-          else if (t2 * 1.2 > t_cpu) {
+          if (snr < 40) {
+            say("-> Grafikkarte rechnet ungenau, nicht benutzt\n");
+            snprintf(merk, sizeof merk, "aus: rechnet ungenau (%.0f dB)", snr);
+            ok = 0;
+          } else if (t2 * 1.2 > t_cpu) {
             say("-> Grafikkarte nicht schneller als die CPU, rechne auf der CPU\n");
+            snprintf(merk, sizeof merk, "aus: nicht schneller als die CPU (%.2f s gegen %.2f s)", t2, t_cpu);
             g_ort->ReleaseSession(g);
             break;
           }
         }
         if (ok) { sess = g; dev = d; }
-        else g_ort->ReleaseSession(g);
+        else {
+          g_ort->ReleaseSession(g);
+          if (device_lost()) {
+            say("-> Grafikkarte wurde von Windows zurückgesetzt, keine weitere Variante\n");
+            break;
+          }
+        }
       }
+      /* Ergebnis merken (nur bei auto, dort wurde richtig verglichen) */
+      if (!strcmp(geraet, "auto") && key[0]) cache_write(key, sess ? "ein" : merk);
       if (sess) {
         if (cpu) g_ort->ReleaseSession(cpu);
         cpu = NULL;
@@ -847,6 +979,7 @@ int wmain(int argc, wchar_t **argv)
            schwache Karte nach 2 s Rechenzeit zurück): auf der CPU weiter */
         ort_fail(rs, "Trennen auf der Grafikkarte");
         say("-> Grafikkarte ausgefallen, rechne ab hier auf der CPU weiter\n");
+        if (key[0]) cache_write(key, "aus: mitten im Song ausgefallen");
         g_ort->ReleaseSession(sess);
         dev = DEV_CPU;
         sess = new_session(DEV_CPU, -1);

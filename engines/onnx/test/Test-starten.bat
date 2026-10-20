@@ -16,30 +16,30 @@ if "%~1"=="" (
   exit /b 1
 )
 
-rem StemMaker-Ordner suchen (Installation pro Benutzer, für alle, oder daneben)
-set "SM="
-for %%D in ("%LOCALAPPDATA%\Programs\StemMaker" "%ProgramFiles%\StemMaker" "%~dp0..\StemMaker") do (
-  if not defined SM if exist "%%~D\StemMaker.exe" set "SM=%%~D"
-)
-
+rem Modell und ffmpeg suchen: zuerst hier im Ordner, dann im installierten
+rem StemMaker (pro Benutzer oder für alle), dann im Ordner daneben.
+rem Gesucht wird direkt nach den Dateien, nicht nach StemMaker.exe.
+set "MODELL="
 set "FF="
-if exist "ffmpeg.exe" set "FF=%~dp0ffmpeg.exe"
-if not defined FF if defined SM if exist "%SM%\tools\ffmpeg.exe" set "FF=%SM%\tools\ffmpeg.exe"
+call :suche "%~dp0"
+call :suche "%LOCALAPPDATA%\Programs\StemMaker\"
+call :suche "%ProgramFiles%\StemMaker\"
+call :suche "%~dp0..\StemMaker\"
+call :suche "%~dp0..\"
+if not defined FF for /f "delims=" %%F in ('where ffmpeg 2^>nul') do if not defined FF set "FF=%%F"
 if not defined FF (
   echo FEHLER: ffmpeg.exe nicht gefunden. Bitte aus StemMaker\tools hierher kopieren.
   pause
   exit /b 1
 )
-
-set "MODELL="
-if exist "ggml-model-htdemucs-4s-f16.bin" set "MODELL=%~dp0ggml-model-htdemucs-4s-f16.bin"
-if not defined MODELL if defined SM if exist "%SM%\models\ggml-model-htdemucs-4s-f16.bin" set "MODELL=%SM%\models\ggml-model-htdemucs-4s-f16.bin"
 if not defined MODELL (
   echo FEHLER: Modell ggml-model-htdemucs-4s-f16.bin nicht gefunden.
   echo Bitte StemMaker einmal starten, damit es das Modell lädt, oder die Datei hierher kopieren.
   pause
   exit /b 1
 )
+echo Modell: %MODELL%
+echo ffmpeg: %FF%
 
 echo Wandle "%~nx1" in WAV um ...
 "%FF%" -hide_banner -loglevel error -y -i "%~1" -vn -ac 2 -ar 44100 -c:a pcm_s16le "eingang.wav"
@@ -61,3 +61,12 @@ type ergebnis.txt
 del eingang.wav
 echo.
 pause
+exit /b 0
+
+rem Unterprogramm: sucht in Ordner %1 (und dessen models\ und tools\)
+:suche
+if not defined MODELL if exist "%~1ggml-model-htdemucs-4s-f16.bin" set "MODELL=%~1ggml-model-htdemucs-4s-f16.bin"
+if not defined MODELL if exist "%~1models\ggml-model-htdemucs-4s-f16.bin" set "MODELL=%~1models\ggml-model-htdemucs-4s-f16.bin"
+if not defined FF if exist "%~1ffmpeg.exe" set "FF=%~1ffmpeg.exe"
+if not defined FF if exist "%~1tools\ffmpeg.exe" set "FF=%~1tools\ffmpeg.exe"
+exit /b 0
