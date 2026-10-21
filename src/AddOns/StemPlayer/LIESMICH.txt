@@ -30,6 +30,8 @@ BEDIENUNG
   W              Ansicht Kompakt / Wellenform umschalten
   A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
   L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
+  Shift+Pfeil    Loop-Punkt A um 10 ms verschieben
+  Strg+Pfeil     Loop-Punkt B um 10 ms verschieben
 
 WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
@@ -52,6 +54,17 @@ LOOP A-B
   - L schaltet den Loop aus und wieder an (gemerkt bleibt er). Beim
     Einschalten ausserhalb des Loops springt die Wiedergabe zu A.
   - Rücktaste oder der Knopf × löscht den Loop.
+  LUPE (Streifen unter der Original-Wellenform)
+  Zeigt nur einige Sekunden rund um den roten Strich, der in der Mitte
+  stehen bleibt, während die Welle durchläuft. Darin setzt man den Loop
+  genau:
+  - Rechte Maustaste ziehen: neuer Loop. Anfang und Ende rasten am
+    Zeitraster ein (feine Linien), mit gedrückter Shift-Taste frei.
+  - Marken A und B mit der linken Maustaste packen und verschieben.
+  - Mausrad: näher heran (bis 1 Sekunde) oder weiter weg (bis 1 Minute).
+    Das Raster passt sich an (bis 0,01 s fein).
+  - Klick neben die Marken springt an diese Stelle.
+  - Shift+Pfeil / Strg+Pfeil verschiebt A bzw. B um 10 ms.
   Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
   Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken
   Maustaste springt wie gewohnt. Springt man vor den Loop, wird man
@@ -95,4 +108,5 @@ VERSIONEN
        Kompakt / Wellenform (Taste W), Wahl wird gespeichert.
        Solo ist exklusiv (mehrere Solos mit Strg)
   1.6  Loop A-B: Abschnitt endlos wiederholen (Tasten A, B, L oder
-       rechte Maustaste in der Wellenform ziehen), nahtloser Rücksprung
+       rechte Maustaste in der Wellenform ziehen), nahtloser Rücksprung,
+       Lupe mit Zeitraster zum genauen Setzen, Marken verschiebbar
