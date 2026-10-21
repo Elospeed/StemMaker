@@ -15,6 +15,13 @@
                  gewünschte Position über OnSeek (0..1) ans Hauptfenster.
                  Mit der rechten Maustaste zieht man einen Loop-Bereich auf
                  (OnLoopSelect). Ein gesetzter Loop wird grün hinterlegt.
+    TZoomView    "Lupe": zeigt nur wenige Sekunden rund um den Abspielkopf
+                 (der rote Strich steht in der Mitte, die Welle läuft durch),
+                 mit Zeitraster. Darin lässt sich der Loop genau setzen:
+                 rechte Maustaste ziehen (rastet am Raster ein, Shift =
+                 frei), Marken A und B mit der linken Maustaste verschieben,
+                 Mausrad zoomt. Grundlage ist eine feine Hüllkurve des
+                 Originals (FINE_FRAMES Frames pro Eimer, ca. 3 ms).
 
   Warum ein eigener Thread?
     Ein 5-Minuten-Track hat pro Spur ca. 50 MB PCM. Alle 5 Spuren zu lesen
@@ -40,6 +47,8 @@
                        Strich mit Kantenglättung in 1/4-Pixel-Schritten
     1.2  (21.10.2026)  Loop A-B: Bereich grün hinterlegt, Marken bei A und B,
                        Loop mit rechter Maustaste aufziehen (StemPlayer 1.6)
+    1.3  (21.10.2026)  Lupe TZoomView mit Raster und verschiebbaren Marken,
+                       feine Hüllkurve des Originals (TPeakThread.Fine)
   ============================================================================ }
 unit wellenform;
 
@@ -48,11 +57,13 @@ unit wellenform;
 interface
 
 uses
-  Classes, SysUtils, Math, Controls, Graphics, LCLType, djcontrols;
+  Classes, SysUtils, Types, Math, Controls, Graphics, LCLType, djcontrols;
 
 const
   PEAK_BUCKETS = 4000;   // Auflösung der Hüllkurve (reicht für 4K-Breite)
   PEAK_TRACKS  = 5;      // 0 = Master, 1..4 = Stems
+  FINE_FRAMES  = 128;    // Frames pro Eimer der feinen Hüllkurve (~2,9 ms)
+  WAVE_RATE    = 44100;  // Abtastrate der .raw-Dateien (wie stemengine)
 
 type
   { Hüllkurve einer Spur. Werte -1..1 (bzw. 0..1 für Rms). }
@@ -72,6 +83,7 @@ type
     procedure Execute; override;
   public
     Peaks: array[0..PEAK_TRACKS-1] of TPeakData;
+    Fine : TPeakData;    // feine Hüllkurve des Originals für die Lupe
     Done : Boolean;      // vom Thread gesetzt, wenn alles fertig ist
     { RawFiles wie bei TStemEngine: [0] = Master, [1..4] = Stems }
     constructor Create(const RawFiles: array of string; TotalFrames: Int64);
@@ -129,6 +141,60 @@ type
     property OnSeek: TSeekEvent read FOnSeek write FOnSeek;
     { rechte Maustaste gezogen: neuer Loop von AFrom bis ATo (0..1) }
     property OnLoopSelect: TLoopSelectEvent read FOnLoopSelect write FOnLoopSelect;
+    property ShowHint;
+  end;
+
+  TFrameEvent = procedure(Sender: TObject; Frame: Int64) of object;
+  TFrameRangeEvent = procedure(Sender: TObject; AFrom, ATo: Int64) of object;
+  { Marke verschoben: Marker = 1 (A) oder 2 (B), Final = Maustaste losgelassen }
+  TMarkerMoveEvent = procedure(Sender: TObject; Marker: Integer; Frame: Int64;
+                               Final: Boolean) of object;
+
+  { TZoomView - die Lupe }
+
+  TZoomView = class(TGraphicControl)
+  private
+    FPeaks    : TPeakData;   // feine Hüllkurve (FINE_FRAMES pro Eimer)
+    FScale    : Single;
+    FTotal    : Int64;       // Länge des Tracks in Frames
+    FPos      : Double;      // Abspielkopf in Frames (steht in der Mitte)
+    FSpan     : Double;      // sichtbare Breite in Sekunden (Mausrad)
+    FLoopA    : Int64;       // -1 = nicht gesetzt
+    FLoopB    : Int64;
+    FLoopOn   : Boolean;
+    FDragMarker: Integer;    // 0 = nichts, 1 = A, 2 = B wird gezogen
+    FDragFrame: Int64;       // zuletzt gemeldete Stelle der gezogenen Marke
+    FSelecting: Boolean;     // rechte Maustaste: neuer Loop wird aufgezogen
+    FSelFrom  : Int64;       // in Frames, weil die Welle beim Ziehen weiterläuft
+    FSelTo    : Int64;
+    FLastPx   : Integer;     // zuletzt gezeichnete Kopfposition (1/4 Pixel-Raster)
+    FOnSeek   : TFrameEvent;
+    FOnLoopSelect: TFrameRangeEvent;
+    FOnMarkerMove: TMarkerMoveEvent;
+    procedure SetPos(AValue: Double);
+    function  FramesPerPx: Double;
+    function  XToFrame(X: Integer): Double;
+    function  FrameToX(F: Double): Integer;
+    function  GridStep(out Major: Double): Double;
+    function  SnapFrame(F: Double; Shift: TShiftState): Int64;
+    function  MarkerAt(X: Integer): Integer;
+  protected
+    procedure Paint; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+                           MousePos: TPoint): Boolean; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
+    procedure ClearPeaks;
+    procedure SetLoop(AFrom, ATo: Int64; AOn: Boolean);
+    property Position: Double read FPos write SetPos;   // in Frames
+    property Span: Double read FSpan;
+    property OnSeek: TFrameEvent read FOnSeek write FOnSeek;
+    property OnLoopSelect: TFrameRangeEvent read FOnLoopSelect write FOnLoopSelect;
+    property OnMarkerMove: TMarkerMoveEvent read FOnMarkerMove write FOnMarkerMove;
     property ShowHint;
   end;
 
@@ -203,6 +269,7 @@ begin
     if i <= High(RawFiles) then FFiles[i] := RawFiles[i] else FFiles[i] := '';
     Peaks[i].Valid := False;
   end;
+  Fine.Valid := False;
   Done := False;
   Start;
 end;
@@ -215,7 +282,8 @@ const
 var
   F: TFileStream;
   Buf: array of SmallInt;
-  SumSq: array of Double;
+  SumSq, FineSq: array of Double;
+  FineN, fb: Integer;
   Cnt: array of Integer;
   Got, n, k, b: Integer;
   Frame: Int64;
@@ -234,6 +302,20 @@ begin
     P^.Lo[b] := 0; P^.Hi[b] := 0; SumSq[b] := 0; Cnt[b] := 0;
   end;
   SetLength(Buf, CHUNK_FRAMES * 2);
+  { Für das Original zusätzlich die feine Hüllkurve (Lupe) }
+  FineN := 0;
+  if Idx = 0 then
+  begin
+    FineN := (FTotalFrames + FINE_FRAMES - 1) div FINE_FRAMES;
+    SetLength(Fine.Lo, FineN);
+    SetLength(Fine.Hi, FineN);
+    SetLength(Fine.Rms, FineN);
+    SetLength(FineSq, FineN);
+    for b := 0 to FineN - 1 do
+    begin
+      Fine.Lo[b] := 0; Fine.Hi[b] := 0; FineSq[b] := 0;
+    end;
+  end;
 
   { fmShareDenyNone: die Engine hat dieselbe Datei gleichzeitig offen }
   F := TFileStream.Create(FFiles[Idx], fmOpenRead or fmShareDenyNone);
@@ -252,6 +334,13 @@ begin
         if V > P^.Hi[b] then P^.Hi[b] := V;
         SumSq[b] := SumSq[b] + V * V;
         Inc(Cnt[b]);
+        if FineN > 0 then
+        begin
+          fb := Frame div FINE_FRAMES;
+          if V < Fine.Lo[fb] then Fine.Lo[fb] := V;
+          if V > Fine.Hi[fb] then Fine.Hi[fb] := V;
+          FineSq[fb] := FineSq[fb] + V * V;
+        end;
         Inc(Frame);
       end;
     end;
@@ -263,6 +352,12 @@ begin
     if Cnt[k] > 0 then P^.Rms[k] := Sqrt(SumSq[k] / Cnt[k])
     else P^.Rms[k] := 0;
   P^.Valid := True;
+  if FineN > 0 then
+  begin
+    for k := 0 to FineN - 1 do
+      Fine.Rms[k] := Sqrt(FineSq[k] / FINE_FRAMES);
+    Fine.Valid := True;
+  end;
 end;
 
 procedure TPeakThread.Execute;
@@ -580,6 +675,386 @@ begin
       FOnLoopSelect(Self, Min(FSelFrom, FSelTo) / (Width - 1),
                           Max(FSelFrom, FSelTo) / (Width - 1));
   end;
+end;
+
+{ ============================================================================
+  TZoomView - Lupe
+  ============================================================================ }
+
+const
+  ZOOM_MIN_SPAN = 1;     // stärkste Vergrösserung: 1 Sekunde über die ganze Breite
+  ZOOM_MAX_SPAN = 60;    // schwächste: 1 Minute
+  ZOOM_DEF_SPAN = 8;     // Start: 8 Sekunden
+  MARKER_GRAB   = 5;     // so nah (Pixel) muss man eine Marke treffen
+  { Raster-Paare (fein, grob) in Sekunden. Gewählt wird das feinste, bei dem
+    die feinen Linien noch mindestens 8 Pixel auseinander liegen. }
+  GRID_FINE  : array[0..5] of Double = (0.01, 0.05, 0.1, 0.5, 1, 5);
+  GRID_MAJOR : array[0..5] of Double = (0.1,  0.5,  1,   5,   10, 30);
+
+{ Zeit für die Rasterbeschriftung, z.B. 1:30.5 oder 1:30.25 }
+function ZoomTimeText(Sec: Double; Fine: Boolean): string;
+var
+  M: Integer;
+  S: Double;
+begin
+  if Sec < 0 then Sec := 0;
+  M := Trunc(Sec) div 60;
+  S := Sec - M * 60;
+  if Fine then Result := Format('%.2f', [S]) else Result := Format('%.1f', [S]);
+  if S < 10 then Result := '0' + Result;      // 1:05.3 statt 1:5.3
+  Result := IntToStr(M) + ':' + StringReplace(Result, ',', '.', []);
+end;
+
+constructor TZoomView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSpan := ZOOM_DEF_SPAN;
+  FScale := 1;
+  FLoopA := -1;
+  FLoopB := -1;
+  FLastPx := MaxInt;
+  Cursor := crHandPoint;
+  ControlStyle := ControlStyle + [csOpaque];
+end;
+
+procedure TZoomView.SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
+begin
+  FPeaks := APeaks;
+  FScale := AScale;
+  FTotal := ATotal;
+  Invalidate;
+end;
+
+procedure TZoomView.ClearPeaks;
+begin
+  FPeaks.Valid := False;
+  SetLength(FPeaks.Lo, 0);
+  SetLength(FPeaks.Hi, 0);
+  SetLength(FPeaks.Rms, 0);
+  FTotal := 0;
+  FPos := 0;
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopOn := False;
+  FDragMarker := 0;
+  FSelecting := False;
+  Invalidate;
+end;
+
+procedure TZoomView.SetLoop(AFrom, ATo: Int64; AOn: Boolean);
+begin
+  if (AFrom = FLoopA) and (ATo = FLoopB) and (AOn = FLoopOn) then Exit;
+  FLoopA := AFrom;
+  FLoopB := ATo;
+  FLoopOn := AOn;
+  Invalidate;
+end;
+
+procedure TZoomView.SetPos(AValue: Double);
+var Px: Integer;
+begin
+  FPos := AValue;
+  { Neu zeichnen, sobald sich die Welle um 1/4 Pixel verschoben hat }
+  Px := Round(FPos / FramesPerPx * 4);
+  if Px <> FLastPx then
+  begin
+    FLastPx := Px;
+    Invalidate;
+  end;
+end;
+
+function TZoomView.FramesPerPx: Double;
+begin
+  Result := FSpan * WAVE_RATE / Max(1, Width);
+end;
+
+function TZoomView.XToFrame(X: Integer): Double;
+begin
+  Result := FPos + (X - Width / 2) * FramesPerPx;
+end;
+
+function TZoomView.FrameToX(F: Double): Integer;
+begin
+  Result := Round(Width / 2 + (F - FPos) / FramesPerPx);
+end;
+
+{ Rasterabstand (fein) in Sekunden, Major = grobes Raster mit Beschriftung }
+function TZoomView.GridStep(out Major: Double): Double;
+var
+  i: Integer;
+  PxPerSec: Double;
+begin
+  PxPerSec := WAVE_RATE / FramesPerPx;
+  for i := 0 to High(GRID_FINE) do
+    if GRID_FINE[i] * PxPerSec >= 8 then
+    begin
+      Major := GRID_MAJOR[i];
+      Exit(GRID_FINE[i]);
+    end;
+  Major := GRID_MAJOR[High(GRID_MAJOR)];
+  Result := GRID_FINE[High(GRID_FINE)];
+end;
+
+{ Frame auf das feine Raster runden. Mit Shift: frei (auf den Frame genau). }
+function TZoomView.SnapFrame(F: Double; Shift: TShiftState): Int64;
+var
+  Step, Major: Double;
+begin
+  if ssShift in Shift then
+    Result := Round(F)
+  else
+  begin
+    Step := GridStep(Major) * WAVE_RATE;
+    Result := Round(Round(F / Step) * Step);
+  end;
+  if Result < 0 then Result := 0;
+  if (FTotal > 0) and (Result > FTotal) then Result := FTotal;
+end;
+
+{ Welche Marke liegt unter X? 1 = A, 2 = B, 0 = keine }
+function TZoomView.MarkerAt(X: Integer): Integer;
+begin
+  Result := 0;
+  if (FLoopB >= 0) and (Abs(X - FrameToX(FLoopB)) <= MARKER_GRAB) then Result := 2
+  else if (FLoopA >= 0) and (Abs(X - FrameToX(FLoopA)) <= MARKER_GRAB) then Result := 1;
+end;
+
+procedure TZoomView.Paint;
+var
+  W, H, Mid, x, b, b0, b1, xa, xb, X0, Tw: Integer;
+  Lo, Hi, R, Amp, Fpp, Step, Major, T, T0, T1, Fr: Double;
+  F0, F1: Double;
+  CWave, CRms, CWaveOff, CRmsOff, LC: TColor;
+  Played: Boolean;
+  Txt: string;
+
+  procedure Flag(XPos: Integer; const Letter: string);
+  begin
+    if (XPos < -12) or (XPos > W + 12) then Exit;
+    Canvas.Brush.Color := LC;
+    Canvas.FillRect(XPos - 1, 0, XPos + 1, H);
+    Canvas.FillRect(XPos - 1, 0, XPos + 12, 13);
+    Canvas.Font.Color := WAVE_BG;
+    Canvas.Font.Style := [fsBold];
+    Canvas.Brush.Style := bsClear;
+    Canvas.TextOut(XPos + 2, 0, Letter);
+    Canvas.Brush.Style := bsSolid;
+    Canvas.Font.Style := [];
+  end;
+
+begin
+  W := Width;
+  H := Height;
+  Mid := H div 2;
+  Fpp := FramesPerPx;
+  Canvas.Font.Name := 'Segoe UI';
+  Canvas.Font.Size := 7;
+
+  { Hintergrund, Loop-Bereich grünlich }
+  Canvas.Brush.Color := WAVE_BG;
+  Canvas.FillRect(0, 0, W, H);
+  if (FLoopA >= 0) and (FLoopB > FLoopA) then
+  begin
+    if FLoopOn then Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.16)
+    else Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.06);
+    xa := Max(0, FrameToX(FLoopA));
+    xb := Min(W, FrameToX(FLoopB));
+    if xb > xa then Canvas.FillRect(xa, 0, xb, H);
+  end;
+  if not FPeaks.Valid or (FTotal <= 0) then
+  begin
+    Canvas.Pen.Color := DJ_BORDER;
+    Canvas.Brush.Style := bsClear;
+    Canvas.Rectangle(0, 0, W, H);
+    Canvas.Brush.Style := bsSolid;
+    Exit;
+  end;
+
+  { Raster: feine Linien dunkel, grobe heller mit Zeit }
+  Step := GridStep(Major);
+  T0 := XToFrame(0) / WAVE_RATE;
+  T1 := XToFrame(W) / WAVE_RATE;
+  T := Floor(T0 / Step) * Step;
+  while T <= T1 do
+  begin
+    if (T >= 0) and (T * WAVE_RATE <= FTotal) then
+    begin
+      x := FrameToX(T * WAVE_RATE);
+      { grobe Linie, wenn T ein Vielfaches von Major ist (mit Rundungstoleranz) }
+      Fr := T / Major;
+      if Abs(Fr - Round(Fr)) < 0.001 then
+      begin
+        Canvas.Brush.Color := $00403A36;
+        Canvas.FillRect(x, 0, x + 1, H);
+        Txt := ZoomTimeText(T, Major < 1);
+        Canvas.Font.Color := DJ_DIM;
+        Canvas.Brush.Style := bsClear;
+        Canvas.TextOut(x + 3, H - 13, Txt);
+        Canvas.Brush.Style := bsSolid;
+      end
+      else
+      begin
+        Canvas.Brush.Color := $00262321;
+        Canvas.FillRect(x, 0, x + 1, H);
+      end;
+    end;
+    T := T + Step;
+  end;
+
+  { Welle: gespielter Teil (links von der Mitte) hell, Rest gedämpft }
+  CWave := Blend($00D0D0D0, WAVE_BG, 0.55);
+  CRms := $00D0D0D0;
+  CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
+  CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
+  Amp := (H / 2 - 2) * FScale;
+  X0 := W div 2;
+  for x := 0 to W - 1 do
+  begin
+    F0 := XToFrame(x);
+    F1 := F0 + Fpp;
+    if (F1 <= 0) or (F0 >= FTotal) then Continue;
+    b0 := Floor(F0 / FINE_FRAMES);
+    b1 := Floor(F1 / FINE_FRAMES);
+    if b1 <= b0 then b1 := b0 + 1;
+    if b0 < 0 then b0 := 0;
+    if b1 > Length(FPeaks.Lo) then b1 := Length(FPeaks.Lo);
+    Lo := 0; Hi := 0; R := 0;
+    for b := b0 to b1 - 1 do
+    begin
+      if FPeaks.Lo[b] < Lo then Lo := FPeaks.Lo[b];
+      if FPeaks.Hi[b] > Hi then Hi := FPeaks.Hi[b];
+      if FPeaks.Rms[b] > R then R := FPeaks.Rms[b];
+    end;
+    R := Min(R * 1.4, Max(Hi, -Lo));
+    Played := x < X0;
+    if Played then Canvas.Pen.Color := CWave else Canvas.Pen.Color := CWaveOff;
+    Canvas.Line(x, Mid - Round(Hi * Amp), x, Mid - Round(Lo * Amp) + 1);
+    if Played then Canvas.Pen.Color := CRms else Canvas.Pen.Color := CRmsOff;
+    Canvas.Line(x, Mid - Round(R * Amp), x, Mid + Round(R * Amp) + 1);
+  end;
+
+  { Neuer Loop beim Aufziehen mit der rechten Maustaste }
+  LC := LOOP_COLOR;
+  if FSelecting then
+  begin
+    xa := FrameToX(Min(FSelFrom, FSelTo));
+    xb := FrameToX(Max(FSelFrom, FSelTo));
+    Canvas.Brush.Color := LC;
+    Canvas.FillRect(xa, 0, xb + 1, 3);
+    Flag(xa, 'A');
+    Flag(xb, 'B');
+    { Länge anzeigen }
+    Txt := Format('%.2f s', [Abs(FSelTo - FSelFrom) / WAVE_RATE]);
+    Canvas.Font.Color := LC;
+    Canvas.Brush.Style := bsClear;
+    Tw := Canvas.TextWidth(Txt);
+    Canvas.TextOut(Max(2, Min(W - Tw - 2, (xa + xb - Tw) div 2)), 4, Txt);
+    Canvas.Brush.Style := bsSolid;
+  end
+  else
+  begin
+    if not FLoopOn then LC := Blend(LOOP_COLOR, WAVE_BG, 0.6);
+    if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
+    begin
+      Canvas.Brush.Color := LC;
+      Canvas.FillRect(Max(0, FrameToX(FLoopA)), 0, Min(W, FrameToX(FLoopB) + 1), 3);
+    end;
+    if FLoopA >= 0 then Flag(FrameToX(FLoopA), 'A');
+    if FLoopB >= 0 then Flag(FrameToX(FLoopB), 'B');
+  end;
+
+  { Abspielkopf in der Mitte }
+  Canvas.Brush.Color := DJ_PLAYHEAD;
+  Canvas.FillRect(X0 - 1, 0, X0 + 1, H);
+
+  { Rahmen }
+  Canvas.Pen.Color := DJ_BORDER;
+  Canvas.Brush.Style := bsClear;
+  Canvas.Rectangle(0, 0, W, H);
+  Canvas.Brush.Style := bsSolid;
+end;
+
+procedure TZoomView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var F: Double;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if not FPeaks.Valid or (FTotal <= 0) then Exit;
+  if Button = mbLeft then
+  begin
+    { Marke getroffen -> ziehen, sonst an diese Stelle springen }
+    FDragMarker := MarkerAt(X);
+    if FDragMarker = 1 then FDragFrame := FLoopA
+    else if FDragMarker = 2 then FDragFrame := FLoopB
+    else
+    begin
+      F := XToFrame(X);
+      if F < 0 then F := 0;
+      if F > FTotal - 1 then F := FTotal - 1;
+      if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+    end;
+  end
+  else if Button = mbRight then
+  begin
+    FSelecting := True;
+    FSelFrom := SnapFrame(XToFrame(X), Shift);
+    FSelTo := FSelFrom;
+    Invalidate;
+  end;
+end;
+
+procedure TZoomView.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if FDragMarker <> 0 then
+  begin
+    FDragFrame := SnapFrame(XToFrame(X), Shift);
+    if Assigned(FOnMarkerMove) then
+      FOnMarkerMove(Self, FDragMarker, FDragFrame, False);
+  end
+  else if FSelecting then
+  begin
+    FSelTo := SnapFrame(XToFrame(X), Shift);
+    Invalidate;
+  end
+  else if MarkerAt(X) <> 0 then
+    Cursor := crSizeWE          // zeigt: diese Marke lässt sich verschieben
+  else
+    Cursor := crHandPoint;
+end;
+
+procedure TZoomView.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var M: Integer;
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  { Beim Loslassen gilt die zuletzt angezeigte Stelle. Neu rechnen wäre
+    falsch: beim Abspielen läuft die Welle unter der stillen Maus weiter. }
+  if (Button = mbLeft) and (FDragMarker <> 0) then
+  begin
+    M := FDragMarker;
+    FDragMarker := 0;
+    if Assigned(FOnMarkerMove) then
+      FOnMarkerMove(Self, M, FDragFrame, True);
+  end;
+  if (Button = mbRight) and FSelecting then
+  begin
+    FSelecting := False;
+    Invalidate;
+    if (FSelTo <> FSelFrom) and Assigned(FOnLoopSelect) then
+      FOnLoopSelect(Self, Min(FSelFrom, FSelTo), Max(FSelFrom, FSelTo));
+  end;
+end;
+
+{ Mausrad: nach oben = näher heran (weniger Sekunden), nach unten = weiter weg }
+function TZoomView.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  Result := True;
+  if WheelDelta > 0 then FSpan := FSpan / 1.5
+  else if WheelDelta < 0 then FSpan := FSpan * 1.5;
+  if FSpan < ZOOM_MIN_SPAN then FSpan := ZOOM_MIN_SPAN;
+  if FSpan > ZOOM_MAX_SPAN then FSpan := ZOOM_MAX_SPAN;
+  FLastPx := MaxInt;
+  Invalidate;
 end;
 
 end.
