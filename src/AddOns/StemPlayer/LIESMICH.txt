@@ -31,8 +31,8 @@ BEDIENUNG
   A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
   L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
   Pfeil li/re    bei aktivem Loop: ganzen Loop verschieben (sonst -/+ 5 s)
-  Shift+Pfeil    Loop schmaler / breiter (Ende B verschieben)
-  Strg+Pfeil     Anfang A verschieben
+  Shift+Pfeil    Loop breiter: Shift+links A nach links, Shift+rechts B nach rechts
+  Strg+Pfeil     Loop schmaler: Strg+rechts A nach rechts, Strg+links B nach links
 
 WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
@@ -66,8 +66,9 @@ LOOP A-B
     Das Raster passt sich an (bis 0,01 s fein).
   - Klick neben die Marken springt an diese Stelle.
   - Tastatur: Pfeil links/rechts verschiebt den ganzen aktiven Loop,
-    Shift+Pfeil macht ihn schmaler/breiter, Strg+Pfeil verschiebt den
-    Anfang. Ein Schritt ist ein feiner Rasterschritt der Lupe: wer
+    Shift+Pfeil macht ihn breiter (Shift+links zieht A nach links,
+    Shift+rechts B nach rechts), Strg+Pfeil macht ihn schmaler (Strg+rechts
+    zieht A nach rechts, Strg+links B nach links). Ein Schritt ist ein feiner Rasterschritt der Lupe: wer
     näher heranzoomt, verschiebt feiner (bis 10 ms).
   Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
   Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken

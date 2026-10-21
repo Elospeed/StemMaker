@@ -51,8 +51,10 @@
     Rechte Maustaste in einer Wellenform ziehen: Loop-Bereich aufziehen
     Pfeil li/re        bei aktivem Loop: ganzen Loop um einen Rasterschritt
                        der Lupe verschieben (sonst -/+ 5 s springen)
-    Shift+Pfeil li/re  Loop schmaler / breiter (Punkt B verschieben)
-    Strg+Pfeil li/re   Anfang (Punkt A) verschieben
+    Shift+Pfeil li/re  Loop auseinanderziehen: Shift+links schiebt A nach
+                       links, Shift+rechts schiebt B nach rechts
+    Strg+Pfeil li/re   Loop zusammenziehen: Strg+rechts schiebt A nach
+                       rechts, Strg+links schiebt B nach links
     Lupe (Streifen unter dem Original): Mausrad zoomt, Marken A/B ziehen,
     rechte Maustaste ziehen = Loop am Raster, mit Shift frei
 
@@ -97,8 +99,9 @@
                        (rastet am Raster ein, Shift = frei), Marken A/B mit
                        der Maus verschieben, Mausrad zoomt (1 bis 60 s).
                        Tastatur: Pfeile verschieben den ganzen aktiven Loop,
-                       Shift+Pfeil ändert die Breite (B), Strg+Pfeil den
-                       Anfang (A), jeweils um einen Rasterschritt der Lupe.
+                       Shift+Pfeil zieht ihn nach aussen auseinander,
+                       Strg+Pfeil nach innen zusammen, jeweils um einen
+                       Rasterschritt der Lupe.
                        Lupe flüssiger: Welle wird als Bild vorgerechnet und
                        nur noch verschoben (wellenform 1.4), feinerer Timer.
   ============================================================================ }
@@ -654,7 +657,7 @@ begin
 
   LblHelp := MakeLabel(PnlBottom,
     'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Pfeile/Shift+Pfeil Loop', 12, 6, 0, False);
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite', 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -1949,8 +1952,16 @@ begin
     VK_LEFT, VK_RIGHT:
       begin
         if Key = VK_LEFT then i := -1 else i := 1;
-        if ssShift in Shift then NudgeMarker(2, i * NudgeStep)    // Breite (B)
-        else if ssCtrl in Shift then NudgeMarker(1, i * NudgeStep) // Anfang (A)
+        { Shift = auseinander: links bewegt A nach links, rechts B nach rechts.
+          Strg = zusammen: rechts bewegt A nach rechts, links B nach links. }
+        if ssShift in Shift then
+        begin
+          if i < 0 then NudgeMarker(1, -NudgeStep) else NudgeMarker(2, NudgeStep);
+        end
+        else if ssCtrl in Shift then
+        begin
+          if i > 0 then NudgeMarker(1, NudgeStep) else NudgeMarker(2, -NudgeStep);
+        end
         else if FLoopOn and (FLoopA >= 0) and (FLoopB > FLoopA) then
           MoveLoop(i * NudgeStep)                                  // ganzer Loop
         else SeekRelative(i * 5);
