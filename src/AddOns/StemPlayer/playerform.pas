@@ -46,6 +46,9 @@
     S / O / R  Stems / Original / Rest           Pfeil links/rechts  -/+ 5 s
     Pos1       an den Anfang         Strg+O      Datei öffnen
     W          Wellenformen aus/ein  Klick in Wellenform  dorthin springen
+    A / B      Loop-Punkt A / B setzen (B schaltet den Loop gleich ein)
+    L          Loop an/aus           Rücktaste / Shift+L  Loop löschen
+    Rechte Maustaste in einer Wellenform ziehen: Loop-Bereich aufziehen
 
   Versionen:
     1.0  (01.10.2026)  Erste Version: Mute/Solo/Fader, Modi Stems/Original/Rest
@@ -76,6 +79,13 @@
                        Solo ist jetzt exklusiv: ein neues Solo löst das vorherige
                        ab (wie am DJ-Mixer). Mehrere Solos gleichzeitig nur mit
                        Strg+Klick bzw. Strg+Shift+1..4.
+    1.6  (21.10.2026)  Loop A-B: einen Abschnitt endlos wiederholen, z.B. um
+                       mit Mute/Solo eine Stelle genau zu prüfen. Punkte A und
+                       B per Knopf oder Taste (A, B) an der aktuellen Stelle,
+                       oder mit der rechten Maustaste in einer Wellenform
+                       aufziehen. L schaltet den Loop an/aus, Rücktaste
+                       löscht ihn. Der Rücksprung ist nahtlos (stemengine 1.2),
+                       der Bereich ist in allen Wellenformen grün hinterlegt.
   ============================================================================ }
 unit playerform;
 
@@ -90,7 +100,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.5';
+  APP_VER   = '1.6';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -134,6 +144,10 @@ type
     BtnModeOrig : TDJButton;
     BtnModeRest : TDJButton;
     BtnReset    : TDJButton;
+    BtnLoopA    : TDJButton;   // Loop: Punkt A an der aktuellen Stelle
+    BtnLoopB    : TDJButton;   // Loop: Punkt B (schaltet den Loop ein)
+    BtnLoopOn   : TDJButton;   // Loop an/aus
+    BtnLoopClear: TDJButton;   // Loop löschen
     { --- Stems --- }
     Rows        : array[1..STEM_COUNT] of TStemRow;
     { --- Master --- }
@@ -172,6 +186,9 @@ type
     FHeadPos    : Double;      // geglättete Anzeigeposition in Frames
     FHeadTime   : Double;      // Zeitpunkt (NowSeconds) dieser Position
     FHeadRunning: Boolean;     // lief die Uhr schon beim letzten Tick?
+    FLoopA      : Int64;       // Loop-Punkt A in Frames (-1 = nicht gesetzt)
+    FLoopB      : Int64;       // Loop-Punkt B in Frames (-1 = nicht gesetzt)
+    FLoopOn     : Boolean;     // Loop aktiv
 
     procedure BuildUI;
     procedure BuildStemRow(Idx: Integer);
@@ -208,7 +225,16 @@ type
     procedure StopPlay;
     procedure SeekRelative(Seconds: Integer);
     procedure SetMode(M: TPlayMode);
+    function  CurrentFrame: Int64;
+    procedure SetLoopA;
+    procedure SetLoopB;
+    procedure ToggleLoop;
+    procedure ClearLoop;
+    procedure ApplyLoop;
+    procedure LoopClick(Sender: TObject);
+    procedure WaveLoopSelect(Sender: TObject; AFrom, ATo: Single);
     function  FormatTime(Frames: Int64): string;
+    function  FormatTimeFine(Frames: Int64): string;
     function  LevelToFrac(L: Single): Single;
 
     { Ereignisse }
@@ -252,6 +278,7 @@ const
   BASE_HEIGHT = 590;  // Fensterhöhe ohne Wellenformen
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
+  MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
 
 { ============================================================================
   Aufbau des Fensters
@@ -284,8 +311,12 @@ begin
 
   { Standardnamen/-farben vorbelegen (leerer Dateiname -> nur Defaults) }
   ReadStemInfo('', FInfo);
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopOn := False;
   BuildUI;
   UpdateGains;
+  ApplyLoop;
 
   { Ansicht wie beim letzten Mal (StemPlayer.ini [Ansicht] Wellenform=1/0).
     Erster Start: mit Wellenformen. Passt das grössere Fenster nicht auf den
@@ -465,7 +496,9 @@ begin
   WaveMaster.WaveColor := $00D0D0D0;
   WaveMaster.Visible := False;
   WaveMaster.OnSeek := @WaveSeek;
-  WaveMaster.Hint := 'Original - klicken oder ziehen, um an diese Stelle zu springen';
+  WaveMaster.OnLoopSelect := @WaveLoopSelect;
+  WaveMaster.Hint := 'Original - klicken oder ziehen, um an diese Stelle zu springen.' + LineEnding +
+                     'Rechte Maustaste ziehen: Loop-Bereich aufziehen';
   WaveMaster.ShowHint := True;
 
   { Zeit: aktuelle Position gross, Gesamtlänge klein daneben }
@@ -500,6 +533,31 @@ begin
   BtnModeStems.OnClick := @ModeClick;
   BtnModeOrig.OnClick := @ModeClick;
   BtnModeRest.OnClick := @ModeClick;
+
+  { Loop A-B: rechts neben den Modus-Knöpfen. Passt auch bei der
+    kleinsten Fensterbreite noch vor RESET. }
+  L := MakeLabel(PnlDeck, 'LOOP', 374, 62, 8, False);
+  L.Font.Color := DJ_DIM;
+  BtnLoopA     := MakeButton(PnlDeck, 'A', 406, 56, 32, 28);
+  BtnLoopB     := MakeButton(PnlDeck, 'B', 437, 56, 32, 28);
+  BtnLoopOn    := MakeButton(PnlDeck, 'AN  L', 468, 56, 62, 28);
+  BtnLoopClear := MakeButton(PnlDeck, '×', 529, 56, 28, 28);
+  BtnLoopA.LitColor := DJ_GREEN;
+  BtnLoopB.LitColor := DJ_GREEN;
+  BtnLoopOn.LitColor := DJ_GREEN;
+  BtnLoopA.Hint := 'Loop-Punkt A an der aktuellen Stelle setzen (Taste A)';
+  BtnLoopB.Hint := 'Loop-Punkt B an der aktuellen Stelle setzen (Taste B).' + LineEnding +
+                   'Der Abschnitt A bis B wird dann endlos wiederholt.' + LineEnding +
+                   'Tipp: mit der rechten Maustaste in einer Wellenform ziehen';
+  BtnLoopOn.Hint := 'Loop an/aus (Taste L). Einschalten springt zu A,' + LineEnding +
+                    'wenn die Wiedergabe gerade ausserhalb des Loops ist.';
+  BtnLoopClear.Hint := 'Loop löschen (Rücktaste)';
+  BtnLoopA.ShowHint := True; BtnLoopB.ShowHint := True;
+  BtnLoopOn.ShowHint := True; BtnLoopClear.ShowHint := True;
+  BtnLoopA.OnClick := @LoopClick;
+  BtnLoopB.OnClick := @LoopClick;
+  BtnLoopOn.OnClick := @LoopClick;
+  BtnLoopClear.OnClick := @LoopClick;
 
   BtnReset := MakeButton(PnlDeck, 'RESET  0', W - 112, 56, 100, 28);
   BtnReset.Anchors := [akTop, akRight];
@@ -551,8 +609,8 @@ begin
   PnlBottom.Width := ClientWidth;
 
   LblHelp := MakeLabel(PnlBottom,
-    'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 zurücksetzen  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  Klick in Wellenform springt  ·  W Wellenform', 12, 6, 0, False);
+    'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Rechts ziehen = Loop', 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -632,7 +690,9 @@ begin
   R^.Wave.WaveColor := R^.Color;
   R^.Wave.Visible := False;
   R^.Wave.OnSeek := @WaveSeek;
-  R^.Wave.Hint := 'Klicken oder ziehen, um an diese Stelle zu springen';
+  R^.Wave.OnLoopSelect := @WaveLoopSelect;
+  R^.Wave.Hint := 'Klicken oder ziehen, um an diese Stelle zu springen.' + LineEnding +
+                  'Rechte Maustaste ziehen: Loop-Bereich aufziehen';
   R^.Wave.ShowHint := True;
 end;
 
@@ -831,6 +891,11 @@ begin
     Engine.Free;           // stoppt Thread, schliesst Audiogerät und Dateien
     Engine := nil;
   end;
+  { Loop gehört zum Track -> beim nächsten Track ohne Loop beginnen }
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopOn := False;
+  ApplyLoop;
   if (FTempDir <> '') and DirectoryExists(FTempDir) then
     DeleteDirectory(FTempDir, False);   // False = Ordner selbst auch löschen
   FTempDir := '';
@@ -1275,6 +1340,172 @@ begin
   Result := Format('%.2d:%.2d', [Sec div 60, Sec mod 60]);
 end;
 
+{ Wie FormatTime, aber mit Zehntelsekunden (für die Loop-Punkte) }
+function TMainForm.FormatTimeFine(Frames: Int64): string;
+var Tenth: Int64;
+begin
+  Tenth := Frames div (SAMPLE_RATE div 10);
+  Result := Format('%.2d:%.2d.%d', [Tenth div 600, (Tenth div 10) mod 60, Tenth mod 10]);
+end;
+
+{ ============================================================================
+  Loop A-B
+  Die Punkte werden hier verwaltet, die Engine wiederholt den Abschnitt
+  (siehe stemengine.pas). A allein ist nur eine Marke. Sobald auch B
+  gesetzt ist, läuft der Loop. Ein aktiver Loop "fängt" die Wiedergabe,
+  wenn sie von vorne an B ankommt; wer hinter B springt, hört normal weiter.
+  ============================================================================ }
+
+{ Aktuelle Stelle für die Loop-Punkte: die geglättete Position des roten
+  Strichs, also genau das, was man gerade sieht und hört }
+function TMainForm.CurrentFrame: Int64;
+begin
+  Result := 0;
+  if Engine = nil then Exit;
+  Result := Round(FHeadPos);
+  if Result < 0 then Result := 0;
+  if Result >= Engine.TotalFrames then Result := Engine.TotalFrames - 1;
+end;
+
+procedure TMainForm.SetLoopA;
+begin
+  if Engine = nil then Exit;
+  FLoopA := CurrentFrame;
+  { B vor (oder zu nah an) dem neuen A ergibt keinen Loop mehr }
+  if (FLoopB >= 0) and (FLoopB - FLoopA < MIN_LOOP) then
+  begin
+    FLoopB := -1;
+    FLoopOn := False;
+  end;
+  ApplyLoop;
+end;
+
+procedure TMainForm.SetLoopB;
+var P: Int64;
+begin
+  if Engine = nil then Exit;
+  if FLoopA < 0 then
+  begin
+    LblStatus.Caption := 'Loop: zuerst Punkt A setzen (Taste A), dann B.';
+    Exit;
+  end;
+  P := CurrentFrame;
+  if P - FLoopA < MIN_LOOP then
+  begin
+    LblStatus.Caption := 'Loop: Punkt B muss hinter Punkt A liegen.';
+    Exit;
+  end;
+  FLoopB := P;
+  FLoopOn := True;
+  ApplyLoop;
+end;
+
+procedure TMainForm.ToggleLoop;
+var P: Int64;
+begin
+  if Engine = nil then Exit;
+  if (FLoopA < 0) or (FLoopB < 0) then
+  begin
+    LblStatus.Caption := 'Loop: zuerst Punkt A und B setzen (Tasten A und B, ' +
+                         'oder rechte Maustaste in der Wellenform ziehen).';
+    Exit;
+  end;
+  FLoopOn := not FLoopOn;
+  ApplyLoop;
+  { Einschalten ausserhalb des Loops: gleich zu A springen (wie "Reloop") }
+  P := CurrentFrame;
+  if FLoopOn and ((P < FLoopA) or (P >= FLoopB)) then
+    Engine.SeekTo := FLoopA;
+end;
+
+procedure TMainForm.ClearLoop;
+begin
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopOn := False;
+  ApplyLoop;
+end;
+
+{ Loop an Engine, Wellenformen, Knöpfe und Statuszeile weitergeben }
+procedure TMainForm.ApplyLoop;
+var
+  i: Integer;
+  FA, FB: Single;
+begin
+  if Engine <> nil then
+  begin
+    { Erst beide Punkte, dann den Zähler: so übernimmt die Engine nie
+      ein A ohne das passende B }
+    if FLoopOn and (FLoopA >= 0) and (FLoopB > FLoopA) then
+    begin
+      Engine.LoopStart := FLoopA;
+      Engine.LoopEnd := FLoopB;
+    end
+    else
+    begin
+      Engine.LoopStart := -1;
+      Engine.LoopEnd := -1;
+    end;
+    Inc(Engine.LoopSerial);
+  end;
+
+  FA := -1; FB := -1;
+  if (Engine <> nil) and (Engine.TotalFrames > 0) then
+  begin
+    if FLoopA >= 0 then FA := FLoopA / Engine.TotalFrames;
+    if FLoopB >= 0 then FB := FLoopB / Engine.TotalFrames;
+  end;
+  WaveMaster.SetLoop(FA, FB, FLoopOn);
+  for i := 1 to STEM_COUNT do Rows[i].Wave.SetLoop(FA, FB, FLoopOn);
+
+  BtnLoopA.Down := FLoopA >= 0;
+  BtnLoopB.Down := FLoopB >= 0;
+  BtnLoopOn.Down := FLoopOn;
+  BtnLoopOn.Enabled := (FLoopA >= 0) and (FLoopB >= 0);
+  BtnLoopClear.Enabled := FLoopA >= 0;
+
+  if Engine = nil then Exit;
+  if (FLoopA >= 0) and (FLoopB >= 0) then
+  begin
+    if FLoopOn then
+      LblStatus.Caption := Format('Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen',
+        [FormatTimeFine(FLoopA), FormatTimeFine(FLoopB), (FLoopB - FLoopA) / SAMPLE_RATE])
+    else
+      LblStatus.Caption := Format('Loop aus:  %s bis %s gemerkt  ·  L = wieder an',
+        [FormatTimeFine(FLoopA), FormatTimeFine(FLoopB)]);
+  end
+  else if FLoopA >= 0 then
+    LblStatus.Caption := Format('Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken',
+      [FormatTimeFine(FLoopA)])
+  else
+    LblStatus.Caption := '';
+end;
+
+procedure TMainForm.LoopClick(Sender: TObject);
+begin
+  if Sender = BtnLoopA then SetLoopA
+  else if Sender = BtnLoopB then SetLoopB
+  else if Sender = BtnLoopOn then ToggleLoop
+  else ClearLoop;
+end;
+
+{ Rechte Maustaste in einer Wellenform gezogen: neuer Loop, sofort aktiv.
+  Liegt die Wiedergabe ausserhalb, springt sie an den Anfang des Loops. }
+procedure TMainForm.WaveLoopSelect(Sender: TObject; AFrom, ATo: Single);
+var A, B, P: Int64;
+begin
+  if (Engine = nil) or (Engine.TotalFrames <= 0) then Exit;
+  A := Round(AFrom * (Engine.TotalFrames - 1));
+  B := Round(ATo * (Engine.TotalFrames - 1));
+  if B - A < MIN_LOOP then Exit;
+  FLoopA := A;
+  FLoopB := B;
+  FLoopOn := True;
+  ApplyLoop;
+  P := CurrentFrame;
+  if (P < A) or (P >= B) then Engine.SeekTo := A;
+end;
+
 { Pegel (0..1 linear) -> Balkenlänge (0..1) auf einer dB-Skala von -48..0 dB }
 function TMainForm.LevelToFrac(L: Single): Single;
 var dB: Single;
@@ -1497,10 +1728,12 @@ end;
   Anzeigeposition gleichmässig mit der echten Zeit (44100 Frames pro
   Sekunde) und wird nur sanft an die Geräteposition herangezogen. Bei einem
   Sprung (Klick, Pfeiltasten, Stop) oder grosser Abweichung wird sie sofort
-  übernommen. Pause: Geräteposition direkt. }
+  übernommen. Pause: Geräteposition direkt.
+  Loop: Läuft die Uhr über B hinaus, springt sie wie die Engine um die
+  Loop-Länge zurück (sonst würde sie bei kurzen Loops hinterherhinken). }
 procedure TMainForm.HeadTimerTick(Sender: TObject);
 var
-  T, Dev, Diff: Double;
+  T, Dev, Diff, Old: Double;
   F: Single;
   i: Integer;
 begin
@@ -1509,7 +1742,10 @@ begin
   Dev := Engine.PlayPos;
   if Engine.Playing and not Engine.EndReached and FHeadRunning then
   begin
+    Old := FHeadPos;
     FHeadPos := FHeadPos + (T - FHeadTime) * SAMPLE_RATE;
+    if FLoopOn and (FLoopB > FLoopA) and (Old < FLoopB) and (FHeadPos >= FLoopB) then
+      FHeadPos := FHeadPos - (FLoopB - FLoopA);
     Diff := Dev - FHeadPos;
     if Abs(Diff) > SAMPLE_RATE * 0.25 then
       FHeadPos := Dev                      // Sprung oder Aussetzer: übernehmen
@@ -1582,6 +1818,14 @@ begin
     VK_RIGHT: begin SeekRelative(5); Key := 0; end;
     VK_HOME:  begin if Engine <> nil then Engine.SeekTo := 0; Key := 0; end;
     VK_W:     begin SetWavesVisible(not FShowWaves); SaveViewSetting; Key := 0; end;
+    VK_A:     begin SetLoopA; Key := 0; end;
+    VK_B:     begin SetLoopB; Key := 0; end;
+    VK_L:
+      begin
+        if ssShift in Shift then ClearLoop else ToggleLoop;
+        Key := 0;
+      end;
+    VK_BACK:  begin ClearLoop; Key := 0; end;
   end;
 end;
 

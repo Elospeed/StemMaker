@@ -13,6 +13,8 @@
     TWaveView    zeichnet diese Hüllkurve als Wellenform mit rotem
                  Abspielkopf. Klick oder Ziehen in die Wellenform meldet die
                  gewünschte Position über OnSeek (0..1) ans Hauptfenster.
+                 Mit der rechten Maustaste zieht man einen Loop-Bereich auf
+                 (OnLoopSelect). Ein gesetzter Loop wird grün hinterlegt.
 
   Warum ein eigener Thread?
     Ein 5-Minuten-Track hat pro Spur ca. 50 MB PCM. Alle 5 Spuren zu lesen
@@ -36,6 +38,8 @@
     1.0  (14.10.2026)  Erste Version (Testversion StemPlayer 1.5)
     1.1  (14.10.2026)  Flüssiger Abspielkopf: NowSeconds (genaue Uhr) und
                        Strich mit Kantenglättung in 1/4-Pixel-Schritten
+    1.2  (21.10.2026)  Loop A-B: Bereich grün hinterlegt, Marken bei A und B,
+                       Loop mit rechter Maustaste aufziehen (StemPlayer 1.6)
   ============================================================================ }
 unit wellenform;
 
@@ -74,6 +78,7 @@ type
   end;
 
   TSeekEvent = procedure(Sender: TObject; Fraction: Single) of object;
+  TLoopSelectEvent = procedure(Sender: TObject; AFrom, ATo: Single) of object;
 
   { TWaveView }
 
@@ -90,11 +95,19 @@ type
     FDirty    : Boolean;     // Bilder müssen neu berechnet werden
     FDragging : Boolean;
     FOnSeek   : TSeekEvent;
+    FLoopA    : Single;      // Punkt A 0..1 (-1 = nicht gesetzt)
+    FLoopB    : Single;      // Punkt B 0..1 (-1 = nicht gesetzt)
+    FLoopOn   : Boolean;     // Loop aktiv (kräftiger hinterlegt)
+    FSelecting: Boolean;     // rechte Maustaste: Loop-Bereich wird aufgezogen
+    FSelFrom  : Integer;     // Pixel, an dem das Aufziehen begann
+    FSelTo    : Integer;     // aktuelles Pixel beim Aufziehen
+    FOnLoopSelect: TLoopSelectEvent;
     procedure SetColor2(AValue: TColor);
     procedure SetActive(AValue: Boolean);
     procedure SetPosition(AValue: Single);
     procedure RenderCache;
     procedure DoSeekAt(X: Integer);
+    function  FracToX(F: Single): Integer;
   protected
     procedure Paint; override;
     procedure Resize; override;
@@ -108,10 +121,14 @@ type
       Anzeige multipliziert werden (1 / lautester Wert aller Stems). }
     procedure SetPeaks(const APeaks: TPeakData; AScale: Single);
     procedure ClearPeaks;
+    { Loop anzeigen. A/B als Anteil 0..1, -1 = nicht gesetzt. }
+    procedure SetLoop(AFrom, ATo: Single; AOn: Boolean);
     property WaveColor: TColor read FColor write SetColor2;
     property Active: Boolean read FActive write SetActive;
     property Position: Single read FPosition write SetPosition;
     property OnSeek: TSeekEvent read FOnSeek write FOnSeek;
+    { rechte Maustaste gezogen: neuer Loop von AFrom bis ATo (0..1) }
+    property OnLoopSelect: TLoopSelectEvent read FOnLoopSelect write FOnLoopSelect;
     property ShowHint;
   end;
 
@@ -126,6 +143,7 @@ implementation
 
 const
   WAVE_BG = $00151312;   // Hintergrund der Spur  #121315 (etwas dunkler als die Zeile)
+  LOOP_COLOR = DJ_GREEN; // Loop wie in Traktor grün
 
 { Mischt zwei Farben: A = 1 -> nur C1, A = 0 -> nur C2 }
 function Blend(C1, C2: TColor; A: Single): TColor;
@@ -283,6 +301,8 @@ begin
   FScale := 1;
   FPosition := 0;
   FHeadX := -1;
+  FLoopA := -1;
+  FLoopB := -1;
   FDirty := True;
   Cursor := crHandPoint;
   ControlStyle := ControlStyle + [csOpaque];
@@ -310,8 +330,26 @@ begin
   SetLength(FPeaks.Hi, 0);
   SetLength(FPeaks.Rms, 0);
   FPosition := 0;
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopOn := False;
   FDirty := True;
   Invalidate;
+end;
+
+procedure TWaveView.SetLoop(AFrom, ATo: Single; AOn: Boolean);
+begin
+  if (AFrom = FLoopA) and (ATo = FLoopB) and (AOn = FLoopOn) then Exit;
+  FLoopA := AFrom;
+  FLoopB := ATo;
+  FLoopOn := AOn;
+  FDirty := True;    // der Hintergrund des Loop-Bereichs steckt in den Bildern
+  Invalidate;
+end;
+
+function TWaveView.FracToX(F: Single): Integer;
+begin
+  Result := Round(F * (Width - 1));
 end;
 
 procedure TWaveView.SetColor2(AValue: TColor);
@@ -363,6 +401,14 @@ var
     Bmp.SetSize(W, H);
     Bmp.Canvas.Brush.Color := WAVE_BG;
     Bmp.Canvas.FillRect(0, 0, W, H);
+    { Loop-Bereich grünlich hinterlegen: aktiv deutlich, ausgeschaltet nur
+      angedeutet (man sieht, wo der gemerkte Loop liegt) }
+    if (FLoopA >= 0) and (FLoopB > FLoopA) then
+    begin
+      if FLoopOn then Bmp.Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.16)
+      else Bmp.Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.06);
+      Bmp.Canvas.FillRect(FracToX(FLoopA), 0, FracToX(FLoopB) + 1, H);
+    end;
     { feine Mittellinie, damit auch eine stille Spur als Spur erkennbar ist }
     Bmp.Canvas.Pen.Color := DJ_BORDER;
     Bmp.Canvas.Line(0, Mid, W, Mid);
@@ -418,6 +464,7 @@ procedure TWaveView.Paint;
 var
   X, C: Integer;
   Xf, Fr: Single;
+  LC: TColor;
 begin
   if FDirty or (FPlayed.Width <> Width) or (FPlayed.Height <> Height) then
     RenderCache;
@@ -433,6 +480,26 @@ begin
   Canvas.Pen.Color := DJ_BORDER;
   Canvas.Rectangle(0, 0, Width, Height);
   Canvas.Brush.Style := bsSolid;
+  { Loop: Marken bei A und B, bei aktivem Loop oben ein grüner Balken.
+    Beim Aufziehen mit der rechten Maustaste wird der neue Bereich gezeigt. }
+  if FSelecting then
+  begin
+    Canvas.Brush.Color := LOOP_COLOR;
+    Canvas.FillRect(Min(FSelFrom, FSelTo), 0, Max(FSelFrom, FSelTo) + 1, 3);
+    Canvas.FillRect(FSelFrom, 0, FSelFrom + 1, Height);
+    Canvas.FillRect(FSelTo, 0, FSelTo + 1, Height);
+  end
+  else if FPeaks.Valid then
+  begin
+    if FLoopOn then LC := LOOP_COLOR else LC := Blend(LOOP_COLOR, WAVE_BG, 0.5);
+    Canvas.Brush.Color := LC;
+    if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
+      Canvas.FillRect(FracToX(FLoopA), 0, FracToX(FLoopB) + 1, 3);
+    if FLoopA >= 0 then
+      Canvas.FillRect(FracToX(FLoopA), 0, FracToX(FLoopA) + 1, Height);
+    if FLoopB >= 0 then
+      Canvas.FillRect(FracToX(FLoopB), 0, FracToX(FLoopB) + 1, Height);
+  end;
   { Abspielkopf: 2 Pixel breiter roter Strich (nur wenn eine Datei geladen ist).
     Er steht genau bei Xf-1 .. Xf+1, also meist zwischen zwei Pixeln. Die
     beiden Randspalten bekommen darum nur so viel Rot, wie der Strich sie
@@ -478,6 +545,13 @@ begin
   begin
     FDragging := True;
     DoSeekAt(X);
+  end
+  else if (Button = mbRight) and FPeaks.Valid and (Width >= 2) then
+  begin
+    FSelecting := True;
+    FSelFrom := EnsureRange(X, 0, Width - 1);
+    FSelTo := FSelFrom;
+    Invalidate;
   end;
 end;
 
@@ -485,12 +559,27 @@ procedure TWaveView.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   if FDragging then DoSeekAt(X);
+  if FSelecting then
+  begin
+    FSelTo := EnsureRange(X, 0, Width - 1);
+    Invalidate;
+  end;
 end;
 
 procedure TWaveView.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  FDragging := False;
+  if Button = mbLeft then FDragging := False;
+  if (Button = mbRight) and FSelecting then
+  begin
+    FSelecting := False;
+    FSelTo := EnsureRange(X, 0, Width - 1);
+    Invalidate;
+    { Nur ein Klick ohne Ziehen (weniger als 3 Pixel) setzt keinen Loop }
+    if (Abs(FSelTo - FSelFrom) >= 3) and Assigned(FOnLoopSelect) then
+      FOnLoopSelect(Self, Min(FSelFrom, FSelTo) / (Width - 1),
+                          Max(FSelFrom, FSelTo) / (Width - 1));
+  end;
 end;
 
 end.
