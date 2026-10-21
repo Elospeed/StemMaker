@@ -1,0 +1,45 @@
+# Build der schnellen Trenn-Engine StemOnnx (engines/onnx).
+#
+# Läuft nur, wenn sich etwas in engines/onnx ändert. Hat nichts mit dem
+# StemMaker-Build zu tun: StemMaker benutzt StemOnnx noch nicht.
+# Das fertige Paket (StemOnnx.exe + ONNX Runtime + DirectML + Gerüst) liegt
+# als Workflow-Artefakt beim Lauf (privat, 14 Tage).
+
+name: StemOnnx
+
+on:
+  push:
+    branches: [main]
+    paths: ['engines/onnx/**', '.github/workflows/stemonnx.yml']
+  pull_request:
+    paths: ['engines/onnx/**', '.github/workflows/stemonnx.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stemonnx-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: mingw installieren
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gcc-mingw-w64-x86-64-posix
+
+      - name: StemOnnx bauen
+        run: engines/onnx/build.sh
+
+      - name: Paket hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: StemOnnx
+          path: engines/onnx/dist/StemOnnx
+          retention-days: 14
