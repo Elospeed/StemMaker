@@ -547,7 +547,8 @@ begin
   Zoom.OnMarkerMove := @ZoomMarkerMove;
   Zoom.Hint := 'Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops.' + LineEnding +
                'Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei).' + LineEnding +
-               'Marken A und B mit der Maus verschieben. Mausrad: zoomen. Klick: springen.';
+               'Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren.' + LineEnding +
+               'Mausrad: zoomen. Klick: springen.';
   Zoom.ShowHint := True;
 
   { Zeit: aktuelle Position gross, Gesamtlänge klein daneben }
