@@ -30,8 +30,9 @@ BEDIENUNG
   W              Ansicht Kompakt / Wellenform umschalten
   A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
   L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
-  Shift+Pfeil    Loop-Punkt A um 10 ms verschieben
-  Strg+Pfeil     Loop-Punkt B um 10 ms verschieben
+  Pfeil li/re    bei aktivem Loop: ganzen Loop verschieben (sonst -/+ 5 s)
+  Shift+Pfeil    Loop schmaler / breiter (Ende B verschieben)
+  Strg+Pfeil     Anfang A verschieben
 
 WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
@@ -64,7 +65,10 @@ LOOP A-B
   - Mausrad: näher heran (bis 1 Sekunde) oder weiter weg (bis 1 Minute).
     Das Raster passt sich an (bis 0,01 s fein).
   - Klick neben die Marken springt an diese Stelle.
-  - Shift+Pfeil / Strg+Pfeil verschiebt A bzw. B um 10 ms.
+  - Tastatur: Pfeil links/rechts verschiebt den ganzen aktiven Loop,
+    Shift+Pfeil macht ihn schmaler/breiter, Strg+Pfeil verschiebt den
+    Anfang. Ein Schritt ist ein feiner Rasterschritt der Lupe: wer
+    näher heranzoomt, verschiebt feiner (bis 10 ms).
   Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
   Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken
   Maustaste springt wie gewohnt. Springt man vor den Loop, wird man
