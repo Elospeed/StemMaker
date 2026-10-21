@@ -49,8 +49,9 @@
     A / B      Loop-Punkt A / B setzen (B schaltet den Loop gleich ein)
     L          Loop an/aus           Rücktaste / Shift+L  Loop löschen
     Rechte Maustaste in einer Wellenform ziehen: Loop-Bereich aufziehen
-    Pfeil li/re        bei aktivem Loop: ganzen Loop um einen Rasterschritt
-                       der Lupe verschieben (sonst -/+ 5 s springen)
+    Pfeil li/re        bei aktivem Loop: ganzen Loop um einen Schritt
+                       verschieben (sonst -/+ 5 s springen). Der Schritt
+                       wächst mit dem Zoom der Lupe (8 s: 0,1 s, ganz nah 2 ms)
     Shift+Pfeil li/re  Loop auseinanderziehen: Shift+links schiebt A nach
                        links, Shift+rechts schiebt B nach rechts
     Strg+Pfeil li/re   Loop zusammenziehen: Strg+rechts schiebt A nach
@@ -97,11 +98,11 @@
                        Lupe unter der Original-Wellenform: zeigt ~8 s um den
                        Abspielkopf mit Zeitraster. Darin Loop genau setzen
                        (rastet am Raster ein, Shift = frei), Marken A/B mit
-                       der Maus verschieben, Mausrad zoomt (1 bis 60 s).
+                       der Maus verschieben, Mausrad zoomt (0,25 bis 60 s).
                        Tastatur: Pfeile verschieben den ganzen aktiven Loop,
                        Shift+Pfeil zieht ihn nach aussen auseinander,
-                       Strg+Pfeil nach innen zusammen, jeweils um einen
-                       Rasterschritt der Lupe.
+                       Strg+Pfeil nach innen zusammen, je weiter hinein-
+                       gezoomt, desto feiner (bis 2 ms, Zoom bis 0,25 s).
                        Lupe flüssiger: Welle wird als Bild vorgerechnet und
                        nur noch verschoben (wellenform 1.4/1.5), Abspielkopf
                        im Takt des Monitors statt mit Timer (bildtakt.pas).
@@ -310,7 +311,6 @@ const
   ZOOM_HEIGHT = 56;   // Höhe der Lupe
   ROW2        = ZOOM_TOP + ZOOM_HEIGHT - 52 + 8;  // so weit rutscht die Knopfzeile nach unten
   BASE_HEIGHT = 590 + ROW2;  // Fensterhöhe ohne Wellenformen
-  NUDGE_MIN   = 441;  // kleinster Tastaturschritt für den Loop: 10 ms
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
@@ -1392,12 +1392,13 @@ begin
   Result := Format('%.2d:%.2d', [Sec div 60, Sec mod 60]);
 end;
 
-{ Wie FormatTime, aber mit Hundertstelsekunden (für die Loop-Punkte) }
+{ Wie FormatTime, aber mit Millisekunden (für die Loop-Punkte, die sich
+  ganz hineingezoomt in 2-ms-Schritten verschieben lassen) }
 function TMainForm.FormatTimeFine(Frames: Int64): string;
-var Cs: Int64;
+var Ms: Int64;
 begin
-  Cs := Frames div (SAMPLE_RATE div 100);
-  Result := Format('%.2d:%.2d.%.2d', [Cs div 6000, (Cs div 100) mod 60, Cs mod 100]);
+  Ms := Round(Frames * 1000 / SAMPLE_RATE);   // gerundet: 2-ms-Schritte sind 88 Frames
+  Result := Format('%.2d:%.2d.%.3d', [Ms div 60000, (Ms div 1000) mod 60, Ms mod 1000]);
 end;
 
 { ============================================================================
@@ -1615,11 +1616,11 @@ begin
     ZoomMarkerMove(nil, 2, FLoopB + Frames, True);
 end;
 
-{ Tastaturschritt für den Loop: ein feiner Rasterschritt der Lupe. Wer
-  näher heranzoomt, verschiebt also auch feiner (bis 10 ms). }
+{ Tastaturschritt für den Loop: 1/80 der Lupenbreite, runder Wert. Wer
+  näher heranzoomt, verschiebt also auch feiner (bei 8 s 0,1 s, bis 2 ms). }
 function TMainForm.NudgeStep: Int64;
 begin
-  Result := Max(NUDGE_MIN, Zoom.StepFrames);
+  Result := Zoom.StepFrames;
 end;
 
 { Pfeiltaste bei aktivem Loop: ganzen Loop verschieben, Länge bleibt.

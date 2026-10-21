@@ -62,8 +62,8 @@ LOOP A-B
   - Rechte Maustaste ziehen: neuer Loop. Anfang und Ende rasten am
     Zeitraster ein (feine Linien), mit gedrückter Shift-Taste frei.
   - Marken A und B mit der linken Maustaste packen und verschieben.
-  - Mausrad: näher heran (bis 1 Sekunde) oder weiter weg (bis 1 Minute).
-    Das Raster passt sich an (bis 0,01 s fein).
+  - Mausrad: näher heran (bis 1/4 Sekunde) oder weiter weg (bis 1 Minute).
+    Das Raster passt sich an (bis 1 ms fein).
   - Klick neben die Marken springt an diese Stelle.
   - Welle mit der linken Maustaste nach links oder rechts ziehen: der
     rote Strich bleibt stehen, so lässt sich eine Stelle genau anfahren.
@@ -72,8 +72,8 @@ LOOP A-B
     Shift+Pfeil macht ihn breiter (Shift+links zieht A nach links,
     Shift+rechts B nach rechts), Strg+Pfeil macht ihn schmaler
     (Strg+rechts zieht A nach rechts, Strg+links B nach links). Ein
-    Schritt ist ein feiner Rasterschritt der Lupe: wer näher heranzoomt,
-    verschiebt feiner (bis 10 ms).
+    Schritt hängt vom Zoom ab: bei 8 s sind es 0,1 s, wer näher
+    heranzoomt, verschiebt feiner (ganz nah 2 ms).
   Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
   Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken
   Maustaste springt wie gewohnt. Springt man vor den Loop, wird man
