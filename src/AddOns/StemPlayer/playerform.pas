@@ -86,6 +86,11 @@
                        aufziehen. L schaltet den Loop an/aus, Rücktaste
                        löscht ihn. Der Rücksprung ist nahtlos (stemengine 1.2),
                        der Bereich ist in allen Wellenformen grün hinterlegt.
+    1.7  (21.10.2026)  Mehrsprachig (Deutsch, Englisch, Spanisch): der Player
+                       übernimmt die Sprache, die in StemMaker eingestellt ist
+                       (StemMaker.ini [Main] Language). Die Texte stehen in
+                       denselben Sprachdateien lang\*.po wie die von StemMaker
+                       (siehe LoadLanguage und src\ulang.pas).
   ============================================================================ }
 unit playerform;
 
@@ -96,11 +101,11 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, mp4stem, stemengine, djcontrols, wellenform;
+  LazFileUtils, IniFiles, uLang, mp4stem, stemengine, djcontrols, wellenform;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.6';
+  APP_VER   = '1.7';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -190,6 +195,7 @@ type
     FLoopB      : Int64;       // Loop-Punkt B in Frames (-1 = nicht gesetzt)
     FLoopOn     : Boolean;     // Loop aktiv
 
+    procedure LoadLanguage;
     procedure BuildUI;
     procedure BuildStemRow(Idx: Integer);
     function  MakeButton(AParent: TWinControl; const ACaption: string;
@@ -291,7 +297,8 @@ var
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
-  Caption := APP_TITLE + ' ' + APP_VER + '  -  von Elospeed';
+  LoadLanguage;   // VOR allen Texten, sonst bleibt die Oberfläche deutsch
+  Caption := APP_TITLE + ' ' + APP_VER + _('  -  von Elospeed');
   Width := 820;
   Height := BASE_HEIGHT;
   Constraints.MinWidth := 720;
@@ -340,8 +347,8 @@ begin
     SetWavesVisible(False);
 
   OpenDlg := TOpenDialog.Create(Self);
-  OpenDlg.Title := 'Stem-Datei öffnen';
-  OpenDlg.Filter := 'Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*';
+  OpenDlg.Title := _('Stem-Datei öffnen');
+  OpenDlg.Filter := _('Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*');
 
   Timer := TTimer.Create(Self);
   Timer.Interval := 30;
@@ -361,9 +368,50 @@ begin
 
   FFFmpeg := FindFFmpeg;
   if FFFmpeg = '' then
-    LblStatus.Caption := 'ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt.'
+    LblStatus.Caption := _('ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt.')
   else
     LblStatus.Caption := 'ffmpeg: ' + FFFmpeg;
+end;
+
+{ ---------------------------------------------------------------------------
+  Sprache: dieselbe wie in StemMaker. Der StemPlayer hat keine eigene
+  Auswahl - er liest StemMaker.ini ([Main] Language=en) im StemMaker-Ordner
+  (eine Ebene über AddOns\, siehe AppBaseDir), ersatzweise die Kopie in
+  %APPDATA%\StemMaker\ (schreibgeschützter Programmordner). Steht dort
+  noch nichts, nimmt er wie StemMaker die Windows-Sprache.
+  Fehlt die Sprachdatei (z.B. StemPlayer allein ohne StemMaker-Ordner),
+  bleibt alles deutsch - LangLoad gibt dann einfach False zurück.
+  --------------------------------------------------------------------------- }
+procedure TMainForm.LoadLanguage;
+var
+  Ini: TIniFile;
+  Code, IniName: string;
+  i: Integer;
+begin
+  Code := '';
+  for i := 1 to 2 do
+  begin
+    if i = 1 then
+      IniName := AppBaseDir + 'StemMaker.ini'
+    else
+      IniName := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')) +
+        'StemMaker' + PathDelim + 'StemMaker.ini';
+    if not FileExists(IniName) then Continue;
+    try
+      Ini := TIniFile.Create(IniName);
+      try
+        Code := Trim(Ini.ReadString('Main', 'Language', ''));
+      finally
+        Ini.Free;
+      end;
+    except
+      Code := '';   // INI nicht lesbar -> nächste versuchen
+    end;
+    if Code <> '' then Break;
+  end;
+  if Code = '' then
+    Code := LangSystemDefault;
+  LangLoad(Code);
 end;
 
 function TMainForm.MakeLabel(AParent: TWinControl; const ACaption: string;
@@ -432,23 +480,23 @@ begin
   PnlTop.Color := DJ_BG;
   PnlTop.BorderColor := clNone;    // ohne Rahmen, liegt direkt auf dem Fenster
 
-  BtnOpen := MakeButton(PnlTop, 'ÖFFNEN', 0, 12, 96, 32);
-  BtnOpen.Hint := 'Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen';
+  BtnOpen := MakeButton(PnlTop, _('ÖFFNEN'), 0, 12, 96, 32);
+  BtnOpen.Hint := _('Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen');
   BtnOpen.ShowHint := True;
   BtnOpen.OnClick := @BtnOpenClick;
 
-  LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 110, 8, 12, True);
+  LblFile := MakeLabel(PnlTop, _('Stem-Datei öffnen oder hierher ziehen (Drag & Drop)'), 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
   LblFile.SetBounds(110, 8, W - 110 - 236, 24);
 
   { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
-  BtnViewCompact := MakeButton(PnlTop, 'KOMPAKT', W - 228, 14, 104, 28);
-  BtnViewWave    := MakeButton(PnlTop, 'WELLENFORM', W - 125, 14, 124, 28);
+  BtnViewCompact := MakeButton(PnlTop, _('KOMPAKT'), W - 228, 14, 104, 28);
+  BtnViewWave    := MakeButton(PnlTop, _('WELLENFORM'), W - 125, 14, 124, 28);
   BtnViewCompact.Anchors := [akTop, akRight];
   BtnViewWave.Anchors := [akTop, akRight];
-  BtnViewCompact.Hint := 'Kompakte Ansicht ohne Wellenformen (Taste W)';
-  BtnViewWave.Hint := 'Ansicht mit Wellenform unter jedem Stem (Taste W)';
+  BtnViewCompact.Hint := _('Kompakte Ansicht ohne Wellenformen (Taste W)');
+  BtnViewWave.Hint := _('Ansicht mit Wellenform unter jedem Stem (Taste W)');
   BtnViewCompact.ShowHint := True;
   BtnViewWave.ShowHint := True;
   BtnViewCompact.OnClick := @ViewClick;
@@ -464,14 +512,14 @@ begin
   BtnPlay.Glyph := dgPlay;
   BtnPlay.LitColor := DJ_GREEN;
   BtnPlay.Enabled := False;
-  BtnPlay.Hint := 'Play / Pause (Leertaste)';
+  BtnPlay.Hint := _('Play / Pause (Leertaste)');
   BtnPlay.ShowHint := True;
   BtnPlay.OnClick := @BtnPlayClick;
 
   BtnStop := MakeButton(PnlDeck, '', 64, 12, 46, 34);
   BtnStop.Glyph := dgStop;
   BtnStop.Enabled := False;
-  BtnStop.Hint := 'Stop und zurück an den Anfang';
+  BtnStop.Hint := _('Stop und zurück an den Anfang');
   BtnStop.ShowHint := True;
   BtnStop.OnClick := @BtnStopClick;
 
@@ -497,8 +545,8 @@ begin
   WaveMaster.Visible := False;
   WaveMaster.OnSeek := @WaveSeek;
   WaveMaster.OnLoopSelect := @WaveLoopSelect;
-  WaveMaster.Hint := 'Original - klicken oder ziehen, um an diese Stelle zu springen.' + LineEnding +
-                     'Rechte Maustaste ziehen: Loop-Bereich aufziehen';
+  WaveMaster.Hint := _('Original - klicken oder ziehen, um an diese Stelle zu springen.') + LineEnding +
+                     _('Rechte Maustaste ziehen: Loop-Bereich aufziehen');
   WaveMaster.ShowHint := True;
 
   { Zeit: aktuelle Position gross, Gesamtlänge klein daneben }
@@ -516,19 +564,19 @@ begin
   LblTotal.SetBounds(W - 76, 22, 70, 20);
   LblTotal.Anchors := [akTop, akRight];
 
-  L := MakeLabel(PnlDeck, 'HÖREN', 12, 62, 8, False);
+  L := MakeLabel(PnlDeck, _('HÖREN'), 12, 62, 8, False);
   L.Font.Color := DJ_DIM;
 
   { Modus-Umschaltung: drei aneinanderliegende Buttons, der aktive ist hell }
-  BtnModeStems := MakeButton(PnlDeck, 'STEMS  S', 62, 56, 96, 28);
-  BtnModeOrig  := MakeButton(PnlDeck, 'ORIGINAL  O', 157, 56, 116, 28);
-  BtnModeRest  := MakeButton(PnlDeck, 'REST  R', 272, 56, 90, 28);
+  BtnModeStems := MakeButton(PnlDeck, _('STEMS  S'), 62, 56, 96, 28);
+  BtnModeOrig  := MakeButton(PnlDeck, _('ORIGINAL  O'), 157, 56, 116, 28);
+  BtnModeRest  := MakeButton(PnlDeck, _('REST  R'), 272, 56, 90, 28);
   BtnModeStems.Down := True;
-  BtnModeStems.Hint := 'Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)';
-  BtnModeOrig.Hint  := 'Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)';
-  BtnModeRest.Hint  := 'Rest = Original minus Summe aller Stems (Taste R):' + LineEnding +
-                       'hörbar, was bei der Trennung verloren ging oder anders' + LineEnding +
-                       'klingt (ideal: fast Stille).';
+  BtnModeStems.Hint := _('Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)');
+  BtnModeOrig.Hint  := _('Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)');
+  BtnModeRest.Hint  := _('Rest = Original minus Summe aller Stems (Taste R):') + LineEnding +
+                       _('hörbar, was bei der Trennung verloren ging oder anders') + LineEnding +
+                       _('klingt (ideal: fast Stille).');
   BtnModeStems.ShowHint := True; BtnModeOrig.ShowHint := True; BtnModeRest.ShowHint := True;
   BtnModeStems.OnClick := @ModeClick;
   BtnModeOrig.OnClick := @ModeClick;
@@ -536,22 +584,22 @@ begin
 
   { Loop A-B: rechts neben den Modus-Knöpfen. Passt auch bei der
     kleinsten Fensterbreite noch vor RESET. }
-  L := MakeLabel(PnlDeck, 'LOOP', 374, 62, 8, False);
+  L := MakeLabel(PnlDeck, _('LOOP'), 374, 62, 8, False);
   L.Font.Color := DJ_DIM;
   BtnLoopA     := MakeButton(PnlDeck, 'A', 406, 56, 32, 28);
   BtnLoopB     := MakeButton(PnlDeck, 'B', 437, 56, 32, 28);
-  BtnLoopOn    := MakeButton(PnlDeck, 'AN  L', 468, 56, 62, 28);
+  BtnLoopOn    := MakeButton(PnlDeck, _('AN  L'), 468, 56, 62, 28);
   BtnLoopClear := MakeButton(PnlDeck, '×', 529, 56, 28, 28);
   BtnLoopA.LitColor := DJ_GREEN;
   BtnLoopB.LitColor := DJ_GREEN;
   BtnLoopOn.LitColor := DJ_GREEN;
-  BtnLoopA.Hint := 'Loop-Punkt A an der aktuellen Stelle setzen (Taste A)';
-  BtnLoopB.Hint := 'Loop-Punkt B an der aktuellen Stelle setzen (Taste B).' + LineEnding +
-                   'Der Abschnitt A bis B wird dann endlos wiederholt.' + LineEnding +
-                   'Tipp: mit der rechten Maustaste in einer Wellenform ziehen';
-  BtnLoopOn.Hint := 'Loop an/aus (Taste L). Einschalten springt zu A,' + LineEnding +
-                    'wenn die Wiedergabe gerade ausserhalb des Loops ist.';
-  BtnLoopClear.Hint := 'Loop löschen (Rücktaste)';
+  BtnLoopA.Hint := _('Loop-Punkt A an der aktuellen Stelle setzen (Taste A)');
+  BtnLoopB.Hint := _('Loop-Punkt B an der aktuellen Stelle setzen (Taste B).') + LineEnding +
+                   _('Der Abschnitt A bis B wird dann endlos wiederholt.') + LineEnding +
+                   _('Tipp: mit der rechten Maustaste in einer Wellenform ziehen');
+  BtnLoopOn.Hint := _('Loop an/aus (Taste L). Einschalten springt zu A,') + LineEnding +
+                    _('wenn die Wiedergabe gerade ausserhalb des Loops ist.');
+  BtnLoopClear.Hint := _('Loop löschen (Rücktaste)');
   BtnLoopA.ShowHint := True; BtnLoopB.ShowHint := True;
   BtnLoopOn.ShowHint := True; BtnLoopClear.ShowHint := True;
   BtnLoopA.OnClick := @LoopClick;
@@ -559,9 +607,9 @@ begin
   BtnLoopOn.OnClick := @LoopClick;
   BtnLoopClear.OnClick := @LoopClick;
 
-  BtnReset := MakeButton(PnlDeck, 'RESET  0', W - 112, 56, 100, 28);
+  BtnReset := MakeButton(PnlDeck, _('RESET  0'), W - 112, 56, 100, 28);
   BtnReset.Anchors := [akTop, akRight];
-  BtnReset.Hint := 'Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)';
+  BtnReset.Hint := _('Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)');
   BtnReset.ShowHint := True;
   BtnReset.OnClick := @BtnResetClick;
 
@@ -572,8 +620,8 @@ begin
   { ---------- Master ---------- }
   PnlMaster := MakeDJPanel(60, 8);
 
-  MakeLabel(PnlMaster, 'MASTER', 14, 10, 11, True);
-  L := MakeLabel(PnlMaster, 'AUSGANG L / R', 14, 34, 8, False);
+  MakeLabel(PnlMaster, _('MASTER'), 14, 10, 11, True);
+  L := MakeLabel(PnlMaster, _('AUSGANG L / R'), 14, 34, 8, False);
   L.Font.Color := DJ_DIM;
 
   TrkMaster := MakeFader(PnlMaster, 224, 17, 200, DJ_TEXT);
@@ -592,12 +640,12 @@ begin
   MeterOut.Anchors := [akLeft, akTop, akRight];
   MeterOut.OnPaint := @OutMeterPaint;
 
-  BtnClip := MakeButton(PnlMaster, 'CLIP', W - 60, 17, 48, 26);
+  BtnClip := MakeButton(PnlMaster, _('CLIP'), W - 60, 17, 48, 26);
   BtnClip.Anchors := [akTop, akRight];
   BtnClip.LitColor := DJ_RED;
   BtnClip.Indicator := True;   // nur Anzeige, kein Knopf
   BtnClip.Font.Size := 7;
-  BtnClip.Hint := 'Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)';
+  BtnClip.Hint := _('Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)');
   BtnClip.ShowHint := True;
 
   { ---------- Unten ---------- }
@@ -609,8 +657,8 @@ begin
   PnlBottom.Width := ClientWidth;
 
   LblHelp := MakeLabel(PnlBottom,
-    'Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Rechts ziehen = Loop', 12, 6, 0, False);
+    _('Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Rechts ziehen = Loop'), 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -619,7 +667,7 @@ begin
   LblStatus.AutoSize := False;
   LblStatus.Width := PnlBottom.Width - 24;
 
-  LblKofi := MakeLabel(PnlBottom, 'Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed', 12, 44, 0, False);
+  LblKofi := MakeLabel(PnlBottom, _('Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed'), 12, 44, 0, False);
   LblKofi.Font.Color := DJ_KOFI;
   LblKofi.Cursor := crHandPoint;
   LblKofi.OnClick := @KofiClick;
@@ -650,7 +698,7 @@ begin
   R^.BtnMute.LitColor := DJ_RED;
   R^.BtnMute.Tag := Idx;
   R^.BtnMute.OnClick := @MuteSoloClick;
-  R^.BtnMute.Hint := Format('Mute: Stem stumm schalten (Taste %d)', [Idx]);
+  R^.BtnMute.Hint := Format(_('Mute: Stem stumm schalten (Taste %d)'), [Idx]);
   R^.BtnMute.ShowHint := True;
 
   R^.BtnSolo := MakeButton(R^.Panel, 'S', 178, 13, 32, 28);
@@ -658,8 +706,8 @@ begin
   R^.BtnSolo.LitColor := DJ_YELLOW;
   R^.BtnSolo.Tag := 100 + Idx;
   R^.BtnSolo.OnClick := @MuteSoloClick;
-  R^.BtnSolo.Hint := Format('Solo: nur diesen Stem hören (Shift+%d).' + LineEnding +
-    'Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)', [Idx]);
+  R^.BtnSolo.Hint := Format(_('Solo: nur diesen Stem hören (Shift+%d).') + LineEnding +
+    _('Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)'), [Idx]);
   R^.BtnSolo.ShowHint := True;
 
   R^.TrkVol := MakeFader(R^.Panel, 224, 14, 200, R^.Color);
@@ -691,8 +739,8 @@ begin
   R^.Wave.Visible := False;
   R^.Wave.OnSeek := @WaveSeek;
   R^.Wave.OnLoopSelect := @WaveLoopSelect;
-  R^.Wave.Hint := 'Klicken oder ziehen, um an diese Stelle zu springen.' + LineEnding +
-                  'Rechte Maustaste ziehen: Loop-Bereich aufziehen';
+  R^.Wave.Hint := _('Klicken oder ziehen, um an diese Stelle zu springen.') + LineEnding +
+                  _('Rechte Maustaste ziehen: Loop-Bereich aufziehen');
   R^.Wave.ShowHint := True;
 end;
 
@@ -1033,7 +1081,7 @@ begin
         ErrText := '';
         Exit(False);
       end;
-      LblStatus.Caption := Format('Dekodiere %d Spuren mit ffmpeg ... %.1f s',
+      LblStatus.Caption := Format(_('Dekodiere %d Spuren mit ffmpeg ... %.1f s'),
         [TrackCount, (GetTickCount64 - T0) / 1000]);
       Application.ProcessMessages;   // Fenster bleibt bedienbar
       Sleep(30);
@@ -1043,7 +1091,7 @@ begin
 
     Result := (P.ExitStatus = 0) and FileExists(FTempDir + 'track0.raw');
     if (not Result) and (ErrText = '') then
-      ErrText := Format('ffmpeg wurde mit Code %d beendet.', [P.ExitStatus]);
+      ErrText := Format(_('ffmpeg wurde mit Code %d beendet.'), [P.ExitStatus]);
   finally
     P.Free;
   end;
@@ -1073,8 +1121,7 @@ begin
   if DirectoryExists(FileName) then
   begin
     MessageDlg(APP_TITLE,
-      'Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner.' + LineEnding +
-      LineEnding + 'Please drop a stem file (.stem.mp4), not a folder.',
+      _('Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner.'),
       mtWarning, [mbOK], 0);
     Exit;
   end;
@@ -1085,7 +1132,7 @@ begin
     Sie liest nur die MP4-Struktur (Millisekunden), ffmpeg wird nicht gebraucht. }
   if not CheckStemFile(FileName, NewInfo, Reason) then
   begin
-    LblStatus.Caption := 'Keine Stem-Datei: ' + ExtractFileName(FileName);
+    LblStatus.Caption := _('Keine Stem-Datei: ') + ExtractFileName(FileName);
     MessageDlg(APP_TITLE, ExtractFileName(FileName) + LineEnding + LineEnding +
       Reason, mtWarning, [mbOK], 0);
     Exit;
@@ -1095,13 +1142,13 @@ begin
   if (FFFmpeg = '') or not FileExists(FFFmpeg) then
   begin
     MessageDlg(APP_TITLE,
-      'ffmpeg.exe wurde nicht gefunden.' + LineEnding +
-      'Bitte im nächsten Dialog die ffmpeg.exe auswählen' + LineEnding +
-      '(z.B. die von Elospeed StemMaker).', mtInformation, [mbOK], 0);
+      _('ffmpeg.exe wurde nicht gefunden.') + LineEnding +
+      _('Bitte im nächsten Dialog die ffmpeg.exe auswählen') + LineEnding +
+      _('(z.B. die von Elospeed StemMaker).'), mtInformation, [mbOK], 0);
     Dlg := TOpenDialog.Create(nil);
     try
-      Dlg.Title := 'ffmpeg.exe auswählen';
-      Dlg.Filter := 'ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe';
+      Dlg.Title := _('ffmpeg.exe auswählen');
+      Dlg.Filter := _('ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe');
       if not Dlg.Execute then Exit;
       FFFmpeg := Dlg.FileName;
     finally
@@ -1133,14 +1180,14 @@ begin
 
     Msg := '';
     if not FInfo.HasStemBox then
-      Msg := 'Hinweis: kein Traktor-"stem"-Block gefunden (Standardnamen werden verwendet).';
+      Msg := _('Hinweis: kein Traktor-"stem"-Block gefunden (Standardnamen werden verwendet).');
 
     { 2) Dekodieren }
     FTempDir := FInstanceDir + 'track_' +
                 IntToStr(GetTickCount64) + PathDelim;
     ForceDirectories(FTempDir);
     LblFile.Caption := ExtractFileName(FileName);
-    LblFileInfo.Caption := 'Dekodiere ...';
+    LblFileInfo.Caption := _('Dekodiere ...');
     Ok := DecodeTracks(FileName, Tracks, ErrText);
     if not Ok then
     begin
@@ -1148,16 +1195,16 @@ begin
       if FCancelLoad then
       begin
         { Abbruch durch Schliessen des Fensters -> keine Fehlermeldung }
-        LblStatus.Caption := 'Laden abgebrochen.';
+        LblStatus.Caption := _('Laden abgebrochen.');
         LblFile.Caption := '';
         LblFileInfo.Caption := '';
         Exit;
       end;
-      LblFileInfo.Caption := 'Fehler beim Dekodieren';
-      LblStatus.Caption := 'Fehler beim Dekodieren: ' +
+      LblFileInfo.Caption := _('Fehler beim Dekodieren');
+      LblStatus.Caption := _('Fehler beim Dekodieren: ') +
         StringReplace(ErrText, LineEnding, ' | ', [rfReplaceAll]);
-      MessageDlg(APP_TITLE, 'ffmpeg konnte die Datei nicht dekodieren:' + LineEnding +
-        FileName + LineEnding + LineEnding + 'Meldung von ffmpeg:' + LineEnding +
+      MessageDlg(APP_TITLE, _('ffmpeg konnte die Datei nicht dekodieren:') + LineEnding +
+        FileName + LineEnding + LineEnding + _('Meldung von ffmpeg:') + LineEnding +
         ErrText, mtError, [mbOK], 0);
       Exit;
     end;
@@ -1190,11 +1237,11 @@ begin
     FLastClip := 0;
     FClipTicks := 0;
     Caption := ExtractFileName(FileName) + '  -  ' + APP_TITLE;
-    LblFileInfo.Caption := Format('%d Spuren  ·  Länge %s', [Tracks, FormatTime(Engine.TotalFrames)]);
+    LblFileInfo.Caption := Format(_('%d Spuren  ·  Länge %s'), [Tracks, FormatTime(Engine.TotalFrames)]);
     LblTotal.Caption := '/ ' + FormatTime(Engine.TotalFrames);
 
     if Msg <> '' then LblStatus.Caption := Msg
-    else LblStatus.Caption := Format('%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s',
+    else LblStatus.Caption := Format(_('%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s'),
       [Tracks, FormatTime(Engine.TotalFrames), FFFmpeg]);
 
     UpdateGains;
@@ -1260,23 +1307,23 @@ begin
     StateColor := DJ_DIM;
     if not StemMode then
     begin
-      if BtnModeOrig.Down then S := 'MODUS: ORIGINAL' else S := 'MODUS: REST';
+      if BtnModeOrig.Down then S := _('MODUS: ORIGINAL') else S := _('MODUS: REST');
     end
     else if Rows[i].BtnSolo.Down then
     begin
-      S := 'SOLO';
+      S := _('SOLO');
       StateColor := DJ_YELLOW;
     end
     else if not IsOn then
     begin
       if Rows[i].BtnMute.Down then
       begin
-        S := 'STUMM';
+        S := _('STUMM');
         StateColor := DJ_RED;
       end
-      else S := 'AUS (SOLO)';  // ein anderer Stem ist auf Solo
+      else S := _('AUS (SOLO)');  // ein anderer Stem ist auf Solo
     end
-    else S := 'HÖRBAR';
+    else S := _('HÖRBAR');
     Rows[i].LblState.Caption := S;
     Rows[i].LblState.Font.Color := StateColor;
     { Hörbare Stems in ihrer Farbe, alle anderen grau }
@@ -1386,13 +1433,13 @@ begin
   if Engine = nil then Exit;
   if FLoopA < 0 then
   begin
-    LblStatus.Caption := 'Loop: zuerst Punkt A setzen (Taste A), dann B.';
+    LblStatus.Caption := _('Loop: zuerst Punkt A setzen (Taste A), dann B.');
     Exit;
   end;
   P := CurrentFrame;
   if P - FLoopA < MIN_LOOP then
   begin
-    LblStatus.Caption := 'Loop: Punkt B muss hinter Punkt A liegen.';
+    LblStatus.Caption := _('Loop: Punkt B muss hinter Punkt A liegen.');
     Exit;
   end;
   FLoopB := P;
@@ -1406,8 +1453,8 @@ begin
   if Engine = nil then Exit;
   if (FLoopA < 0) or (FLoopB < 0) then
   begin
-    LblStatus.Caption := 'Loop: zuerst Punkt A und B setzen (Tasten A und B, ' +
-                         'oder rechte Maustaste in der Wellenform ziehen).';
+    LblStatus.Caption := _('Loop: zuerst Punkt A und B setzen (Tasten A und B, ' +
+                         'oder rechte Maustaste in der Wellenform ziehen).');
     Exit;
   end;
   FLoopOn := not FLoopOn;
@@ -1468,14 +1515,14 @@ begin
   if (FLoopA >= 0) and (FLoopB >= 0) then
   begin
     if FLoopOn then
-      LblStatus.Caption := Format('Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen',
+      LblStatus.Caption := Format(_('Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen'),
         [FormatTimeFine(FLoopA), FormatTimeFine(FLoopB), (FLoopB - FLoopA) / SAMPLE_RATE])
     else
-      LblStatus.Caption := Format('Loop aus:  %s bis %s gemerkt  ·  L = wieder an',
+      LblStatus.Caption := Format(_('Loop aus:  %s bis %s gemerkt  ·  L = wieder an'),
         [FormatTimeFine(FLoopA), FormatTimeFine(FLoopB)]);
   end
   else if FLoopA >= 0 then
-    LblStatus.Caption := Format('Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken',
+    LblStatus.Caption := Format(_('Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken'),
       [FormatTimeFine(FLoopA)])
   else
     LblStatus.Caption := '';
@@ -1844,7 +1891,7 @@ begin
   begin
     FCancelLoad := True;
     FCloseAfterLoad := True;
-    LblStatus.Caption := 'Breche Dekodieren ab ...';
+    LblStatus.Caption := _('Breche Dekodieren ab ...');
     CanClose := False;
   end
   else

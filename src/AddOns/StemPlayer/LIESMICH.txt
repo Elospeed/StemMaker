@@ -1,4 +1,4 @@
-Elospeed StemPlayer 1.6  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemPlayer 1.7  -  von Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
@@ -58,6 +58,14 @@ LOOP A-B
   bei B wieder eingefangen. Springt man hinter B, läuft der Track
   normal weiter bis zum Ende. Kürzester Loop: 0,1 Sekunden.
 
+SPRACHE
+  Der StemPlayer spricht Deutsch, Englisch und Spanisch. Er nimmt
+  automatisch die Sprache, die in StemMaker eingestellt ist (unter
+  "Weitere Einstellungen" -> "Sprache:"). Eine eigene Auswahl hat er
+  nicht. Die Texte stehen in denselben Dateien wie die von StemMaker
+  (lang\en.po, lang\es.po). Liegt der StemPlayer nicht im Ordner
+  AddOns\ von StemMaker, findet er sie nicht und bleibt deutsch.
+
 MODI
   Stems     Die 4 Stems gemischt (mit Mute/Solo/Fader)
   Original  Spur 0 = Originalmix aus der Datei (A/B-Vergleich)
@@ -96,3 +104,5 @@ VERSIONEN
        Solo ist exklusiv (mehrere Solos mit Strg)
   1.6  Loop A-B: Abschnitt endlos wiederholen (Tasten A, B, L oder
        rechte Maustaste in der Wellenform ziehen), nahtloser Rücksprung
+  1.7  Mehrsprachig: Deutsch, Englisch, Spanisch - übernimmt die
+       Sprache von StemMaker

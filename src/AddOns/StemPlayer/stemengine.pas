@@ -139,6 +139,9 @@ type
 
 implementation
 
+uses
+  uLang;   // _() - Übersetzung der Fehlermeldung (src\ulang.pas)
+
 { TStemEngine }
 
 constructor TStemEngine.Create(const RawFiles: array of string);
@@ -223,7 +226,7 @@ begin
   if R <> MMSYSERR_NOERROR then
   begin
     FWave := 0;
-    FOpenError := Format('Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d).', [R]);
+    FOpenError := Format(_('Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d).'), [R]);
     Exit;
   end;
   { Gerät pausieren, damit nichts spielt, bevor die GUI "Play" drückt }
