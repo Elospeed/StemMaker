@@ -7,6 +7,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## Unveröffentlicht
+
+### StemMaker – neue Sprache
+- **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“.
+
 ## 1.8.1 – 20. Oktober 2026
 
 ### StemMaker – kleinere Fehler behoben
