@@ -59,6 +59,9 @@
                        gezeichnet. Welle mit der linken Maustaste ziehen
                        (Wunsch Speedy): der rote Strich bleibt in der Mitte,
                        beim Loslassen geht es an der neuen Stelle weiter.
+                       Ruckeln einmal pro Sekunde behoben: Resize ohne echte
+                       Grössenänderung (kommt bei jedem Umspringen der
+                       Zeitanzeige) rechnet die Bilder nicht mehr neu.
   ============================================================================ }
 unit wellenform;
 
@@ -508,10 +511,14 @@ begin
   if X <> FHeadX then Invalidate;
 end;
 
+{ Kein FDirty hier: Windows meldet Resize auch ohne echte Grössenänderung,
+  z.B. jede Sekunde, wenn die Zeitanzeige umspringt und das Fenster seine
+  Anordnung neu prüft. Alle Wellenformen neu zu rechnen hielt dann ~150 ms
+  alles an (Ruckeln einmal pro Sekunde). Ob die Grösse wirklich anders ist,
+  prüft Paint selbst. }
 procedure TWaveView.Resize;
 begin
   inherited Resize;
-  FDirty := True;
 end;
 
 { Zeichnet beide Bilder (gespielt / nicht gespielt) neu.
@@ -768,10 +775,11 @@ begin
   inherited Destroy;
 end;
 
+{ wie TWaveView.Resize: nur neu rechnen, wenn die Grösse wirklich anders
+  ist (prüft Paint) }
 procedure TZoomView.Resize;
 begin
   inherited Resize;
-  FCacheDirty := True;
 end;
 
 function TZoomView.StepFrames: Int64;
