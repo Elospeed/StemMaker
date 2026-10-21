@@ -49,8 +49,10 @@
     A / B      Loop-Punkt A / B setzen (B schaltet den Loop gleich ein)
     L          Loop an/aus           Rücktaste / Shift+L  Loop löschen
     Rechte Maustaste in einer Wellenform ziehen: Loop-Bereich aufziehen
-    Shift+Pfeil li/re  Punkt A um 10 ms verschieben
-    Strg+Pfeil li/re   Punkt B um 10 ms verschieben
+    Pfeil li/re        bei aktivem Loop: ganzen Loop um einen Rasterschritt
+                       der Lupe verschieben (sonst -/+ 5 s springen)
+    Shift+Pfeil li/re  Loop schmaler / breiter (Punkt B verschieben)
+    Strg+Pfeil li/re   Anfang (Punkt A) verschieben
     Lupe (Streifen unter dem Original): Mausrad zoomt, Marken A/B ziehen,
     rechte Maustaste ziehen = Loop am Raster, mit Shift frei
 
@@ -94,7 +96,11 @@
                        Abspielkopf mit Zeitraster. Darin Loop genau setzen
                        (rastet am Raster ein, Shift = frei), Marken A/B mit
                        der Maus verschieben, Mausrad zoomt (1 bis 60 s).
-                       Feinschritte: Shift/Strg + Pfeil verschiebt A/B um 10 ms.
+                       Tastatur: Pfeile verschieben den ganzen aktiven Loop,
+                       Shift+Pfeil ändert die Breite (B), Strg+Pfeil den
+                       Anfang (A), jeweils um einen Rasterschritt der Lupe.
+                       Lupe flüssiger: Welle wird als Bild vorgerechnet und
+                       nur noch verschoben (wellenform 1.4), feinerer Timer.
     1.7  (21.10.2026)  Mehrsprachig (Deutsch, Englisch, Spanisch): der Player
                        übernimmt die Sprache, die in StemMaker eingestellt ist
                        (StemMaker.ini [Main] Language). Die Texte stehen in
@@ -110,7 +116,7 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, uLang, mp4stem, stemengine, djcontrols, wellenform;
+  LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
@@ -249,6 +255,8 @@ type
     procedure ApplyLoop(UpdateEngine: Boolean = True);
     procedure SetLoopRange(A, B: Int64);
     procedure NudgeMarker(Marker: Integer; Frames: Int64);
+    procedure MoveLoop(Frames: Int64);
+    function  NudgeStep: Int64;
     procedure ZoomSeek(Sender: TObject; Frame: Int64);
     procedure ZoomLoopSelect(Sender: TObject; AFrom, ATo: Int64);
     procedure ZoomMarkerMove(Sender: TObject; Marker: Integer; Frame: Int64; Final: Boolean);
@@ -300,7 +308,7 @@ const
   ZOOM_HEIGHT = 56;   // Höhe der Lupe
   ROW2        = ZOOM_TOP + ZOOM_HEIGHT - 52 + 8;  // so weit rutscht die Knopfzeile nach unten
   BASE_HEIGHT = 590 + ROW2;  // Fensterhöhe ohne Wellenformen
-  NUDGE       = 441;  // Feinschritt für A/B mit Shift/Strg+Pfeil: 10 ms
+  NUDGE_MIN   = 441;  // kleinster Tastaturschritt für den Loop: 10 ms
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
@@ -380,6 +388,10 @@ begin
   HeadTimer.Interval := 15;
   HeadTimer.OnTimer := @HeadTimerTick;
   HeadTimer.Enabled := True;
+  { Windows-Takt auf 1 ms: sonst kommen Timer nur im 15,6-ms-Raster, mal nach
+    einem, mal nach zwei Schritten -> die Lupe läuft ungleichmässig.
+    Gilt nur für dieses Programm, wird in FormClose zurückgesetzt. }
+  timeBeginPeriod(1);
 
   { Reste früherer Abstürze aus dem Temp-Ordner entfernen }
   CleanupOrphanTempDirs;
@@ -690,7 +702,7 @@ begin
 
   LblHelp := MakeLabel(PnlBottom,
     _('Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil A/B fein'), 12, 6, 0, False);
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Pfeile/Shift+Pfeil Loop'), 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
@@ -1635,7 +1647,7 @@ begin
   ApplyLoop(Final);
 end;
 
-{ Shift/Strg + Pfeil: Marke A (1) bzw. B (2) um Frames verschieben }
+{ Strg/Shift + Pfeil: Marke A (1) bzw. B (2) um Frames verschieben }
 procedure TMainForm.NudgeMarker(Marker: Integer; Frames: Int64);
 begin
   if Engine = nil then Exit;
@@ -1643,6 +1655,28 @@ begin
     ZoomMarkerMove(nil, 1, FLoopA + Frames, True)
   else if (Marker = 2) and (FLoopB >= 0) then
     ZoomMarkerMove(nil, 2, FLoopB + Frames, True);
+end;
+
+{ Tastaturschritt für den Loop: ein feiner Rasterschritt der Lupe. Wer
+  näher heranzoomt, verschiebt also auch feiner (bis 10 ms). }
+function TMainForm.NudgeStep: Int64;
+begin
+  Result := Max(NUDGE_MIN, Zoom.StepFrames);
+end;
+
+{ Pfeiltaste bei aktivem Loop: ganzen Loop verschieben, Länge bleibt.
+  Liegt die Wiedergabe danach ausserhalb, geht es bei A weiter. }
+procedure TMainForm.MoveLoop(Frames: Int64);
+var
+  Len, P: Int64;
+begin
+  if (Engine = nil) or (FLoopA < 0) or (FLoopB < 0) then Exit;
+  Len := FLoopB - FLoopA;
+  FLoopA := EnsureRange(FLoopA + Frames, 0, Engine.TotalFrames - Len);
+  FLoopB := FLoopA + Len;
+  ApplyLoop;
+  P := CurrentFrame;
+  if FLoopOn and ((P < FLoopA) or (P >= FLoopB)) then Engine.SeekTo := FLoopA;
 end;
 
 { Pegel (0..1 linear) -> Balkenlänge (0..1) auf einer dB-Skala von -48..0 dB }
@@ -1888,8 +1922,13 @@ begin
     Diff := Dev - FHeadPos;
     if Abs(Diff) > SAMPLE_RATE * 0.25 then
       FHeadPos := Dev                      // Sprung oder Aussetzer: übernehmen
+    { sanft nachführen, kein Zurückspringen. Kleine Abweichungen (die Geräteposition
+      kommt in ~23-ms-Stufen) nur ganz schwach, sonst schwankt das Tempo der
+      Lupe sichtbar }
+    else if Abs(Diff) < SAMPLE_RATE * 0.03 then
+      FHeadPos := FHeadPos + Diff * 0.02
     else
-      FHeadPos := FHeadPos + Diff * 0.08;  // sanft nachführen, kein Zurückspringen
+      FHeadPos := FHeadPos + Diff * 0.08;
   end
   else
     FHeadPos := Dev;                       // Pause, Ende oder gerade gestartet
@@ -1957,8 +1996,10 @@ begin
     VK_LEFT, VK_RIGHT:
       begin
         if Key = VK_LEFT then i := -1 else i := 1;
-        if ssShift in Shift then NudgeMarker(1, i * NUDGE)        // A fein
-        else if ssCtrl in Shift then NudgeMarker(2, i * NUDGE)    // B fein
+        if ssShift in Shift then NudgeMarker(2, i * NudgeStep)    // Breite (B)
+        else if ssCtrl in Shift then NudgeMarker(1, i * NudgeStep) // Anfang (A)
+        else if FLoopOn and (FLoopA >= 0) and (FLoopB > FLoopA) then
+          MoveLoop(i * NudgeStep)                                  // ganzer Loop
         else SeekRelative(i * 5);
         Key := 0;
       end;
@@ -1999,6 +2040,7 @@ end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  timeEndPeriod(1);
   Timer.Enabled := False;
   HeadTimer.Enabled := False;
   UnloadFile;          // Thread beenden + Track-Ordner löschen

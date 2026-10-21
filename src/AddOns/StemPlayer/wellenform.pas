@@ -49,6 +49,10 @@
                        Loop mit rechter Maustaste aufziehen (StemPlayer 1.6)
     1.3  (21.10.2026)  Lupe TZoomView mit Raster und verschiebbaren Marken,
                        feine Hüllkurve des Originals (TPeakThread.Fine)
+    1.4  (21.10.2026)  Lupe flüssiger: Welle samt Raster wird in zwei Bilder
+                       (hell/gedämpft) mit dreifacher Breite vorgerechnet und
+                       beim Abspielen nur verschoben. Gezeichnet wird erst in
+                       ein Bild im Speicher, dann auf einmal (kein Flackern).
   ============================================================================ }
 unit wellenform;
 
@@ -167,10 +171,18 @@ type
     FSelecting: Boolean;     // rechte Maustaste: neuer Loop wird aufgezogen
     FSelFrom  : Int64;       // in Frames, weil die Welle beim Ziehen weiterläuft
     FSelTo    : Int64;
-    FLastPx   : Integer;     // zuletzt gezeichnete Kopfposition (1/4 Pixel-Raster)
+    FLastPx   : Integer;     // zuletzt gezeichnete Kopfposition (ganze Pixel)
+    { Vorgerechnete Bilder (siehe Version 1.4) }
+    FCacheOn  : TBitmap;     // Welle hell (schon gespielt)
+    FCacheOff : TBitmap;     // Welle gedämpft (noch nicht gespielt)
+    FCacheStart: Double;     // Frame am linken Rand der Bilder
+    FCacheFpp : Double;      // Frames pro Pixel, mit dem sie gerechnet wurden
+    FCacheDirty: Boolean;    // neu rechnen (Zoom, Loop, Grösse, neue Datei)
+    FBuf      : TBitmap;     // Zwischenbild für flackerfreies Zeichnen
     FOnSeek   : TFrameEvent;
     FOnLoopSelect: TFrameRangeEvent;
     FOnMarkerMove: TMarkerMoveEvent;
+    procedure RenderCache;
     procedure SetPos(AValue: Double);
     function  FramesPerPx: Double;
     function  XToFrame(X: Integer): Double;
@@ -180,6 +192,7 @@ type
     function  MarkerAt(X: Integer): Integer;
   protected
     procedure Paint; override;
+    procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -187,6 +200,9 @@ type
                            MousePos: TPoint): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    { ein feiner Rasterschritt in Frames (hängt vom Zoom ab) }
+    function  StepFrames: Int64;
     procedure SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
     procedure ClearPeaks;
     procedure SetLoop(AFrom, ATo: Int64; AOn: Boolean);
@@ -713,8 +729,32 @@ begin
   FLoopA := -1;
   FLoopB := -1;
   FLastPx := MaxInt;
+  FCacheOn := TBitmap.Create;
+  FCacheOff := TBitmap.Create;
+  FBuf := TBitmap.Create;
+  FCacheDirty := True;
   Cursor := crHandPoint;
   ControlStyle := ControlStyle + [csOpaque];
+end;
+
+destructor TZoomView.Destroy;
+begin
+  FCacheOn.Free;
+  FCacheOff.Free;
+  FBuf.Free;
+  inherited Destroy;
+end;
+
+procedure TZoomView.Resize;
+begin
+  inherited Resize;
+  FCacheDirty := True;
+end;
+
+function TZoomView.StepFrames: Int64;
+var Major: Double;
+begin
+  Result := Round(GridStep(Major) * WAVE_RATE);
 end;
 
 procedure TZoomView.SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
@@ -722,6 +762,7 @@ begin
   FPeaks := APeaks;
   FScale := AScale;
   FTotal := ATotal;
+  FCacheDirty := True;
   Invalidate;
 end;
 
@@ -738,6 +779,7 @@ begin
   FLoopOn := False;
   FDragMarker := 0;
   FSelecting := False;
+  FCacheDirty := True;
   Invalidate;
 end;
 
@@ -747,6 +789,7 @@ begin
   FLoopA := AFrom;
   FLoopB := ATo;
   FLoopOn := AOn;
+  FCacheDirty := True;   // der Loop-Hintergrund steckt in den Bildern
   Invalidate;
 end;
 
@@ -754,8 +797,9 @@ procedure TZoomView.SetPos(AValue: Double);
 var Px: Integer;
 begin
   FPos := AValue;
-  { Neu zeichnen, sobald sich die Welle um 1/4 Pixel verschoben hat }
-  Px := Round(FPos / FramesPerPx * 4);
+  { Neu zeichnen, sobald sich die Welle um ein ganzes Pixel verschoben hat
+    (die Bilder werden pixelweise verschoben) }
+  Px := Round(FPos / FramesPerPx);
   if Px <> FLastPx then
   begin
     FLastPx := Px;
@@ -819,98 +863,98 @@ begin
   else if (FLoopA >= 0) and (Abs(X - FrameToX(FLoopA)) <= MARKER_GRAB) then Result := 1;
 end;
 
-procedure TZoomView.Paint;
+{ Rechnet Welle, Raster und Loop-Hintergrund für die dreifache Breite in
+  zwei Bilder vor (hell = gespielt, gedämpft = noch nicht gespielt). Der
+  sichtbare Ausschnitt liegt in der Mitte. Beim Abspielen wird nur noch der
+  passende Teil herauskopiert, neu gerechnet erst nach ~1 Breite. }
+procedure TZoomView.RenderCache;
 var
-  W, H, Mid, x, b, b0, b1, xa, xb, X0, Tw: Integer;
-  Lo, Hi, R, Amp, Fpp, Step, Major, T, T0, T1, Fr: Double;
-  F0, F1: Double;
-  CWave, CRms, CWaveOff, CRmsOff, LC: TColor;
-  Played: Boolean;
+  W, H, CW, Mid, x, b, b0, b1, xa, xb: Integer;
+  Lo, Hi, R, Amp, Fpp, Step, Major, T, T0, T1, Fr, F0, F1: Double;
+  CWave, CRms, CWaveOff, CRmsOff, C: TColor;
   Txt: string;
 
-  procedure Flag(XPos: Integer; const Letter: string);
+  function FX(F: Double): Integer;     // Frame -> x im Vorrat
   begin
-    if (XPos < -12) or (XPos > W + 12) then Exit;
-    Canvas.Brush.Color := LC;
-    Canvas.FillRect(XPos - 1, 0, XPos + 1, H);
-    Canvas.FillRect(XPos - 1, 0, XPos + 12, 13);
-    Canvas.Font.Color := WAVE_BG;
-    Canvas.Font.Style := [fsBold];
-    Canvas.Brush.Style := bsClear;
-    Canvas.TextOut(XPos + 2, 0, Letter);
-    Canvas.Brush.Style := bsSolid;
-    Canvas.Font.Style := [];
+    Result := Round((F - FCacheStart) / Fpp);
+  end;
+
+  procedure Both(AColor: TColor; X1, Y1, X2, Y2: Integer);
+  begin
+    FCacheOn.Canvas.Brush.Color := AColor;
+    FCacheOn.Canvas.FillRect(X1, Y1, X2, Y2);
+    FCacheOff.Canvas.Brush.Color := AColor;
+    FCacheOff.Canvas.FillRect(X1, Y1, X2, Y2);
   end;
 
 begin
-  W := Width;
-  H := Height;
+  W := Max(1, Width);
+  H := Max(1, Height);
+  CW := 3 * W;
   Mid := H div 2;
   Fpp := FramesPerPx;
-  Canvas.Font.Name := 'Segoe UI';
-  Canvas.Font.Size := 7;
+  FCacheFpp := Fpp;
+  { Pixelgenau ausrichten: Start ist ein ganzes Vielfaches von Fpp }
+  FCacheStart := Round((FPos - 1.5 * W * Fpp) / Fpp) * Fpp;
+  FCacheDirty := False;
+  FCacheOn.SetSize(CW, H);
+  FCacheOff.SetSize(CW, H);
+  FCacheOn.Canvas.Font.Name := 'Segoe UI';
+  FCacheOn.Canvas.Font.Size := 7;
+  FCacheOff.Canvas.Font.Name := 'Segoe UI';
+  FCacheOff.Canvas.Font.Size := 7;
 
   { Hintergrund, Loop-Bereich grünlich }
-  Canvas.Brush.Color := WAVE_BG;
-  Canvas.FillRect(0, 0, W, H);
+  Both(WAVE_BG, 0, 0, CW, H);
   if (FLoopA >= 0) and (FLoopB > FLoopA) then
   begin
-    if FLoopOn then Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.16)
-    else Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.06);
-    xa := Max(0, FrameToX(FLoopA));
-    xb := Min(W, FrameToX(FLoopB));
-    if xb > xa then Canvas.FillRect(xa, 0, xb, H);
+    if FLoopOn then C := Blend(LOOP_COLOR, WAVE_BG, 0.16)
+    else C := Blend(LOOP_COLOR, WAVE_BG, 0.06);
+    xa := Max(0, FX(FLoopA));
+    xb := Min(CW, FX(FLoopB));
+    if xb > xa then Both(C, xa, 0, xb, H);
   end;
-  if not FPeaks.Valid or (FTotal <= 0) then
-  begin
-    Canvas.Pen.Color := DJ_BORDER;
-    Canvas.Brush.Style := bsClear;
-    Canvas.Rectangle(0, 0, W, H);
-    Canvas.Brush.Style := bsSolid;
-    Exit;
-  end;
+  if not FPeaks.Valid or (FTotal <= 0) then Exit;
 
   { Raster: feine Linien dunkel, grobe heller mit Zeit }
   Step := GridStep(Major);
-  T0 := XToFrame(0) / WAVE_RATE;
-  T1 := XToFrame(W) / WAVE_RATE;
+  T0 := FCacheStart / WAVE_RATE;
+  T1 := (FCacheStart + CW * Fpp) / WAVE_RATE;
   T := Floor(T0 / Step) * Step;
   while T <= T1 do
   begin
     if (T >= 0) and (T * WAVE_RATE <= FTotal) then
     begin
-      x := FrameToX(T * WAVE_RATE);
-      { grobe Linie, wenn T ein Vielfaches von Major ist (mit Rundungstoleranz) }
+      x := FX(T * WAVE_RATE);
       Fr := T / Major;
       if Abs(Fr - Round(Fr)) < 0.001 then
       begin
-        Canvas.Brush.Color := $00403A36;
-        Canvas.FillRect(x, 0, x + 1, H);
+        Both($00403A36, x, 0, x + 1, H);
         Txt := ZoomTimeText(T, Major < 1);
-        Canvas.Font.Color := DJ_DIM;
-        Canvas.Brush.Style := bsClear;
-        Canvas.TextOut(x + 3, H - 13, Txt);
-        Canvas.Brush.Style := bsSolid;
+        FCacheOn.Canvas.Font.Color := DJ_DIM;
+        FCacheOn.Canvas.Brush.Style := bsClear;
+        FCacheOn.Canvas.TextOut(x + 3, H - 13, Txt);
+        FCacheOn.Canvas.Brush.Style := bsSolid;
+        FCacheOff.Canvas.Font.Color := DJ_DIM;
+        FCacheOff.Canvas.Brush.Style := bsClear;
+        FCacheOff.Canvas.TextOut(x + 3, H - 13, Txt);
+        FCacheOff.Canvas.Brush.Style := bsSolid;
       end
       else
-      begin
-        Canvas.Brush.Color := $00262321;
-        Canvas.FillRect(x, 0, x + 1, H);
-      end;
+        Both($00262321, x, 0, x + 1, H);
     end;
     T := T + Step;
   end;
 
-  { Welle: gespielter Teil (links von der Mitte) hell, Rest gedämpft }
+  { Welle }
   CWave := Blend($00D0D0D0, WAVE_BG, 0.55);
   CRms := $00D0D0D0;
   CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
   CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
   Amp := (H / 2 - 2) * FScale;
-  X0 := W div 2;
-  for x := 0 to W - 1 do
+  for x := 0 to CW - 1 do
   begin
-    F0 := XToFrame(x);
+    F0 := FCacheStart + x * Fpp;
     F1 := F0 + Fpp;
     if (F1 <= 0) or (F0 >= FTotal) then Continue;
     b0 := Floor(F0 / FINE_FRAMES);
@@ -926,52 +970,106 @@ begin
       if FPeaks.Rms[b] > R then R := FPeaks.Rms[b];
     end;
     R := Min(R * 1.4, Max(Hi, -Lo));
-    Played := x < X0;
-    if Played then Canvas.Pen.Color := CWave else Canvas.Pen.Color := CWaveOff;
-    Canvas.Line(x, Mid - Round(Hi * Amp), x, Mid - Round(Lo * Amp) + 1);
-    if Played then Canvas.Pen.Color := CRms else Canvas.Pen.Color := CRmsOff;
-    Canvas.Line(x, Mid - Round(R * Amp), x, Mid + Round(R * Amp) + 1);
+    FCacheOn.Canvas.Pen.Color := CWave;
+    FCacheOn.Canvas.Line(x, Mid - Round(Hi * Amp), x, Mid - Round(Lo * Amp) + 1);
+    FCacheOn.Canvas.Pen.Color := CRms;
+    FCacheOn.Canvas.Line(x, Mid - Round(R * Amp), x, Mid + Round(R * Amp) + 1);
+    FCacheOff.Canvas.Pen.Color := CWaveOff;
+    FCacheOff.Canvas.Line(x, Mid - Round(Hi * Amp), x, Mid - Round(Lo * Amp) + 1);
+    FCacheOff.Canvas.Pen.Color := CRmsOff;
+    FCacheOff.Canvas.Line(x, Mid - Round(R * Amp), x, Mid + Round(R * Amp) + 1);
+  end;
+end;
+
+procedure TZoomView.Paint;
+var
+  W, H, X0, Off, xa, xb, Tw: Integer;
+  LC: TColor;
+  Txt: string;
+  C: TCanvas;
+
+  procedure Flag(XPos: Integer; const Letter: string);
+  begin
+    if (XPos < -12) or (XPos > W + 12) then Exit;
+    C.Brush.Color := LC;
+    C.FillRect(XPos - 1, 0, XPos + 1, H);
+    C.FillRect(XPos - 1, 0, XPos + 12, 13);
+    C.Font.Color := WAVE_BG;
+    C.Font.Style := [fsBold];
+    C.Brush.Style := bsClear;
+    C.TextOut(XPos + 2, 0, Letter);
+    C.Brush.Style := bsSolid;
+    C.Font.Style := [];
   end;
 
-  { Neuer Loop beim Aufziehen mit der rechten Maustaste }
-  LC := LOOP_COLOR;
-  if FSelecting then
+begin
+  W := Max(1, Width);
+  H := Max(1, Height);
+  X0 := W div 2;
+  FLastPx := Round(FPos / FramesPerPx);
+
+  { Vorrat noch passend? Linker Rand des Ausschnitts im Vorrat: Off }
+  if FCacheDirty or (FCacheFpp <> FramesPerPx) or (FCacheOn.Height <> H) or
+     (FCacheOn.Width <> 3 * W) then
+    RenderCache;
+  Off := Round((FPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
+  if (Off < 0) or (Off + W > FCacheOn.Width) then
   begin
-    xa := FrameToX(Min(FSelFrom, FSelTo));
-    xb := FrameToX(Max(FSelFrom, FSelTo));
-    Canvas.Brush.Color := LC;
-    Canvas.FillRect(xa, 0, xb + 1, 3);
-    Flag(xa, 'A');
-    Flag(xb, 'B');
-    { Länge anzeigen }
-    Txt := Format('%.2f s', [Abs(FSelTo - FSelFrom) / WAVE_RATE]);
-    Canvas.Font.Color := LC;
-    Canvas.Brush.Style := bsClear;
-    Tw := Canvas.TextWidth(Txt);
-    Canvas.TextOut(Max(2, Min(W - Tw - 2, (xa + xb - Tw) div 2)), 4, Txt);
-    Canvas.Brush.Style := bsSolid;
-  end
-  else
+    RenderCache;
+    Off := Round((FPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
+  end;
+
+  FBuf.SetSize(W, H);
+  C := FBuf.Canvas;
+  C.Font.Name := 'Segoe UI';
+  C.Font.Size := 7;
+  { links vom Kopf hell (gespielt), rechts gedämpft }
+  C.CopyRect(Rect(0, 0, X0, H), FCacheOn.Canvas, Rect(Off, 0, Off + X0, H));
+  C.CopyRect(Rect(X0, 0, W, H), FCacheOff.Canvas, Rect(Off + X0, 0, Off + W, H));
+
+  if FPeaks.Valid and (FTotal > 0) then
   begin
-    if not FLoopOn then LC := Blend(LOOP_COLOR, WAVE_BG, 0.6);
-    if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
+    { Neuer Loop beim Aufziehen mit der rechten Maustaste }
+    LC := LOOP_COLOR;
+    if FSelecting then
     begin
-      Canvas.Brush.Color := LC;
-      Canvas.FillRect(Max(0, FrameToX(FLoopA)), 0, Min(W, FrameToX(FLoopB) + 1), 3);
+      xa := FrameToX(Min(FSelFrom, FSelTo));
+      xb := FrameToX(Max(FSelFrom, FSelTo));
+      C.Brush.Color := LC;
+      C.FillRect(xa, 0, xb + 1, 3);
+      Flag(xa, 'A');
+      Flag(xb, 'B');
+      Txt := Format('%.2f s', [Abs(FSelTo - FSelFrom) / WAVE_RATE]);
+      C.Font.Color := LC;
+      C.Brush.Style := bsClear;
+      Tw := C.TextWidth(Txt);
+      C.TextOut(Max(2, Min(W - Tw - 2, (xa + xb - Tw) div 2)), 4, Txt);
+      C.Brush.Style := bsSolid;
+    end
+    else
+    begin
+      if not FLoopOn then LC := Blend(LOOP_COLOR, WAVE_BG, 0.6);
+      if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
+      begin
+        C.Brush.Color := LC;
+        C.FillRect(Max(0, FrameToX(FLoopA)), 0, Min(W, FrameToX(FLoopB) + 1), 3);
+      end;
+      if FLoopA >= 0 then Flag(FrameToX(FLoopA), 'A');
+      if FLoopB >= 0 then Flag(FrameToX(FLoopB), 'B');
     end;
-    if FLoopA >= 0 then Flag(FrameToX(FLoopA), 'A');
-    if FLoopB >= 0 then Flag(FrameToX(FLoopB), 'B');
-  end;
 
-  { Abspielkopf in der Mitte }
-  Canvas.Brush.Color := DJ_PLAYHEAD;
-  Canvas.FillRect(X0 - 1, 0, X0 + 1, H);
+    { Abspielkopf in der Mitte }
+    C.Brush.Color := DJ_PLAYHEAD;
+    C.FillRect(X0 - 1, 0, X0 + 1, H);
+  end;
 
   { Rahmen }
-  Canvas.Pen.Color := DJ_BORDER;
-  Canvas.Brush.Style := bsClear;
-  Canvas.Rectangle(0, 0, W, H);
-  Canvas.Brush.Style := bsSolid;
+  C.Pen.Color := DJ_BORDER;
+  C.Brush.Style := bsClear;
+  C.Rectangle(0, 0, W, H);
+  C.Brush.Style := bsSolid;
+
+  Canvas.Draw(0, 0, FBuf);
 end;
 
 procedure TZoomView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -1054,6 +1152,7 @@ begin
   if FSpan < ZOOM_MIN_SPAN then FSpan := ZOOM_MIN_SPAN;
   if FSpan > ZOOM_MAX_SPAN then FSpan := ZOOM_MAX_SPAN;
   FLastPx := MaxInt;
+  FCacheDirty := True;
   Invalidate;
 end;
 
