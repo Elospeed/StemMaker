@@ -62,6 +62,8 @@
                        Ruckeln einmal pro Sekunde behoben: Resize ohne echte
                        Grössenänderung (kommt bei jedem Umspringen der
                        Zeitanzeige) rechnet die Bilder nicht mehr neu.
+                       Zoom bis 0,25 s, Raster bis 1 ms, Pfeiltasten-Schritt
+                       wächst mit dem Zoom (bei 8 s 0,1 s, ganz nah 2 ms).
   ============================================================================ }
 unit wellenform;
 
@@ -221,7 +223,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    { ein feiner Rasterschritt in Frames (hängt vom Zoom ab) }
+    { Schritt der Pfeiltasten in Frames, wächst mit dem Zoom (1/80 der Breite) }
     function  StepFrames: Int64;
     procedure SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
     procedure ClearPeaks;
@@ -722,7 +724,7 @@ end;
   ============================================================================ }
 
 const
-  ZOOM_MIN_SPAN = 1;     // stärkste Vergrösserung: 1 Sekunde über die ganze Breite
+  ZOOM_MIN_SPAN = 0.25;  // stärkste Vergrösserung: 1/4 Sekunde über die ganze Breite
   ZOOM_MAX_SPAN = 60;    // schwächste: 1 Minute
   ZOOM_DEF_SPAN = 8;     // Start: 8 Sekunden
   MARKER_GRAB   = 5;     // so nah (Pixel) muss man eine Marke treffen
@@ -730,11 +732,17 @@ const
   PAN_START     = 3;     // ab so vielen Pixeln Bewegung wird die Welle gezogen
   { Raster-Paare (fein, grob) in Sekunden. Gewählt wird das feinste, bei dem
     die feinen Linien noch mindestens 8 Pixel auseinander liegen. }
-  GRID_FINE  : array[0..5] of Double = (0.01, 0.05, 0.1, 0.5, 1, 5);
-  GRID_MAJOR : array[0..5] of Double = (0.1,  0.5,  1,   5,   10, 30);
+  GRID_FINE  : array[0..7] of Double = (0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5);
+  GRID_MAJOR : array[0..7] of Double = (0.01,  0.05,  0.1,  0.5,  1,   5,   10, 30);
+  { Schritte für die Pfeiltasten in Sekunden (runde Werte). Genommen wird der
+    grösste, der höchstens 1/80 der sichtbaren Breite ist: bei 8 s 0,1 s,
+    ganz hineingezoomt (0,25 s) 2 ms. }
+  NUDGE_STEPS: array[0..9] of Double = (0.001, 0.002, 0.005, 0.01, 0.02,
+                                        0.05, 0.1, 0.2, 0.5, 1);
 
-{ Zeit für die Rasterbeschriftung, z.B. 1:30.5 oder 1:30.25 }
-function ZoomTimeText(Sec: Double; Fine: Boolean): string;
+{ Zeit für die Rasterbeschriftung, z.B. 1:30.5, 1:30.25 oder 1:30.125.
+  Digits = Nachkommastellen }
+function ZoomTimeText(Sec: Double; Digits: Integer): string;
 var
   M: Integer;
   S: Double;
@@ -742,7 +750,7 @@ begin
   if Sec < 0 then Sec := 0;
   M := Trunc(Sec) div 60;
   S := Sec - M * 60;
-  if Fine then Result := Format('%.2f', [S]) else Result := Format('%.1f', [S]);
+  Result := FloatToStrF(S, ffFixed, 6, Digits);
   if S < 10 then Result := '0' + Result;      // 1:05.3 statt 1:5.3
   Result := IntToStr(M) + ':' + StringReplace(Result, ',', '.', []);
 end;
@@ -783,9 +791,14 @@ begin
 end;
 
 function TZoomView.StepFrames: Int64;
-var Major: Double;
+var
+  i: Integer;
+  S: Double;
 begin
-  Result := Round(GridStep(Major) * WAVE_RATE);
+  S := NUDGE_STEPS[0];
+  for i := 0 to High(NUDGE_STEPS) do
+    if NUDGE_STEPS[i] <= FSpan / 80 then S := NUDGE_STEPS[i];
+  Result := Max(1, Round(S * WAVE_RATE));
 end;
 
 procedure TZoomView.SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
@@ -1031,7 +1044,9 @@ begin
       if Abs(Fr - Round(Fr)) < 0.001 then
       begin
         Both($00403A36, x, 0, x + 1, H);
-        Txt := ZoomTimeText(T, Major < 1);
+        if Major < 0.1 then Txt := ZoomTimeText(T, 3)
+        else if Major < 1 then Txt := ZoomTimeText(T, 2)
+        else Txt := ZoomTimeText(T, 1);
         Label1(FCacheOn.Canvas, x);
         Label1(FCacheOff.Canvas, x);
       end
