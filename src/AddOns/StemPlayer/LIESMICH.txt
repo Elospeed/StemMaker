@@ -65,11 +65,15 @@ LOOP A-B
   - Mausrad: näher heran (bis 1 Sekunde) oder weiter weg (bis 1 Minute).
     Das Raster passt sich an (bis 0,01 s fein).
   - Klick neben die Marken springt an diese Stelle.
+  - Welle mit der linken Maustaste nach links oder rechts ziehen: der
+    rote Strich bleibt stehen, so lässt sich eine Stelle genau anfahren.
+    Beim Loslassen geht es dort weiter (auch bei Pause).
   - Tastatur: Pfeil links/rechts verschiebt den ganzen aktiven Loop,
     Shift+Pfeil macht ihn breiter (Shift+links zieht A nach links,
-    Shift+rechts B nach rechts), Strg+Pfeil macht ihn schmaler (Strg+rechts
-    zieht A nach rechts, Strg+links B nach links). Ein Schritt ist ein feiner Rasterschritt der Lupe: wer
-    näher heranzoomt, verschiebt feiner (bis 10 ms).
+    Shift+rechts B nach rechts), Strg+Pfeil macht ihn schmaler
+    (Strg+rechts zieht A nach rechts, Strg+links B nach links). Ein
+    Schritt ist ein feiner Rasterschritt der Lupe: wer näher heranzoomt,
+    verschiebt feiner (bis 10 ms).
   Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
   Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken
   Maustaste springt wie gewohnt. Springt man vor den Loop, wird man

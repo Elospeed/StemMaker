@@ -103,7 +103,11 @@
                        Strg+Pfeil nach innen zusammen, jeweils um einen
                        Rasterschritt der Lupe.
                        Lupe flüssiger: Welle wird als Bild vorgerechnet und
-                       nur noch verschoben (wellenform 1.4), feinerer Timer.
+                       nur noch verschoben (wellenform 1.4/1.5), Abspielkopf
+                       im Takt des Monitors statt mit Timer (bildtakt.pas).
+                       Welle in der Lupe mit der linken Maustaste ziehen:
+                       der rote Strich bleibt stehen, beim Loslassen geht es
+                       an der neuen Stelle weiter (auch bei Pause).
     1.7  (21.10.2026)  Mehrsprachig (Deutsch, Englisch, Spanisch): der Player
                        übernimmt die Sprache, die in StemMaker eingestellt ist
                        (StemMaker.ini [Main] Language). Die Texte stehen in
@@ -119,7 +123,8 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform;
+  LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform,
+  bildtakt;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
@@ -187,7 +192,7 @@ type
     LblKofi     : TLabel;
     { --- Sonstiges --- }
     Timer       : TTimer;
-    HeadTimer   : TTimer;      // schneller Timer nur für den Abspielkopf
+    Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
     OpenDlg     : TOpenDialog;
 
     Engine      : TStemEngine;
@@ -285,7 +290,7 @@ type
     procedure MeterPaint(Sender: TObject);
     procedure OutMeterPaint(Sender: TObject);
     procedure TimerTick(Sender: TObject);
-    procedure HeadTimerTick(Sender: TObject);
+    procedure HeadTimerTick(Data: PtrInt);
     procedure KofiClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -385,14 +390,11 @@ begin
   Timer.OnTimer := @TimerTick;
   Timer.Enabled := True;
 
-  { Abspielkopf separat und schneller (15 ms ~ 60 Bilder/s), damit die
-    LED-Meter mit ihrem gewohnten 30-ms-Abklingen unverändert bleiben }
-  HeadTimer := TTimer.Create(Self);
-  HeadTimer.Interval := 15;
-  HeadTimer.OnTimer := @HeadTimerTick;
-  HeadTimer.Enabled := True;
-  { Windows-Takt auf 1 ms: sonst kommen Timer nur im 15,6-ms-Raster, mal nach
-    einem, mal nach zwei Schritten -> die Lupe läuft ungleichmässig.
+  { Abspielkopf separat, einmal pro Bildschirmbild (bildtakt.pas). Ein
+    Timer läuft im eigenen Takt neben dem Monitor her, die Lupe ruckelt
+    dann. Die LED-Meter bleiben beim gewohnten 30-ms-Timer. }
+  Takt := TBildtakt.Create(@HeadTimerTick);
+  { Windows-Takt auf 1 ms (für Sleep im Ersatzbetrieb ohne Bildwechsel).
     Gilt nur für dieses Programm, wird in FormClose zurückgesetzt. }
   timeBeginPeriod(1);
 
@@ -1912,7 +1914,7 @@ end;
   übernommen. Pause: Geräteposition direkt.
   Loop: Läuft die Uhr über B hinaus, springt sie wie die Engine um die
   Loop-Länge zurück (sonst würde sie bei kurzen Loops hinterherhinken). }
-procedure TMainForm.HeadTimerTick(Sender: TObject);
+procedure TMainForm.HeadTimerTick(Data: PtrInt);
 var
   T, Dev, Diff, Old: Double;
   F: Single;
@@ -2058,7 +2060,11 @@ procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   timeEndPeriod(1);
   Timer.Enabled := False;
-  HeadTimer.Enabled := False;
+  if Takt <> nil then
+  begin
+    Takt.Stoppen;
+    FreeAndNil(Takt);
+  end;
   UnloadFile;          // Thread beenden + Track-Ordner löschen
   ReleaseInstanceDir;  // Sperrdatei schliessen + Instanz-Ordner löschen
 end;

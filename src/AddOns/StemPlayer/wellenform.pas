@@ -53,6 +53,12 @@
                        (hell/gedämpft) mit dreifacher Breite vorgerechnet und
                        beim Abspielen nur verschoben. Gezeichnet wird erst in
                        ein Bild im Speicher, dann auf einmal (kein Flackern).
+    1.5  (21.10.2026)  Lupe ohne kleine Stopps: der Vorrat wird nicht mehr
+                       alle paar Sekunden ganz neu gerechnet, sondern laufend
+                       um wenige Pixel verschoben und nur der neue Rand
+                       gezeichnet. Welle mit der linken Maustaste ziehen
+                       (Wunsch Speedy): der rote Strich bleibt in der Mitte,
+                       beim Loslassen geht es an der neuen Stelle weiter.
   ============================================================================ }
 unit wellenform;
 
@@ -179,10 +185,21 @@ type
     FCacheFpp : Double;      // Frames pro Pixel, mit dem sie gerechnet wurden
     FCacheDirty: Boolean;    // neu rechnen (Zoom, Loop, Grösse, neue Datei)
     FBuf      : TBitmap;     // Zwischenbild für flackerfreies Zeichnen
+    FSpareOn  : TBitmap;     // Ersatzbilder zum Verschieben des Vorrats
+    FSpareOff : TBitmap;
+    { Welle mit der linken Maustaste ziehen }
+    FPanArmed : Boolean;     // linke Taste unten, noch nicht bewegt
+    FPanning  : Boolean;     // wird gerade gezogen
+    FPanX     : Integer;     // x beim Drücken
+    FPanFrom  : Double;      // Stelle in der Mitte beim Drücken
+    FPanPos   : Double;      // Stelle in der Mitte beim Ziehen
     FOnSeek   : TFrameEvent;
     FOnLoopSelect: TFrameRangeEvent;
     FOnMarkerMove: TMarkerMoveEvent;
     procedure RenderCache;
+    procedure RenderCols(X0, X1: Integer);
+    procedure ScrollCache(Px: Integer);
+    function  ViewPos: Double;
     procedure SetPos(AValue: Double);
     function  FramesPerPx: Double;
     function  XToFrame(X: Integer): Double;
@@ -702,6 +719,8 @@ const
   ZOOM_MAX_SPAN = 60;    // schwächste: 1 Minute
   ZOOM_DEF_SPAN = 8;     // Start: 8 Sekunden
   MARKER_GRAB   = 5;     // so nah (Pixel) muss man eine Marke treffen
+  SCROLL_STEP   = 4;     // Vorrat ab so vielen Pixeln Abweichung nachschieben
+  PAN_START     = 3;     // ab so vielen Pixeln Bewegung wird die Welle gezogen
   { Raster-Paare (fein, grob) in Sekunden. Gewählt wird das feinste, bei dem
     die feinen Linien noch mindestens 8 Pixel auseinander liegen. }
   GRID_FINE  : array[0..5] of Double = (0.01, 0.05, 0.1, 0.5, 1, 5);
@@ -732,6 +751,8 @@ begin
   FCacheOn := TBitmap.Create;
   FCacheOff := TBitmap.Create;
   FBuf := TBitmap.Create;
+  FSpareOn := TBitmap.Create;
+  FSpareOff := TBitmap.Create;
   FCacheDirty := True;
   Cursor := crHandPoint;
   ControlStyle := ControlStyle + [csOpaque];
@@ -742,6 +763,8 @@ begin
   FCacheOn.Free;
   FCacheOff.Free;
   FBuf.Free;
+  FSpareOn.Free;
+  FSpareOff.Free;
   inherited Destroy;
 end;
 
@@ -779,6 +802,8 @@ begin
   FLoopOn := False;
   FDragMarker := 0;
   FSelecting := False;
+  FPanArmed := False;
+  FPanning := False;
   FCacheDirty := True;
   Invalidate;
 end;
@@ -797,6 +822,7 @@ procedure TZoomView.SetPos(AValue: Double);
 var Px: Integer;
 begin
   FPos := AValue;
+  if FPanning then Exit;   // beim Ziehen bestimmt die Maus, was zu sehen ist
   { Neu zeichnen, sobald sich die Welle um ein ganzes Pixel verschoben hat
     (die Bilder werden pixelweise verschoben) }
   Px := Round(FPos / FramesPerPx);
@@ -812,14 +838,21 @@ begin
   Result := FSpan * WAVE_RATE / Max(1, Width);
 end;
 
+{ Stelle, die gerade in der Mitte steht: der Abspielkopf, beim Ziehen
+  der Welle die gezogene Stelle }
+function TZoomView.ViewPos: Double;
+begin
+  if FPanning then Result := FPanPos else Result := FPos;
+end;
+
 function TZoomView.XToFrame(X: Integer): Double;
 begin
-  Result := FPos + (X - Width / 2) * FramesPerPx;
+  Result := ViewPos + (X - Width / 2) * FramesPerPx;
 end;
 
 function TZoomView.FrameToX(F: Double): Integer;
 begin
-  Result := Round(Width / 2 + (F - FPos) / FramesPerPx);
+  Result := Round(Width / 2 + (F - ViewPos) / FramesPerPx);
 end;
 
 { Rasterabstand (fein) in Sekunden, Major = grobes Raster mit Beschriftung }
@@ -866,10 +899,61 @@ end;
 { Rechnet Welle, Raster und Loop-Hintergrund für die dreifache Breite in
   zwei Bilder vor (hell = gespielt, gedämpft = noch nicht gespielt). Der
   sichtbare Ausschnitt liegt in der Mitte. Beim Abspielen wird nur noch der
-  passende Teil herauskopiert, neu gerechnet erst nach ~1 Breite. }
+  passende Teil herauskopiert; läuft der Ausschnitt aus der Mitte, schiebt
+  ScrollCache den Vorrat nach und zeichnet nur den neuen Rand. }
 procedure TZoomView.RenderCache;
 var
-  W, H, CW, Mid, x, b, b0, b1, xa, xb: Integer;
+  W, H, CW: Integer;
+  Fpp: Double;
+begin
+  W := Max(1, Width);
+  H := Max(1, Height);
+  CW := 3 * W;
+  Fpp := FramesPerPx;
+  FCacheFpp := Fpp;
+  { Pixelgenau ausrichten: Start ist ein ganzes Vielfaches von Fpp }
+  FCacheStart := Round((ViewPos - 1.5 * W * Fpp) / Fpp) * Fpp;
+  FCacheDirty := False;
+  FCacheOn.SetSize(CW, H);
+  FCacheOff.SetSize(CW, H);
+  RenderCols(0, CW);
+end;
+
+{ Vorrat um Px Pixel verschieben (positiv = Welle nach links, es geht
+  vorwärts) und nur den frei gewordenen Rand neu zeichnen. Kopiert wird über
+  die Ersatzbilder, danach werden die Bilder getauscht. }
+procedure TZoomView.ScrollCache(Px: Integer);
+var
+  CW, H: Integer;
+  Tmp: TBitmap;
+begin
+  CW := FCacheOn.Width;
+  H := FCacheOn.Height;
+  if (Px = 0) or (Abs(Px) >= CW) then Exit;
+  FSpareOn.SetSize(CW, H);
+  FSpareOff.SetSize(CW, H);
+  if Px > 0 then
+  begin
+    FSpareOn.Canvas.CopyRect(Rect(0, 0, CW - Px, H), FCacheOn.Canvas, Rect(Px, 0, CW, H));
+    FSpareOff.Canvas.CopyRect(Rect(0, 0, CW - Px, H), FCacheOff.Canvas, Rect(Px, 0, CW, H));
+  end
+  else
+  begin
+    FSpareOn.Canvas.CopyRect(Rect(-Px, 0, CW, H), FCacheOn.Canvas, Rect(0, 0, CW + Px, H));
+    FSpareOff.Canvas.CopyRect(Rect(-Px, 0, CW, H), FCacheOff.Canvas, Rect(0, 0, CW + Px, H));
+  end;
+  Tmp := FCacheOn;  FCacheOn := FSpareOn;  FSpareOn := Tmp;
+  Tmp := FCacheOff; FCacheOff := FSpareOff; FSpareOff := Tmp;
+  FCacheStart := FCacheStart + Px * FCacheFpp;
+  if Px > 0 then RenderCols(CW - Px, CW) else RenderCols(0, -Px);
+end;
+
+{ Spalten X0 bis X1-1 des Vorrats zeichnen (Hintergrund, Loop, Raster, Welle).
+  Beschriftungen, die links davon beginnen und hineinragen, werden mit
+  gezeichnet, aber auf den Bereich beschnitten (sonst doppelt gemalt). }
+procedure TZoomView.RenderCols(X0, X1: Integer);
+var
+  H, CW, Mid, x, b, b0, b1, xa, xb: Integer;
   Lo, Hi, R, Amp, Fpp, Step, Major, T, T0, T1, Fr, F0, F1: Double;
   CWave, CRms, CWaveOff, CRmsOff, C: TColor;
   Txt: string;
@@ -879,47 +963,56 @@ var
     Result := Round((F - FCacheStart) / Fpp);
   end;
 
-  procedure Both(AColor: TColor; X1, Y1, X2, Y2: Integer);
+  procedure Both(AColor: TColor; XL, Y1, XR, Y2: Integer);
   begin
+    if XL < X0 then XL := X0;
+    if XR > X1 then XR := X1;
+    if XR <= XL then Exit;
     FCacheOn.Canvas.Brush.Color := AColor;
-    FCacheOn.Canvas.FillRect(X1, Y1, X2, Y2);
+    FCacheOn.Canvas.FillRect(XL, Y1, XR, Y2);
     FCacheOff.Canvas.Brush.Color := AColor;
-    FCacheOff.Canvas.FillRect(X1, Y1, X2, Y2);
+    FCacheOff.Canvas.FillRect(XL, Y1, XR, Y2);
+  end;
+
+  procedure Label1(Cv: TCanvas; XPos: Integer);
+  begin
+    Cv.Font.Name := 'Segoe UI';
+    Cv.Font.Size := 7;
+    Cv.Font.Color := DJ_DIM;
+    Cv.ClipRect := Rect(X0, 0, X1, H);
+    Cv.Clipping := True;
+    Cv.Brush.Style := bsClear;
+    Cv.TextOut(XPos + 3, H - 13, Txt);
+    Cv.Brush.Style := bsSolid;
+    Cv.Clipping := False;
   end;
 
 begin
-  W := Max(1, Width);
-  H := Max(1, Height);
-  CW := 3 * W;
+  H := FCacheOn.Height;
+  CW := FCacheOn.Width;
+  if X0 < 0 then X0 := 0;
+  if X1 > CW then X1 := CW;
+  if X1 <= X0 then Exit;
   Mid := H div 2;
-  Fpp := FramesPerPx;
-  FCacheFpp := Fpp;
-  { Pixelgenau ausrichten: Start ist ein ganzes Vielfaches von Fpp }
-  FCacheStart := Round((FPos - 1.5 * W * Fpp) / Fpp) * Fpp;
-  FCacheDirty := False;
-  FCacheOn.SetSize(CW, H);
-  FCacheOff.SetSize(CW, H);
-  FCacheOn.Canvas.Font.Name := 'Segoe UI';
-  FCacheOn.Canvas.Font.Size := 7;
-  FCacheOff.Canvas.Font.Name := 'Segoe UI';
-  FCacheOff.Canvas.Font.Size := 7;
+  Fpp := FCacheFpp;
 
   { Hintergrund, Loop-Bereich grünlich }
-  Both(WAVE_BG, 0, 0, CW, H);
+  Both(WAVE_BG, X0, 0, X1, H);
   if (FLoopA >= 0) and (FLoopB > FLoopA) then
   begin
     if FLoopOn then C := Blend(LOOP_COLOR, WAVE_BG, 0.16)
     else C := Blend(LOOP_COLOR, WAVE_BG, 0.06);
-    xa := Max(0, FX(FLoopA));
-    xb := Min(CW, FX(FLoopB));
-    if xb > xa then Both(C, xa, 0, xb, H);
+    xa := FX(FLoopA);
+    xb := FX(FLoopB);
+    Both(C, xa, 0, xb, H);
   end;
   if not FPeaks.Valid or (FTotal <= 0) then Exit;
 
-  { Raster: feine Linien dunkel, grobe heller mit Zeit }
+  { Raster: feine Linien dunkel, grobe heller mit Zeit. Links etwas früher
+    anfangen, damit hineinragende Beschriftungen vollständig sind. }
   Step := GridStep(Major);
-  T0 := FCacheStart / WAVE_RATE;
-  T1 := (FCacheStart + CW * Fpp) / WAVE_RATE;
+  T0 := (FCacheStart + (X0 - 60) * Fpp) / WAVE_RATE;
+  T1 := (FCacheStart + X1 * Fpp) / WAVE_RATE;
   T := Floor(T0 / Step) * Step;
   while T <= T1 do
   begin
@@ -931,14 +1024,8 @@ begin
       begin
         Both($00403A36, x, 0, x + 1, H);
         Txt := ZoomTimeText(T, Major < 1);
-        FCacheOn.Canvas.Font.Color := DJ_DIM;
-        FCacheOn.Canvas.Brush.Style := bsClear;
-        FCacheOn.Canvas.TextOut(x + 3, H - 13, Txt);
-        FCacheOn.Canvas.Brush.Style := bsSolid;
-        FCacheOff.Canvas.Font.Color := DJ_DIM;
-        FCacheOff.Canvas.Brush.Style := bsClear;
-        FCacheOff.Canvas.TextOut(x + 3, H - 13, Txt);
-        FCacheOff.Canvas.Brush.Style := bsSolid;
+        Label1(FCacheOn.Canvas, x);
+        Label1(FCacheOff.Canvas, x);
       end
       else
         Both($00262321, x, 0, x + 1, H);
@@ -952,7 +1039,7 @@ begin
   CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
   CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
   Amp := (H / 2 - 2) * FScale;
-  for x := 0 to CW - 1 do
+  for x := X0 to X1 - 1 do
   begin
     F0 := FCacheStart + x * Fpp;
     F1 := F0 + Fpp;
@@ -1006,17 +1093,25 @@ begin
   W := Max(1, Width);
   H := Max(1, Height);
   X0 := W div 2;
-  FLastPx := Round(FPos / FramesPerPx);
+  FLastPx := Round(ViewPos / FramesPerPx);
 
-  { Vorrat noch passend? Linker Rand des Ausschnitts im Vorrat: Off }
+  { Vorrat noch passend? Linker Rand des Ausschnitts im Vorrat: Off,
+    in der Mitte des Vorrats wäre Off = W }
   if FCacheDirty or (FCacheFpp <> FramesPerPx) or (FCacheOn.Height <> H) or
      (FCacheOn.Width <> 3 * W) then
     RenderCache;
-  Off := Round((FPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
+  Off := Round((ViewPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
   if (Off < 0) or (Off + W > FCacheOn.Width) then
   begin
-    RenderCache;
-    Off := Round((FPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
+    RenderCache;      // grosser Sprung (z.B. zurück an den Loop-Anfang)
+    Off := Round((ViewPos - X0 * FCacheFpp - FCacheStart) / FCacheFpp);
+  end
+  else if Abs(Off - W) >= SCROLL_STEP then
+  begin
+    { in kleinen Stücken nachschieben: pro Bild nur ein paar Spalten
+      zeichnen statt alle paar Sekunden den ganzen Vorrat }
+    ScrollCache(Off - W);
+    Off := W;
   end;
 
   FBuf.SetSize(W, H);
@@ -1073,22 +1168,22 @@ begin
 end;
 
 procedure TZoomView.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var F: Double;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if not FPeaks.Valid or (FTotal <= 0) then Exit;
   if Button = mbLeft then
   begin
-    { Marke getroffen -> ziehen, sonst an diese Stelle springen }
+    { Marke getroffen -> ziehen. Sonst entscheidet sich erst beim Bewegen
+      oder Loslassen: bewegt = Welle ziehen, nicht bewegt = Klick (springen) }
     FDragMarker := MarkerAt(X);
     if FDragMarker = 1 then FDragFrame := FLoopA
     else if FDragMarker = 2 then FDragFrame := FLoopB
     else
     begin
-      F := XToFrame(X);
-      if F < 0 then F := 0;
-      if F > FTotal - 1 then F := FTotal - 1;
-      if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+      FPanArmed := True;
+      FPanX := X;
+      FPanFrom := FPos;
+      FPanPos := FPos;
     end;
   end
   else if Button = mbRight then
@@ -1114,6 +1209,23 @@ begin
     FSelTo := SnapFrame(XToFrame(X), Shift);
     Invalidate;
   end
+  else if FPanArmed then
+  begin
+    { erst ab ein paar Pixeln Bewegung ziehen, damit ein Klick ein Klick bleibt }
+    if not FPanning and (Abs(X - FPanX) >= PAN_START) then
+    begin
+      FPanning := True;
+      Cursor := crSizeWE;
+    end;
+    if FPanning then
+    begin
+      { Welle folgt der Maus: nach rechts ziehen = zurück im Track }
+      FPanPos := FPanFrom - (X - FPanX) * FramesPerPx;
+      if FPanPos < 0 then FPanPos := 0;
+      if FPanPos > FTotal - 1 then FPanPos := FTotal - 1;
+      Invalidate;
+    end;
+  end
   else if MarkerAt(X) <> 0 then
     Cursor := crSizeWE          // zeigt: diese Marke lässt sich verschieben
   else
@@ -1121,9 +1233,28 @@ begin
 end;
 
 procedure TZoomView.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var M: Integer;
+var
+  M: Integer;
+  F: Double;
 begin
   inherited MouseUp(Button, Shift, X, Y);
+  if (Button = mbLeft) and FPanArmed then
+  begin
+    { gezogen: an der Stelle unter dem roten Strich weiter.
+      Nur geklickt: an die geklickte Stelle springen. }
+    if FPanning then F := FPanPos else F := XToFrame(X);
+    FPanArmed := False;
+    if F < 0 then F := 0;
+    if F > FTotal - 1 then F := FTotal - 1;
+    if FPanning then
+    begin
+      FPos := F;        // gleich dort stehen bleiben, nicht zurückspringen
+      FPanning := False;
+      Cursor := crHandPoint;
+      Invalidate;
+    end;
+    if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+  end;
   { Beim Loslassen gilt die zuletzt angezeigte Stelle. Neu rechnen wäre
     falsch: beim Abspielen läuft die Welle unter der stillen Maus weiter. }
   if (Button = mbLeft) and (FDragMarker <> 0) then
