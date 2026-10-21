@@ -9,6 +9,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+### StemMaker – neue Sprache
+- **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“.
+
 ### StemPlayer 1.6
 - **Loop A-B:** Ein Abschnitt wird endlos wiederholt, so wie ein Loop in Traktor. Praktisch, um eine Stelle mit Mute und Solo genau zu prüfen, z. B. ob in den Vocals noch Drums durchklingen. Punkt A und B setzt man mit den Knöpfen oder den Tasten A und B an der aktuellen Stelle, oder man zieht den Bereich mit der rechten Maustaste in einer Wellenform auf. Der Rücksprung ist nahtlos. Taste L schaltet den Loop aus und wieder an, die Rücktaste löscht ihn. Der Loop-Bereich ist in allen Wellenformen grün hinterlegt.
 
