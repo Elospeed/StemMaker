@@ -36,7 +36,8 @@
       die Maus (gemessen an der echten Zeit, geglättet), dazu ein kleiner
       Anteil, der den Abstand zum Ziel aufholt (wie ein Plattenteller unter
       der Hand): schnell gezogen = schneller und höher, langsam = tief,
-      rückwärts = rückwärts, Maus still = nach ~50 ms Stille.
+      rückwärts = rückwärts. Der Kopf läuft nicht über die Hand hinaus,
+      Maus still = nach wenigen Puffern Stille.
     - Läuft der Kopf mehr als SCRUB_MAXLEAD hinterher (sehr schnell
       gezogen, über der Höchstgeschwindigkeit), springt er nach (vorher
       ein Puffer aus-, danach einblenden). Sonst würde er nach dem
@@ -83,8 +84,10 @@ const
   LOOP_FADE     = 64;         // Frames Aus-/Einblenden am Loop-Übergang (~1,5 ms)
   SEG_MAX       = 512;        // gemerkte Audio-Stücke (~12 s, siehe MapPosition)
   SCRUB_FRAMES  = 512;        // Puffergrösse beim Scrubbing (~12 ms)
-  SCRUB_QUEUE   = 3;          // so viele Puffer beim Scrubbing in der Warteschlange
+  SCRUB_QUEUE   = 6;          // so viele Puffer beim Scrubbing in der Warteschlange
+                              // (3 waren unter Windows zu wenig: alle 50 ms 14 ms Lücke)
   SCRUB_LAG     = 2205;       // Abstand zum Ziel wird in ~50 ms aufgeholt
+  SCRUB_AHEAD   = 1536;       // so weit darf der Kopf der Maus vorauslaufen (x Geschw.)
   SCRUB_MAXLEAD = 4410;       // mehr als 0,1 s hinter der Maus -> nachspringen
   SCRUB_MAXRATE = 4.0;        // höchstens 4-fache Geschwindigkeit
 
@@ -574,7 +577,7 @@ var
   A0, A1: Single;
   First, Last, Idx0, Target, QNow, Freq: Int64;
   S0, S1: Integer;
-  Dt: Double;
+  Dt, Inst, Goal: Double;
   Jump: Boolean;
 begin
   { Mausgeschwindigkeit seit dem letzten Puffer, gemessen an der echten Zeit
@@ -585,7 +588,14 @@ begin
   Dt := (QNow - FScrubTime) / Freq * SAMPLE_RATE;       // vergangene Zeit in Frames
   if Dt < 1 then Dt := 1;
   if (Dt > SAMPLE_RATE div 10) then Dt := SAMPLE_RATE div 10;
-  FScrubVel := FScrubVel + ((Target - FScrubLast) / Dt - FScrubVel) * 0.3;
+  Inst := (Target - FScrubLast) / Dt;
+  { schneller abbremsen als beschleunigen: Maus still = bald Stille }
+  if Abs(Inst) < Abs(FScrubVel) then
+    FScrubVel := FScrubVel + (Inst - FScrubVel) * 0.5
+  else
+    FScrubVel := FScrubVel + (Inst - FScrubVel) * 0.3;
+  if FScrubVel > SCRUB_MAXRATE then FScrubVel := SCRUB_MAXRATE;
+  if FScrubVel < -SCRUB_MAXRATE then FScrubVel := -SCRUB_MAXRATE;
   FScrubLast := Target;
   FScrubTime := QNow;
 
@@ -606,6 +616,23 @@ begin
   R1 := FScrubVel + (Target - FScrubPos) / SCRUB_LAG;
   if R1 > SCRUB_MAXRATE then R1 := SCRUB_MAXRATE;
   if R1 < -SCRUB_MAXRATE then R1 := -SCRUB_MAXRATE;
+  { Nicht über die Hand hinauslaufen: Ziel ist die Mausstelle plus das,
+    was sie bei der aktuellen Geschwindigkeit in diesem Puffer noch
+    zurücklegt (SCRUB_AHEAD, Mausmeldungen kommen nicht in jedem Puffer).
+    Steht die Maus, bleibt der Kopf dort stehen (Stille).
+    Die Geschwindigkeit ändert sich im Puffer linear von R0 nach R1, der
+    Weg ist also (R0 + R1) / 2 * SCRUB_FRAMES. }
+  Goal := Target + FScrubVel * SCRUB_AHEAD - FScrubPos;
+  if Goal >= 0 then
+  begin
+    if R1 > 2 * Goal / SCRUB_FRAMES - R0 then R1 := 2 * Goal / SCRUB_FRAMES - R0;
+    if R1 < 0 then R1 := 0;
+  end
+  else
+  begin
+    if R1 < 2 * Goal / SCRUB_FRAMES - R0 then R1 := 2 * Goal / SCRUB_FRAMES - R0;
+    if R1 > 0 then R1 := 0;
+  end;
   if Abs(R1) < 0.02 then R1 := 0;
   A0 := FScrubAmp;
   A1 := Abs(R1) / 0.3;                   // ab 0,3-facher Geschwindigkeit volle Lautstärke
