@@ -1283,9 +1283,12 @@ begin
       FPanning := False;
       Cursor := crHandPoint;
       Invalidate;
-      if Assigned(FOnScrub) then FOnScrub(Self, False, Round(F));
-    end;
-    if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+      if Assigned(FOnScrub) then FOnScrub(Self, False, Round(F))
+      else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+    end
+    { Beim Scrubbing setzt die Engine selbst fort (ein Sprung würde die
+      Warteschlange leeren und eine Lücke machen) }
+    else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
   end;
   { Beim Loslassen gilt die zuletzt angezeigte Stelle. Neu rechnen wäre
     falsch: beim Abspielen läuft die Welle unter der stillen Maus weiter. }

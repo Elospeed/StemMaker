@@ -1593,8 +1593,7 @@ begin
 end;
 
 { Lupe: Welle wird gezogen -> Ton folgt der Maus (Scrubbing, stemengine 1.3).
-  Beim Loslassen erst den Sprung anfordern, dann Scrubbing beenden, damit
-  die Engine gleich an der richtigen Stelle weitermacht. }
+  Beim Loslassen macht die Engine selbst weiter (siehe unten). }
 procedure TMainForm.ZoomScrub(Sender: TObject; IsDown: Boolean; Frame: Int64);
 begin
   if Engine = nil then Exit;
@@ -1603,7 +1602,12 @@ begin
     Engine.Scrubbing := True
   else
   begin
-    Engine.SeekTo := Frame;
+    { Loslassen: die Engine geht selbst weiter (beim Abspielen nahtlos ab
+      dem Lesekopf, bei Pause an ScrubTarget). Beim Abspielen kein SeekTo,
+      das würde die Warteschlange leeren und eine Lücke machen. Bei Pause
+      schadet es nicht und sichert den Fall, dass die Engine das Ziehen
+      noch gar nicht bemerkt hatte. }
+    if not Engine.Playing then Engine.SeekTo := Frame;
     Engine.Scrubbing := False;
   end;
 end;
