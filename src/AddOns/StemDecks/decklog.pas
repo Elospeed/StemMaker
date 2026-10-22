@@ -54,7 +54,7 @@ procedure ShowLogWindow;
 implementation
 
 uses
-  Windows, LazFileUtils;
+  Windows, LazFileUtils, uLang;
 
 { Fehlt in der Windows-Unit von Free Pascal: Sprache der Windows-Oberfläche }
 function GetUserDefaultUILanguage: Word; stdcall; external 'kernel32.dll';
@@ -76,6 +76,10 @@ begin
   else
     { Hauptsprache von Windows: $07 = Deutsch }
     LangEN := (GetUserDefaultUILanguage and $3FF) <> $07;
+  { Die Stem-Prüfung aus ..\StemPlayer\mp4stem.pas übersetzt über uLang
+    (Sprachdateien von StemMaker, lang\en.po). Fehlt die Datei, bleibt
+    diese eine Meldung deutsch. }
+  if LangEN then LangLoad('en') else LangLoad('de');
 end;
 
 function LogFileName: string;

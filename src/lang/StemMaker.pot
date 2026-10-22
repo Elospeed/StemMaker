@@ -29,6 +29,10 @@ msgstr ""
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr ""
 
+#: playerform.pas:336
+msgid "  -  von Elospeed"
+msgstr ""
+
 #: umain.pas:1897
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr ""
@@ -153,6 +157,14 @@ msgstr ""
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr ""
 
+#: playerform.pas:1298
+msgid "%d Spuren  ·  Länge %s"
+msgstr ""
+
+#: playerform.pas:1302
+msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
+msgstr ""
+
 #: udonate.pas:121
 msgid "%d Stunden"
 msgstr ""
@@ -221,6 +233,10 @@ msgstr ""
 msgid "(kein Log gefunden)"
 msgstr ""
 
+#: playerform.pas:1205
+msgid "(z.B. die von Elospeed StemMaker)."
+msgstr ""
+
 #: upower.pas:324
 msgid ", Energiemodus %s"
 msgstr ""
@@ -287,6 +303,18 @@ msgstr ""
 
 #: umain.lfm:216
 msgid "ALAC verlustfrei (große Dateien)"
+msgstr ""
+
+#: playerform.pas:641
+msgid "AN  L"
+msgstr ""
+
+#: playerform.pas:1382
+msgid "AUS (SOLO)"
+msgstr ""
+
+#: playerform.pas:674
+msgid "AUSGANG L / R"
 msgstr ""
 
 #: uinit.pas:705
@@ -361,6 +389,10 @@ msgstr ""
 msgid "Alles bereit"
 msgstr ""
 
+#: playerform.pas:662
+msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
+msgstr ""
+
 #: ureport.pas:444
 msgid "Als GitHub-Issue"
 msgstr ""
@@ -381,6 +413,10 @@ msgstr ""
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr ""
 
+#: playerform.pas:535
+msgid "Ansicht mit Wellenform unter jedem Stem (Taste W)"
+msgstr ""
+
 #: udownload.pas:354
 msgid "Antwort zu gross"
 msgstr ""
@@ -391,6 +427,10 @@ msgstr ""
 
 #: umain.pas:521
 msgid "Audiodateien wählen"
+msgstr ""
+
+#: stemengine.pas:229
+msgid "Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d)."
 msgstr ""
 
 #: stemcli.lpr:220
@@ -477,8 +517,16 @@ msgstr ""
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr ""
 
+#: playerform.pas:1182
+msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
+msgstr ""
+
 #: umain.pas:1608
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
+msgstr ""
+
+#: playerform.pas:1204
+msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr ""
 
 #: ulicense.pas:135
@@ -489,8 +537,16 @@ msgstr ""
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr ""
 
+#: playerform.pas:2054
+msgid "Breche Dekodieren ab ..."
+msgstr ""
+
 #: uinit.pas:1075
 msgid "Breche ab ..."
+msgstr ""
+
+#: playerform.pas:693
+msgid "CLIP"
 msgstr ""
 
 #: usettings.pas:270
@@ -503,6 +559,14 @@ msgstr ""
 
 #: uupdate.pas:398
 msgid "Das Update-ZIP enthält keine StemMaker.exe"
+msgstr ""
+
+#: mp4stem.pas:277
+msgid "Das ist keine Stem-Datei (kein MP4-Format)."
+msgstr ""
+
+#: mp4stem.pas:283
+msgid "Das ist keine Stem-Datei: Sie hat %d Audiospur(en), eine Stem-Datei hat %d (Master + %d Stems)."
 msgstr ""
 
 #: usingleinstance.pas:271
@@ -537,8 +601,20 @@ msgstr ""
 msgid "Dateigröße: %.1f MB"
 msgstr ""
 
+#: playerform.pas:1142
+msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
+msgstr ""
+
+#: playerform.pas:1248
+msgid "Dekodiere ..."
+msgstr ""
+
 #: ustemjob.pas:1675
 msgid "Dekodieren"
+msgstr ""
+
+#: playerform.pas:648
+msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr ""
 
 #: ureport.pas:363
@@ -549,8 +625,16 @@ msgstr ""
 msgid "Der Server antwortet nicht."
 msgstr ""
 
+#: mp4stem.pas:272
+msgid "Der StemPlayer spielt nur Traktor-Stem-Dateien (.stem.mp4) ab,"
+msgstr ""
+
 #: umain.lfm:274
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
+msgstr ""
+
+#: playerform.pas:625
+msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr ""
 
 #: uinfo.pas:157
@@ -705,6 +789,14 @@ msgstr ""
 msgid "Fehler"
 msgstr ""
 
+#: playerform.pas:1261
+msgid "Fehler beim Dekodieren"
+msgstr ""
+
+#: playerform.pas:1262
+msgid "Fehler beim Dekodieren: "
+msgstr ""
+
 #: ureport.pas:363
 msgid "Fehlerbericht"
 msgstr ""
@@ -743,6 +835,10 @@ msgstr ""
 
 #: umain.pas:872
 msgid "Für \"%s\" fehlen noch Dateien."
+msgstr ""
+
+#: playerform.pas:725
+msgid "Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed"
 msgstr ""
 
 #: umain.pas:1116
@@ -805,6 +901,18 @@ msgstr ""
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr ""
 
+#: playerform.pas:1241
+msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
+msgstr ""
+
+#: playerform.pas:1384
+msgid "HÖRBAR"
+msgstr ""
+
+#: playerform.pas:617
+msgid "HÖREN"
+msgstr ""
+
 #: upower.pas:245
 msgid "Höchstleistung"
 msgstr ""
@@ -857,6 +965,10 @@ msgstr ""
 msgid "Jetzt spenden"
 msgstr ""
 
+#: playerform.pas:530
+msgid "KOMPAKT"
+msgstr ""
+
 #: udonate.pas:243
 msgid "Kaffee spendieren"
 msgstr ""
@@ -871,6 +983,18 @@ msgstr ""
 
 #: ustemjob.pas:1931
 msgid "Kann Zieldatei nicht schreiben: %s"
+msgstr ""
+
+#: playerform.pas:1193
+msgid "Keine Stem-Datei: "
+msgstr ""
+
+#: playerform.pas:797
+msgid "Klicken oder ziehen, um an diese Stelle zu springen."
+msgstr ""
+
+#: playerform.pas:534
+msgid "Kompakte Ansicht ohne Wellenformen (Taste W)"
 msgstr ""
 
 #: umain.pas:675
@@ -889,12 +1013,20 @@ msgstr ""
 msgid "LIZENZEN"
 msgstr ""
 
+#: playerform.pas:637
+msgid "LOOP"
+msgstr ""
+
 #: uinit.pas:960
 msgid "Lade %s  (%d von %d)"
 msgstr ""
 
 #: uupdateui.pas:319
 msgid "Lade StemMaker %s ..."
+msgstr ""
+
+#: playerform.pas:1256
+msgid "Laden abgebrochen."
 msgstr ""
 
 #: ustemjob.pas:1920
@@ -925,12 +1057,20 @@ msgstr ""
 msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
 msgstr ""
 
+#: playerform.pas:710
+msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
+msgstr ""
+
 #: umain.lfm:263
 msgid "Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).\nAlle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.\nLaute Club-Tracks ändern sich kaum. Vorteil in Traktor: größere, besser lesbare Wellenformen."
 msgstr ""
 
 #: udownload.pas:248 udownload.pas:347
 msgid "Lesefehler beim Download (Fehler %d)"
+msgstr ""
+
+#: playerform.pas:698
+msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr ""
 
 #: umain.lfm:61
@@ -961,12 +1101,84 @@ msgstr ""
 msgid "Logs-Ordner öffnen"
 msgstr ""
 
+#: playerform.pas:650
+msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
+msgstr ""
+
+#: playerform.pas:1580
+msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
+msgstr ""
+
+#: playerform.pas:1583
+msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
+msgstr ""
+
+#: playerform.pas:652
+msgid "Loop löschen (Rücktaste)"
+msgstr ""
+
+#: playerform.pas:646
+msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
+msgstr ""
+
+#: playerform.pas:647
+msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
+msgstr ""
+
+#: playerform.pas:1587
+msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
+msgstr ""
+
+#: playerform.pas:1501
+msgid "Loop: Punkt B muss hinter Punkt A liegen."
+msgstr ""
+
+#: playerform.pas:1611
+msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
+msgstr ""
+
+#: playerform.pas:1495
+msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
+msgstr ""
+
+#: playerform.pas:1515
+msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
+msgstr ""
+
+#: playerform.pas:596
+msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
+msgstr ""
+
 #: ustemjob.pas:1689
 msgid "Länge: %d:%.2d min"
 msgstr ""
 
+#: playerform.pas:673
+msgid "MASTER"
+msgstr ""
+
+#: playerform.pas:1368
+msgid "MODUS: ORIGINAL"
+msgstr ""
+
+#: playerform.pas:1368
+msgid "MODUS: REST"
+msgstr ""
+
+#: playerform.pas:598
+msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren."
+msgstr ""
+
+#: playerform.pas:599
+msgid "Mausrad: zoomen. Klick: springen."
+msgstr ""
+
 #: usettings.pas:325
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
+msgstr ""
+
+#: playerform.pas:1265
+msgid "Meldung von ffmpeg:"
 msgstr ""
 
 #: uinit.pas:885
@@ -991,6 +1203,10 @@ msgstr ""
 
 #: usettings.pas:332
 msgid "Modelle:"
+msgstr ""
+
+#: playerform.pas:756
+msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr ""
 
 #: umain.pas:649
@@ -1037,6 +1253,10 @@ msgstr ""
 msgid "OK (%s)"
 msgstr ""
 
+#: playerform.pas:622
+msgid "ORIGINAL  O"
+msgstr ""
+
 #: umain.pas:525
 msgid "Ordner mit Audiodateien wählen"
 msgstr ""
@@ -1059,6 +1279,14 @@ msgstr ""
 
 #: umain.lfm:42
 msgid "Ordner..."
+msgstr ""
+
+#: playerform.pas:584
+msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
+msgstr ""
+
+#: playerform.pas:626
+msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr ""
 
 #: umain.lfm:249
@@ -1087,6 +1315,10 @@ msgstr ""
 
 #: ustemjob.pas:1630
 msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
+msgstr ""
+
+#: playerform.pas:551
+msgid "Play / Pause (Leertaste)"
 msgstr ""
 
 #: uinit.pas:884
@@ -1125,6 +1357,38 @@ msgstr ""
 msgid "RECHTE AN DER MUSIK"
 msgstr ""
 
+#: playerform.pas:660
+msgid "RESET  0"
+msgstr ""
+
+#: playerform.pas:623
+msgid "REST  R"
+msgstr ""
+
+#: playerform.pas:597
+msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
+msgstr ""
+
+#: playerform.pas:585 playerform.pas:798
+msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
+msgstr ""
+
+#: playerform.pas:627
+msgid "Rest = Original minus Summe aller Stems (Taste R):"
+msgstr ""
+
+#: playerform.pas:1372
+msgid "SOLO"
+msgstr ""
+
+#: playerform.pas:621
+msgid "STEMS  S"
+msgstr ""
+
+#: playerform.pas:1379
+msgid "STUMM"
+msgstr ""
+
 #: uinfo.pas:244
 msgid "Schließen"
 msgstr ""
@@ -1143,6 +1407,10 @@ msgstr ""
 
 #: usettings.pas:348
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
+msgstr ""
+
+#: playerform.pas:764
+msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr ""
 
 #: usettings.pas:306
@@ -1191,6 +1459,18 @@ msgstr ""
 
 #: umain.pas:1290
 msgid "Stem-Datei prüfen"
+msgstr ""
+
+#: playerform.pas:385
+msgid "Stem-Datei öffnen"
+msgstr ""
+
+#: playerform.pas:520
+msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
+msgstr ""
+
+#: playerform.pas:524
+msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr ""
 
 #: ustemjob.pas:1944
@@ -1293,6 +1573,14 @@ msgstr ""
 msgid "Stems trennen (demucs)"
 msgstr ""
 
+#: playerform.pas:558
+msgid "Stop und zurück an den Anfang"
+msgstr ""
+
+#: playerform.pas:765
+msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
+msgstr ""
+
 #: uinfo.pas:329
 msgid "Suche ..."
 msgstr ""
@@ -1321,12 +1609,20 @@ msgstr ""
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr ""
 
+#: playerform.pas:649
+msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
+msgstr ""
+
 #: umain.lfm:240
 msgid "Tools: ..."
 msgstr ""
 
 #: umain.pas:841
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
+msgstr ""
+
+#: playerform.pas:386
+msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr ""
 
 #: ulicense.pas:167
@@ -1391,6 +1687,10 @@ msgstr ""
 
 #: usettings.pas:269
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
+msgstr ""
+
+#: playerform.pas:531
+msgid "WELLENFORM"
 msgstr ""
 
 #: ulicense.pas:150
@@ -1513,12 +1813,36 @@ msgstr ""
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr ""
 
+#: playerform.pas:1264
+msgid "ffmpeg konnte die Datei nicht dekodieren:"
+msgstr ""
+
 #: ustemjob.pas:1861
 msgid "ffmpeg konnte die Stem-Datei nicht erstellen (Code %d)"
 msgstr ""
 
 #: ustemjob.pas:1103
 msgid "ffmpeg nicht gefunden: %s"
+msgstr ""
+
+#: playerform.pas:1152
+msgid "ffmpeg wurde mit Code %d beendet."
+msgstr ""
+
+#: playerform.pas:1208
+msgid "ffmpeg.exe auswählen"
+msgstr ""
+
+#: playerform.pas:407
+msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
+msgstr ""
+
+#: playerform.pas:1203
+msgid "ffmpeg.exe wurde nicht gefunden."
+msgstr ""
+
+#: playerform.pas:1209
+msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr ""
 
 #: ustemjob.pas:460
@@ -1531,6 +1855,10 @@ msgstr ""
 
 #: ustemjob.pas:459
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
+msgstr ""
+
+#: playerform.pas:628
+msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr ""
 
 #: ureport.pas:430
@@ -1551,6 +1879,10 @@ msgstr ""
 
 #: uinit.pas:347
 msgid "keine gültige Modelldatei"
+msgstr ""
+
+#: playerform.pas:629
+msgid "klingt (ideal: fast Stille)."
 msgstr ""
 
 #: umain.pas:934 umain.pas:954
@@ -1609,12 +1941,24 @@ msgstr ""
 msgid "wartet (unterbrochen)"
 msgstr ""
 
+#: playerform.pas:651
+msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
+msgstr ""
+
 #: uinit.pas:1006 umain.pas:1078 umain.pas:1113
 msgid "wird berechnet ..."
 msgstr ""
 
+#: mp4stem.pas:273
+msgid "z.B. die von Elospeed StemMaker erzeugten."
+msgstr ""
+
 #: usettings.pas:333
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
+msgstr ""
+
+#: playerform.pas:519
+msgid "ÖFFNEN"
 msgstr ""
 
 #: usettings.pas:356

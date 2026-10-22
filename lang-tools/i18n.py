@@ -135,7 +135,12 @@ def main():
     src_dir, lang_dir = sys.argv[1], sys.argv[2]
     tools_dir = os.path.dirname(os.path.abspath(__file__))
     found, errors = {}, []
-    for p in sorted(glob.glob(os.path.join(src_dir, '*.pas')) + glob.glob(os.path.join(src_dir, '*.lpr'))):
+    # StemPlayer (AddOns) nutzt dieselben Sprachdateien wie StemMaker
+    addon_dirs = [os.path.join(src_dir, 'AddOns', 'StemPlayer')]
+    pas_files = glob.glob(os.path.join(src_dir, '*.pas')) + glob.glob(os.path.join(src_dir, '*.lpr'))
+    for d in addon_dirs:
+        pas_files += glob.glob(os.path.join(d, '*.pas'))
+    for p in sorted(pas_files):
         if os.path.basename(p) in ('ulang.pas', 'ulangui.pas'):
             continue                      # dort steht _() selbst bzw. dynamische Aufrufe
         extract_pas(p, found, errors)

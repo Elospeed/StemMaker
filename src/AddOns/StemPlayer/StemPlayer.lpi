@@ -22,8 +22,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="6"/>
-      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPlayer - Testplayer fuer Traktor-Stems" InternalName="StemPlayer" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPlayer.exe" ProductName="Elospeed StemPlayer" ProductVersion="1.6"/>
+      <MinorVersionNr Value="7"/>
+      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPlayer - Testplayer fuer Traktor-Stems" InternalName="StemPlayer" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPlayer.exe" ProductName="Elospeed StemPlayer" ProductVersion="1.7"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -77,6 +77,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="../.."/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
