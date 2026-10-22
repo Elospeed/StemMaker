@@ -353,7 +353,7 @@ msgstr "Battery"
 msgid "Akku (%d %%)"
 msgstr "Battery (%d %%)"
 
-#: uinfo.pas:229
+#: uinfo.pas:245
 msgid "Aktuelles Log: %s"
 msgstr "Current log: %s"
 
@@ -405,7 +405,7 @@ msgstr "As GitHub issue (public)"
 msgid "Anhören"
 msgstr "Listen"
 
-#: uinfo.pas:308
+#: uinfo.pas:314
 msgid "Anleitung"
 msgstr "Guide"
 
@@ -553,9 +553,13 @@ msgstr "CLIP"
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "Afterwards everything is set back as before. The screen may turn off."
 
-#: uinfo.pas:240
-msgid "Danke an David GJ für die spanische Übersetzung."
-msgstr "Thanks to David GJ for the Spanish translation."
+#: uinfo.pas:324
+msgid "Danke"
+msgstr "Thanks"
+
+#: uinfo.pas:197
+msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
+msgstr "Thanks to everyone who supports StemMaker with translations, tests, ideas, bug reports or donations!"
 
 #: usettings.pas:321
 msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
@@ -665,7 +669,7 @@ msgstr "The checksum (SHA-256) of the update does not match. The file was discar
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "The language will change the next time you start StemMaker."
 
-#: uinfo.pas:359
+#: uinfo.pas:375
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "Checking for updates failed: %s"
 
@@ -717,7 +721,7 @@ msgstr "Downloading ...  %s"
 msgid "Download unvollständig"
 msgstr "Download incomplete"
 
-#: uinfo.pas:356
+#: uinfo.pas:372
 msgid "Du hast die neueste Version (%s)."
 msgstr "You have the latest version (%s)."
 
@@ -809,7 +813,7 @@ msgstr "Error report"
 msgid "Fehlerbericht senden"
 msgstr "Send error report"
 
-#: uinfo.pas:294 ulogui.pas:60
+#: uinfo.pas:300 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "Send error report..."
 
@@ -881,6 +885,10 @@ msgstr "Download"
 msgid "Herunterladen (ca. %d MB)"
 msgstr "Download (approx. %d MB)"
 
+#: uinfo.pas:203
+msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
+msgstr "Only people who agreed are listed here. You helped and would like to be named here? Write to elospeed.dev@gmail.com."
+
 #: umain.pas:561
 msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Note: %d earlier runs ended unexpectedly - details in the logs with \"_ABSTURZ\" in their name (Info -> Open logs folder)."
@@ -933,7 +941,7 @@ msgstr "I have read the disclaimer and the license notes and I agree."
 msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
 msgstr "If in doubt, unzip the ZIP from the release page by hand."
 
-#: uinfo.pas:202 umain.lfm:80
+#: uinfo.pas:218 umain.lfm:80
 msgid "Info"
 msgstr "Info"
 
@@ -965,7 +973,7 @@ msgstr "Download now?"
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr "Check now and download the missing files?"
 
-#: uinfo.pas:267
+#: uinfo.pas:273
 msgid "Jetzt spenden"
 msgstr "Donate now"
 
@@ -1085,7 +1093,7 @@ msgstr "Clear list"
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Restored the list from last time: %d files, %d of them still pending."
 
-#: uinfo.pas:318
+#: uinfo.pas:334
 msgid "Lizenzen"
 msgstr "Licenses"
 
@@ -1101,7 +1109,7 @@ msgstr "Copy log"
 msgid "Log:"
 msgstr "Log:"
 
-#: uinfo.pas:261
+#: uinfo.pas:267
 msgid "Logs-Ordner öffnen"
 msgstr "Open logs folder"
 
@@ -1217,7 +1225,7 @@ msgstr "Mute: silence this stem (key %d)"
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Would you like to send Elospeed an error report? You will see the report first, nothing is sent automatically."
 
-#: uinfo.pas:287 uinfo.pas:345
+#: uinfo.pas:293 uinfo.pas:361
 msgid "Nach Updates suchen"
 msgstr "Check for updates"
 
@@ -1393,7 +1401,7 @@ msgstr "STEMS  S"
 msgid "STUMM"
 msgstr "MUTED"
 
-#: uinfo.pas:254
+#: uinfo.pas:260
 msgid "Schließen"
 msgstr "Close"
 
@@ -1416,6 +1424,10 @@ msgstr "Resets the values in this window to the defaults (language stays)."
 #: playerform.pas:771
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr "Solo: hear only this stem (Shift+%d)."
+
+#: uinfo.pas:201
+msgid "Spanisch"
+msgstr "Spanish"
 
 #: usettings.pas:306
 msgid "Sprache:"
@@ -1585,7 +1597,7 @@ msgstr "Stop and back to the start"
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+click: add another stem (several solos)"
 
-#: uinfo.pas:339
+#: uinfo.pas:355
 msgid "Suche ..."
 msgstr "Searching ..."
 
@@ -1745,7 +1757,7 @@ msgstr "Shows the tracks and stem metadata of an existing .stem.mp4"
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "Shows the finished stem file in Explorer - drag it straight into Traktor from there"
 
-#: uinfo.pas:295
+#: uinfo.pas:301
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "Shows a log and helps you send it to Elospeed by e-mail or GitHub. Nothing is sent automatically."
 
@@ -1929,7 +1941,7 @@ msgstr "path not allowed"
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "elapsed %s   |   remaining %s   |   %.1f MB/s"
 
-#: uinfo.pas:227
+#: uinfo.pas:243
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "by %s  ·  Traktor stems from audio files  ·  free && open source  ·  Build: %s"
 
@@ -1968,6 +1980,10 @@ msgstr "OPEN"
 #: usettings.pas:356
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Opens the folder that contains StemMaker.ini"
+
+#: uinfo.pas:200
+msgid "Übersetzungen"
+msgstr "Translations"
 
 #: umain.pas:1141
 msgid "Übersprungen (Format nicht unterstützt): %s"

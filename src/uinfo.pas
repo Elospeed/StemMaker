@@ -188,12 +188,28 @@ begin
     Result := Result + Format(_('%s wurde nicht gefunden.'), ['THIRD-PARTY-NOTICES.md']);
 end;
 
+{ Text für den Reiter "Danke". Hier steht nur, wer ausdrücklich zugestimmt
+  hat, mit dem Namen, den er selbst gewählt hat. Neue Helfer einfach als
+  weitere Zeile in ihrer Gruppe eintragen (Namen werden nicht übersetzt). }
+function ThanksText: string;
+begin
+  Result :=
+    _('Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, ' +
+      'Fehlermeldungen oder Spenden unterstützen!') + LineEnding +
+    LineEnding +
+    _('Übersetzungen') + LineEnding +
+    '  ' + _('Spanisch') + ': David GJ' + LineEnding +
+    LineEnding +
+    _('Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und ' +
+      'möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com.');
+end;
+
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
-  lblTitle, lblSub, lblThanks: TLabel;
-  memText, memLic: TMemo;
+  lblTitle, lblSub: TLabel;
+  memText, memLic, memThanks: TMemo;
   pcText: TPageControl;
-  tsHelp, tsLic: TTabSheet;
+  tsHelp, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
   btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
@@ -228,16 +244,6 @@ begin
     'Build: %s'), [Author, {$I %DATE%}]) + LineEnding +
     Format(_('Aktuelles Log: %s'), [ExtractFileName(LogFileName)]);
   lblSub.Font.Color := clGrayText;
-
-  { Dank an Helfer - nur wer ausdrücklich zugestimmt hat, mit dem
-    Namen, den er selbst gewählt hat }
-  lblThanks := TLabel.Create(Self);
-  lblThanks.Parent := Self;
-  lblThanks.Align := alTop;
-  lblThanks.Top := 200;                            // unter lblSub
-  lblThanks.BorderSpacing.Left := 10;
-  lblThanks.BorderSpacing.Bottom := 8;
-  lblThanks.Caption := _('Danke an David GJ für die spanische Übersetzung.');
 
   { --- Buttons unten --- }
   pnlBottom := TPanel.Create(Self);
@@ -297,7 +303,7 @@ begin
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
 
-  { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
+  { --- Mitte: drei Reiter (Anleitung, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
   pcText.Align := alClient;
@@ -313,6 +319,16 @@ begin
   memText.ScrollBars := ssAutoVertical;
   memText.WordWrap := True;
   memText.Text := LoadReadme;
+
+  tsThanks := pcText.AddTabSheet;
+  tsThanks.Caption := _('Danke');
+  memThanks := TMemo.Create(Self);
+  memThanks.Parent := tsThanks;
+  memThanks.Align := alClient;
+  memThanks.ReadOnly := True;
+  memThanks.ScrollBars := ssAutoVertical;
+  memThanks.WordWrap := True;
+  memThanks.Text := ThanksText;
 
   tsLic := pcText.AddTabSheet;
   tsLic.Caption := _('Lizenzen');
