@@ -6,6 +6,18 @@ Neueste Einträge oben.
 
 ---
 
+## StemPlayer 1.8: Designs CD-Player und Plattenspieler (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Zwei neue Looks, aber die Funktion soll genau gleich bleiben. Alles doppelt anlegen hiesse doppelte Logik und Zustände, die auseinanderlaufen. | Die vorhandenen Bedienelemente werden beim Umschalten nur in die Flächen des Designs versetzt (`PlaceCtl` merkt Parent, Position und Anker) und beim Zurückschalten wieder hingesetzt (`RestorePlacements`, rückwärts). Neu sind nur Jogwheel, Pads und Plattenteller (`designviews.pas`). Wichtig: zuerst das Fenster auf die alte Grösse, dann zurücksetzen, sonst sitzen die rechts verankerten Knöpfe falsch. |
+| Kreise und schräge Linien zeichnet Windows (GDI) treppig. | Unveränderliche Teile in doppelter Grösse vorzeichnen und mit `StretchBlt` im Modus `HALFTONE` verkleinern (danach `SetBrushOrgEx`). Pro Bild wird nur dieses fertige Bild kopiert, bewegliche Teile (Zeiger, Tonarm) kommen darüber. |
+| Programm hing beim Umschalten auf PLATTE (Fenster blieb schwarz). | Endlosschleife beim Kürzen des Titels: `Copy(S, 1, Length(S) - 2) + '…'` – das `…` ist in UTF-8 drei Bytes, der Text wurde also jedes Mal länger. Jetzt zeichenweise mit `UTF8Copy`/`UTF8Length` kürzen und das `…` erst am Schluss anhängen. |
+| Compilerfehler „Illegal expression“ bei einer Hilfsprozedur `CenterText`. | Innerhalb einer Methode verdeckt eine gleichnamige Eigenschaft der Klasse (`TJogWheel.CenterText`) die globale Prozedur. Hilfsfunktionen anders nennen (`DrawCentered`). Ebenso eine Eigenschaft nie `Round` nennen (verdeckt `Math.Round`). |
+| `uses Windows` zusammen mit `Graphics`. | `Windows` muss vor `Graphics` stehen, sonst ist `TBitmap` das Windows-Record statt der LCL-Klasse. Innerhalb von `with Canvas do` bedeuten `Width`/`Height` die Grösse des Canvas, darum `Self.Width`. |
+
+---
+
 ## Lange Pfade über 260 Zeichen (Oktober 2026)
 
 | Problem | Lösung |
