@@ -166,6 +166,7 @@ type
     procedure MixAndWrite(Idx, Frames: Integer);
     procedure StartScrub;
     procedure StopScrub;
+    function  WaitFreeBuffer: Integer;
     procedure DoSeek(Frame: Int64);
     procedure ApplyLoop;
     procedure AddSegment(AStream, AFrame, ALen: Int64);
@@ -552,6 +553,25 @@ begin
   PlayPos := Round(FScrubPos);
 end;
 
+{ Wartet auf einen freien Puffer (höchstens 50 ms), -1 = keiner frei }
+function TStemEngine.WaitFreeBuffer: Integer;
+var
+  i: Integer;
+  T0: QWord;
+begin
+  T0 := GetTickCount64;
+  repeat
+    Result := -1;
+    for i := 0 to BUF_COUNT - 1 do
+    begin
+      if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) <> 0) then
+        FQueued[i] := False;
+      if (Result < 0) and not FQueued[i] then Result := i;
+    end;
+    if Result < 0 then WaitForSingleObject(FEvent, 5);
+  until (Result >= 0) or (GetTickCount64 - T0 > 50);
+end;
+
 { Scrubbing endet.
   Beim Abspielen: ein letzter Puffer beschleunigt auf normale
   Geschwindigkeit, danach liest FillBuffer genau dort weiter. Die
@@ -571,18 +591,7 @@ begin
 
   if Playing then
   begin
-    { auf einen freien Puffer warten (höchstens 50 ms) }
-    T0 := GetTickCount64;
-    k := -1;
-    repeat
-      for i := 0 to BUF_COUNT - 1 do
-      begin
-        if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) <> 0) then
-          FQueued[i] := False;
-        if (k < 0) and not FQueued[i] then k := i;
-      end;
-      if k < 0 then WaitForSingleObject(FEvent, 5);
-    until (k >= 0) or (GetTickCount64 - T0 > 50);
+    k := WaitFreeBuffer;
     if k >= 0 then
     begin
       FScrubHand := True;
@@ -603,16 +612,16 @@ begin
     Exit;
   end;
 
-  { Pause: Ausblend-Puffer und zwei stille Puffer anhängen }
-  k := 0;
-  for i := 0 to BUF_COUNT - 1 do
-    if (not FQueued[i]) and (k < 3) then
-    begin
-      FScrubEnd := True;
-      FillScrub(i);
-      FScrubEnd := False;
-      Inc(k);
-    end;
+  { Pause: Ausblend-Puffer und zwei stille Puffer anhängen. Beim Ziehen
+    sind alle Puffer in der Warteschlange, darum jeweils auf einen freien
+    warten (sonst fehlt das Ausblenden und es knackt). }
+  FScrubEnd := True;
+  for i := 1 to 3 do
+  begin
+    k := WaitFreeBuffer;
+    if k >= 0 then FillScrub(k);
+  end;
+  FScrubEnd := False;
   T0 := GetTickCount64;
   repeat
     Busy := False;
