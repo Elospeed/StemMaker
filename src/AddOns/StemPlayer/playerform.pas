@@ -479,6 +479,7 @@ begin
   LblFile := MakeLabel(PnlTop, 'Stem-Datei öffnen oder hierher ziehen (Drag & Drop)', 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
+  LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
   LblFile.SetBounds(110, 8, W - 110 - 236, 24);
 
   { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
