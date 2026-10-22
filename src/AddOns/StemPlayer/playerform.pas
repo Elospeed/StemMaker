@@ -114,6 +114,10 @@
                        (StemMaker.ini [Main] Language). Die Texte stehen in
                        denselben Sprachdateien lang\*.po wie die von StemMaker
                        (siehe LoadLanguage und src\ulang.pas).
+                       Scrubbing: beim Ziehen der Welle in der Lupe hört man
+                       den Ton wie bei einer Schallplatte unter der Hand,
+                       schnell gezogen hoch, langsam tief, rückwärts
+                       rückwärts (stemengine 1.3).
   ============================================================================ }
 unit playerform;
 
@@ -267,6 +271,7 @@ type
     procedure MoveLoop(Frames: Int64);
     function  NudgeStep: Int64;
     procedure ZoomSeek(Sender: TObject; Frame: Int64);
+    procedure ZoomScrub(Sender: TObject; IsDown: Boolean; Frame: Int64);
     procedure ZoomLoopSelect(Sender: TObject; AFrom, ATo: Int64);
     procedure ZoomMarkerMove(Sender: TObject; Marker: Integer; Frame: Int64; Final: Boolean);
     procedure LoopClick(Sender: TObject);
@@ -524,6 +529,7 @@ begin
   LblFile := MakeLabel(PnlTop, _('Stem-Datei öffnen oder hierher ziehen (Drag & Drop)'), 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
+  LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
   LblFile.SetBounds(110, 8, W - 110 - 236, 24);
 
   { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
@@ -591,11 +597,12 @@ begin
   Zoom.SetBounds(12, ZOOM_TOP, W - 24, ZOOM_HEIGHT);
   Zoom.Anchors := [akLeft, akTop, akRight];
   Zoom.OnSeek := @ZoomSeek;
+  Zoom.OnScrub := @ZoomScrub;
   Zoom.OnLoopSelect := @ZoomLoopSelect;
   Zoom.OnMarkerMove := @ZoomMarkerMove;
   Zoom.Hint := _('Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops.') + LineEnding +
                _('Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei).') + LineEnding +
-               _('Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren.') + LineEnding +
+               _('Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton.') + LineEnding +
                _('Mausrad: zoomen. Klick: springen.');
   Zoom.ShowHint := True;
 
@@ -1637,6 +1644,26 @@ end;
 procedure TMainForm.ZoomSeek(Sender: TObject; Frame: Int64);
 begin
   if Engine <> nil then Engine.SeekTo := Frame;
+end;
+
+{ Lupe: Welle wird gezogen -> Ton folgt der Maus (Scrubbing, stemengine 1.3).
+  Beim Loslassen macht die Engine selbst weiter (siehe unten). }
+procedure TMainForm.ZoomScrub(Sender: TObject; IsDown: Boolean; Frame: Int64);
+begin
+  if Engine = nil then Exit;
+  Engine.ScrubTarget := Frame;
+  if IsDown then
+    Engine.Scrubbing := True
+  else
+  begin
+    { Loslassen: die Engine geht selbst weiter (beim Abspielen nahtlos ab
+      dem Lesekopf, bei Pause an ScrubTarget). Beim Abspielen kein SeekTo,
+      das würde die Warteschlange leeren und eine Lücke machen. Bei Pause
+      schadet es nicht und sichert den Fall, dass die Engine das Ziehen
+      noch gar nicht bemerkt hatte. }
+    if not Engine.Playing then Engine.SeekTo := Frame;
+    Engine.Scrubbing := False;
+  end;
 end;
 
 { Lupe: Marke A (1) oder B (2) wird gezogen. Sie darf nicht über die andere

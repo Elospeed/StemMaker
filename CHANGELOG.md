@@ -18,6 +18,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ### StemPlayer 1.7
 - **Deutsch, Englisch und Spanisch:** Der StemPlayer spricht jetzt dieselbe Sprache wie StemMaker. Eine eigene Einstellung braucht es nicht, er übernimmt die Sprache, die in StemMaker gewählt ist.
+- **Scrubbing:** Zieht man in der Lupe die Welle mit der linken Maustaste, hört man den Ton wie bei einer Schallplatte unter der Hand: schnell gezogen hoch, langsam tief, rückwärts gezogen rückwärts, Maus still = Stille. Geht beim Abspielen und bei Pause. Lässt man beim Abspielen los, läuft die Musik an der Stelle ohne Lücke weiter.
 
 ## 1.8.1 – 20. Oktober 2026
 

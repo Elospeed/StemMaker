@@ -29,6 +29,40 @@
       Stück Audio, das er an Windows schickt, wo es in der Datei herkommt
       (FSeg). Daraus wird die hörbare Position zurückgerechnet (MapPosition).
 
+  Scrubbing (ab 1.3):
+    - Solange die GUI Scrubbing = True setzt (Welle in der Lupe wird mit der
+      Maus gezogen), folgt ein eigener Lesekopf FScrubPos der Mausposition
+      ScrubTarget. Er bewegt sich nicht sprunghaft, sondern so schnell wie
+      die Maus (gemessen an der echten Zeit, geglättet), dazu ein kleiner
+      Anteil, der den Abstand zum Ziel aufholt (wie ein Plattenteller unter
+      der Hand): schnell gezogen = schneller und höher, langsam = tief,
+      rückwärts = rückwärts. Der Kopf läuft nicht über die Hand hinaus,
+      Maus still = nach wenigen Puffern Stille. Ob die Maus steht, merkt der
+      Thread an der Zeit seit der letzten Bewegung (mindestens 30 ms bzw.
+      das Doppelte des letzten Abstands zwischen zwei Bewegungen): dann
+      wird im nächsten Puffer sofort ausgeblendet, statt langsam
+      auszulaufen.
+    - Läuft der Kopf mehr als SCRUB_MAXLEAD hinterher (sehr schnell
+      gezogen, über der Höchstgeschwindigkeit), springt er nach (vorher
+      ein Puffer aus-, danach einblenden). Sonst würde er nach dem
+      Anhalten noch lange weiterlaufen.
+    - Loslassen bei Pause: erst ausblenden, dann zwei stille Puffer und
+      etwas warten, bis Windows alles abgespielt hat, erst dann neu
+      aufsetzen (kein Knacken, kein abgeschnittenes Ausblenden).
+    - Loslassen beim Abspielen: wie bei einer Platte, die man loslässt.
+      Der letzte Scrub-Puffer beschleunigt auf normale Geschwindigkeit,
+      danach liest die normale Wiedergabe genau an dieser Stelle weiter,
+      ohne die Warteschlange zu leeren (keine Lücke).
+      Startet Scrubbing während der Wiedergabe, läuft der Kopf erst mit
+      normaler Geschwindigkeit weiter und folgt dann der Hand (keine Lücke).
+    - Gelesen wird mit linearer Interpolation zwischen zwei Samples, damit
+      krumme Geschwindigkeiten sauber klingen. Geschwindigkeit und Lautstärke
+      werden pro Puffer linear übergeblendet -> keine Knackser.
+    - Kleinere Puffer und weniger davon in der Warteschlange (SCRUB_FRAMES,
+      SCRUB_QUEUE), damit der Ton der Maus möglichst wenig hinterherhinkt.
+    - Läuft auch bei Pause (das Gerät spielt nur fürs Scrubbing). Beim
+      Loslassen bleibt es dann an ScrubTarget pausiert.
+
   Die GUI schreibt nur einfache Werte (Gain, Mode, Playing, SeekTo, Loop...)
   und liest Position und Pegel. Das sind einzelne 32/64-Bit-Werte, die auf x86/x64
   atomar gelesen/geschrieben werden -> kein Locking nötig.
@@ -37,6 +71,8 @@
     1.0  (01.10.2026)  Erste Version
     1.1  (02.10.2026)  unverändert (nur Kommentare ergänzt)
     1.2  (21.10.2026)  Loop A-B: nahtloser Rücksprung von B nach A
+    1.3  (22.10.2026)  Scrubbing: Ton beim Ziehen der Welle in der Lupe,
+                       nahtlos zurück in die Wiedergabe beim Loslassen
   ============================================================================ }
 unit stemengine;
 
@@ -56,6 +92,14 @@ const
   BUF_COUNT     = 6;          // Anzahl Puffer in der Warteschlange (~140 ms)
   LOOP_FADE     = 64;         // Frames Aus-/Einblenden am Loop-Übergang (~1,5 ms)
   SEG_MAX       = 512;        // gemerkte Audio-Stücke (~12 s, siehe MapPosition)
+  SCRUB_FRAMES  = 512;        // Puffergrösse beim Scrubbing (~12 ms)
+  SCRUB_QUEUE   = 6;          // so viele Puffer beim Scrubbing in der Warteschlange
+                              // (3 waren unter Windows zu wenig: alle 50 ms 14 ms Lücke)
+  SCRUB_LAG     = 2205;       // Abstand zum Ziel wird in ~50 ms aufgeholt
+  SCRUB_AHEAD   = 1536;       // so weit darf der Kopf der Maus vorauslaufen (x Geschw.)
+  SCRUB_MAXLEAD = 4410;       // mehr als 0,1 s hinter der Maus -> nachspringen
+  SCRUB_MAXRATE = 4.0;        // höchstens 4-fache Geschwindigkeit
+  SCRUB_STILL   = 30;         // ms ohne Mausbewegung = Maus steht (mindestens)
 
 type
   { Wiedergabemodus }
@@ -101,9 +145,28 @@ type
     FSeg        : array[0..SEG_MAX-1] of TAudioSeg;  // Ringpuffer, siehe TAudioSeg
     FSegHead    : Integer;          // nächster freier Platz
     FSegCount   : Integer;          // belegte Plätze
+    { --- Scrubbing --- }
+    FScrubOn    : Boolean;          // Scrubbing läuft gerade
+    FScrubPos   : Double;           // Lesekopf in Frames (mit Nachkommastellen)
+    FScrubRate  : Double;           // Geschwindigkeit des letzten Puffers
+    FScrubAmp   : Single;           // Lautstärke des letzten Puffers (0..1)
+    FScrubVel   : Double;           // geglättete Mausgeschwindigkeit (Frames pro Frame)
+    FScrubLast  : Int64;            // ScrubTarget beim letzten Puffer
+    FScrubTime  : Int64;            // Zeitpunkt (QueryPerformanceCounter) dazu
+    FScrubEnd   : Boolean;          // letzter Puffer: auf Stille ausblenden
+    FScrubJump  : Boolean;          // im nächsten Puffer nachspringen (dieser blendet aus)
+    FScrubIn    : array[0..TRACK_MAX] of array of SmallInt;  // gelesener Block
+    FScrubMoved : Int64;            // Zeitpunkt der letzten Mausbewegung
+    FScrubGap   : Int64;            // Abstand der letzten beiden Mausbewegungen
+    FScrubHand  : Boolean;          // letzter Puffer: auf normale Geschwindigkeit (Loslassen beim Abspielen)
     procedure OpenDevice;
     procedure CloseDevice;
     procedure FillBuffer(Idx: Integer);
+    procedure FillScrub(Idx: Integer);
+    procedure MixAndWrite(Idx, Frames: Integer);
+    procedure StartScrub;
+    procedure StopScrub;
+    function  WaitFreeBuffer: Integer;
     procedure DoSeek(Frame: Int64);
     procedure ApplyLoop;
     procedure AddSegment(AStream, AFrame, ALen: Int64);
@@ -121,6 +184,8 @@ type
     LoopStart  : Int64;                          // Punkt A in Frames
     LoopEnd    : Int64;                          // Punkt B; Loop aktiv, wenn LoopEnd > LoopStart >= 0
     LoopSerial : Integer;                        // nach jeder Loop-Änderung erhöhen
+    Scrubbing  : Boolean;                        // Welle wird gezogen -> Ton folgt ScrubTarget
+    ScrubTarget: Int64;                          // Stelle unter dem roten Strich der Lupe
     { --- vom Thread geschrieben --- }
     PlayPos    : Int64;                          // aktuell hörbare Position in Frames
     Peak       : array[0..TRACK_MAX] of Single;  // Pegel je Spur (vor Fader) 0..1
@@ -188,6 +253,11 @@ begin
   FFadeLeft := 0;
   FSegHead := 0;
   FSegCount := 0;
+  Scrubbing := False;
+  ScrubTarget := 0;
+  FScrubOn := False;
+  for i := 0 to TRACK_MAX do
+    SetLength(FScrubIn[i], (Round(SCRUB_MAXRATE * SCRUB_FRAMES) + 8) * CHANNELS);
   FEvent := CreateEvent(nil, False, False, nil);
   OpenDevice;
   Start;
@@ -300,7 +370,7 @@ begin
   { Gerätezähler steht wieder auf 0 -> Zuordnung neu beginnen }
   FStreamPos := 0;
   FWrapStream := -1;
-  FFadeLeft := 0;
+  FFadeLeft := LOOP_FADE;     // nach jedem Sprung kurz einblenden (kein Knacken)
   FSegHead := 0;
   FSegCount := 0;
 end;
@@ -383,20 +453,9 @@ var
   t, n, k, Filled, Chunk, Wraps: Integer;
   Limit: Int64;
   LoopOn: Boolean;
-  G0, G1, Step: array[0..TRACK_MAX] of Single;
-  PkTrack: array[0..TRACK_MAX] of Integer;
-  PkL, PkR: Integer;
-  Acc, G: Single;
-  V, Smp: Integer;
-  Vol: Single;
-  M: TPlayMode;
-  Clips: Integer;
 begin
   for t := 0 to TRACK_MAX do
-  begin
     FillChar(FIn[t], SizeOf(FIn[t]), 0);   // fehlende Spuren / Dateiende = Stille
-    PkTrack[t] := 0;
-  end;
   for n := 0 to BUF_FRAMES - 1 do FEnv[n] := 1;
 
   { Puffer in Stücken füllen: bis zum Dateiende oder, wenn ein Loop aktiv ist
@@ -450,7 +509,309 @@ begin
   { Rest des Puffers ist Stille am Dateiende }
   if Filled < BUF_FRAMES then
     AddSegment(FStreamPos + Filled, FTotalFrames, 0);
+  MixAndWrite(Idx, BUF_FRAMES);
+end;
 
+{ Scrubbing beginnt: alte Warteschlange verwerfen, Lesekopf auf das Ziel,
+  Gerät laufen lassen (auch wenn die Wiedergabe pausiert ist). }
+procedure TStemEngine.StartScrub;
+var i: Integer;
+begin
+  FScrubOn := True;
+  FScrubEnd := False;
+  FScrubJump := False;
+  FScrubHand := False;
+  FScrubLast := ScrubTarget;
+  QueryPerformanceCounter(FScrubTime);
+  FScrubMoved := FScrubTime;
+  FScrubGap := 0;
+  if Playing then
+  begin
+    { Wiedergabe lief: an der hörbaren Stelle mit normalem Tempo weiter, die
+      Hand bremst dann ab (wie bei einer Platte) -> keine Lücke }
+    FScrubPos := PlayPos;
+    FScrubRate := 1;
+    FScrubAmp := 1;
+    FScrubVel := 1;
+  end
+  else
+  begin
+    FScrubPos := ScrubTarget;
+    FScrubRate := 0;
+    FScrubAmp := 0;
+    FScrubVel := 0;
+  end;
+  if FWave <> 0 then
+  begin
+    waveOutReset(FWave);
+    for i := 0 to BUF_COUNT - 1 do FQueued[i] := False;
+    waveOutRestart(FWave);
+    FPausedDev := False;
+  end;
+  { Gerätezähler steht nach dem Reset wieder auf 0 -> Zuordnung neu }
+  FStreamPos := 0;
+  FWrapStream := -1;
+  FSegHead := 0;
+  FSegCount := 0;
+  PlayPos := Round(FScrubPos);
+end;
+
+{ Wartet auf einen freien Puffer (höchstens 50 ms), -1 = keiner frei }
+function TStemEngine.WaitFreeBuffer: Integer;
+var
+  i: Integer;
+  T0: QWord;
+begin
+  T0 := GetTickCount64;
+  repeat
+    Result := -1;
+    for i := 0 to BUF_COUNT - 1 do
+    begin
+      if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) <> 0) then
+        FQueued[i] := False;
+      if (Result < 0) and not FQueued[i] then Result := i;
+    end;
+    if Result < 0 then WaitForSingleObject(FEvent, 5);
+  until (Result >= 0) or (GetTickCount64 - T0 > 50);
+end;
+
+{ Scrubbing endet.
+  Beim Abspielen: ein letzter Puffer beschleunigt auf normale
+  Geschwindigkeit, danach liest FillBuffer genau dort weiter. Die
+  Warteschlange bleibt, also keine Lücke.
+  Bei Pause: ausblenden, zwei stille Puffer dahinter, warten bis Windows
+  alles abgespielt hat (WHDR_DONE kommt schon, wenn der Puffer im Mixer
+  liegt, darum noch etwas länger), dann an ScrubTarget pausiert aufsetzen. }
+procedure TStemEngine.StopScrub;
+var
+  i, k: Integer;
+  T0: QWord;
+  Busy: Boolean;
+begin
+  for i := 0 to BUF_COUNT - 1 do
+    if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) <> 0) then
+      FQueued[i] := False;
+
+  if Playing then
+  begin
+    k := WaitFreeBuffer;
+    if k >= 0 then
+    begin
+      FScrubHand := True;
+      FillScrub(k);
+      FScrubHand := False;
+    end;
+    FScrubOn := False;
+    { normale Wiedergabe setzt an der Stelle des Lesekopfs fort }
+    FReadPos := Round(FScrubPos);
+    if FReadPos < 0 then FReadPos := 0;
+    if FReadPos > FTotalFrames then FReadPos := FTotalFrames;
+    FBasePos := FReadPos;
+    PlayPos := FReadPos;
+    EndReached := False;
+    FWrapStream := -1;
+    FFadeLeft := 0;
+    AddSegment(FStreamPos, FReadPos, 0);
+    Exit;
+  end;
+
+  { Pause: Ausblend-Puffer und zwei stille Puffer anhängen. Beim Ziehen
+    sind alle Puffer in der Warteschlange, darum jeweils auf einen freien
+    warten (sonst fehlt das Ausblenden und es knackt). }
+  FScrubEnd := True;
+  for i := 1 to 3 do
+  begin
+    k := WaitFreeBuffer;
+    if k >= 0 then FillScrub(k);
+  end;
+  FScrubEnd := False;
+  T0 := GetTickCount64;
+  repeat
+    Busy := False;
+    for i := 0 to BUF_COUNT - 1 do
+      if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) = 0) then Busy := True;
+    if Busy then WaitForSingleObject(FEvent, 5);
+  until (not Busy) or (GetTickCount64 - T0 > 200);
+  Sleep(40);   // Rest im Windows-Mixer ausspielen lassen
+  FScrubOn := False;
+  DoSeek(ScrubTarget);
+end;
+
+{ Ein Scrub-Puffer: Der Lesekopf läuft mit einer Geschwindigkeit, die vom
+  Abstand zum Ziel abhängt, und wird über den Puffer von der alten zur
+  neuen Geschwindigkeit übergeblendet. Gelesen wird der Block, den der
+  Lesekopf dabei überstreicht, danach wird zwischen zwei Samples linear
+  interpoliert. Die Lautstärke folgt der Geschwindigkeit (Maus still =
+  Stille), so entsteht kein Knacken beim Anhalten. }
+procedure TStemEngine.FillScrub(Idx: Integer);
+var
+  t, n, c, Cnt: Integer;
+  R0, R1, Rate, P, Lo, Hi, Fr: Double;
+  A0, A1: Single;
+  First, Last, Idx0, Target, QNow, Freq: Int64;
+  S0, S1: Integer;
+  Dt, Inst, Goal: Double;
+  Jump: Boolean;
+  Still, StillLimit: Int64;
+begin
+  { Mausgeschwindigkeit seit dem letzten Puffer, gemessen an der echten Zeit
+    (die Puffer entstehen nicht ganz gleichmässig), geglättet }
+  Target := ScrubTarget;
+  QueryPerformanceCounter(QNow);
+  QueryPerformanceFrequency(Freq);
+  Dt := (QNow - FScrubTime) / Freq * SAMPLE_RATE;       // vergangene Zeit in Frames
+  if Dt < 1 then Dt := 1;
+  if (Dt > SAMPLE_RATE div 10) then Dt := SAMPLE_RATE div 10;
+  Inst := (Target - FScrubLast) / Dt;
+  { Mausbewegung merken: Zeitpunkt und Abstand zur vorigen }
+  if Target <> FScrubLast then
+  begin
+    FScrubGap := QNow - FScrubMoved;
+    FScrubMoved := QNow;
+  end;
+  { Steht die Maus? Länger als SCRUB_STILL ms bzw. doppelt so lange wie der
+    letzte Abstand zwischen zwei Bewegungen (langsames Ziehen meldet
+    seltener), höchstens 120 ms }
+  Still := (QNow - FScrubMoved) * 1000 div Freq;
+  StillLimit := 2 * FScrubGap * 1000 div Freq;
+  if StillLimit < SCRUB_STILL then StillLimit := SCRUB_STILL;
+  if StillLimit > 120 then StillLimit := 120;
+  { schneller abbremsen als beschleunigen: Maus still = bald Stille }
+  if Abs(Inst) < Abs(FScrubVel) then
+    FScrubVel := FScrubVel + (Inst - FScrubVel) * 0.5
+  else
+    FScrubVel := FScrubVel + (Inst - FScrubVel) * 0.3;
+  if FScrubVel > SCRUB_MAXRATE then FScrubVel := SCRUB_MAXRATE;
+  if FScrubVel < -SCRUB_MAXRATE then FScrubVel := -SCRUB_MAXRATE;
+  FScrubLast := Target;
+  FScrubTime := QNow;
+
+  { Zu weit hinter der Maus -> nachspringen. Damit der Sprung nicht knackt:
+    diesen Puffer noch am alten Ort ausblenden, im nächsten springen und
+    wieder einblenden. }
+  Jump := Abs(Target - FScrubPos) > SCRUB_MAXLEAD;
+  if FScrubJump then
+  begin
+    if Target > FScrubPos then FScrubPos := Target - SCRUB_MAXLEAD div 2
+    else FScrubPos := Target + SCRUB_MAXLEAD div 2;
+    FScrubAmp := 0;
+    Jump := False;
+  end;
+  FScrubJump := Jump;
+
+  R0 := FScrubRate;
+  R1 := FScrubVel + (Target - FScrubPos) / SCRUB_LAG;
+  if R1 > SCRUB_MAXRATE then R1 := SCRUB_MAXRATE;
+  if R1 < -SCRUB_MAXRATE then R1 := -SCRUB_MAXRATE;
+  { Nicht über die Hand hinauslaufen: Ziel ist die Mausstelle plus das,
+    was sie bei der aktuellen Geschwindigkeit in diesem Puffer noch
+    zurücklegt (SCRUB_AHEAD, Mausmeldungen kommen nicht in jedem Puffer).
+    Steht die Maus, bleibt der Kopf dort stehen (Stille).
+    Die Geschwindigkeit ändert sich im Puffer linear von R0 nach R1, der
+    Weg ist also (R0 + R1) / 2 * SCRUB_FRAMES. }
+  Goal := Target + FScrubVel * SCRUB_AHEAD - FScrubPos;
+  if Goal >= 0 then
+  begin
+    if R1 > 2 * Goal / SCRUB_FRAMES - R0 then R1 := 2 * Goal / SCRUB_FRAMES - R0;
+    if R1 < 0 then R1 := 0;
+  end
+  else
+  begin
+    if R1 < 2 * Goal / SCRUB_FRAMES - R0 then R1 := 2 * Goal / SCRUB_FRAMES - R0;
+    if R1 > 0 then R1 := 0;
+  end;
+  if Abs(R1) < 0.02 then R1 := 0;
+  { Maus steht -> in diesem Puffer anhalten und ausblenden }
+  if (Still > StillLimit) and not FScrubHand then
+  begin
+    R1 := 0;
+    FScrubVel := 0;
+  end;
+  { Loslassen beim Abspielen: auf normale Geschwindigkeit (Platte läuft weiter) }
+  if FScrubHand then R1 := 1;
+  { Pause-Ende: stille Puffer hinter dem Ausblenden, Kopf steht }
+  if FScrubEnd and (FScrubAmp = 0) then
+  begin
+    R0 := 0;
+    R1 := 0;
+  end;
+  A0 := FScrubAmp;
+  A1 := Abs(R1) / 0.3;                   // ab 0,3-facher Geschwindigkeit volle Lautstärke
+  if A1 > 1 then A1 := 1;
+  if FScrubEnd or FScrubJump then A1 := 0;   // Loslassen / Sprung: ausblenden
+  if FScrubHand then A1 := 1;
+
+  { Bereich, den der Lesekopf überstreicht (Geschwindigkeit ändert sich linear) }
+  P := FScrubPos;
+  Lo := P; Hi := P;
+  for n := 0 to SCRUB_FRAMES - 1 do
+  begin
+    P := P + R0 + (R1 - R0) * n / SCRUB_FRAMES;
+    if P < Lo then Lo := P;
+    if P > Hi then Hi := P;
+  end;
+  First := Trunc(Lo) - 1;
+  if First < 0 then First := 0;
+  Last := Trunc(Hi) + 2;
+  if Last > FTotalFrames - 1 then Last := FTotalFrames - 1;
+  Cnt := Last - First + 1;
+  if Cnt > Length(FScrubIn[0]) div CHANNELS then Cnt := Length(FScrubIn[0]) div CHANNELS;
+
+  for t := 0 to TRACK_MAX do
+  begin
+    FillChar(FScrubIn[t][0], Length(FScrubIn[t]) * SizeOf(SmallInt), 0);
+    if (FFiles[t] <> nil) and (Cnt > 0) then
+    begin
+      FFiles[t].Position := First * BYTES_PER_FRM;
+      FFiles[t].Read(FScrubIn[t][0], Cnt * BYTES_PER_FRM);
+    end;
+  end;
+
+  { Interpolieren }
+  P := FScrubPos;
+  for n := 0 to SCRUB_FRAMES - 1 do
+  begin
+    Rate := R0 + (R1 - R0) * n / SCRUB_FRAMES;
+    P := P + Rate;
+    if P < 0 then P := 0;
+    if P > FTotalFrames - 1 then P := FTotalFrames - 1;
+    Idx0 := Trunc(P) - First;
+    Fr := P - Trunc(P);
+    if Idx0 < 0 then begin Idx0 := 0; Fr := 0; end;
+    if Idx0 > Cnt - 2 then begin Idx0 := Cnt - 2; Fr := 1; end;
+    if Idx0 < 0 then Idx0 := 0;
+    for t := 0 to TRACK_MAX do
+      for c := 0 to CHANNELS - 1 do
+      begin
+        S0 := FScrubIn[t][Idx0 * CHANNELS + c];
+        S1 := FScrubIn[t][(Idx0 + 1) * CHANNELS + c];
+        FIn[t][n * CHANNELS + c] := SmallInt(Round(S0 + (S1 - S0) * Fr));
+      end;
+    FEnv[n] := A0 + (A1 - A0) * n / (SCRUB_FRAMES - 1);   // letzter Frame genau A1
+  end;
+
+  FScrubPos := P;
+  FScrubRate := R1;
+  FScrubAmp := A1;
+  PlayPos := Round(FScrubPos);
+  MixAndWrite(Idx, SCRUB_FRAMES);
+end;
+
+{ Mischt die gelesenen Spuren (FIn, Frames lang) mit Gain-Rampe und
+  Hüllkurve FEnv in Puffer Idx und schickt ihn an Windows. }
+procedure TStemEngine.MixAndWrite(Idx, Frames: Integer);
+var
+  t, n: Integer;
+  G0, G1, Step: array[0..TRACK_MAX] of Single;
+  PkTrack: array[0..TRACK_MAX] of Integer;
+  PkL, PkR: Integer;
+  Acc, G: Single;
+  V, Smp: Integer;
+  Vol: Single;
+  M: TPlayMode;
+  Clips: Integer;
+begin
+  for t := 0 to TRACK_MAX do PkTrack[t] := 0;
   { Gain-Rampe vorbereiten: vom Gain des letzten Puffers zum aktuellen Ziel }
   M := Mode;
   Vol := MasterVol;
@@ -463,12 +824,12 @@ begin
       pmResidual: if t = 0 then G1[t] := 1 else G1[t] := -1;  // Original - Stems
     end;
     G1[t] := G1[t] * Vol;
-    Step[t] := (G1[t] - G0[t]) / BUF_FRAMES;
+    Step[t] := (G1[t] - G0[t]) / Frames;
     FCurGain[t] := G1[t];
   end;
 
   PkL := 0; PkR := 0; Clips := 0;
-  for n := 0 to BUF_FRAMES * CHANNELS - 1 do
+  for n := 0 to Frames * CHANNELS - 1 do
   begin
     Acc := 0;
     for t := 0 to TRACK_MAX do
@@ -496,9 +857,9 @@ begin
   OutPeak[1] := PkR / 32768;
   if Clips > 0 then Inc(ClipCount, Clips);
 
-  Inc(FStreamPos, BUF_FRAMES);
+  Inc(FStreamPos, Frames);
   { Immer einen ganzen Puffer schreiben (Rest ist Stille) }
-  FHdr[Idx].dwBufferLength := BUF_FRAMES * BYTES_PER_FRM;
+  FHdr[Idx].dwBufferLength := Frames * BYTES_PER_FRM;
   FHdr[Idx].dwFlags := FHdr[Idx].dwFlags and not WHDR_DONE;
   waveOutWrite(FWave, @FHdr[Idx], SizeOf(TWaveHdr));
   FQueued[Idx] := True;
@@ -506,7 +867,7 @@ end;
 
 procedure TStemEngine.Execute;
 var
-  i: Integer;
+  i, Queued: Integer;
   S: Int64;
   Pos: Int64;
 begin
@@ -517,6 +878,29 @@ begin
       Sleep(50);
       Continue;
     end;
+
+    { Scrubbing: eigener Ablauf mit kleinen Puffern, solange gezogen wird }
+    if Scrubbing then
+    begin
+      if not FScrubOn then StartScrub;
+      Queued := 0;
+      for i := 0 to BUF_COUNT - 1 do
+      begin
+        if FQueued[i] and ((FHdr[i].dwFlags and WHDR_DONE) <> 0) then
+          FQueued[i] := False;
+        if FQueued[i] then Inc(Queued);
+      end;
+      for i := 0 to BUF_COUNT - 1 do
+        if (not FQueued[i]) and (Queued < SCRUB_QUEUE) then
+        begin
+          FillScrub(i);
+          Inc(Queued);
+        end;
+      WaitForSingleObject(FEvent, 5);
+      Continue;
+    end
+    else if FScrubOn then
+      StopScrub;
 
     { Sprung angefordert? }
     S := SeekTo;
