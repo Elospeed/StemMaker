@@ -190,7 +190,7 @@ end;
 
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
-  lblTitle, lblSub: TLabel;
+  lblTitle, lblSub, lblThanks: TLabel;
   memText, memLic: TMemo;
   pcText: TPageControl;
   tsHelp, tsLic: TTabSheet;
@@ -228,6 +228,16 @@ begin
     'Build: %s'), [Author, {$I %DATE%}]) + LineEnding +
     Format(_('Aktuelles Log: %s'), [ExtractFileName(LogFileName)]);
   lblSub.Font.Color := clGrayText;
+
+  { Dank an Helfer - nur wer ausdrücklich zugestimmt hat, mit dem
+    Namen, den er selbst gewählt hat }
+  lblThanks := TLabel.Create(Self);
+  lblThanks.Parent := Self;
+  lblThanks.Align := alTop;
+  lblThanks.Top := 200;                            // unter lblSub
+  lblThanks.BorderSpacing.Left := 10;
+  lblThanks.BorderSpacing.Bottom := 8;
+  lblThanks.Caption := _('Danke an David GJ für die spanische Übersetzung.');
 
   { --- Buttons unten --- }
   pnlBottom := TPanel.Create(Self);

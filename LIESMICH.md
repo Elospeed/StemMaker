@@ -239,6 +239,8 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Sprachen
 
+StemMaker und StemPlayer sprechen **Deutsch, Englisch und Spanisch**. Danke an **David GJ** für die spanische Übersetzung!
+
 Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 
 Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Sprache `lang\StemMaker.pot` kopieren, z. B. nach `lang\fr.po`, und mit [Poedit](https://poedit.net) übersetzen.
