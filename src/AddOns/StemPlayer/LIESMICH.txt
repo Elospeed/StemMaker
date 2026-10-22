@@ -1,4 +1,4 @@
-Elospeed StemPlayer 1.5  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemPlayer 1.6  -  von Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
@@ -28,6 +28,11 @@ BEDIENUNG
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
   W              Ansicht Kompakt / Wellenform umschalten
+  A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
+  L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
+  Pfeil li/re    bei aktivem Loop: ganzen Loop verschieben (sonst -/+ 5 s)
+  Shift+Pfeil    Loop breiter: Shift+links A nach links, Shift+rechts B nach rechts
+  Strg+Pfeil     Loop schmaler: Strg+rechts A nach rechts, Strg+links B nach links
 
 WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
@@ -39,6 +44,41 @@ WELLENFORM
   Stumme Stems werden grau gezeichnet. Ein Stem, der an einer Stelle
   still sein sollte (z.B. Vocals im Instrumentalteil), aber dort noch
   Ausschläge zeigt, hat Reste anderer Instrumente abbekommen.
+
+LOOP A-B
+  Ein Abschnitt wird endlos wiederholt, z.B. um mit Mute und Solo
+  genau zu hören, ob in den Vocals noch Drums durchklingen.
+  - Taste A (oder Knopf A) an der Anfangsstelle drücken, Taste B an
+    der Endstelle. Ab B springt die Wiedergabe nahtlos zurück zu A.
+  - Schneller: mit der RECHTEN Maustaste in einer Wellenform von der
+    Anfangs- bis zur Endstelle ziehen. Der Loop läuft sofort.
+  - L schaltet den Loop aus und wieder an (gemerkt bleibt er). Beim
+    Einschalten ausserhalb des Loops springt die Wiedergabe zu A.
+  - Rücktaste oder der Knopf × löscht den Loop.
+  LUPE (Streifen unter der Original-Wellenform)
+  Zeigt nur einige Sekunden rund um den roten Strich, der in der Mitte
+  stehen bleibt, während die Welle durchläuft. Darin setzt man den Loop
+  genau:
+  - Rechte Maustaste ziehen: neuer Loop. Anfang und Ende rasten am
+    Zeitraster ein (feine Linien), mit gedrückter Shift-Taste frei.
+  - Marken A und B mit der linken Maustaste packen und verschieben.
+  - Mausrad: näher heran (bis 1/4 Sekunde) oder weiter weg (bis 1 Minute).
+    Das Raster passt sich an (bis 1 ms fein).
+  - Klick neben die Marken springt an diese Stelle.
+  - Welle mit der linken Maustaste nach links oder rechts ziehen: der
+    rote Strich bleibt stehen, so lässt sich eine Stelle genau anfahren.
+    Beim Loslassen geht es dort weiter (auch bei Pause).
+  - Tastatur: Pfeil links/rechts verschiebt den ganzen aktiven Loop,
+    Shift+Pfeil macht ihn breiter (Shift+links zieht A nach links,
+    Shift+rechts B nach rechts), Strg+Pfeil macht ihn schmaler
+    (Strg+rechts zieht A nach rechts, Strg+links B nach links). Ein
+    Schritt hängt vom Zoom ab: bei 8 s sind es 0,1 s, wer näher
+    heranzoomt, verschiebt feiner (ganz nah 2 ms).
+  Der Loop-Bereich ist in allen Wellenformen grün hinterlegt, die
+  Statuszeile zeigt Anfang, Ende und Länge. Klick mit der linken
+  Maustaste springt wie gewohnt. Springt man vor den Loop, wird man
+  bei B wieder eingefangen. Springt man hinter B, läuft der Track
+  normal weiter bis zum Ende. Kürzester Loop: 0,1 Sekunden.
 
 MODI
   Stems     Die 4 Stems gemischt (mit Mute/Solo/Fader)
@@ -76,3 +116,6 @@ VERSIONEN
        Abspielkopf, Klick in die Wellenform springt dorthin, Umschalter
        Kompakt / Wellenform (Taste W), Wahl wird gespeichert.
        Solo ist exklusiv (mehrere Solos mit Strg)
+  1.6  Loop A-B: Abschnitt endlos wiederholen (Tasten A, B, L oder
+       rechte Maustaste in der Wellenform ziehen), nahtloser Rücksprung,
+       Lupe mit Zeitraster zum genauen Setzen, Marken verschiebbar

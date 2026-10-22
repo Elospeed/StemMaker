@@ -15,13 +15,28 @@
     - Wenige kleine Puffer (~23 ms) -> Mute/Solo reagiert praktisch sofort.
     - Lautstärkeänderungen werden pro Puffer linear gerampt -> keine Klicks.
 
-  Die GUI schreibt nur einfache Werte (Gain, Mode, Playing, SeekTo) und liest
-  Position und Pegel. Das sind einzelne 32/64-Bit-Werte, die auf x86/x64
+  Loop A-B (ab 1.2):
+    - Die GUI setzt LoopStart (A) und LoopEnd (B) in Frames und erhöht danach
+      LoopSerial. Der Thread übernimmt beide Werte, sobald sich LoopSerial
+      ändert (so passen A und B immer zusammen).
+    - Beim Lesen wird genau bei B auf A zurückgesprungen, mitten im Puffer,
+      also ohne Lücke (Frame-genau). Damit es am Übergang nicht knackt, wird
+      kurz vor B aus- und nach A wieder eingeblendet (LOOP_FADE, ca. 1,5 ms).
+    - Ein Loop "fängt" die Wiedergabe nur, wenn sie von vorne an B ankommt.
+      Wer hinter B springt, hört einfach weiter bis zum Ende.
+    - Weil durch den Rücksprung die Geräteposition nicht mehr einfach
+      "Startpunkt + gespielte Frames" ist, merkt sich der Thread für jedes
+      Stück Audio, das er an Windows schickt, wo es in der Datei herkommt
+      (FSeg). Daraus wird die hörbare Position zurückgerechnet (MapPosition).
+
+  Die GUI schreibt nur einfache Werte (Gain, Mode, Playing, SeekTo, Loop...)
+  und liest Position und Pegel. Das sind einzelne 32/64-Bit-Werte, die auf x86/x64
   atomar gelesen/geschrieben werden -> kein Locking nötig.
 
   Versionen:
     1.0  (01.10.2026)  Erste Version
     1.1  (02.10.2026)  unverändert (nur Kommentare ergänzt)
+    1.2  (21.10.2026)  Loop A-B: nahtloser Rücksprung von B nach A
   ============================================================================ }
 unit stemengine;
 
@@ -39,6 +54,8 @@ const
   TRACK_MAX     = 4;          // 0 = Master, 1..4 = Stems
   BUF_FRAMES    = 1024;       // Frames pro Puffer (~23 ms)
   BUF_COUNT     = 6;          // Anzahl Puffer in der Warteschlange (~140 ms)
+  LOOP_FADE     = 64;         // Frames Aus-/Einblenden am Loop-Übergang (~1,5 ms)
+  SEG_MAX       = 512;        // gemerkte Audio-Stücke (~12 s, siehe MapPosition)
 
 type
   { Wiedergabemodus }
@@ -47,6 +64,13 @@ type
     pmMaster,     // Originalmix aus Spur 0 (zum A/B-Vergleich)
     pmResidual    // Original minus Summe aller Stems = was bei der Trennung "fehlt"
   );
+
+  { Ein Stück Audio, das an Windows geschickt wurde: ab Stream-Frame Stream
+    (gezählt seit dem letzten Reset, wie waveOutGetPosition) kommen Len
+    Frames aus der Datei ab Frame. Len = 0 heisst Stille am Dateiende. }
+  TAudioSeg = record
+    Stream, Frame, Len: Int64;
+  end;
 
   { TStemEngine }
 
@@ -66,10 +90,24 @@ type
     FCurGain    : array[0..TRACK_MAX] of Single;  // Gain des letzten Puffers (für Rampe)
     FPausedDev  : Boolean;
     FOpenError  : string;
+    { --- Loop --- }
+    FLoopA      : Int64;            // übernommener Punkt A (-1 = kein Loop)
+    FLoopB      : Int64;            // übernommener Punkt B (-1 = kein Loop)
+    FLoopSerial : Integer;          // zuletzt übernommener Stand von LoopSerial
+    FStreamPos  : Int64;            // an Windows geschickte Frames seit Reset
+    FWrapStream : Int64;            // Stream-Frame des letzten Rücksprungs (-1 = keiner)
+    FFadeLeft   : Integer;          // noch einzublendende Frames nach dem Rücksprung
+    FEnv        : array[0..BUF_FRAMES-1] of Single;  // Hüllkurve des Puffers (Blende)
+    FSeg        : array[0..SEG_MAX-1] of TAudioSeg;  // Ringpuffer, siehe TAudioSeg
+    FSegHead    : Integer;          // nächster freier Platz
+    FSegCount   : Integer;          // belegte Plätze
     procedure OpenDevice;
     procedure CloseDevice;
     procedure FillBuffer(Idx: Integer);
     procedure DoSeek(Frame: Int64);
+    procedure ApplyLoop;
+    procedure AddSegment(AStream, AFrame, ALen: Int64);
+    function  MapPosition(Dev: Int64): Int64;
     function  DevicePosition: Int64;
   protected
     procedure Execute; override;
@@ -80,6 +118,9 @@ type
     Mode       : TPlayMode;
     Playing    : Boolean;
     SeekTo     : Int64;                          // >=0 -> Sprung anfordern, -1 = nichts
+    LoopStart  : Int64;                          // Punkt A in Frames
+    LoopEnd    : Int64;                          // Punkt B; Loop aktiv, wenn LoopEnd > LoopStart >= 0
+    LoopSerial : Integer;                        // nach jeder Loop-Änderung erhöhen
     { --- vom Thread geschrieben --- }
     PlayPos    : Int64;                          // aktuell hörbare Position in Frames
     Peak       : array[0..TRACK_MAX] of Single;  // Pegel je Spur (vor Fader) 0..1
@@ -133,6 +174,17 @@ begin
   FBasePos := 0;
   ClipCount := 0;
   EndReached := False;
+  LoopStart := -1;
+  LoopEnd := -1;
+  LoopSerial := 0;
+  FLoopA := -1;
+  FLoopB := -1;
+  FLoopSerial := 0;
+  FStreamPos := 0;
+  FWrapStream := -1;
+  FFadeLeft := 0;
+  FSegHead := 0;
+  FSegCount := 0;
   FEvent := CreateEvent(nil, False, False, nil);
   OpenDevice;
   Start;
@@ -242,12 +294,92 @@ begin
   FBasePos := Frame;
   PlayPos := Frame;
   EndReached := False;
+  { Gerätezähler steht wieder auf 0 -> Zuordnung neu beginnen }
+  FStreamPos := 0;
+  FWrapStream := -1;
+  FFadeLeft := 0;
+  FSegHead := 0;
+  FSegCount := 0;
+end;
+
+{ Neue Loop-Werte von der GUI übernehmen.
+  Die nächsten ~140 ms Audio liegen schon bei Windows in der Warteschlange.
+  Passen sie nicht mehr zum neuen Loop, wird an der hörbaren Stelle neu
+  aufgesetzt (ein kurzer, kaum hörbarer Neustart der Puffer):
+    - ein Rücksprung zum alten A ist schon eingereiht (Loop aus/verschoben)
+    - der neue Punkt B liegt vor der Leseposition, die hörbare Position
+      aber im Loop oder knapp dahinter. Das ist der Normalfall, wenn B an
+      der gerade gespielten Stelle gesetzt wird: die Engine hat dann schon
+      über B hinaus gelesen und würde den Loop verpassen. Liegt die hörbare
+      Position schon hinter B (bis 0,5 s, so viel kann B "zu spät" kommen),
+      geht es gleich bei A weiter. }
+procedure TStemEngine.ApplyLoop;
+var
+  A, B, Pos: Int64;
+  Need: Boolean;
+begin
+  FLoopSerial := LoopSerial;      // zuerst den Stand, dann die Werte lesen
+  A := LoopStart;
+  B := LoopEnd;
+  if (A < 0) or (B <= A) or (B > FTotalFrames) then
+  begin
+    A := -1;
+    B := -1;
+  end;
+  FLoopA := A;
+  FLoopB := B;
+  Pos := PlayPos;
+  Need := (FWrapStream >= 0) and (FWrapStream > DevicePosition);
+  if (B > 0) and (FReadPos >= B) and (Pos >= A) and (Pos < B + SAMPLE_RATE div 2) then
+  begin
+    if Pos >= B then Pos := A;
+    Need := True;
+  end;
+  if Need then DoSeek(Pos);
+end;
+
+procedure TStemEngine.AddSegment(AStream, AFrame, ALen: Int64);
+begin
+  FSeg[FSegHead].Stream := AStream;
+  FSeg[FSegHead].Frame := AFrame;
+  FSeg[FSegHead].Len := ALen;
+  FSegHead := (FSegHead + 1) mod SEG_MAX;
+  if FSegCount < SEG_MAX then Inc(FSegCount);
+end;
+
+{ Geräteposition (Frames seit Reset) -> Position in der Datei.
+  Gesucht wird das neueste Stück, das bei oder vor Dev beginnt.
+  Normalerweise liegt das Gerät nur die ~6 Puffer der Warteschlange zurück.
+  Manche Treiber (z.B. unter Wine) melden Puffer aber schon als fertig, wenn
+  sie erst in einem eigenen grossen Puffer liegen. Darum werden viele Stücke
+  gemerkt, und ist Dev noch älter, wird vom ältesten Stück zurückgerechnet. }
+function TStemEngine.MapPosition(Dev: Int64): Int64;
+var
+  k, i: Integer;
+begin
+  Result := FBasePos + Dev;
+  for k := 0 to FSegCount - 1 do
+  begin
+    i := (FSegHead - 1 - k + SEG_MAX) mod SEG_MAX;
+    Result := FSeg[i].Frame - (FSeg[i].Stream - Dev);  // falls keins passt
+    if Result < 0 then Result := 0;
+    if FSeg[i].Stream <= Dev then
+    begin
+      if Dev - FSeg[i].Stream < FSeg[i].Len then
+        Result := FSeg[i].Frame + (Dev - FSeg[i].Stream)
+      else
+        Result := FSeg[i].Frame + FSeg[i].Len;
+      Exit;
+    end;
+  end;
 end;
 
 { Liest einen Block aus allen Spuren und mischt ihn in Puffer Idx. }
 procedure TStemEngine.FillBuffer(Idx: Integer);
 var
-  t, n, Frames, Got: Integer;
+  t, n, k, Filled, Chunk, Wraps: Integer;
+  Limit: Int64;
+  LoopOn: Boolean;
   G0, G1, Step: array[0..TRACK_MAX] of Single;
   PkTrack: array[0..TRACK_MAX] of Integer;
   PkL, PkR: Integer;
@@ -257,24 +389,64 @@ var
   M: TPlayMode;
   Clips: Integer;
 begin
-  { Wie viele Frames gibt es noch? }
-  Frames := BUF_FRAMES;
-  if FReadPos + Frames > FTotalFrames then
-    Frames := FTotalFrames - FReadPos;
-  if Frames < 0 then Frames := 0;
-
-  { Alle Spuren lesen (fehlende Spuren = Stille) }
   for t := 0 to TRACK_MAX do
   begin
-    FillChar(FIn[t], SizeOf(FIn[t]), 0);
+    FillChar(FIn[t], SizeOf(FIn[t]), 0);   // fehlende Spuren / Dateiende = Stille
     PkTrack[t] := 0;
-    if (FFiles[t] <> nil) and (Frames > 0) then
+  end;
+  for n := 0 to BUF_FRAMES - 1 do FEnv[n] := 1;
+
+  { Puffer in Stücken füllen: bis zum Dateiende oder, wenn ein Loop aktiv ist
+    und die Leseposition davor liegt, bis Punkt B. Bei B geht es im selben
+    Puffer bei A weiter. }
+  Filled := 0;
+  Wraps := 0;
+  while Filled < BUF_FRAMES do
+  begin
+    LoopOn := (FLoopB > 0) and (FReadPos < FLoopB);
+    if LoopOn then Limit := FLoopB else Limit := FTotalFrames;
+    Chunk := BUF_FRAMES - Filled;
+    if FReadPos + Chunk > Limit then Chunk := Limit - FReadPos;
+    if Chunk <= 0 then Break;                // Dateiende
+
+    { Alle Spuren lesen }
+    for t := 0 to TRACK_MAX do
+      if FFiles[t] <> nil then
+      begin
+        FFiles[t].Position := FReadPos * BYTES_PER_FRM;
+        FFiles[t].Read(FIn[t][Filled * CHANNELS], Chunk * BYTES_PER_FRM);
+      end;
+    AddSegment(FStreamPos + Filled, FReadPos, Chunk);
+
+    { Nach einem Rücksprung die ersten Frames einblenden }
+    n := Filled;
+    while (FFadeLeft > 0) and (n < Filled + Chunk) do
     begin
-      FFiles[t].Position := FReadPos * BYTES_PER_FRM;
-      Got := FFiles[t].Read(FIn[t][0], Frames * BYTES_PER_FRM);
-      if Got < 0 then Got := 0;
+      FEnv[n] := (LOOP_FADE - FFadeLeft + 1) / (LOOP_FADE + 1);
+      Dec(FFadeLeft);
+      Inc(n);
+    end;
+
+    Inc(FReadPos, Chunk);
+    Inc(Filled, Chunk);
+
+    { Punkt B erreicht -> zurück zu A }
+    if LoopOn and (FReadPos >= FLoopB) then
+    begin
+      { die letzten Frames vor B ausblenden (soweit sie in diesem Puffer sind) }
+      for k := 1 to LOOP_FADE do
+        if (Filled - k >= 0) and ((k - 1) / LOOP_FADE < FEnv[Filled - k]) then
+          FEnv[Filled - k] := (k - 1) / LOOP_FADE;
+      FReadPos := FLoopA;
+      FWrapStream := FStreamPos + Filled;
+      FFadeLeft := LOOP_FADE;
+      Inc(Wraps);
+      if Wraps > 8 then Break;   // Schutz gegen winzige Loops
     end;
   end;
+  { Rest des Puffers ist Stille am Dateiende }
+  if Filled < BUF_FRAMES then
+    AddSegment(FStreamPos + Filled, FTotalFrames, 0);
 
   { Gain-Rampe vorbereiten: vom Gain des letzten Puffers zum aktuellen Ziel }
   M := Mode;
@@ -304,7 +476,7 @@ begin
       G := G0[t] + Step[t] * (n div CHANNELS);
       Acc := Acc + Smp * G;
     end;
-    V := Round(Acc);
+    V := Round(Acc * FEnv[n div CHANNELS]);
     if V > 32767 then begin V := 32767; Inc(Clips); end
     else if V < -32768 then begin V := -32768; Inc(Clips); end;
     FBuf[Idx][n] := SmallInt(V);
@@ -321,7 +493,7 @@ begin
   OutPeak[1] := PkR / 32768;
   if Clips > 0 then Inc(ClipCount, Clips);
 
-  Inc(FReadPos, Frames);
+  Inc(FStreamPos, BUF_FRAMES);
   { Immer einen ganzen Puffer schreiben (Rest ist Stille) }
   FHdr[Idx].dwBufferLength := BUF_FRAMES * BYTES_PER_FRM;
   FHdr[Idx].dwFlags := FHdr[Idx].dwFlags and not WHDR_DONE;
@@ -351,6 +523,9 @@ begin
       DoSeek(S);
     end;
 
+    { Loop geändert? }
+    if LoopSerial <> FLoopSerial then ApplyLoop;
+
     { Play/Pause umsetzen }
     if Playing and FPausedDev then
     begin
@@ -375,8 +550,8 @@ begin
           FillBuffer(i);
       end;
 
-    { Hörbare Position = Startpunkt + Gerätezähler }
-    Pos := FBasePos + DevicePosition;
+    { Hörbare Position: Gerätezähler über die gemerkten Stücke in die Datei umrechnen }
+    Pos := MapPosition(DevicePosition);
     if Pos > FTotalFrames then Pos := FTotalFrames;
     PlayPos := Pos;
     if (FReadPos >= FTotalFrames) and (Pos >= FTotalFrames) then

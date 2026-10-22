@@ -10,6 +10,8 @@
     stemengine.pas   Audio-Thread: Mischen + Ausgabe über Windows-waveOut
     mp4stem.pas      liest Spuranzahl, Stem-Namen und -Farben aus der MP4
     djcontrols.pas   selbst gezeichnete Buttons, Fader und LED-Meter (DJ-Look)
+    wellenform.pas   Wellenformen und Lupe
+    bildtakt.pas     Abspielkopf im Takt des Monitors
     StemPlayer.ico   Programmsymbol (wird über die .lpi eingebunden)
   ============================================================================ }
 program StemPlayer;
