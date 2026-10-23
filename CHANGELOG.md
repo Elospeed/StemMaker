@@ -14,6 +14,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ### StemMaker – neue Sprache
 - **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“. Danke an **David GJ** für die Übersetzung! Alle Helfer stehen jetzt unter „Info“ im neuen Reiter „Danke“.
 
+### StemMaker – Handbuch
+- **Bebildertes Benutzerhandbuch (PDF)** auf Deutsch, Englisch und Spanisch: von der Funktionsweise über die Bedienung bis zum StemPlayer, mit Bildern. Im Programm öffnet **Info → Handbuch (PDF)** das Handbuch in der eingestellten Sprache, auf der Projektseite liegt es zum Herunterladen.
+
 ### StemPlayer 1.6
 - **Loop A-B:** Ein Abschnitt wird endlos wiederholt, so wie ein Loop in Traktor. Praktisch, um eine Stelle mit Mute und Solo genau zu prüfen, z. B. ob in den Vocals noch Drums durchklingen. Punkt A und B setzt man mit den Knöpfen oder den Tasten A und B an der aktuellen Stelle, oder man zieht den Bereich mit der rechten Maustaste in einer Wellenform auf. Der Rücksprung ist nahtlos. Taste L schaltet den Loop aus und wieder an, die Rücktaste löscht ihn. Der Loop-Bereich ist in allen Wellenformen grün hinterlegt.
 - **Lupe zum genauen Setzen:** Unter der Original-Wellenform zeigt ein breiter Streifen nur wenige Sekunden rund um die Abspielstelle, mit Zeitraster. Darin zieht man den Loop mit der rechten Maustaste auf (Anfang und Ende rasten am Raster ein, mit Shift frei), verschiebt die Marken A und B mit der Maus und zoomt mit dem Mausrad. Mit gedrückter linker Maustaste zieht man die Welle unter dem roten Strich hin und her, um eine Stelle genau anzufahren (auch bei Pause). Mit den Pfeiltasten verschiebt man den ganzen Loop, Shift+Pfeil macht ihn breiter (Shift+links zieht den Anfang nach links, Shift+rechts das Ende nach rechts), Strg+Pfeil macht ihn schmaler. Je weiter man hineinzoomt, desto feiner werden die Schritte (bis 2 ms).

@@ -13,7 +13,9 @@
         "Anleitung": der Inhalt von LIESMICH.md bzw. README.md
         "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
                      THIRD-PARTY-NOTICES.md (ab 1.7)
-    - darüber: "Nach Updates suchen" (ab 1.7)
+    - darüber: "Nach Updates suchen" (ab 1.7), "Fehlerbericht senden..."
+      und "Handbuch (PDF)" (ab 1.9: öffnet das Benutzerhandbuch in der
+      eingestellten Sprache auf der Projektseite)
     - unten: "Logs-Ordner öffnen", "Jetzt spenden", "Schließen"
 
   Die Anleitung wird aus dem Programmordner gelesen:
@@ -46,6 +48,13 @@ implementation
 uses
   Dialogs, uStemJob, uLang, uLicense, uReport;
 
+const
+  { Benutzerhandbuch als PDF auf der Projektseite. Es wird bei jeder
+    Veröffentlichung der Seite aus docs/handbuch neu gebaut und liegt
+    deshalb online statt im Programmordner: So passt es immer zur
+    neuesten Version. Dahinter kommt die Sprache: -de.pdf, -en.pdf, -es.pdf }
+  MANUAL_URL = 'https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-';
+
 type
   TfrmInfo = class(TForm)
   private
@@ -55,6 +64,7 @@ type
     procedure btnDonateClick(Sender: TObject);
     procedure btnLogsClick(Sender: TObject);
     procedure btnReportClick(Sender: TObject);
+    procedure btnManualClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
   public
     FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
@@ -213,7 +223,7 @@ var
   pcText: TPageControl;
   tsHelp, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
-  btnDonate, btnLogs, btnClose, btnReport: TButton;
+  btnDonate, btnLogs, btnClose, btnReport, btnManual: TButton;
 begin
   inherited CreateNew(nil);
   FVersion := Version;
@@ -304,6 +314,16 @@ begin
     'an Elospeed zu schicken. Nichts wird automatisch gesendet.');
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
+
+  { Bebildertes Handbuch (PDF) im Browser öffnen }
+  btnManual := TButton.Create(Self);
+  btnManual.Parent := pnlUpdate;
+  btnManual.SetBounds(430, 8, 200, 32);
+  btnManual.Caption := _('Handbuch (PDF)');
+  btnManual.Hint := _('Öffnet das bebilderte Benutzerhandbuch im Browser ' +
+    '(Internet nötig).');
+  btnManual.ShowHint := True;
+  btnManual.OnClick := @btnManualClick;
 
   { --- Mitte: drei Reiter (Anleitung, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
@@ -403,6 +423,17 @@ end;
 procedure TfrmInfo.btnReportClick(Sender: TObject);
 begin
   ShowErrorReport('', '');
+end;
+
+{ Handbuch in der eingestellten Sprache öffnen. Gibt es für die Sprache
+  kein Handbuch, kommt das englische. }
+procedure TfrmInfo.btnManualClick(Sender: TObject);
+var
+  Code: string;
+begin
+  Code := LangCode;
+  if (Code <> 'de') and (Code <> 'es') then Code := 'en';
+  OpenURL(MANUAL_URL + Code + '.pdf');
 end;
 
 procedure TfrmInfo.btnCloseClick(Sender: TObject);
