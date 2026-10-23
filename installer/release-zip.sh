@@ -2,13 +2,15 @@
 # Stellt das Release-ZIP einer neuen Version zusammen (läuft im Workflow
 # "Release erstellen", siehe .github/workflows/release.yml, geht aber auch lokal).
 #
-#   installer/release-zip.sh <altes ZIP> <Ordner mit neuen Exes> <Version> <Ausgabeordner>
+#   installer/release-zip.sh <altes ZIP> <Ordner mit neuen Exes> <Version> <Ausgabeordner> [<StemOnnx>]
 #
 # <altes ZIP>   das letzte Release-ZIP (aus update.json). Daraus kommen die Teile,
 #               die nicht im Repository liegen: demucs.cpp in tools\ und der
 #               Ordner models\ mit dem Hinweis.
 # <Exes>        frisch gebaute StemMaker.exe, StemCLI.exe und StemPlayer.exe
 # <Version>     z. B. 1.7.2
+# <StemOnnx>    (ab 2.0) frisch gebauter Ordner von engines/onnx/build.sh
+#               (dist/StemOnnx). Kommt nach tools\onnx\ und ersetzt dort alles.
 #
 # Aufbau wie bisher: alles im Ordner StemMaker\, StemCLI und StemPlayer unter
 # AddOns\, dazu Quelltext (Hauptprogramm + StemPlayer), Sprachdateien und Doku.
@@ -18,6 +20,7 @@
 set -euo pipefail
 
 ALT=$(realpath "$1"); EXES=$(realpath "$2"); VERSION="$3"
+ONNX="${5:-}"; [ -n "$ONNX" ] && ONNX=$(realpath "$ONNX")
 mkdir -p "$4"; AUS=$(realpath "$4")
 REPO=$(realpath "$(dirname "$0")/..")
 ARBEIT=$(mktemp -d)
@@ -45,6 +48,16 @@ cp "$REPO"/src/lang/*.po "$REPO"/src/lang/*.pot "$Z/lang/"
 cp "$EXES/StemMaker.exe" "$Z/"
 cp "$EXES/StemCLI.exe" "$EXES/StemPlayer.exe" "$Z/AddOns/"
 cp "$REPO/src/AddOns/StemPlayer/LIESMICH.txt" "$Z/AddOns/StemPlayer-LIESMICH.txt"
+
+# 3b. Turbo (StemOnnx): Exe, ONNX Runtime, DirectML, Gerüst, Lizenzen.
+#     Die Test-Batch für Entwickler kommt nicht mit.
+if [ -n "$ONNX" ]; then
+  [ -f "$ONNX/StemOnnx.exe" ] || { echo "In $ONNX fehlt StemOnnx.exe"; exit 1; }
+  rm -rf "$Z/tools/onnx"
+  mkdir -p "$Z/tools/onnx"
+  cp -r "$ONNX"/. "$Z/tools/onnx/"
+  rm -f "$Z/tools/onnx/Test-starten.bat"
+fi
 
 # 4. packen
 ZIP="$AUS/StemMaker-$VERSION.zip"

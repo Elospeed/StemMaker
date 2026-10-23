@@ -123,6 +123,8 @@ begin
   DeleteFile(AppDir + '\StemMaker.ini');
   DeleteFile(AppDir + '\AddOns\StemPlayer.ini');
   DeleteFile(AppDir + '\StemMaker_queue.txt');
+  { Turbo merkt sich hier, ob die Grafikkarte mitmacht (StemOnnx) }
+  DelTree(ExpandConstant('{localappdata}\StemOnnx'), True, True, True);
   { leere Ordner wegräumen, volle bleiben stehen }
   RemoveDir(AppDir + '\tools');
   RemoveDir(AppDir + '\AddOns');

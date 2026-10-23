@@ -35,9 +35,33 @@ env:
   LAZARUS_VERSION: "3.8"
 
 jobs:
+  stemonnx:
+    # Turbo-Engine (engines/onnx) auf Linux mit mingw, kommt als tools\onnx\
+    # mit ins Artefakt
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+      - name: mingw installieren
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gcc-mingw-w64-x86-64-posix
+      - name: StemOnnx bauen
+        run: engines/onnx/build.sh
+      - name: Paket weitergeben
+        uses: actions/upload-artifact@v4
+        with:
+          name: StemOnnx-build-${{ github.sha }}
+          path: engines/onnx/dist/StemOnnx
+          retention-days: 3
+
   build:
     # Beim Schliessen eines PRs wird nicht gebaut, nur aufgeräumt (Job "aufraeumen")
     if: github.event.action != 'closed'
+    needs: stemonnx
     runs-on: windows-latest
     defaults:
       run:
@@ -111,6 +135,12 @@ jobs:
           VER=$(sed -n "s/^ *APP_VER *= *'\(.*\)';.*/\1/p" src/AddOns/StemDecks/stem51form.pas | head -n 1 | tr -d '\r')
           bash src/AddOns/StemDecks/stem51-zip.sh ausgabe/Stem51.exe "$VER" ausgabe
           (cd ausgabe && sha256sum Elospeed-5.1-Stem-*.zip >> SHA256SUMS.txt && cat SHA256SUMS.txt)
+
+      - name: Turbo (StemOnnx) holen
+        uses: actions/download-artifact@v4
+        with:
+          name: StemOnnx-build-${{ github.sha }}
+          path: ausgabe/onnx
 
       - name: Exes als Workflow-Artefakt ablegen
         uses: actions/upload-artifact@v4
