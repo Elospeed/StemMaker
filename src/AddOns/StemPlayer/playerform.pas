@@ -45,7 +45,8 @@
     Strg+Shift+1..4  Solo dazunehmen (mehrere Solos), ebenso Strg+Klick auf S
     S / O / R  Stems / Original / Rest           Pfeil links/rechts  -/+ 5 s
     Pos1       an den Anfang         Strg+O      Datei öffnen
-    W          Wellenformen aus/ein  Klick in Wellenform  dorthin springen
+    W          Wellenformen aus/ein (nur in der klassischen Ansicht)
+               Klick in Wellenform  dorthin springen
     A / B      Loop-Punkt A / B setzen (B schaltet den Loop gleich ein)
     L          Loop an/aus           Rücktaste / Shift+L  Loop löschen
     Rechte Maustaste in einer Wellenform ziehen: Loop-Bereich aufziehen
@@ -118,6 +119,18 @@
                        den Ton wie bei einer Schallplatte unter der Hand,
                        schnell gezogen hoch, langsam tief, rückwärts
                        rückwärts (stemengine 1.3).
+    1.8  (22.10.2026)  Zwei neue Designs zur Wahl, gleiche Funktionen, anderer
+                       Look. Die Ansicht wählt man jetzt in einem Ausklapp-Menü
+                       (KOMPAKT / WELLENFORM / CD-PLAYER / PLATTENSPIELER) statt
+                       mit vier Knöpfen, damit die Fläche übersichtlich bleibt.
+                       CD-Player mit Display, Jogwheel (Ring = Restzeit, Drehen
+                       = Scrubbing), runden CUE/Play-Knöpfen und Stem-Pads;
+                       Plattenspieler mit einem Wellenform-Ring pro Stem auf
+                       der Platte, Zeiger, wanderndem Tonarm, Drehen der Platte
+                       = Scrubbing. Beide mit eigener Loop-Spur (Lupe + Loop-
+                       Knöpfe). Die vorhandenen Bedienelemente werden dafür nur
+                       umgesetzt (PlaceCtl), neu sind die Teile in designviews.pas.
+                       Wahl in StemPlayer.ini [Ansicht] Design.
   ============================================================================ }
 unit playerform;
 
@@ -128,12 +141,12 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform,
-  bildtakt;
+  LazFileUtils, IniFiles, MMSystem, Menus, uLang, mp4stem, stemengine, djcontrols, wellenform,
+  bildtakt, designviews;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.7';
+  APP_VER   = '1.8';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -154,6 +167,19 @@ type
     Level    : Single;     // geglätteter Anzeigepegel 0..1
   end;
 
+  { Ansicht: die beiden klassischen (mit/ohne Wellenformen) und die beiden
+    Designs CD-Player und Plattenspieler (gleiche Funktionen, anderer Look) }
+  TViewMode = (vmCompact, vmWave, vmCD, vmPlatte);
+
+  { Ursprünglicher Platz eines Bedienelements, das für ein Design an eine
+    andere Stelle gesetzt wurde (siehe PlaceCtl / RestorePlacements) }
+  TPlacement = record
+    Ctl     : TControl;
+    Parent  : TWinControl;
+    Bounds  : TRect;
+    Anchors : TAnchors;
+  end;
+
   { TMainForm }
 
   TMainForm = class(TForm)
@@ -163,8 +189,8 @@ type
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
     LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
-    BtnViewCompact: TDJButton; // Ansicht: kompakt (ohne Wellenformen)
-    BtnViewWave   : TDJButton; // Ansicht: mit Wellenformen
+    BtnView       : TDJButton;  // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
+    MnuView       : TPopupMenu; // Menü mit den vier Ansichten (Kompakt, Wellenform, CD, Platte)
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
     BtnPlay     : TDJButton;
@@ -195,6 +221,36 @@ type
     LblHelp     : TLabel;
     LblStatus   : TLabel;
     LblKofi     : TLabel;
+    { --- Design CD-Player (designviews.pas) --- }
+    PnlCD       : TDJPanel;    // ganze Fläche des Designs
+    CDDisplay   : TDJPanel;    // Display oben: Titel, Zeiten, Wellenformen
+    CDLoop      : TDJPanel;    // Loop-Spur: Lupe + Loop-Knöpfe
+    CDPads      : TDJPanel;    // Stem-Pads + Fader
+    CDSource    : TDJPanel;    // Quelle: Öffnen + Ansicht
+    CDViewCap   : TLabel;      // Überschrift "ANSICHT" über dem Auswahlknopf
+    CDMode      : TDJPanel;    // Hören: Stems / Original / Rest / Reset
+    CDMaster    : TDJPanel;    // Master-Fader + Ausgangspegel
+    Jog         : TJogWheel;
+    Pads        : array[1..STEM_COUNT, 0..1] of TStemPad;  // [Stem, 0 = Mute / 1 = Solo]
+    CDBars      : array[1..STEM_COUNT] of TShape;          // Farbstreifen vor den Wellen
+    LblCDTime, LblCDRemain, LblCDLength, LblCDMode: TLabel;  // Zeiten im Display
+    { --- Design Plattenspieler --- }
+    PnlPlatte   : TDJPanel;
+    PLDeck      : TDJPanel;    // Plattenspieler links
+    PLRows      : TDJPanel;    // Stem-Zeilen rechts
+    PLMode      : TDJPanel;
+    PLMaster    : TDJPanel;
+    PLLoop      : TDJPanel;    // Loop-Spur unten: Original-Welle, Lupe, Loop-Knöpfe
+    Platter     : TTurntable;
+    PLDots      : array[1..STEM_COUNT] of TShape;          // farbiger Punkt vor dem Namen
+    BtnRpm33    : TDJButton;   // 33 U/min
+    BtnRpm45    : TDJButton;   // 45 U/min
+    LblPLRemain : TLabel;      // Restzeit neben der grossen Zeit
+    { --- Ansicht --- }
+    FView       : TViewMode;   // aktuelle Ansicht
+    FPlaced     : array of TPlacement;  // für das Design versetzte Elemente
+    FClassicW   : Integer;     // Fenstergrösse der klassischen Ansicht,
+    FClassicH   : Integer;     // wird beim Zurückschalten wiederhergestellt
     { --- Sonstiges --- }
     Timer       : TTimer;
     Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
@@ -254,6 +310,30 @@ type
     procedure SetWavesVisible(AShow: Boolean);
     procedure SaveViewSetting;
     procedure ViewClick(Sender: TObject);
+    procedure ViewMenuClick(Sender: TObject);
+    procedure ViewMenuMeasure(Sender: TObject; ACanvas: TCanvas; var AWidth, AHeight: Integer);
+    procedure ViewMenuDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+    function  ViewName(V: TViewMode): string;
+    { Designs CD-Player / Plattenspieler }
+    procedure BuildDesignUI;
+    function  MakeBox(AParent: TWinControl; ALeft, ATop, AWidth, AHeight: Integer): TDJPanel;
+    function  MakeCaption(AParent: TWinControl; const ACaption: string;
+                          ALeft, ATop: Integer): TLabel;
+    procedure PlaceCtl(Ctl: TControl; NewParent: TWinControl; ALeft, ATop, AWidth, AHeight: Integer);
+    procedure RestorePlacements;
+    procedure PlaceLoopButtons(AParent: TWinControl; X, Y: Integer);
+    procedure LayoutCD;
+    procedure LayoutPlatte;
+    procedure SetView(V: TViewMode);
+    procedure EnterDesign(V: TViewMode);
+    procedure LeaveDesign;
+    procedure FitDesignWindow;
+    procedure UpdateViewButtons;
+    procedure UpdateDesignLook;
+    procedure UpdateDesignNames;
+    procedure PadClick(Sender: TObject);
+    procedure RpmClick(Sender: TObject);
+    procedure PlatterSeek(Sender: TObject; Fraction: Single);
     procedure StopPeakThread;
     procedure ApplyPeaks;
     procedure TogglePlay;
@@ -325,6 +405,8 @@ const
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
+  DESIGN_W    = 1000;  // Innenbreite des Fensters in den Designs CD / Platte
+  DESIGN_H    = 634;   // Innenhöhe ohne die Fusszeile
 
 { ============================================================================
   Aufbau des Fensters
@@ -334,6 +416,7 @@ constructor TMainForm.Create(TheOwner: TComponent);
 var
   Ini: TIniFile;
   ShowWaves: Boolean;
+  Design: string;
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
@@ -362,18 +445,26 @@ begin
   FLoopB := -1;
   FLoopOn := False;
   BuildUI;
+  BuildDesignUI;
   UpdateGains;
   ApplyLoop;
 
   { Ansicht wie beim letzten Mal (StemPlayer.ini [Ansicht] Wellenform=1/0).
     Erster Start: mit Wellenformen. Passt das grössere Fenster nicht auf den
     Bildschirm, startet er trotzdem kompakt (gespeichert wird das nicht). }
+  { Design (StemPlayer.ini [Ansicht] Design=CD/Platte/Kompakt/Wellenform)
+    kommt dazu. Wellenform=1/0 bleibt die Wahl für die klassische Ansicht,
+    zu der man aus einem Design zurückkehrt. Passt ein Design nicht auf
+    den Bildschirm, startet die klassische Ansicht. }
+  FView := vmCompact;
   FShowWaves := False;
   ShowWaves := True;
+  Design := '';
   try
     Ini := TIniFile.Create(IniFileName);
     try
       ShowWaves := Ini.ReadBool('Ansicht', 'Wellenform', True);
+      Design := Ini.ReadString('Ansicht', 'Design', '');
     finally
       Ini.Free;
     end;
@@ -382,9 +473,15 @@ begin
   end;
   if ShowWaves and
      (Screen.WorkAreaHeight >= BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA + 40) then
-    SetWavesVisible(True)
+    SetView(vmWave)
   else
-    SetWavesVisible(False);
+    SetView(vmCompact);
+  if (Screen.WorkAreaWidth >= DESIGN_W + 20) and
+     (Screen.WorkAreaHeight >= DESIGN_H + PnlBottom.Height + 40) then
+  begin
+    if SameText(Design, 'CD') then SetView(vmCD)
+    else if SameText(Design, 'Platte') then SetView(vmPlatte);
+  end;
 
   OpenDlg := TOpenDialog.Create(Self);
   OpenDlg.Title := _('Stem-Datei öffnen');
@@ -513,6 +610,8 @@ procedure TMainForm.BuildUI;
 var
   i, W: Integer;
   L: TLabel;
+  V: TViewMode;     // Schleife über die Ansichten fürs Menü
+  Item: TMenuItem;  // ein Menüeintrag
 begin
   W := ClientWidth - 2 * MARGIN;   // Breite der Flächen
 
@@ -530,19 +629,29 @@ begin
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
   LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
-  LblFile.SetBounds(110, 8, W - 110 - 236, 24);
+  LblFile.SetBounds(110, 8, W - 110 - 220, 24);
 
-  { Ansicht umschalten: zwei aneinanderliegende Knöpfe, der aktive ist hell }
-  BtnViewCompact := MakeButton(PnlTop, _('KOMPAKT'), W - 228, 14, 104, 28);
-  BtnViewWave    := MakeButton(PnlTop, _('WELLENFORM'), W - 125, 14, 124, 28);
-  BtnViewCompact.Anchors := [akTop, akRight];
-  BtnViewWave.Anchors := [akTop, akRight];
-  BtnViewCompact.Hint := _('Kompakte Ansicht ohne Wellenformen (Taste W)');
-  BtnViewWave.Hint := _('Ansicht mit Wellenform unter jedem Stem (Taste W)');
-  BtnViewCompact.ShowHint := True;
-  BtnViewWave.ShowHint := True;
-  BtnViewCompact.OnClick := @ViewClick;
-  BtnViewWave.OnClick := @ViewClick;
+  { Ansicht wählen: ein Knopf mit der aktuellen Ansicht, darunter klappt
+    ein Menü mit allen vier Ansichten auf (statt vier Knöpfen nebeneinander,
+    damit auf der Fläche selbst nur das Arbeitswerkzeug bleibt) }
+  BtnView := MakeButton(PnlTop, '', W - 200, 14, 200, 28);
+  BtnView.Anchors := [akTop, akRight];
+  BtnView.DropDown := True;
+  BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform, CD-Player oder Plattenspieler (Taste W: Kompakt/Wellenform)');
+  BtnView.ShowHint := True;
+  BtnView.OnClick := @ViewClick;
+  MnuView := TPopupMenu.Create(Self);
+  MnuView.OwnerDraw := True;   // dunkel wie der Player, nicht im hellen Windows-Stil
+  MnuView.OnMeasureItem := @ViewMenuMeasure;
+  MnuView.OnDrawItem := @ViewMenuDraw;
+  for V := Low(TViewMode) to High(TViewMode) do
+  begin
+    Item := TMenuItem.Create(MnuView);
+    Item.Caption := ViewName(V);
+    Item.Tag := Ord(V);          // Tag = Ansicht, nie über den (übersetzten) Text
+    Item.OnClick := @ViewMenuClick;
+    MnuView.Items.Add(Item);
+  end;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -812,8 +921,6 @@ procedure TMainForm.SetWavesVisible(AShow: Boolean);
 var
   i, Delta: Integer;
 begin
-  BtnViewCompact.Down := not AShow;
-  BtnViewWave.Down := AShow;
   if AShow = FShowWaves then Exit;
   FShowWaves := AShow;
   Delta := STEM_COUNT * WAVE_EXTRA;
@@ -840,8 +947,541 @@ begin
   end;
 end;
 
+{ ============================================================================
+  Designs CD-Player und Plattenspieler (Entwürfe 7 und 6)
+
+  Gleiche Funktionen, anderer Look. Die vorhandenen Bedienelemente
+  (Fader, Mute/Solo, Wellenformen, Lupe, Loop- und Modus-Knöpfe, Master)
+  werden NICHT doppelt angelegt, sondern beim Umschalten in die Flächen des
+  Designs versetzt (PlaceCtl) und beim Zurückschalten wieder an ihren alten
+  Platz gesetzt (RestorePlacements). So bleibt die ganze Logik dieselbe.
+  Neu sind nur Jogwheel, Stem-Pads und Plattenteller (designviews.pas)
+  sowie ein paar Anzeigen (Zeiten, Farbstreifen).
+  Die Loop-Spur (Lupe + Loop-Knöpfe) gibt es in beiden Designs als eigenen
+  Streifen, in den Entwürfen war sie noch nicht eingezeichnet.
+  ============================================================================ }
+
+{ Dunkle Fläche mit Rahmen an fester Stelle (für die Designs) }
+function TMainForm.MakeBox(AParent: TWinControl; ALeft, ATop, AWidth, AHeight: Integer): TDJPanel;
+begin
+  Result := TDJPanel.Create(Self);
+  Result.Parent := AParent;
+  Result.SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+{ Kleine gedimmte Überschrift (z. B. "HÖREN") }
+function TMainForm.MakeCaption(AParent: TWinControl; const ACaption: string;
+  ALeft, ATop: Integer): TLabel;
+begin
+  Result := MakeLabel(AParent, ACaption, ALeft, ATop, 7, True);
+  Result.Font.Color := DJ_DIM;
+end;
+
+procedure TMainForm.BuildDesignUI;
+var
+  i, k: Integer;
+  L: TLabel;
+
+  { Zeit-Anzeige im Display: kleine Überschrift rechtsbündig, Wert daneben }
+  function DisplayValue(const ACaption: string; CapLeft, CapWidth, ValLeft,
+    ValWidth: Integer; Mono: Boolean): TLabel;
+  var C: TLabel;
+  begin
+    C := MakeCaption(CDDisplay, ACaption, CapLeft, 15);
+    C.AutoSize := False;
+    C.Alignment := taRightJustify;
+    C.Width := CapWidth;
+    C.Font.Color := $00C09070;   // gedecktes Blau wie die Beschriftung echter CD-Player
+    Result := MakeLabel(CDDisplay, '--:--', ValLeft, 8, 12, not Mono);
+    if Mono then Result.Font.Name := MONO_FONT;
+    Result.AutoSize := False;
+    Result.SetBounds(ValLeft, 8, ValWidth, 24);
+  end;
+
+begin
+  { ---------- CD-Player ---------- }
+  PnlCD := TDJPanel.Create(Self);
+  PnlCD.Visible := False;
+  PnlCD.Parent := Self;
+  PnlCD.Align := alClient;
+  PnlCD.Color := DJ_BG;
+  PnlCD.BorderColor := clNone;
+
+  CDDisplay := MakeBox(PnlCD, MARGIN, 8, DESIGN_W - 2 * MARGIN, 238);
+  CDDisplay.Color := DISPLAY_BG;
+  LblCDTime   := DisplayValue(_('ZEIT'),   426, 56, 486, 64, True);
+  LblCDRemain := DisplayValue(_('RESTZEIT'), 554, 56, 614, 72, True);
+  LblCDLength := DisplayValue(_('LÄNGE'),  688, 64, 756, 64, True);
+  LblCDMode   := DisplayValue(_('HÖREN'),  822, 60, 886, 88, False);
+  LblCDMode.Font.Size := 11;
+  for i := 1 to STEM_COUNT do
+  begin
+    { Farbstreifen vor jeder Stem-Welle (wie die Spuren im Entwurf) }
+    CDBars[i] := TShape.Create(Self);
+    CDBars[i].Parent := CDDisplay;
+    CDBars[i].SetBounds(8, 40 + (i - 1) * 36, 4, 32);
+    CDBars[i].Pen.Style := psClear;
+    CDBars[i].Brush.Color := Rows[i].Color;
+  end;
+
+  CDLoop := MakeBox(PnlCD, MARGIN, 254, DESIGN_W - 2 * MARGIN, 72);
+  MakeCaption(CDLoop, _('LOOP'), 766, 15);
+
+  Jog := TJogWheel.Create(Self);
+  Jog.Parent := PnlCD;
+  Jog.SetBounds(20, 334, 228, 228);
+  Jog.BackColor := DJ_BG;
+  Jog.CenterCaption := _('RESTZEIT');
+  Jog.CenterText := '-00:00';
+  Jog.OnScrub := @ZoomScrub;   // gleiches Scrubbing wie beim Ziehen in der Lupe
+  Jog.Hint := _('Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand.') + LineEnding +
+              _('Der blaue Ring zeigt die Restzeit.');
+  Jog.ShowHint := True;
+
+  CDPads := MakeBox(PnlCD, 262, 334, 528, 300);
+  MakeCaption(CDPads, _('STEM-PADS'), 12, 6);
+  for i := 1 to STEM_COUNT do
+    for k := 0 to 1 do
+    begin
+      Pads[i, k] := TStemPad.Create(Self);
+      Pads[i, k].Parent := CDPads;
+      if k = 0 then
+      begin
+        Pads[i, k].SetBounds(12 + (i - 1) * 128, 24, 120, 54);
+        Pads[i, k].Tag := i;
+        Pads[i, k].Hint := Format(_('Mute: Stem stumm schalten (Taste %d)'), [i]);
+      end
+      else
+      begin
+        Pads[i, k].SetBounds(12 + (i - 1) * 128, 86, 120, 46);
+        Pads[i, k].Tag := 100 + i;
+        Pads[i, k].Caption := _('SOLO');
+        Pads[i, k].Hint := Format(_('Solo: nur diesen Stem hören (Shift+%d).') + LineEnding +
+          _('Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)'), [i]);
+      end;
+      Pads[i, k].ShowHint := True;
+      Pads[i, k].OnClick := @PadClick;
+    end;
+
+  CDSource := MakeBox(PnlCD, 800, 334, 190, 112);
+  MakeCaption(CDSource, _('QUELLE'), 10, 6);
+  CDViewCap := MakeCaption(CDSource, _('ANSICHT'), 10, 60);
+  CDMode := MakeBox(PnlCD, 800, 452, 190, 84);
+  MakeCaption(CDMode, _('HÖREN'), 10, 6);
+  CDMaster := MakeBox(PnlCD, 800, 542, 190, 92);
+  MakeCaption(CDMaster, _('MASTER'), 10, 6);
+
+  { ---------- Plattenspieler ---------- }
+  PnlPlatte := TDJPanel.Create(Self);
+  PnlPlatte.Visible := False;
+  PnlPlatte.Parent := Self;
+  PnlPlatte.Align := alClient;
+  PnlPlatte.Color := DJ_BG;
+  PnlPlatte.BorderColor := clNone;
+
+  PLDeck := MakeBox(PnlPlatte, MARGIN, 8, 500, 516);
+  Platter := TTurntable.Create(Self);
+  Platter.Parent := PLDeck;
+  Platter.SetBounds(6, 6, 488, 446);
+  Platter.BackColor := DJ_PANEL;
+  Platter.OnScrub := @ZoomScrub;
+  Platter.OnSeek := @PlatterSeek;
+  Platter.Hint := _('Jeder Ring ist ein Stem, einmal rundherum ist der ganze Track (oben = Anfang).') + LineEnding +
+                  _('Klick auf einen Ring: dorthin springen. Platte mit gedrückter Maustaste drehen: Ton wie unter der Hand.');
+  Platter.ShowHint := True;
+
+  BtnRpm33 := MakeButton(PLDeck, '33', 154, 470, 44, 26);
+  BtnRpm45 := MakeButton(PLDeck, '45', 200, 470, 44, 26);
+  BtnRpm33.Down := True;
+  BtnRpm33.Hint := _('Drehzahl beim Drehen der Platte mit der Maus: eine Umdrehung = 1,8 s (33) bzw. 1,3 s (45)');
+  BtnRpm45.Hint := BtnRpm33.Hint;
+  BtnRpm33.ShowHint := True;
+  BtnRpm45.ShowHint := True;
+  BtnRpm33.OnClick := @RpmClick;
+  BtnRpm45.OnClick := @RpmClick;
+  L := MakeCaption(PLDeck, _('DIREKTANTRIEB · STEMS'), 260, 477);
+  L.AutoSize := False;
+  L.Alignment := taRightJustify;
+  L.Width := 226;
+
+  LblPLRemain := MakeLabel(PnlPlatte, '-00:00', 0, 0, 16, True);
+  LblPLRemain.Font.Name := MONO_FONT;
+  LblPLRemain.Font.Color := $00A0A0A0;
+  LblPLRemain.AutoSize := False;
+  LblPLRemain.SetBounds(694, 62, 120, 30);
+
+  PLRows := MakeBox(PnlPlatte, 520, 98, 470, 200);
+  for i := 1 to STEM_COUNT do
+  begin
+    PLDots[i] := TShape.Create(Self);
+    PLDots[i].Parent := PLRows;
+    PLDots[i].Shape := stCircle;
+    PLDots[i].SetBounds(12, 8 + (i - 1) * 47 + 9, 12, 12);
+    PLDots[i].Pen.Style := psClear;
+    PLDots[i].Brush.Color := Rows[i].Color;
+  end;
+  PLMode := MakeBox(PnlPlatte, 520, 306, 470, 64);
+  MakeCaption(PLMode, _('HÖREN'), 12, 6);
+  PLMaster := MakeBox(PnlPlatte, 520, 378, 470, 84);
+  MakeCaption(PLMaster, _('MASTER'), 12, 12);
+  MakeCaption(PLMaster, 'L / R', 12, 52);
+  PLLoop := MakeBox(PnlPlatte, MARGIN, 532, DESIGN_W - 2 * MARGIN, 96);
+  MakeCaption(PLLoop, _('LOOP'), 766, 15);
+end;
+
+{ Bedienelement für ein Design an eine andere Stelle setzen und den alten
+  Platz merken. Im Design ist alles fest angeordnet (nur links/oben verankert). }
+procedure TMainForm.PlaceCtl(Ctl: TControl; NewParent: TWinControl;
+  ALeft, ATop, AWidth, AHeight: Integer);
+var n: Integer;
+begin
+  n := Length(FPlaced);
+  SetLength(FPlaced, n + 1);
+  FPlaced[n].Ctl := Ctl;
+  FPlaced[n].Parent := Ctl.Parent;
+  FPlaced[n].Bounds := Ctl.BoundsRect;
+  FPlaced[n].Anchors := Ctl.Anchors;
+  Ctl.Anchors := [akLeft, akTop];
+  Ctl.Parent := NewParent;
+  Ctl.SetBounds(ALeft, ATop, AWidth, AHeight);
+end;
+
+{ Alle versetzten Elemente zurück an ihren alten Platz (rückwärts, falls
+  eines zweimal versetzt wurde) }
+procedure TMainForm.RestorePlacements;
+var i: Integer;
+begin
+  for i := High(FPlaced) downto 0 do
+    with FPlaced[i] do
+    begin
+      Ctl.Anchors := [akLeft, akTop];
+      Ctl.Parent := Parent;
+      Ctl.BoundsRect := Bounds;
+      Ctl.Anchors := Anchors;
+    end;
+  SetLength(FPlaced, 0);
+end;
+
+{ Loop-Knöpfe rechts neben der Lupe: oben A, B, löschen; darunter AN/AUS }
+procedure TMainForm.PlaceLoopButtons(AParent: TWinControl; X, Y: Integer);
+begin
+  PlaceCtl(BtnLoopA, AParent, X, Y, 50, 26);
+  PlaceCtl(BtnLoopB, AParent, X + 52, Y, 50, 26);
+  PlaceCtl(BtnLoopClear, AParent, X + 104, Y, 54, 26);
+  PlaceCtl(BtnLoopOn, AParent, X, Y + 30, 158, 26);
+end;
+
+procedure TMainForm.LayoutCD;
+var
+  i, Y: Integer;
+begin
+  { Display: Titel, 4 Stem-Wellen mit Farbstreifen, Original darunter }
+  PlaceCtl(LblFile, CDDisplay, 16, 8, 400, 24);
+  for i := 1 to STEM_COUNT do
+  begin
+    PlaceCtl(Rows[i].Wave, CDDisplay, 16, 40 + (i - 1) * 36, 956, 32);
+    Rows[i].Wave.Visible := True;
+  end;
+  PlaceCtl(TrkPos, CDDisplay, 16, 188, 956, 40);
+  PlaceCtl(WaveMaster, CDDisplay, 16, 188, 956, 40);
+
+  { Loop-Spur }
+  PlaceCtl(Zoom, CDLoop, 12, 8, 744, 56);
+  PlaceLoopButtons(CDLoop, 810, 8);
+
+  { CUE und Play/Pause als runde Knöpfe unter dem Jogwheel.
+    CUE = zurück an den Anfang und anhalten (wie der Stop-Knopf). }
+  PlaceCtl(BtnStop, PnlCD, 54, 570, 60, 60);
+  PlaceCtl(BtnPlay, PnlCD, 154, 570, 60, 60);
+  BtnStop.Glyph := dgNone;
+  BtnStop.Caption := _('CUE');
+  BtnStop.RoundShape := True;
+  BtnStop.RingColor := CD_ORANGE;
+  BtnPlay.RoundShape := True;
+  BtnPlay.RingColor := DJ_GREEN;
+
+  { Fader-Zeilen unter den Pads }
+  for i := 1 to STEM_COUNT do
+  begin
+    Y := 144 + (i - 1) * 38;
+    PlaceCtl(Rows[i].LblName, CDPads, 12, Y + 3, 100, 20);
+    PlaceCtl(Rows[i].TrkVol, CDPads, 112, Y, 204, 26);
+    PlaceCtl(Rows[i].LblVol, CDPads, 316, Y + 4, 42, 20);
+    PlaceCtl(Rows[i].Meter, CDPads, 368, Y + 2, 148, 22);
+  end;
+
+  { Quelle: Öffnen + Ansicht }
+  PlaceCtl(BtnOpen, CDSource, 10, 24, 170, 26);
+  PlaceCtl(BtnView, CDSource, 10, 78, 170, 26);
+
+  { Hören }
+  PlaceCtl(BtnModeStems, CDMode, 10, 24, 84, 24);
+  PlaceCtl(BtnModeOrig, CDMode, 96, 24, 84, 24);
+  PlaceCtl(BtnModeRest, CDMode, 10, 52, 84, 24);
+  PlaceCtl(BtnReset, CDMode, 96, 52, 84, 24);
+
+  { Master }
+  PlaceCtl(LblMasterVol, CDMaster, 130, 4, 50, 18);
+  PlaceCtl(TrkMaster, CDMaster, 6, 22, 178, 26);
+  PlaceCtl(MeterOut, CDMaster, 10, 56, 120, 26);
+  PlaceCtl(BtnClip, CDMaster, 136, 56, 44, 26);
+end;
+
+procedure TMainForm.LayoutPlatte;
+var
+  i, Y: Integer;
+begin
+  { Plattenspieler: Start/Stop unten links }
+  PlaceCtl(BtnPlay, PLDeck, 14, 458, 70, 48);
+  PlaceCtl(BtnStop, PLDeck, 90, 458, 48, 48);
+
+  { Titel, Zeiten }
+  PlaceCtl(LblFile, PnlPlatte, 520, 8, 470, 26);
+  PlaceCtl(LblFileInfo, PnlPlatte, 520, 36, 470, 18);
+  PlaceCtl(LblTime, PnlPlatte, 520, 58, 88, 32);
+  PlaceCtl(LblTotal, PnlPlatte, 614, 68, 70, 20);
+
+  { Stem-Zeilen: Punkt, Name/Zustand, M, S, Fader, %, Pegel }
+  for i := 1 to STEM_COUNT do
+  begin
+    Y := 8 + (i - 1) * 47;
+    PlaceCtl(Rows[i].LblName, PLRows, 30, Y + 2, 116, 20);
+    PlaceCtl(Rows[i].LblState, PLRows, 30, Y + 23, 116, 16);
+    PlaceCtl(Rows[i].BtnMute, PLRows, 150, Y + 6, 32, 28);
+    PlaceCtl(Rows[i].BtnSolo, PLRows, 186, Y + 6, 32, 28);
+    PlaceCtl(Rows[i].TrkVol, PLRows, 222, Y + 7, 112, 26);
+    PlaceCtl(Rows[i].LblVol, PLRows, 334, Y + 11, 38, 20);
+    PlaceCtl(Rows[i].Meter, PLRows, 378, Y + 11, 82, 18);
+  end;
+
+  { Hören }
+  PlaceCtl(BtnModeStems, PLMode, 12, 26, 108, 28);
+  PlaceCtl(BtnModeOrig, PLMode, 124, 26, 112, 28);
+  PlaceCtl(BtnModeRest, PLMode, 240, 26, 104, 28);
+  PlaceCtl(BtnReset, PLMode, 348, 26, 110, 28);
+
+  { Master }
+  PlaceCtl(TrkMaster, PLMaster, 84, 6, 220, 26);
+  PlaceCtl(LblMasterVol, PLMaster, 306, 10, 44, 20);
+  PlaceCtl(MeterOut, PLMaster, 84, 46, 300, 28);
+  PlaceCtl(BtnClip, PLMaster, 392, 47, 66, 26);
+
+  { Öffnen + Ansicht }
+  PlaceCtl(BtnOpen, PnlPlatte, 520, 484, 262, 32);
+  PlaceCtl(BtnView, PnlPlatte, 790, 484, 200, 32);
+
+  { Loop-Spur: Original-Welle zum Springen, Lupe, Loop-Knöpfe }
+  PlaceCtl(TrkPos, PLLoop, 12, 8, 744, 26);
+  PlaceCtl(WaveMaster, PLLoop, 12, 8, 744, 26);
+  PlaceCtl(Zoom, PLLoop, 12, 38, 744, 50);
+  PlaceLoopButtons(PLLoop, 810, 8);
+end;
+
+procedure TMainForm.SetView(V: TViewMode);
+begin
+  if V <> FView then
+  begin
+    if FView in [vmCD, vmPlatte] then LeaveDesign;
+    case V of
+      vmCompact: SetWavesVisible(False);
+      vmWave:    SetWavesVisible(True);
+    else
+      EnterDesign(V);
+    end;
+    FView := V;
+    UpdateDesignLook;
+  end;
+  UpdateViewButtons;
+end;
+
+{ Innengrösse des Fensters auf das Design einstellen und es auf dem
+  Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
+procedure TMainForm.FitDesignWindow;
+var R: TRect;
+begin
+  Constraints.MinWidth := 0;
+  Constraints.MinHeight := 0;
+  ClientWidth := DESIGN_W;
+  ClientHeight := DESIGN_H + PnlBottom.Height;
+  Constraints.MinWidth := Width;
+  Constraints.MinHeight := Height;
+  if HandleAllocated then
+  begin
+    R := Screen.WorkAreaRect;
+    if Left + Width > R.Right then Left := Max(R.Left, R.Right - Width);
+    if Top + Height > R.Bottom then Top := Max(R.Top, R.Bottom - Height);
+  end;
+end;
+
+procedure TMainForm.EnterDesign(V: TViewMode);
+var i: Integer;
+begin
+  { Grösse der klassischen Ansicht merken (für LeaveDesign) }
+  FClassicW := Width;
+  FClassicH := Height;
+  DisableAlign;
+  try
+    PnlTop.Visible := False;
+    PnlDeck.Visible := False;
+    for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := False;
+    PnlMaster.Visible := False;
+    FitDesignWindow;
+    if V = vmCD then
+    begin
+      LayoutCD;
+      PnlCD.Visible := True;
+    end
+    else
+    begin
+      LayoutPlatte;
+      PnlPlatte.Visible := True;
+    end;
+  finally
+    EnableAlign;
+  end;
+end;
+
+procedure TMainForm.LeaveDesign;
+var i: Integer;
+begin
+  DisableAlign;
+  try
+    PnlCD.Visible := False;
+    PnlPlatte.Visible := False;
+    { Fenster zuerst auf die alte Grösse, dann passen die rechts
+      verankerten Elemente wieder genau an ihren Platz }
+    Constraints.MinWidth := 0;
+    Constraints.MinHeight := 0;
+    SetBounds(Left, Top, FClassicW, FClassicH);
+    RestorePlacements;
+    BtnStop.Glyph := dgStop;
+    BtnStop.Caption := '';
+    BtnStop.RoundShape := False;
+    BtnPlay.RoundShape := False;
+    for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := FShowWaves;
+    Constraints.MinWidth := 720;
+    if FShowWaves then Constraints.MinHeight := BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA
+    else Constraints.MinHeight := BASE_HEIGHT;
+    { Flächen in der alten Reihenfolge wieder einblenden }
+    PnlTop.Top := 0;
+    PnlDeck.Top := 100;
+    for i := 1 to STEM_COUNT do Rows[i].Panel.Top := 100 + i * 100;
+    PnlMaster.Top := 100 + (STEM_COUNT + 1) * 100;
+    PnlTop.Visible := True;
+    PnlDeck.Visible := True;
+    for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := True;
+    PnlMaster.Visible := True;
+  finally
+    EnableAlign;
+  end;
+end;
+
+{ Auswahlknopf zeigt die aktuelle Ansicht, im Menü ist sie abgehakt }
+procedure TMainForm.UpdateViewButtons;
+var
+  i: Integer;
+begin
+  BtnView.Caption := ViewName(FView);
+  for i := 0 to MnuView.Items.Count - 1 do
+    MnuView.Items[i].Checked := MnuView.Items[i].Tag = Ord(FView);
+end;
+
+{ Anzeigename einer Ansicht (Knopf und Menü) }
+function TMainForm.ViewName(V: TViewMode): string;
+begin
+  case V of
+    vmCompact: Result := _('KOMPAKT');
+    vmWave:    Result := _('WELLENFORM');
+    vmCD:      Result := _('CD-PLAYER');
+  else
+    Result := _('PLATTENSPIELER');
+  end;
+end;
+
+{ Pads, Farbstreifen, Ringe und Punkte wie die Stem-Zeilen färben:
+  hörbar = Stemfarbe, sonst grau (aufgerufen aus UpdateRowLook) }
+procedure TMainForm.UpdateDesignLook;
+var
+  i: Integer;
+  IsOn, StemMode: Boolean;
+  C: TColor;
+begin
+  if Pads[1, 0] = nil then Exit;   // Designs noch nicht aufgebaut
+  StemMode := BtnModeStems.Down;
+  for i := 1 to STEM_COUNT do
+  begin
+    IsOn := (Rows[i].Panel.Tag = 1) and StemMode;
+    Pads[i, 0].StemColor := Rows[i].Color;
+    Pads[i, 0].Lit := IsOn;
+    Pads[i, 0].Dim := not StemMode;
+    Pads[i, 0].SubText := Rows[i].LblState.Caption;
+    Pads[i, 1].StemColor := Rows[i].Color;
+    Pads[i, 1].Lit := Rows[i].BtnSolo.Down and StemMode;
+    Pads[i, 1].Dim := not StemMode;
+    if IsOn then C := Rows[i].Color else C := $00444444;
+    CDBars[i].Brush.Color := C;
+    PLDots[i].Brush.Color := C;
+    Platter.SetRing(i, Rows[i].Color, IsOn);
+  end;
+  if BtnModeOrig.Down then LblCDMode.Caption := _('ORIGINAL')
+  else if BtnModeRest.Down then LblCDMode.Caption := _('REST')
+  else LblCDMode.Caption := _('STEMS');
+end;
+
+{ Stem-Namen und Titel nach dem Laden einer Datei übernehmen }
+procedure TMainForm.UpdateDesignNames;
+var
+  i: Integer;
+  T: string;
+begin
+  for i := 1 to STEM_COUNT do
+  begin
+    Pads[i, 0].Caption := UpperCase(FInfo.Names[i - 1]);
+    Pads[i, 1].SubText := UpperCase(FInfo.Names[i - 1]);
+  end;
+  T := ExtractFileName(FFileName);
+  if SameText(Copy(T, Length(T) - 8, 9), '.stem.mp4') then SetLength(T, Length(T) - 9)
+  else T := ChangeFileExt(T, '');
+  Platter.Title := T;
+  UpdateDesignLook;
+end;
+
+{ Pad gedrückt: wie der Knopf M bzw. S der Stem-Zeile }
+procedure TMainForm.PadClick(Sender: TObject);
+var i: Integer;
+begin
+  i := TStemPad(Sender).Tag;
+  if i > 100 then
+  begin
+    Rows[i - 100].BtnSolo.Down := not Rows[i - 100].BtnSolo.Down;
+    MuteSoloClick(Rows[i - 100].BtnSolo);
+  end
+  else
+  begin
+    Rows[i].BtnMute.Down := not Rows[i].BtnMute.Down;
+    MuteSoloClick(Rows[i].BtnMute);
+  end;
+end;
+
+procedure TMainForm.RpmClick(Sender: TObject);
+begin
+  BtnRpm33.Down := Sender = BtnRpm33;
+  BtnRpm45.Down := Sender = BtnRpm45;
+  if Sender = BtnRpm45 then Platter.FramesPerRev := FRAMES_45
+  else Platter.FramesPerRev := FRAMES_33;
+end;
+
+{ Klick auf einen Ring der Platte: wie Klick in eine Wellenform }
+procedure TMainForm.PlatterSeek(Sender: TObject; Fraction: Single);
+begin
+  WaveSeek(Sender, Fraction);
+end;
+
 procedure TMainForm.FormShow(Sender: TObject);
 begin
+  { Erst jetzt kennt Windows die Rahmenbreite -> Innengrösse des Designs
+    nochmals genau setzen (im Konstruktor gab es noch kein Fenster) }
+  if FView in [vmCD, vmPlatte] then FitDesignWindow;
   { Datei als Kommandozeilen-Parameter? (z.B. aus StemMaker oder "Öffnen mit") }
   if (ParamCount >= 1) and FileExists(ParamStr(1)) and (FFileName = '') then
     LoadFile(ParamStr(1))
@@ -939,6 +1579,13 @@ begin
     Ini := TIniFile.Create(IniFileName);
     try
       Ini.WriteBool('Ansicht', 'Wellenform', FShowWaves);
+      case FView of
+        vmCD:      Ini.WriteString('Ansicht', 'Design', 'CD');
+        vmPlatte:  Ini.WriteString('Ansicht', 'Design', 'Platte');
+        vmWave:    Ini.WriteString('Ansicht', 'Design', 'Wellenform');
+      else
+        Ini.WriteString('Ansicht', 'Design', 'Kompakt');
+      end;
     finally
       Ini.Free;
     end;
@@ -947,10 +1594,63 @@ begin
   end;
 end;
 
+{ Klick auf den Auswahlknopf: Menü direkt unter dem Knopf aufklappen }
 procedure TMainForm.ViewClick(Sender: TObject);
+var
+  P: TPoint;   // linke untere Ecke des Knopfs in Bildschirmkoordinaten
 begin
-  SetWavesVisible(Sender = BtnViewWave);
+  P := BtnView.ClientToScreen(Point(0, BtnView.Height));
+  MnuView.PopUp(P.X, P.Y);
+end;
+
+{ Ansicht im Menü gewählt }
+procedure TMainForm.ViewMenuClick(Sender: TObject);
+begin
+  SetView(TViewMode((Sender as TMenuItem).Tag));
   SaveViewSetting;
+end;
+
+{ Menüeinträge so breit wie der Knopf und gut klickbar hoch }
+procedure TMainForm.ViewMenuMeasure(Sender: TObject; ACanvas: TCanvas;
+  var AWidth, AHeight: Integer);
+begin
+  ACanvas.Font.Assign(Font);
+  ACanvas.Font.Style := [fsBold];
+  AWidth := Math.Max(BtnView.Width - 20, ACanvas.TextWidth((Sender as TMenuItem).Caption) + 40);
+  AHeight := 30;
+end;
+
+{ Menüeintrag im Player-Stil: dunkel, unter der Maus heller,
+  die aktuelle Ansicht mit grünem Streifen links und heller Schrift }
+procedure TMainForm.ViewMenuDraw(Sender: TObject; ACanvas: TCanvas;
+  ARect: TRect; AState: TOwnerDrawState);
+var
+  Item: TMenuItem;   // der zu zeichnende Eintrag
+  TS: TTextStyle;    // Textausrichtung
+begin
+  Item := Sender as TMenuItem;
+  with ACanvas do
+  begin
+    if odSelected in AState then Brush.Color := BlendColor(DJ_BTN, clWhite, 0.10)
+    else Brush.Color := DJ_PANEL;
+    FillRect(ARect);
+    if Item.Checked then
+    begin
+      Brush.Color := DJ_GREEN;
+      FillRect(ARect.Left, ARect.Top + 5, ARect.Left + 4, ARect.Bottom - 5);
+    end;
+    Font.Assign(Self.Font);
+    Font.Style := [fsBold];
+    if Item.Checked or (odSelected in AState) then Font.Color := DJ_TEXT
+    else Font.Color := $00B0B0B0;
+    TS := TextStyle;
+    TS.Layout := tlCenter;
+    TS.SingleLine := True;
+    Brush.Style := bsClear;
+    TextRect(Rect(ARect.Left + 16, ARect.Top, ARect.Right - 8, ARect.Bottom),
+      ARect.Left + 16, ARect.Top, Item.Caption, TS);
+    Brush.Style := bsSolid;
+  end;
 end;
 
 { Wellenform-Berechnung abbrechen und warten, bis der Thread seine
@@ -977,7 +1677,10 @@ begin
   if M < 0.05 then M := 0.05;   // fast stille Datei nicht riesig aufblasen
   for i := 1 to STEM_COUNT do
     if FPeakThread.Peaks[i].Valid then
+    begin
       Rows[i].Wave.SetPeaks(FPeakThread.Peaks[i], 1 / M);
+      Platter.SetStemPeaks(i, FPeakThread.Peaks[i], 1 / M);
+    end;
   if FPeakThread.Peaks[0].Valid then
   begin
     M := Max(0.05, PeakMax(FPeakThread.Peaks[0]));
@@ -997,6 +1700,7 @@ begin
   for i := 1 to STEM_COUNT do Rows[i].Wave.ClearPeaks;
   WaveMaster.ClearPeaks;
   Zoom.ClearPeaks;
+  Platter.ClearPeaks;
   WaveMaster.Visible := False;
   TrkPos.Visible := True;
   if Engine <> nil then
@@ -1304,6 +2008,11 @@ begin
     Caption := ExtractFileName(FileName) + '  -  ' + APP_TITLE;
     LblFileInfo.Caption := Format(_('%d Spuren  ·  Länge %s'), [Tracks, FormatTime(Engine.TotalFrames)]);
     LblTotal.Caption := '/ ' + FormatTime(Engine.TotalFrames);
+    { Designs: Länge, Titel und Namen }
+    Jog.Total := Engine.TotalFrames;
+    Platter.Total := Engine.TotalFrames;
+    LblCDLength.Caption := FormatTime(Engine.TotalFrames);
+    UpdateDesignNames;
 
     if Msg <> '' then LblStatus.Caption := Msg
     else LblStatus.Caption := Format(_('%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s'),
@@ -1409,6 +2118,7 @@ begin
     Rows[i].Wave.WaveColor := Rows[i].Color;
     Rows[i].Wave.Active := IsOn and StemMode;
   end;
+  UpdateDesignLook;
 end;
 
 procedure TMainForm.TogglePlay;
@@ -1572,6 +2282,7 @@ begin
   end;
   WaveMaster.SetLoop(FA, FB, FLoopOn);
   Zoom.SetLoop(FLoopA, FLoopB, FLoopOn);
+  Platter.SetLoop(FA, FB, FLoopOn);
   for i := 1 to STEM_COUNT do Rows[i].Wave.SetLoop(FA, FB, FLoopOn);
 
   BtnLoopA.Down := FLoopA >= 0;
@@ -1874,6 +2585,7 @@ var
   i: Integer;
   L: Single;
   Playing: Boolean;
+  S: string;
 begin
   if Engine = nil then Exit;
   Playing := Engine.Playing;
@@ -1901,6 +2613,23 @@ begin
     FUpdatingPos := False;
   end;
   LblTime.Caption := FormatTime(Engine.PlayPos);
+  { Zeiten in den Designs (nur bei Änderung setzen: ein neuer Text lässt das
+    LCL alle Elemente neu ausrichten, siehe Version 1.6 im Entwicklungslog) }
+  if FView in [vmCD, vmPlatte] then
+  begin
+    S := '-' + FormatTime(Max(0, Engine.TotalFrames - Engine.PlayPos));
+    if FView = vmCD then
+    begin
+      if LblCDTime.Caption <> LblTime.Caption then LblCDTime.Caption := LblTime.Caption;
+      if LblCDRemain.Caption <> S then LblCDRemain.Caption := S;
+      Jog.CenterText := S;
+    end
+    else
+    begin
+      if LblPLRemain.Caption <> S then LblPLRemain.Caption := S;
+      Platter.TimeText := LblTime.Caption + ' / ' + FormatTime(Engine.TotalFrames);
+    end;
+  end;
 
   { Pegel: schnell hoch, langsam runter (klassisches Peak-Meter-Verhalten) }
   for i := 1 to STEM_COUNT do
@@ -1981,6 +2710,8 @@ begin
   WaveMaster.Position := F;
   for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
   Zoom.Position := FHeadPos;
+  if FView = vmCD then Jog.Position := FHeadPos
+  else if FView = vmPlatte then Platter.Position := FHeadPos;
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
@@ -2051,7 +2782,14 @@ begin
         Key := 0;
       end;
     VK_HOME:  begin if Engine <> nil then Engine.SeekTo := 0; Key := 0; end;
-    VK_W:     begin SetWavesVisible(not FShowWaves); SaveViewSetting; Key := 0; end;
+    VK_W:
+      begin
+        { nur in der klassischen Ansicht: die Designs haben keine Umschaltung }
+        if FView = vmWave then SetView(vmCompact)
+        else if FView = vmCompact then SetView(vmWave);
+        SaveViewSetting;
+        Key := 0;
+      end;
     VK_A:     begin SetLoopA; Key := 0; end;
     VK_B:     begin SetLoopB; Key := 0; end;
     VK_L:

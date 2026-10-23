@@ -1,4 +1,4 @@
-Elospeed StemPlayer 1.7  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemPlayer 1.8  -  von Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Testplayer für die .stem.mp4-Dateien aus Elospeed StemMaker.
@@ -27,7 +27,8 @@ BEDIENUNG
   0              alles zurücksetzen
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
-  W              Ansicht Kompakt / Wellenform umschalten
+  W              Ansicht Kompakt / Wellenform umschalten (in den
+                 Designs CD-Player und Plattenspieler ohne Wirkung)
   A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
   L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
   Pfeil li/re    bei aktivem Loop: ganzen Loop verschieben (sonst -/+ 5 s)
@@ -38,12 +39,36 @@ WELLENFORM
   Unter jedem Stem steht seine Wellenform in der Stemfarbe, oben die
   Wellenform des Originals. Der rote Strich zeigt, wo die Wiedergabe
   gerade ist. Klicken oder Ziehen in eine Wellenform springt dorthin.
-  Oben rechts wählt man KOMPAKT (wie bis 1.4, ohne Wellenformen) oder
-  WELLENFORM. Die Wahl wird in StemPlayer.ini gespeichert und beim
+  Oben rechts im Ausklapp-Menü wählt man KOMPAKT (wie bis 1.4, ohne
+  Wellenformen) oder WELLENFORM (oder Taste W). Die Wahl wird in StemPlayer.ini gespeichert und beim
   nächsten Start übernommen.
   Stumme Stems werden grau gezeichnet. Ein Stem, der an einer Stelle
   still sein sollte (z.B. Vocals im Instrumentalteil), aber dort noch
   Ausschläge zeigt, hat Reste anderer Instrumente abbekommen.
+
+DESIGNS CD-PLAYER UND PLATTENSPIELER
+  Im selben Ausklapp-Menü gibt es neben KOMPAKT und WELLENFORM zwei
+  weitere Ansichten: CD-PLAYER und PLATTENSPIELER. Sie können dasselbe, sehen nur anders aus. Die Wahl wird
+  in StemPlayer.ini gespeichert ([Ansicht] Design=CD bzw. Platte).
+  Beide Designs brauchen ein Fenster von 1000 Pixel Breite; passt das
+  nicht auf den Bildschirm, startet der Player in der normalen Ansicht.
+  CD
+  - Display oben mit Titel, Zeit, Restzeit, Länge, Modus und den
+    Wellenformen der 4 Stems und des Originals.
+  - Darunter die Loop-Spur: Lupe und die Knöpfe A, B, ×, AN.
+  - Jogwheel: der blaue Ring zeigt die Restzeit. Mit gedrückter
+    Maustaste drehen = Scrubbing (eine Umdrehung = 1,8 Sekunden).
+  - CUE = zurück an den Anfang und anhalten (wie der Stop-Knopf).
+  - Stem-Pads: obere Reihe Mute (leuchtet = hörbar), untere Reihe Solo.
+  PLATTE
+  - Jeder Stem ist ein Ring auf der Platte, einmal rundherum ist der
+    ganze Track (oben = Anfang). Der weisse Zeiger zeigt die aktuelle
+    Stelle, der Tonarm wandert von aussen nach innen, ein Loop ist als
+    grüner Bogen am Rand zu sehen.
+  - Klick auf einen Ring springt an diese Stelle. Platte mit gedrückter
+    Maustaste drehen = Scrubbing (33: eine Umdrehung = 1,8 s, 45: 1,3 s).
+  - Unten die Loop-Spur mit der Original-Wellenform, Lupe und den
+    Loop-Knöpfen.
 
 LOOP A-B
   Ein Abschnitt wird endlos wiederholt, z.B. um mit Mute und Solo
@@ -133,3 +158,6 @@ VERSIONEN
   1.7  Mehrsprachig: Deutsch, Englisch, Spanisch - übernimmt die
        Sprache von StemMaker
        Scrubbing: Welle in der Lupe ziehen mit Ton
+  1.8  Zwei neue Designs zur Wahl: CD-Player (Jogwheel, Stem-Pads,
+       Display) und Plattenspieler (jeder Stem als Ring auf der
+       Platte). Gleiche Funktionen, Loop-Spur in beiden Designs
