@@ -202,7 +202,8 @@ begin
     '  David GJ' + LineEnding +
     LineEnding +
     _('Helfende') + LineEnding +
-    '  David GJ - ' + _('spanische Übersetzung') + LineEnding;
+    '  David GJ - ' + _('spanische Übersetzung') + LineEnding +
+    '  ptrex alias DJ Pretski - ' + _('Tempo-Vergleich') + LineEnding;
 end;
 
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
