@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StemMaker – free MP3 to Traktor Stems converter for Windows</title>
 <meta name="description" content="Elospeed StemMaker turns your MP3, WAV and FLAC files into Traktor stem files (.stem.mp4) with drums, bass, melody and vocals. Free, open source, no Python. Installer or portable ZIP. For Windows.">
-<meta name="keywords" content="Traktor stems, stem.mp4, MP3 to stems, stem separation, Demucs, htdemucs, Traktor Pro 4, DJ, stem converter, Windows, free, open source">
+<meta name="keywords" content="Traktor stems, stem.mp4, MP3 to stems, stem separation, Demucs, htdemucs, Traktor Pro 4, Mixxx stems, DJ, stem converter, Windows, free, open source">
 <meta name="author" content="Elospeed">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://elospeed.github.io/StemMaker/">
@@ -234,8 +234,13 @@
       <p>Yes. StemMaker is open source under the MIT licence. There are no ads, no account and no paid version. If you like it, you can leave a voluntary donation on <a href="https://ko-fi.com/elospeed">Ko-fi</a>.</p>
     </details>
     <details>
-      <summary>Which Traktor versions can play the stem files?</summary>
-      <p>The files follow the open NI stem format (an MP4 with master plus four stems and stem metadata), the same way Stemgen builds them. They have been tested in Traktor Pro 4. Any software that reads <code>.stem.mp4</code> should work.</p>
+      <summary>Which DJ software can play the stem files?</summary>
+      <p>The files follow the open NI stem format (an MP4 with master plus four stems and stem metadata), the same way Stemgen builds them. Confirmed so far:</p>
+      <ul class="ticks">
+        <li><strong>Traktor Pro 4</strong>: tested by us, all four stems play in the Stem Decks.</li>
+        <li><strong>Mixxx 2.6</strong> (currently in beta): tested by us, the files load as stems with four stem controls, names, colours and a coloured stem waveform. The stable Mixxx 2.5 cannot play stems yet.</li>
+      </ul>
+      <p>Any other software that reads <code>.stem.mp4</code> should work too.</p>
     </details>
     <details>
       <summary>Do I need a graphics card or Python?</summary>
