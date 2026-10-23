@@ -18,7 +18,7 @@ Ist die Datei nicht erreichbar (offline, GitHub gestört), startet StemMaker nor
 | `version` | neueste Version, z. B. `1.7`. Ist sie höher als die installierte, wird das Update angeboten. |
 | `date` | Datum des Releases (nur Info) |
 | `page` | Release-Seite für „mehr Infos“ |
-| `notes_de` / `notes_en` | „Was ist neu“ im Update-Fenster. Zeilenumbruch mit `\n`. |
+| `notes_de` / `notes_en` / `notes_es` | „Was ist neu“ im Update-Fenster, in der eingestellten Sprache (fehlt sie, Englisch, sonst Deutsch). Zeilenumbruch mit `\n`. Versionen vor 1.9 kennen kein Spanisch und zeigen Englisch. |
 | `zip_url` | Release-ZIP (gleicher Aufbau wie bisher: Ordner `StemMaker\` mit allem drin) |
 | `zip_sha256` | SHA-256 des Release-ZIPs. **Leer = kein automatisches Update**, dann öffnet StemMaker nur die Release-Seite. |
 | `ffmpeg.url` / `ffmpeg.sha256` | feste ffmpeg-Version (ZIP) und ihre Prüfsumme |
@@ -35,7 +35,7 @@ Wer in `StemMaker.ini` unter `[Download]` eine eigene Adresse einträgt (`FFmpeg
 2. Prüfsumme ausrechnen, z. B. in PowerShell:
    `Get-FileHash .\StemMaker-1.7.zip -Algorithm SHA256`
    (oder Elospeed rechnet sie aus dem Release aus).
-3. In `update.json` eintragen: `version`, `date`, `notes_de`, `notes_en`, `zip_url`, `zip_sha256`. Committen auf `main`.
+3. In `update.json` eintragen: `version`, `date`, `notes_de`, `notes_en`, `notes_es`, `zip_url`, `zip_sha256`. Committen auf `main`.
 4. Ab jetzt bekommen alle StemMaker ab 1.7 beim Start das Update angeboten.
 
 **Wichtig:** `update.json` erst ändern, wenn das Release-ZIP online ist. Sonst schlägt der Download bei allen fehl.

@@ -64,6 +64,8 @@
                        Zeitanzeige) rechnet die Bilder nicht mehr neu.
                        Zoom bis 0,25 s, Raster bis 1 ms, Pfeiltasten-Schritt
                        wächst mit dem Zoom (bei 8 s 0,1 s, ganz nah 2 ms).
+    1.6  (22.10.2026)  OnScrub: meldet das Ziehen der Welle, damit man dabei
+                       den Ton hört (Scrubbing, stemengine 1.3).
   ============================================================================ }
 unit wellenform;
 
@@ -164,6 +166,9 @@ type
   { Marke verschoben: Marker = 1 (A) oder 2 (B), Final = Maustaste losgelassen }
   TMarkerMoveEvent = procedure(Sender: TObject; Marker: Integer; Frame: Int64;
                                Final: Boolean) of object;
+  { Welle wird gezogen (Active) bzw. losgelassen; Frame = Stelle unter dem
+    roten Strich. Dient dem Scrubbing (Ton beim Ziehen). }
+  TScrubEvent = procedure(Sender: TObject; Active: Boolean; Frame: Int64) of object;
 
   { TZoomView - die Lupe }
 
@@ -201,6 +206,7 @@ type
     FOnSeek   : TFrameEvent;
     FOnLoopSelect: TFrameRangeEvent;
     FOnMarkerMove: TMarkerMoveEvent;
+    FOnScrub  : TScrubEvent;
     procedure RenderCache;
     procedure RenderCols(X0, X1: Integer);
     procedure ScrollCache(Px: Integer);
@@ -233,6 +239,7 @@ type
     property OnSeek: TFrameEvent read FOnSeek write FOnSeek;
     property OnLoopSelect: TFrameRangeEvent read FOnLoopSelect write FOnLoopSelect;
     property OnMarkerMove: TMarkerMoveEvent read FOnMarkerMove write FOnMarkerMove;
+    property OnScrub: TScrubEvent read FOnScrub write FOnScrub;
     property ShowHint;
   end;
 
@@ -1246,6 +1253,7 @@ begin
       FPanPos := FPanFrom - (X - FPanX) * FramesPerPx;
       if FPanPos < 0 then FPanPos := 0;
       if FPanPos > FTotal - 1 then FPanPos := FTotal - 1;
+      if Assigned(FOnScrub) then FOnScrub(Self, True, Round(FPanPos));
       Invalidate;
     end;
   end
@@ -1275,8 +1283,12 @@ begin
       FPanning := False;
       Cursor := crHandPoint;
       Invalidate;
-    end;
-    if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+      if Assigned(FOnScrub) then FOnScrub(Self, False, Round(F))
+      else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+    end
+    { Beim Scrubbing setzt die Engine selbst fort (ein Sprung würde die
+      Warteschlange leeren und eine Lücke machen) }
+    else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
   end;
   { Beim Loslassen gilt die zuletzt angezeigte Stelle. Neu rechnen wäre
     falsch: beim Abspielen läuft die Welle unter der stillen Maus weiter. }

@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.8.1
+# Elospeed StemMaker 1.9
 
 **by Elospeed**
 
@@ -238,6 +238,8 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 - **demucs bricht ab:** Das Protokoll unten im Hauptfenster zeigt die letzten Zeilen der Ausgabe. Bei ungewöhnlichen Zeichen im Pfad (z. B. Japanisch) den StemMaker-Ordner in einen einfachen Pfad verschieben. Umlaute sind ok.
 
 ## Sprachen
+
+StemMaker und StemPlayer sprechen **Deutsch, Englisch und Spanisch**. Danke an **David GJ** für die spanische Übersetzung!
 
 Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 

@@ -188,12 +188,30 @@ begin
     Result := Result + Format(_('%s wurde nicht gefunden.'), ['THIRD-PARTY-NOTICES.md']);
 end;
 
+{ Text für den Reiter "Danke", getrennt nach Spendern und Helfenden.
+  Hier steht nur, wer ausdrücklich zugestimmt hat, mit dem Namen, den er
+  selbst gewählt hat, nie mit Beträgen. Neue Namen einfach als weitere
+  Zeile in ihrer Gruppe eintragen (Namen werden nicht übersetzt). }
+function ThanksText: string;
+begin
+  Result :=
+    _('Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, ' +
+      'Fehlermeldungen oder Spenden unterstützen!') + LineEnding +
+    LineEnding +
+    _('Spender') + LineEnding +
+    '  David GJ' + LineEnding +
+    LineEnding +
+    _('Helfende') + LineEnding +
+    '  David GJ - ' + _('spanische Übersetzung') + LineEnding +
+    '  ptrex alias DJ Pretski - ' + _('Tempo-Vergleich') + LineEnding;
+end;
+
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
-  lblTitle, lblSub: TLabel;
-  memText, memLic: TMemo;
+  lblTitle, lblSub, lblThanksNote: TLabel;
+  memText, memLic, memThanks: TMemo;
   pcText: TPageControl;
-  tsHelp, tsLic: TTabSheet;
+  tsHelp, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
   btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
@@ -287,7 +305,7 @@ begin
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
 
-  { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
+  { --- Mitte: drei Reiter (Anleitung, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
   pcText.Align := alClient;
@@ -303,6 +321,27 @@ begin
   memText.ScrollBars := ssAutoVertical;
   memText.WordWrap := True;
   memText.Text := LoadReadme;
+
+  tsThanks := pcText.AddTabSheet;
+  tsThanks.Caption := _('Danke');
+  memThanks := TMemo.Create(Self);
+  memThanks.Parent := tsThanks;
+  memThanks.Align := alClient;
+  memThanks.ReadOnly := True;
+  memThanks.ScrollBars := ssAutoVertical;
+  memThanks.WordWrap := True;
+  memThanks.Text := ThanksText;
+
+  { Hinweis unter dem Textfeld, nur in diesem Reiter sichtbar }
+  lblThanksNote := TLabel.Create(Self);
+  lblThanksNote.Parent := tsThanks;
+  lblThanksNote.Align := alBottom;
+  lblThanksNote.WordWrap := True;
+  lblThanksNote.BorderSpacing.Around := 6;
+  lblThanksNote.Font.Color := clGrayText;
+  lblThanksNote.Caption := _('Hier steht nur, wer zugestimmt hat. Du hast ' +
+    'mitgeholfen und möchtest hier genannt werden? Schreib an ' +
+    'elospeed.dev@gmail.com.');
 
   tsLic := pcText.AddTabSheet;
   tsLic.Caption := _('Lizenzen');
