@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="$lang$">
+<head>
+<meta charset="utf-8">
+<title>$titel$ $version$</title>
+<link rel="stylesheet" href="handbuch.css">
+</head>
+<body>
+
+<!-- Titelseite -->
+<section class="titelseite">
+  <div class="balken"><i class="drums"></i><i class="bass"></i><i class="other"></i><i class="vox"></i></div>
+  <img class="logo" src="img/icon.png" alt="">
+  <h1 class="titel">Elospeed StemMaker</h1>
+  <p class="untertitel">$untertitel$</p>
+  <p class="version">$versionstext$ $version$ · $datum$</p>
+  <p class="umfang">$umfang$</p>
+  <div class="fuss">
+    <p>$fusszeile$</p>
+    <p>https://elospeed.github.io/StemMaker/ · elospeed.dev@gmail.com</p>
+  </div>
+</section>
+
+<!-- Inhaltsverzeichnis (Seitenzahlen trägt build.py im zweiten Durchgang ein) -->
+<nav class="inhalt">
+  <h1 class="ohne-nummer">$inhalt$</h1>
+$toc$
+</nav>
+
+<main>
+$body$
+</main>
+
+<script>
+/* Nummerierte Marken auf Bildschirmfotos: data-marken="1:12,8 2:40,8"
+   = Marke 1 bei 12 % von links und 8 % von oben usw. */
+document.querySelectorAll('img[data-marken]').forEach(function (img) {
+  var box = document.createElement('span');
+  box.className = 'markbox';
+  img.parentNode.insertBefore(box, img);
+  box.appendChild(img);
+  img.getAttribute('data-marken').trim().split(/\s+/).forEach(function (m) {
+    var t = m.split(':'), xy = t[1].split(',');
+    var d = document.createElement('span');
+    d.className = 'marke';
+    d.textContent = t[0];
+    d.style.left = xy[0] + '%';
+    d.style.top = xy[1] + '%';
+    box.appendChild(d);
+  });
+});
+/* Seitenzahlen ins Inhaltsverzeichnis (kommen von build.py) */
+var seiten = $seiten$;
+document.querySelectorAll('nav.inhalt a').forEach(function (a) {
+  var id = a.getAttribute('href').slice(1);
+  var s = document.createElement('span');
+  s.className = 'seite';
+  s.textContent = seiten[id] || '';
+  a.appendChild(s);
+});
+</script>
+</body>
+</html>

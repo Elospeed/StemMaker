@@ -1,0 +1,215 @@
+/* Elospeed StemMaker - Benutzerhandbuch (Druck A4)
+   Farben der vier Stems wie in StemMaker und auf der Projektseite. */
+
+:root {
+  --drums: #009e73;
+  --bass: #d55e00;
+  --other: #cc79a7;
+  --vox: #56b4e9;
+  --text: #1d1f23;
+  --muted: #6b6f76;
+  --line: #d9dbe0;
+  --flaeche: #f3f4f6;
+  --dunkel: #18191c;
+}
+
+@page {
+  size: A4;
+  margin: 18mm 18mm 20mm 18mm;
+  @bottom-left {
+    content: "Elospeed StemMaker";
+    font: 8.5pt "Carlito", sans-serif;
+    color: #6b6f76;
+  }
+  @bottom-right {
+    content: counter(page);
+    font: 8.5pt "Carlito", sans-serif;
+    color: #6b6f76;
+  }
+}
+/* Titelseite ohne Fusszeile */
+@page titel {
+  margin: 0;
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  margin: 0;
+  font-family: "Carlito", "DejaVu Sans", sans-serif;
+  font-size: 11pt;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+/* ---------- Titelseite ---------- */
+.titelseite {
+  page: titel;
+  break-after: page;
+  height: 297mm;
+  position: relative;
+  background: var(--dunkel);
+  color: #e8e8e8;
+  text-align: center;
+  overflow: hidden;
+}
+.titelseite .balken { display: flex; height: 9mm; }
+.titelseite .balken i { flex: 1; }
+.titelseite .balken .drums { background: var(--drums); }
+.titelseite .balken .bass { background: var(--bass); }
+.titelseite .balken .other { background: var(--other); }
+.titelseite .balken .vox { background: var(--vox); }
+.titelseite .logo { width: 46mm; margin: 62mm auto 10mm; display: block; }
+.titelseite .titel {
+  font-size: 34pt; margin: 0; letter-spacing: .5px; color: #fff;
+  border: 0; padding: 0;
+}
+.titelseite .untertitel { font-size: 20pt; margin: 4mm 0 0; color: #3ddc84; }
+.titelseite .version { font-size: 12pt; margin: 10mm 0 0; color: #9a9ca1; }
+.titelseite .umfang {
+  font-size: 11.5pt; margin: 4mm auto 0; max-width: 130mm; color: #c8cacf;
+}
+.titelseite .fuss {
+  position: absolute; left: 0; right: 0; bottom: 16mm;
+  font-size: 9.5pt; color: #9a9ca1;
+}
+.titelseite .fuss p { margin: 1mm 0; }
+
+/* ---------- Inhaltsverzeichnis ---------- */
+nav.inhalt { break-after: page; }
+nav.inhalt ul { list-style: none; padding-left: 0; margin: 0; }
+nav.inhalt > ul > li { margin-top: 2.6mm; font-weight: 700; }
+nav.inhalt ul ul { padding-left: 7mm; font-weight: 400; }
+nav.inhalt ul ul li { margin-top: .6mm; }
+nav.inhalt a {
+  display: flex; color: var(--text); text-decoration: none;
+}
+nav.inhalt a::after {
+  content: ""; flex: 1; order: 1;
+  border-bottom: 1px dotted #b5b8be; margin: 0 2mm 1.2mm;
+}
+nav.inhalt a .seite { order: 2; min-width: 7mm; text-align: right; }
+nav.inhalt .toc-section-number { display: inline-block; min-width: 9mm; }
+
+/* ---------- Überschriften ---------- */
+h1, h2, h3 { line-height: 1.2; break-after: avoid; }
+h1 {
+  font-size: 22pt;
+  margin: 0 0 6mm;
+  padding-bottom: 2.5mm;
+  border-bottom: 2.5px solid var(--text);
+}
+main h1 { break-before: page; }
+h1 .header-section-number {
+  display: inline-block; min-width: 10mm; color: var(--vox);
+}
+h2 { font-size: 14.5pt; margin: 7mm 0 2.5mm; }
+h2 .header-section-number { color: var(--vox); margin-right: 2.5mm; }
+h3 { font-size: 12pt; margin: 5mm 0 1.5mm; }
+
+p { margin: 0 0 2.6mm; orphans: 3; widows: 3; }
+ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin: .7mm 0; }
+a { color: #1f6fa8; text-decoration: none; }
+strong { font-weight: 700; }
+code {
+  font-family: "DejaVu Sans Mono", monospace; font-size: 8.8pt;
+  background: var(--flaeche); padding: .2mm 1mm; border-radius: 1mm;
+}
+pre {
+  background: var(--flaeche); padding: 3mm 4mm; border-radius: 2mm;
+  font-size: 8.8pt; line-height: 1.35; white-space: pre-wrap;
+  break-inside: avoid;
+}
+pre code { background: none; padding: 0; }
+
+/* Tastenkappen: [Leertaste]{.taste} */
+.taste {
+  display: inline-block; font-size: 9pt; line-height: 1.1;
+  padding: .5mm 1.6mm; border: 1px solid #a9adb4; border-bottom-width: 2px;
+  border-radius: 1.2mm; background: #fff; white-space: nowrap;
+}
+/* Knöpfe und Menüpunkte im Programm: [Start]{.knopf} */
+.knopf { font-weight: 700; color: #20242a; white-space: nowrap; }
+
+/* ---------- Tabellen ---------- */
+table {
+  width: 100%; border-collapse: collapse; margin: 2mm 0 4mm;
+  font-size: 10pt; break-inside: auto;
+}
+th, td { text-align: left; vertical-align: top; padding: 1.6mm 2.4mm; }
+thead th { background: var(--dunkel); color: #fff; font-weight: 700; }
+tbody tr { border-bottom: 1px solid var(--line); break-inside: avoid; }
+tbody tr:nth-child(even) { background: #fafafb; }
+td:first-child { font-weight: 700; white-space: nowrap; }
+table.frei td:first-child { white-space: normal; }
+
+/* ---------- Bilder ---------- */
+figure { margin: 3mm 0 5mm; text-align: center; break-inside: avoid; }
+figure img {
+  max-width: 100%; max-height: 120mm;
+  border: 1px solid #c4c7cc; border-radius: 1.5mm;
+  box-shadow: 0 1mm 3mm rgba(0, 0, 0, .12);
+}
+figure.klein img, img.klein { max-height: 70mm; }
+figure.ohne-rahmen img { border: 0; box-shadow: none; }
+figcaption { font-size: 9pt; color: var(--muted); margin-top: 2mm; }
+
+.markbox { position: relative; display: inline-block; max-width: 100%; }
+.markbox img { display: block; }
+.marke {
+  position: absolute; width: 6.2mm; height: 6.2mm; margin: -3.1mm 0 0 -3.1mm;
+  border-radius: 50%; background: #e0245e; color: #fff;
+  font: 700 9.5pt/6.2mm "Carlito", sans-serif; text-align: center;
+  box-shadow: 0 0 0 .6mm #fff, 0 .5mm 1.5mm rgba(0, 0, 0, .35);
+}
+/* Legende zu den Marken: Liste mit Zahl im roten Kreis */
+.marken ol { list-style: none; padding-left: 0; counter-reset: m; }
+.marken ol > li { position: relative; padding-left: 8.5mm; margin: 1.6mm 0; counter-increment: m; }
+.marken ol > li::before {
+  content: counter(m); position: absolute; left: 0; top: .2mm;
+  width: 5.4mm; height: 5.4mm; border-radius: 50%; background: #e0245e;
+  color: #fff; font-weight: 700; font-size: 8.5pt; line-height: 5.4mm; text-align: center;
+}
+
+/* ---------- Hinweiskästen: ::: tipp / ::: achtung / ::: info ---------- */
+div.tipp, div.achtung, div.info {
+  margin: 3mm 0 4mm; padding: 2.6mm 4mm 1mm 4mm;
+  border-left: 1.4mm solid var(--drums); background: #eef8f4;
+  border-radius: 0 2mm 2mm 0; break-inside: avoid;
+}
+div.achtung { border-left-color: var(--bass); background: #fdf1e9; }
+div.info { border-left-color: var(--vox); background: #edf6fc; }
+
+/* Funktionsweise: Ablauf in vier Schritten */
+.ablauf { display: flex; gap: 2.5mm; margin: 4mm 0 5mm; break-inside: avoid; }
+.ablauf > div {
+  flex: 1; border-radius: 2mm; padding: 3mm; background: var(--flaeche);
+  border-top: 1.4mm solid var(--vox); font-size: 9.6pt;
+}
+.ablauf > div:nth-child(1) { border-top-color: #9a9ca1; }
+.ablauf > div:nth-child(2) { border-top-color: var(--drums); }
+.ablauf > div:nth-child(3) { border-top-color: var(--bass); }
+.ablauf > div:nth-child(4) { border-top-color: var(--other); }
+.ablauf b { display: block; font-size: 10.5pt; margin-bottom: 1mm; }
+.ablauf p { margin: 0; }
+
+/* Die vier Stems als Farbchips */
+.stems { margin: 3mm 0 4mm; }
+.stems p { display: flex; gap: 2.5mm; margin: 0; }
+.stems p > span {
+  flex: 1; color: #fff; border-radius: 2mm; padding: 2mm 3mm;
+  font-weight: 700; font-size: 10.5pt;
+}
+.stems .klein { display: block; font-weight: 400; font-size: 8.8pt; opacity: .92; }
+.stems .drums { background: var(--drums); }
+.stems .bass { background: var(--bass); }
+.stems .other { background: var(--other); }
+.stems .vox { background: #2f8fc4; }
+
+.seitenumbruch { break-before: page; }
+.zusammen { break-inside: avoid; }
+figure.gross img, img.gross { max-height: 200mm; }
+table { break-inside: avoid; }
