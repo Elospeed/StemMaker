@@ -135,6 +135,8 @@ type
     dlgFolder: TSelectDirectoryDialog;
     pnlTop: TPanel;
     pbAccent: TPaintBox;
+    pnlFoot: TPanel;
+    pbKofi: TPaintBox;
     pnlRun: TPanel;
     pbFile: TProgressBar;
     pbTotal: TProgressBar;
@@ -151,6 +153,10 @@ type
     procedure lvFilesCustomDrawSubItem(Sender: TCustomListView; Item: TListItem;
       SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure pbAccentPaint(Sender: TObject);
+    procedure pbKofiClick(Sender: TObject);
+    procedure pbKofiMouseEnter(Sender: TObject);
+    procedure pbKofiMouseLeave(Sender: TObject);
+    procedure pbKofiPaint(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
@@ -192,6 +198,7 @@ type
     FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
     FUpdate    : TUpdateInfo;      // gefundenes Update (ohne ModelHashes)
     FHasUpdate : Boolean;          // ... wartet darauf, angeboten zu werden
+    FKofiHover : Boolean;          // Maus ist über dem Ko-fi-Knopf
     { Symbol im Infobereich (neben der Uhr), siehe "Symbol neben der Uhr" }
     FTray      : TTrayIcon;
     FTrayTimer : TTimer;           // fragt ab, ob ein zweiter Start "zeig dich" will
@@ -550,6 +557,9 @@ begin
   cbModel.ItemIndex := 0;
   cbFormat.ItemIndex := 0;
   LoadGearGlyph(btnSettings);      // Zahnrad-Symbol (uSettings)
+  { Ko-fi-Knopf unten rechts: Breite passend zum (übersetzten) Text }
+  pbKofi.Canvas.Font.Style := [fsBold];
+  pbKofi.Width := KofiButtonWidth(pbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
 
   FIniName := StemIniFileName;
   LoadSettings;
@@ -1559,6 +1569,32 @@ end;
 procedure TfrmMain.pbAccentPaint(Sender: TObject);
 begin
   DrawAccentStrip(pbAccent.Canvas, pbAccent.ClientRect, FPrefs.StemColors);
+end;
+
+{ Ko-fi-Knopf unten rechts (gezeichnet in uStatusDraw) }
+procedure TfrmMain.pbKofiPaint(Sender: TObject);
+begin
+  pbKofi.Canvas.Font.Style := [fsBold];
+  DrawKofiButton(pbKofi.Canvas, pbKofi.ClientRect, _('Kaffee spendieren'),
+    FKofiHover, pnlFoot.Color, Screen.PixelsPerInch);
+end;
+
+procedure TfrmMain.pbKofiClick(Sender: TObject);
+begin
+  OpenDonatePage;
+  LogLine('Ko-fi-Knopf im Hauptfenster geklickt');
+end;
+
+procedure TfrmMain.pbKofiMouseEnter(Sender: TObject);
+begin
+  FKofiHover := True;
+  pbKofi.Invalidate;
+end;
+
+procedure TfrmMain.pbKofiMouseLeave(Sender: TObject);
+begin
+  FKofiHover := False;
+  pbKofi.Invalidate;
 end;
 
 { Spalte "Status" der Dateiliste selbst zeichnen (Balken, Häkchen, Farben).
