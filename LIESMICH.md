@@ -106,6 +106,8 @@ Die demucs-Programme sind komplett statisch gelinkt; sie brauchen keine DLLs und
 
 ## Bedienen
 
+**Bebildertes Handbuch (PDF):** [Deutsch](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-de.pdf) · [English](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-en.pdf) · [Español](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-es.pdf). Im Programm: **Info → Handbuch (PDF)**.
+
 - Dateien oder ganze Ordner **ins Fenster ziehen**, oder „Dateien hinzufügen…“ bzw. „Ordner…“ benutzen. Du kannst sie auch direkt auf `StemMaker.exe` ziehen.
 - **Start** verarbeitet die Liste nacheinander. „Abbrechen“ stoppt sofort und räumt die Temp-Dateien auf.
 - Unter beiden Fortschrittsbalken stehen **vergangene und geschätzte Restzeit**: oben für die aktuelle Datei, unten für die ganze Liste. Gerechnet wird mit der Länge der wartenden Songs und dem Tempo dieses PCs; mit jeder fertigen Datei wird es genauer. In der Liste steht nach jedem Song, wie lange er gedauert hat, z. B. „OK (4:12)“.

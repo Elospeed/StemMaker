@@ -108,6 +108,8 @@ The demucs programs are fully statically linked; they need no DLLs and no instal
 
 ## Usage
 
+**Illustrated user manual (PDF):** [English](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-en.pdf) · [Deutsch](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-de.pdf) · [Español](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-es.pdf). In the program: **Info → Manual (PDF)**.
+
 - **Drag** files or whole folders **into the window**, or use "Add files..." or "Folder...". You can also drop them straight onto `StemMaker.exe`.
 - **Start** processes the list one file after another. "Cancel" stops immediately and cleans up the temp files.
 - Below both progress bars you see **elapsed and estimated remaining time**: the top one for the current file, the bottom one for the whole list. The estimate uses the length of the waiting songs and the speed of this PC, and gets more accurate with every finished file. After each song the list shows how long it took, e.g. "OK (4:12)".
