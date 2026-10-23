@@ -9,8 +9,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ## Unveröffentlicht
 
+## 1.9 – 23. Oktober 2026
+
 ### StemMaker – neue Sprache
-- **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“.
+- **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“. Danke an **David GJ** für die Übersetzung! Alle Helfer stehen jetzt unter „Info“ im neuen Reiter „Danke“.
 
 ### StemPlayer 1.6
 - **Loop A-B:** Ein Abschnitt wird endlos wiederholt, so wie ein Loop in Traktor. Praktisch, um eine Stelle mit Mute und Solo genau zu prüfen, z. B. ob in den Vocals noch Drums durchklingen. Punkt A und B setzt man mit den Knöpfen oder den Tasten A und B an der aktuellen Stelle, oder man zieht den Bereich mit der rechten Maustaste in einer Wellenform auf. Der Rücksprung ist nahtlos. Taste L schaltet den Loop aus und wieder an, die Rücktaste löscht ihn. Der Loop-Bereich ist in allen Wellenformen grün hinterlegt.
@@ -18,6 +20,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ### StemPlayer 1.7
 - **Deutsch, Englisch und Spanisch:** Der StemPlayer spricht jetzt dieselbe Sprache wie StemMaker. Eine eigene Einstellung braucht es nicht, er übernimmt die Sprache, die in StemMaker gewählt ist.
+- **Scrubbing:** Zieht man in der Lupe die Welle mit der linken Maustaste, hört man den Ton wie bei einer Schallplatte unter der Hand: schnell gezogen hoch, langsam tief, rückwärts gezogen rückwärts, Maus still = Stille. Geht beim Abspielen und bei Pause. Lässt man beim Abspielen los, läuft die Musik an der Stelle ohne Lücke weiter.
 
 ## 1.8.1 – 20. Oktober 2026
 

@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.8.1
+# Elospeed StemMaker 1.9
 
 **by Elospeed**
 
@@ -240,6 +240,8 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 - **demucs aborts:** The log at the bottom of the main window shows the last lines of output. If the path contains unusual characters (e.g. Japanese), move the StemMaker folder to a simple path. Umlauts are fine.
 
 ## Languages
+
+StemMaker and StemPlayer speak **German, English and Spanish**. Thanks to **David GJ** for the Spanish translation!
 
 On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time under **More settings** (gear button) → "Language:". The new language applies from the next start.
 

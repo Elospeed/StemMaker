@@ -64,6 +64,8 @@
                        Zeitanzeige) rechnet die Bilder nicht mehr neu.
                        Zoom bis 0,25 s, Raster bis 1 ms, Pfeiltasten-Schritt
                        wächst mit dem Zoom (bei 8 s 0,1 s, ganz nah 2 ms).
+    1.6  (22.10.2026)  OnScrub: meldet das Ziehen der Welle, damit man dabei
+                       den Ton hört (Scrubbing, stemengine 1.3).
   ============================================================================ }
 unit wellenform;
 
@@ -164,6 +166,9 @@ type
   { Marke verschoben: Marker = 1 (A) oder 2 (B), Final = Maustaste losgelassen }
   TMarkerMoveEvent = procedure(Sender: TObject; Marker: Integer; Frame: Int64;
                                Final: Boolean) of object;
+  { Welle wird gezogen (Active) bzw. losgelassen; Frame = Stelle unter dem
+    roten Strich. Dient dem Scrubbing (Ton beim Ziehen). }
+  TScrubEvent = procedure(Sender: TObject; Active: Boolean; Frame: Int64) of object;
 
   { TZoomView - die Lupe }
 
@@ -201,6 +206,13 @@ type
     FOnSeek   : TFrameEvent;
     FOnLoopSelect: TFrameRangeEvent;
     FOnMarkerMove: TMarkerMoveEvent;
+    FOnScrub  : TScrubEvent;
+    { Ganz nah dran (weniger als FINE_FRAMES Frames pro Pixel) ist die feine
+      Hüllkurve zu grob: mehrere Pixel teilen sich einen Eimer, die Welle
+      wird treppig. Dann liest die Lupe die echten Samples aus der .raw-Datei
+      des Originals. }
+    FRaw      : TFileStream;
+    FRawBuf   : array of SmallInt;
     procedure RenderCache;
     procedure RenderCols(X0, X1: Integer);
     procedure ScrollCache(Px: Integer);
@@ -225,7 +237,8 @@ type
     destructor Destroy; override;
     { Schritt der Pfeiltasten in Frames, wächst mit dem Zoom (1/80 der Breite) }
     function  StepFrames: Int64;
-    procedure SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
+    procedure SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64;
+                       const ARawFile: string = '');
     procedure ClearPeaks;
     procedure SetLoop(AFrom, ATo: Int64; AOn: Boolean);
     property Position: Double read FPos write SetPos;   // in Frames
@@ -233,6 +246,7 @@ type
     property OnSeek: TFrameEvent read FOnSeek write FOnSeek;
     property OnLoopSelect: TFrameRangeEvent read FOnLoopSelect write FOnLoopSelect;
     property OnMarkerMove: TMarkerMoveEvent read FOnMarkerMove write FOnMarkerMove;
+    property OnScrub: TScrubEvent read FOnScrub write FOnScrub;
     property ShowHint;
   end;
 
@@ -780,6 +794,7 @@ begin
   FBuf.Free;
   FSpareOn.Free;
   FSpareOff.Free;
+  FreeAndNil(FRaw);
   inherited Destroy;
 end;
 
@@ -801,8 +816,17 @@ begin
   Result := Max(1, Round(S * WAVE_RATE));
 end;
 
-procedure TZoomView.SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64);
+procedure TZoomView.SetPeaks(const APeaks: TPeakData; AScale: Single; ATotal: Int64;
+  const ARawFile: string);
 begin
+  FreeAndNil(FRaw);
+  if (ARawFile <> '') and FileExists(ARawFile) then
+  try
+    { fmShareDenyNone: die Engine liest dieselbe Datei gleichzeitig }
+    FRaw := TFileStream.Create(ARawFile, fmOpenRead or fmShareDenyNone);
+  except
+    FRaw := nil;          // dann eben nur die feine Hüllkurve
+  end;
   FPeaks := APeaks;
   FScale := AScale;
   FTotal := ATotal;
@@ -812,6 +836,7 @@ end;
 
 procedure TZoomView.ClearPeaks;
 begin
+  FreeAndNil(FRaw);       // vor dem Löschen der .raw-Dateien schliessen
   FPeaks.Valid := False;
   SetLength(FPeaks.Lo, 0);
   SetLength(FPeaks.Hi, 0);
@@ -1008,6 +1033,55 @@ var
     Cv.Clipping := False;
   end;
 
+  { Welle aus den echten Samples: pro Pixel Minimum und Maximum der Samples
+    darin, verbunden mit dem letzten Sample des Pixels davor, so entsteht
+    eine durchgehende Linie. False = Datei nicht lesbar -> Hüllkurve. }
+  function RenderSamples: Boolean;
+  var
+    FA, FB, Cnt, s0, s1, sx: Int64;
+    V, Prev, SLo, SHi: Double;
+    px: Integer;
+  begin
+    Result := False;
+    FA := Floor(FCacheStart + X0 * Fpp);
+    FB := Ceil(FCacheStart + X1 * Fpp) + 1;
+    if FA < 0 then FA := 0;
+    if FB > FTotal then FB := FTotal;
+    Cnt := FB - FA;
+    if Cnt <= 0 then Exit(True);
+    if Length(FRawBuf) < Cnt * 2 then SetLength(FRawBuf, Cnt * 2);
+    try
+      FRaw.Position := FA * 4;                       // 4 Byte pro Frame
+      Cnt := FRaw.Read(FRawBuf[0], Cnt * 4) div 4;
+    except
+      Exit;
+    end;
+    if Cnt <= 0 then Exit;
+    Prev := (FRawBuf[0] + FRawBuf[1]) / 65536;
+    for px := X0 to X1 - 1 do
+    begin
+      s0 := Floor(FCacheStart + px * Fpp) - FA;
+      s1 := Floor(FCacheStart + (px + 1) * Fpp) - FA;
+      if s1 <= s0 then s1 := s0 + 1;
+      if s0 < 0 then s0 := 0;
+      if s1 > Cnt then s1 := Cnt;
+      if s0 >= s1 then Continue;
+      SLo := Prev; SHi := Prev;
+      for sx := s0 to s1 - 1 do
+      begin
+        V := (FRawBuf[sx * 2] + FRawBuf[sx * 2 + 1]) / 65536;   // Mono
+        if V < SLo then SLo := V;
+        if V > SHi then SHi := V;
+        Prev := V;
+      end;
+      FCacheOn.Canvas.Pen.Color := CRms;
+      FCacheOn.Canvas.Line(px, Mid - Round(SHi * Amp), px, Mid - Round(SLo * Amp) + 1);
+      FCacheOff.Canvas.Pen.Color := CRmsOff;
+      FCacheOff.Canvas.Line(px, Mid - Round(SHi * Amp), px, Mid - Round(SLo * Amp) + 1);
+    end;
+    Result := True;
+  end;
+
 begin
   H := FCacheOn.Height;
   CW := FCacheOn.Width;
@@ -1062,6 +1136,7 @@ begin
   CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
   CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
   Amp := (H / 2 - 2) * FScale;
+  if (FRaw <> nil) and (Fpp < FINE_FRAMES) and RenderSamples then Exit;
   for x := X0 to X1 - 1 do
   begin
     F0 := FCacheStart + x * Fpp;
@@ -1246,6 +1321,7 @@ begin
       FPanPos := FPanFrom - (X - FPanX) * FramesPerPx;
       if FPanPos < 0 then FPanPos := 0;
       if FPanPos > FTotal - 1 then FPanPos := FTotal - 1;
+      if Assigned(FOnScrub) then FOnScrub(Self, True, Round(FPanPos));
       Invalidate;
     end;
   end
@@ -1275,8 +1351,12 @@ begin
       FPanning := False;
       Cursor := crHandPoint;
       Invalidate;
-    end;
-    if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+      if Assigned(FOnScrub) then FOnScrub(Self, False, Round(F))
+      else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
+    end
+    { Beim Scrubbing setzt die Engine selbst fort (ein Sprung würde die
+      Warteschlange leeren und eine Lücke machen) }
+    else if Assigned(FOnSeek) then FOnSeek(Self, Round(F));
   end;
   { Beim Loslassen gilt die zuletzt angezeigte Stelle. Neu rechnen wäre
     falsch: beim Abspielen läuft die Welle unter der stillen Maus weiter. }

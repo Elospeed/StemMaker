@@ -188,12 +188,112 @@ begin
     Result := Result + Format(_('%s wurde nicht gefunden.'), ['THIRD-PARTY-NOTICES.md']);
 end;
 
+{ --- Reiter "Danke" ---
+  Getrennt nach Spendern und Helfenden. Hier steht nur, wer ausdrücklich
+  zugestimmt hat, mit dem Namen, den er selbst gewählt hat, nie mit
+  Beträgen. Neue Namen einfach in BuildThanks in ihrer Gruppe als weitere
+  AddThanksName-Zeile eintragen (Namen werden nicht übersetzt). }
+
+const
+  THANKS_RED  = $005E5AFF;   // #FF5A5E wie das Herz im Spenden-Fenster
+  THANKS_BLUE = $00D69B2E;   // #2E9BD6, kräftiges Blau
+
+{ Hängt ein Label unten an die Liste an. Mit alTop und wachsendem Top
+  bleibt die Reihenfolge so, wie die Zeilen angelegt werden. }
+function AddThanksLabel(Box: TScrollBox; const Text: string; Size: Integer;
+  Style: TFontStyles; Color: TColor; Indent, Space: Integer): TLabel;
+begin
+  Result := TLabel.Create(Box);
+  Result.Parent := Box;
+  Result.Align := alTop;
+  Result.Top := Box.ControlCount * 100;
+  Result.WordWrap := True;
+  Result.BorderSpacing.Left := Indent;
+  Result.BorderSpacing.Right := 12;
+  Result.BorderSpacing.Top := Space;
+  Result.Font.Height := -Size;
+  Result.Font.Style := Style;
+  Result.Font.Color := Color;
+  Result.Caption := Text;
+end;
+
+{ Gruppen-Überschrift: fett und farbig, darunter ein dünner Strich in
+  derselben Farbe }
+procedure AddThanksGroup(Box: TScrollBox; const Title: string; Color: TColor);
+var
+  Line: TShape;
+begin
+  AddThanksLabel(Box, Title, 15, [fsBold], Color, 14, 16);
+  Line := TShape.Create(Box);
+  Line.Parent := Box;
+  Line.Align := alTop;
+  Line.Top := Box.ControlCount * 100;
+  Line.Height := 2;
+  Line.BorderSpacing.Left := 14;
+  Line.BorderSpacing.Right := 12;
+  Line.BorderSpacing.Top := 2;
+  Line.BorderSpacing.Bottom := 4;
+  Line.Brush.Color := Color;
+  Line.Pen.Color := Color;
+end;
+
+{ Ein Name (fett), dahinter wofür (grau). Ohne Rolle nur der Name. }
+procedure AddThanksName(Box: TScrollBox; const Name, Role: string);
+var
+  Row: TPanel;
+  L: TLabel;
+begin
+  Row := TPanel.Create(Box);
+  Row.Parent := Box;
+  Row.Align := alTop;
+  Row.Top := Box.ControlCount * 100;
+  Row.BevelOuter := bvNone;
+  Row.ParentColor := True;
+  Row.AutoSize := True;
+  Row.BorderSpacing.Left := 26;
+  Row.BorderSpacing.Top := 4;
+
+  L := TLabel.Create(Row);
+  L.Parent := Row;
+  L.Align := alLeft;
+  L.Font.Height := -13;
+  L.Font.Style := [fsBold];
+  L.Caption := Name;
+
+  if Role <> '' then
+  begin
+    L := TLabel.Create(Row);
+    L.Parent := Row;
+    L.Align := alLeft;
+    L.Left := 10000;                              // rechts vom Namen
+    L.BorderSpacing.Left := 8;
+    L.Font.Height := -13;
+    L.Font.Color := clGrayText;
+    L.Caption := '- ' + Role;
+  end;
+end;
+
+procedure BuildThanks(Box: TScrollBox);
+begin
+  AddThanksLabel(Box, _('Danke an alle, die StemMaker mit Übersetzungen, ' +
+    'Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!'),
+    13, [], clWindowText, 14, 12);
+
+  AddThanksGroup(Box, _('Spender'), THANKS_RED);
+  AddThanksName(Box, 'David GJ', '');
+
+  AddThanksGroup(Box, _('Helfende'), THANKS_BLUE);
+  AddThanksName(Box, 'David GJ', _('spanische Übersetzung'));
+  AddThanksName(Box, 'ptrex alias DJ Pretski', _('Tempo-Vergleich'));
+end;
+
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
-  lblTitle, lblSub: TLabel;
+  lblTitle, lblSub, lblThanksNote: TLabel;
   memText, memLic: TMemo;
+  sbThanks: TScrollBox;
   pcText: TPageControl;
-  tsHelp, tsLic: TTabSheet;
+  tsHelp, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
   btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
@@ -287,7 +387,7 @@ begin
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
 
-  { --- Mitte: zwei Reiter (Anleitung, Lizenzen) --- }
+  { --- Mitte: drei Reiter (Anleitung, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
   pcText.Align := alClient;
@@ -303,6 +403,27 @@ begin
   memText.ScrollBars := ssAutoVertical;
   memText.WordWrap := True;
   memText.Text := LoadReadme;
+
+  tsThanks := pcText.AddTabSheet;
+  tsThanks.Caption := _('Danke');
+  sbThanks := TScrollBox.Create(Self);
+  sbThanks.Parent := tsThanks;
+  sbThanks.Align := alClient;
+  sbThanks.Color := clWindow;
+  sbThanks.HorzScrollBar.Visible := False;
+  sbThanks.VertScrollBar.Tracking := True;
+  BuildThanks(sbThanks);
+
+  { Hinweis unter dem Textfeld, nur in diesem Reiter sichtbar }
+  lblThanksNote := TLabel.Create(Self);
+  lblThanksNote.Parent := tsThanks;
+  lblThanksNote.Align := alBottom;
+  lblThanksNote.WordWrap := True;
+  lblThanksNote.BorderSpacing.Around := 6;
+  lblThanksNote.Font.Color := clGrayText;
+  lblThanksNote.Caption := _('Hier steht nur, wer zugestimmt hat. Du hast ' +
+    'mitgeholfen und möchtest hier genannt werden? Schreib an ' +
+    'elospeed.dev@gmail.com.');
 
   tsLic := pcText.AddTabSheet;
   tsLic.Caption := _('Lizenzen');
