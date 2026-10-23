@@ -130,7 +130,7 @@ En el **primer inicio** aún faltan ffmpeg (aprox. 60 MB) y el modelo de separac
 
 Arriba está la lista de archivos, debajo los ajustes para la próxima conversión y abajo del todo el progreso y el registro.
 
-![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="@HAUPT@"}
+![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
 
 ::: marken
 1. **Info**: versión, guía, manual, actualizaciones, informe de error y registros (capítulo [8](#info)).
@@ -222,7 +222,7 @@ En la ventana principal solo está lo que se cambia en cada conversión:
 
 Todo lo que se configura una sola vez está detrás del botón del engranaje **Más ajustes…**.
 
-![La ventana «Configuración»](img/es/einstellungen.png){marken="@EINST@"}
+![La ventana «Configuración»](img/es/einstellungen.png){marken="1:2.3,11.4 2:2.3,17.7 3:51.5,27.7 4:15,46.3 5:16.6,68.1 6:2.3,96.1"}
 
 ::: marken
 1. **Partes / Auto**: cuántas partes de la canción se separan a la vez. **Auto** (por defecto) usa tantas partes como núcleos reales tenga el procesador (como máximo 4), y solo tantas como aguante la RAM (algo más de 2 GB por parte). Al lado se ve cómo se reparten los núcleos.
@@ -277,7 +277,7 @@ El StemPlayer habla el mismo idioma que StemMaker. Necesita `tools\ffmpeg.exe` d
 
 ## Vista general
 
-![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="@SP@"}
+![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
 1. **ABRIR** y nombre del archivo; a la derecha la **vista**: COMPACTO (solo controles) o FORMA DE ONDA (con la onda bajo cada stem).
@@ -350,7 +350,7 @@ Si arrastras la onda de la **lupa** hacia la izquierda o la derecha con el botó
 
 El botón **Info** de arriba a la izquierda abre la ventana Info con la versión, la fecha de compilación y el nombre del registro actual.
 
-![La ventana Info](img/es/info.png){marken="@INFO@"}
+![La ventana Info](img/es/info.png){marken="1:28.4,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
 1. **Guía**, **Gracias** y **Licencias**: la guía breve (README), todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.
