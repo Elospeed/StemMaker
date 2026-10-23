@@ -118,6 +118,7 @@
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The whole program is a 4 MB Windows exe, the separation engine is C++ (demucs.cpp) instead of Python and PyTorch. No Python or drivers to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read and a stem does not drop in volume when you bring it into your set. Low bass that the model leaves in the melody stem is moved into the bass stem, like Traktor does, so the kick and bass stay solid.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Picks the fastest build for your processor (AVX2, AVX or generic), keeps the PC awake during long runs and can shut it down when done.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>English, German and Spanish</h3><p>StemMaker and the StemPlayer speak <strong>English, Deutsch and Español</strong>, picked on the first start. Special thanks to <strong>David GJ</strong> for the Spanish translation! Everyone who helped is listed under Info in the “Thanks” tab.</p></div>
     </div>
   </div>
 </section>
@@ -165,13 +166,16 @@
         <li><strong>A waveform for every stem</strong> in its stem colour, click to jump anywhere (or switch to the compact view)</li>
         <li><strong>Mute, solo and volume</strong> for every stem, with level meters. Solo works like on a DJ mixer, hold Ctrl for several</li>
         <li><strong>A/B comparison</strong> with the original mix</li>
+        <li><strong>Loop A-B</strong>: set start and end with the A and B keys or buttons, or drag with the right mouse button across any waveform. The loop repeats without a gap, mute and solo keep working</li>
+        <li><strong>Magnifier</strong> below the waveform: a magnified section around the playhead with a time grid, where A and B can be set and moved to the millisecond</li>
+        <li><strong>Scrubbing</strong>: drag the waveform in the magnifier and the sound follows like a record under your hand, backwards too</li>
         <li><strong>“Rest” mode</strong> shows what the separation left out</li>
         <li>Opens by drag &amp; drop or straight from StemMaker</li>
       </ul>
     </div>
     <figure class="shot">
       <div class="bar"><img src="img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="img/stemplayer.png" width="820" height="766" alt="StemPlayer add-on in a dark Traktor style with a waveform, mute, solo and volume controls for drums, bass, other and vocals" loading="lazy">
+      <img src="img/stemplayer-loop-en.png" width="820" height="830" alt="StemPlayer in a dark Traktor style with an active A-B loop: waveforms, mute, solo and volume for every stem, and the magnifier showing the A and B markers up close" loading="lazy">
     </figure>
   </div>
 </section>
@@ -197,41 +201,6 @@
         </tbody>
       </table>
     </div>
-  </div>
-</section>
-
-<section id="soon" class="alt">
-  <div class="wrap split">
-    <div>
-      <span class="badge">Coming soon</span>
-      <h2>Coming with the next update</h2>
-      <p class="sub" style="margin-bottom:0">Already built and in testing. The update function in StemMaker will offer it as soon as it is released.</p>
-      <div class="soon">
-        <h3>StemPlayer with Loop A-B</h3>
-        <ul class="ticks">
-          <li><strong>Loop any part</strong> of a track to listen closely to a single passage</li>
-          <li>Set start and end with the <strong>A and B keys</strong> or buttons, or simply <strong>drag with the right mouse button</strong> across any waveform</li>
-          <li><strong>Magnifier</strong> below the waveform: a magnified section around the playhead where A and B can be set and moved to the millisecond</li>
-          <li><strong>Seamless</strong>: the loop repeats without a gap or click, mute and solo keep working</li>
-        </ul>
-      </div>
-      <div class="soon">
-        <h3>StemPlayer with scrubbing</h3>
-        <ul class="ticks">
-          <li><strong>Hear while you drag</strong>: drag the waveform in the magnifier with the left mouse button and the sound follows like a record under your hand</li>
-          <li>Fast drag sounds high, slow drag low, <strong>drag backwards and it plays backwards</strong>, mouse still means silence</li>
-          <li>Works while <strong>playing and paused</strong>, on release playback continues without a gap</li>
-        </ul>
-      </div>
-      <div class="soon">
-        <h3>StemMaker in Spanish</h3>
-        <p>StemMaker speaks <strong>Español</strong> too, alongside English and German. Special thanks to <strong>David GJ</strong> for the Spanish translation!</p>
-      </div>
-    </div>
-    <figure class="shot">
-      <div class="bar"><img src="img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="img/stemplayer-loop-en.png" width="820" height="830" alt="StemPlayer with an active A-B loop: the magnifier below the overview shows the A and B markers up close, green markers show the looped passage in every stem" loading="lazy">
-    </figure>
   </div>
 </section>
 
