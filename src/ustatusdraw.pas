@@ -3,7 +3,7 @@ unit uStatusDraw;
 { ---------------------------------------------------------------------------
   Kleine Farb-Akzente im Hauptfenster
 
-  Grundsatz: Das Hauptfenster bleibt ein normales Windows-Fenster. Nur zwei
+  Grundsatz: Das Hauptfenster bleibt ein normales Windows-Fenster. Nur drei
   Stellen bekommen etwas Farbe:
 
     1. Ein dünner Streifen in den vier Stem-Farben unter der Knopfleiste
@@ -16,6 +16,10 @@ unit uStatusDraw;
          Fehler  -> roter Text
          wartet  -> grauer Text
          sonst   -> normaler Text (übersprungen, abgebrochen)
+
+    3. Unten rechts ein kleiner Ko-fi-Knopf: abgerundet, Ko-fi-Rot,
+       weisses Herz und "Kaffee spendieren". Er sitzt in einer eigenen
+       schmalen Leiste unter dem Log und stört so beim Arbeiten nicht.
 
   Die Zeichen-Routinen hier kennen das Hauptfenster nicht. Sie bekommen
   Leinwand, Rechteck, Zustand und Farben und zeichnen nur. So lassen sie
@@ -46,6 +50,8 @@ const
   CLR_BAR_FILL   = TColor($0025B006);   // Windows-Grün  #06B025
   CLR_OK_TEXT    = TColor($00377F1A);   // dunkles Grün  #1A7F37 (gut lesbar)
   CLR_FAIL_TEXT  = TColor($001C2BC4);   // Windows-Rot   #C42B1C
+  CLR_KOFI       = TColor($005E5AFF);   // Ko-fi-Rot     #FF5A5E (wie im Danke-Fenster)
+  CLR_KOFI_HOVER = TColor($004D48E5);   // etwas dunkler #E5484D (Maus darüber)
 
 { Streifen in den vier Stem-Farben, gleich breite Teile von links nach rechts }
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
@@ -64,7 +70,66 @@ procedure DrawStatusCell(C: TCanvas; const R: TRect; Look: TStatusLook;
   Percent: Integer; const Text: string; const Colors: TStemColorArray;
   BackColor, TextColor: TColor; Highlighted: Boolean; PPI: Integer);
 
+{ Breite des Ko-fi-Knopfs für den Text (Herz + Text + Rand), in Pixel.
+  Die Schrift der Leinwand muss schon gesetzt sein (fett, siehe unten). }
+function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
+
+{ Ko-fi-Knopf zeichnen: Hintergrund BackColor, darauf der rote Knopf mit
+  weissem Herz und Text, senkrecht mittig im Rechteck R.
+  Hover = True -> Maus ist darüber, der Knopf wird etwas dunkler. }
+procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
+  Hover: Boolean; BackColor: TColor; PPI: Integer);
+
 implementation
+
+{ 96-dpi-Mass auf den Bildschirm umrechnen }
+function ScalePx(V, PPI: Integer): Integer;
+begin
+  if PPI <= 0 then PPI := 96;
+  Result := (V * PPI + 48) div 96;
+end;
+
+function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
+begin
+  { 10 Rand links, 9 Herz, 6 Abstand, Text, 10 Rand rechts }
+  Result := ScalePx(35, PPI) + C.TextWidth(Text);
+end;
+
+procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
+  Hover: Boolean; BackColor: TColor; PPI: Integer);
+var
+  B: TRect;        // der Knopf selbst
+  H, HX, HY, D: Integer;
+  Col: TColor;
+begin
+  C.Brush.Style := bsSolid;
+  C.Brush.Color := BackColor;
+  C.FillRect(R);
+
+  { Knopf: so hoch wie die Schrift plus etwas Luft, rechts bündig }
+  H := Min(R.Bottom - R.Top - ScalePx(4, PPI), C.TextHeight('Ag') + ScalePx(6, PPI));
+  B := Rect(R.Left, (R.Top + R.Bottom - H) div 2, R.Right, 0);
+  B.Bottom := B.Top + H;
+  if Hover then Col := CLR_KOFI_HOVER else Col := CLR_KOFI;
+  C.Brush.Color := Col;
+  C.Pen.Color := Col;
+  C.RoundRect(B, H, H);   // ganz runde Enden
+
+  { Herz aus zwei Kreisen und einem Dreieck (nicht jede Schrift hat ♥) }
+  D := ScalePx(5, PPI);
+  HX := B.Left + ScalePx(14, PPI);
+  HY := (B.Top + B.Bottom) div 2 - ScalePx(2, PPI);
+  C.Brush.Color := clWhite;
+  C.Pen.Color := clWhite;
+  C.Ellipse(HX - D, HY - D div 2, HX + 1, HY + D div 2 + 1);
+  C.Ellipse(HX, HY - D div 2, HX + D + 1, HY + D div 2 + 1);
+  C.Polygon([Point(HX - D, HY + 1), Point(HX + D, HY + 1), Point(HX, HY + D + ScalePx(1, PPI))]);
+
+  { Text weiss auf Rot }
+  C.Brush.Style := bsClear;
+  C.Font.Color := clWhite;
+  C.TextOut(HX + D + ScalePx(6, PPI), (B.Top + B.Bottom - C.TextHeight('Ag')) div 2, Text);
+end;
 
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
 var
