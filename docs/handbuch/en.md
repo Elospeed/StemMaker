@@ -130,7 +130,7 @@ On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (ap
 
 At the top is the list of files, below it the settings for the next conversion, and at the bottom the progress and the log.
 
-![The main window during a conversion](img/en/hauptfenster.png){marken="@HAUPT@"}
+![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
 
 ::: marken
 1. **Info**: version, guide, manual, updates, error report and logs (chapter [8](#info)).
@@ -222,7 +222,7 @@ The main window only holds what you change per conversion:
 
 Everything you set up once is behind the gear button **More settings…**.
 
-![The "Settings" window](img/en/einstellungen.png){marken="@EINST@"}
+![The "Settings" window](img/en/einstellungen.png){marken="1:2.3,11.4 2:2.3,17.7 3:51.5,27.7 4:15,46.3 5:16.6,68.1 6:2.3,96.1"}
 
 ::: marken
 1. **Parts / Auto**: how many parts of the song are separated at the same time. **Auto** (default) uses as many parts as the processor has real cores (at most 4), and only as many as the RAM can handle (a good 2 GB per part). Next to it you see how the cores are shared out.
@@ -277,7 +277,7 @@ The StemPlayer speaks the same language as StemMaker. It needs `tools\ffmpeg.exe
 
 ## Overview
 
-![The StemPlayer with waveforms and an active loop](img/en/stemplayer.png){.gross marken="@SP@"}
+![The StemPlayer with waveforms and an active loop](img/en/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
 1. **OPEN** and file name, on the right the **view**: COMPACT (controls only) or WAVEFORM (with a waveform under each stem).
@@ -350,7 +350,7 @@ If you drag the waveform in the **magnifier** left or right with the left mouse 
 
 The **Info** button at the top left opens the Info window with version, build date and the name of the current log.
 
-![The Info window](img/en/info.png){marken="@INFO@"}
+![The Info window](img/en/info.png){marken="1:28.4,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
 1. **Guide**, **Thanks** and **Licenses**: the short guide (README), everyone who helped, and the disclaimer and license texts.
