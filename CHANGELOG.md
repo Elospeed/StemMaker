@@ -10,7 +10,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## Unveröffentlicht
 
 ### StemPlayer 1.8 (Testversion)
-- **Zwei neue Designs im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt **CD** und **PLATTE**. Beide können dasselbe wie die normale Ansicht, sehen nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.
+- **Zwei neue Designs im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt **CD-Player** und **Plattenspieler**. Die Ansicht wählst du oben in einem Ausklapp-Menü, so bleibt die Fläche übersichtlich. Beide können dasselbe wie die normale Ansicht, sehen nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.
 - **CD-Player:** Display mit Zeit, Restzeit und den Wellenformen aller Stems, ein Jogwheel (der blaue Ring zeigt die Restzeit, mit der Maus gedreht hört man den Ton wie bei einer Platte unter der Hand), runde Knöpfe CUE und Play/Pause und grosse Stem-Pads zum Stummschalten und für Solo.
 - **Plattenspieler:** Jeder Stem ist ein farbiger Wellenform-Ring auf der Platte, einmal rundherum ist der ganze Track. Ein Zeiger zeigt die aktuelle Stelle, der Tonarm wandert mit, ein Loop erscheint als grüner Bogen. Klick auf einen Ring springt dorthin, Drehen der Platte mit der Maus ist Scrubbing.
 - **Loop-Spur in beiden Designs:** Lupe und Loop-Knöpfe A, B, AN und × wie in der normalen Ansicht.

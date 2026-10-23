@@ -86,6 +86,7 @@ type
     FPressed: Boolean;
     FRound: Boolean;
     FRingColor: TColor;
+    FDropDown: Boolean;
     procedure SetDown(AValue: Boolean);
     procedure SetLitColor(AValue: TColor);
     procedure SetGlyph(AValue: TDJGlyph);
@@ -112,6 +113,8 @@ type
       Der Ring leuchtet immer in RingColor, nicht nur im gedrückten Zustand. }
     property RoundShape: Boolean read FRound write FRound;
     property RingColor: TColor read FRingColor write FRingColor;
+    { Auswahlknopf: kleines Dreieck rechts zeigt, dass ein Menü aufklappt }
+    property DropDown: Boolean read FDropDown write FDropDown;
     property Caption;
     property Font;
     property ShowHint;
@@ -454,6 +457,15 @@ begin
         TS.Layout := tlCenter;
         TS.SingleLine := True;
         TS.Clipping := True;
+        if FDropDown then
+        begin
+          { Dreieck nach unten am rechten Rand, Text links davon zentriert }
+          S := 4;
+          CX := R.Right - 14;
+          Polygon([Point(CX - S, CY - 2), Point(CX + S, CY - 2), Point(CX, CY + 3)]);
+          R.Right := R.Right - 24;
+          R.Left := R.Left + 4;
+        end;
         Brush.Style := bsClear;
         TextRect(R, 0, 0, Caption, TS);
         Brush.Style := bsSolid;

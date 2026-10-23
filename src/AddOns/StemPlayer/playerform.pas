@@ -119,8 +119,10 @@
                        den Ton wie bei einer Schallplatte unter der Hand,
                        schnell gezogen hoch, langsam tief, rückwärts
                        rückwärts (stemengine 1.3).
-    1.8  (22.10.2026)  Zwei neue Designs zur Wahl (Knöpfe CD und PLATTE neben
-                       KOMPAKT / WELLENFORM), gleiche Funktionen, anderer Look:
+    1.8  (22.10.2026)  Zwei neue Designs zur Wahl, gleiche Funktionen, anderer
+                       Look. Die Ansicht wählt man jetzt in einem Ausklapp-Menü
+                       (KOMPAKT / WELLENFORM / CD-PLAYER / PLATTENSPIELER) statt
+                       mit vier Knöpfen, damit die Fläche übersichtlich bleibt.
                        CD-Player mit Display, Jogwheel (Ring = Restzeit, Drehen
                        = Scrubbing), runden CUE/Play-Knöpfen und Stem-Pads;
                        Plattenspieler mit einem Wellenform-Ring pro Stem auf
@@ -139,7 +141,7 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform,
+  LazFileUtils, IniFiles, MMSystem, Menus, uLang, mp4stem, stemengine, djcontrols, wellenform,
   bildtakt, designviews;
 
 const
@@ -187,10 +189,8 @@ type
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
     LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
-    BtnViewCompact: TDJButton; // Ansicht: kompakt (ohne Wellenformen)
-    BtnViewWave   : TDJButton; // Ansicht: mit Wellenformen
-    BtnViewCD     : TDJButton; // Ansicht: Design CD-Player
-    BtnViewPlatte : TDJButton; // Ansicht: Design Plattenspieler
+    BtnView       : TDJButton;  // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
+    MnuView       : TPopupMenu; // Menü mit den vier Ansichten (Kompakt, Wellenform, CD, Platte)
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
     BtnPlay     : TDJButton;
@@ -227,6 +227,7 @@ type
     CDLoop      : TDJPanel;    // Loop-Spur: Lupe + Loop-Knöpfe
     CDPads      : TDJPanel;    // Stem-Pads + Fader
     CDSource    : TDJPanel;    // Quelle: Öffnen + Ansicht
+    CDViewCap   : TLabel;      // Überschrift "ANSICHT" über dem Auswahlknopf
     CDMode      : TDJPanel;    // Hören: Stems / Original / Rest / Reset
     CDMaster    : TDJPanel;    // Master-Fader + Ausgangspegel
     Jog         : TJogWheel;
@@ -309,6 +310,10 @@ type
     procedure SetWavesVisible(AShow: Boolean);
     procedure SaveViewSetting;
     procedure ViewClick(Sender: TObject);
+    procedure ViewMenuClick(Sender: TObject);
+    procedure ViewMenuMeasure(Sender: TObject; ACanvas: TCanvas; var AWidth, AHeight: Integer);
+    procedure ViewMenuDraw(Sender: TObject; ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState);
+    function  ViewName(V: TViewMode): string;
     { Designs CD-Player / Plattenspieler }
     procedure BuildDesignUI;
     function  MakeBox(AParent: TWinControl; ALeft, ATop, AWidth, AHeight: Integer): TDJPanel;
@@ -605,6 +610,8 @@ procedure TMainForm.BuildUI;
 var
   i, W: Integer;
   L: TLabel;
+  V: TViewMode;     // Schleife über die Ansichten fürs Menü
+  Item: TMenuItem;  // ein Menüeintrag
 begin
   W := ClientWidth - 2 * MARGIN;   // Breite der Flächen
 
@@ -622,29 +629,29 @@ begin
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
   LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
-  LblFile.SetBounds(110, 8, W - 110 - 364, 24);
+  LblFile.SetBounds(110, 8, W - 110 - 220, 24);
 
-  { Ansicht umschalten: vier aneinanderliegende Knöpfe, der aktive ist hell }
-  BtnViewCompact := MakeButton(PnlTop, _('KOMPAKT'), W - 354, 14, 96, 28);
-  BtnViewWave    := MakeButton(PnlTop, _('WELLENFORM'), W - 259, 14, 116, 28);
-  BtnViewCD      := MakeButton(PnlTop, _('CD'), W - 144, 14, 56, 28);
-  BtnViewPlatte  := MakeButton(PnlTop, _('PLATTE'), W - 89, 14, 88, 28);
-  BtnViewCompact.Anchors := [akTop, akRight];
-  BtnViewWave.Anchors := [akTop, akRight];
-  BtnViewCD.Anchors := [akTop, akRight];
-  BtnViewPlatte.Anchors := [akTop, akRight];
-  BtnViewCompact.Hint := _('Kompakte Ansicht ohne Wellenformen (Taste W)');
-  BtnViewWave.Hint := _('Ansicht mit Wellenform unter jedem Stem (Taste W)');
-  BtnViewCD.Hint := _('Design CD-Player: Jogwheel, Stem-Pads und Display');
-  BtnViewPlatte.Hint := _('Design Plattenspieler: jeder Stem als Ring auf der Platte');
-  BtnViewCompact.ShowHint := True;
-  BtnViewWave.ShowHint := True;
-  BtnViewCD.ShowHint := True;
-  BtnViewPlatte.ShowHint := True;
-  BtnViewCompact.OnClick := @ViewClick;
-  BtnViewWave.OnClick := @ViewClick;
-  BtnViewCD.OnClick := @ViewClick;
-  BtnViewPlatte.OnClick := @ViewClick;
+  { Ansicht wählen: ein Knopf mit der aktuellen Ansicht, darunter klappt
+    ein Menü mit allen vier Ansichten auf (statt vier Knöpfen nebeneinander,
+    damit auf der Fläche selbst nur das Arbeitswerkzeug bleibt) }
+  BtnView := MakeButton(PnlTop, '', W - 200, 14, 200, 28);
+  BtnView.Anchors := [akTop, akRight];
+  BtnView.DropDown := True;
+  BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform, CD-Player oder Plattenspieler (Taste W: Kompakt/Wellenform)');
+  BtnView.ShowHint := True;
+  BtnView.OnClick := @ViewClick;
+  MnuView := TPopupMenu.Create(Self);
+  MnuView.OwnerDraw := True;   // dunkel wie der Player, nicht im hellen Windows-Stil
+  MnuView.OnMeasureItem := @ViewMenuMeasure;
+  MnuView.OnDrawItem := @ViewMenuDraw;
+  for V := Low(TViewMode) to High(TViewMode) do
+  begin
+    Item := TMenuItem.Create(MnuView);
+    Item.Caption := ViewName(V);
+    Item.Tag := Ord(V);          // Tag = Ansicht, nie über den (übersetzten) Text
+    Item.OnClick := @ViewMenuClick;
+    MnuView.Items.Add(Item);
+  end;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -1058,6 +1065,7 @@ begin
 
   CDSource := MakeBox(PnlCD, 800, 334, 190, 112);
   MakeCaption(CDSource, _('QUELLE'), 10, 6);
+  CDViewCap := MakeCaption(CDSource, _('ANSICHT'), 10, 60);
   CDMode := MakeBox(PnlCD, 800, 452, 190, 84);
   MakeCaption(CDMode, _('HÖREN'), 10, 6);
   CDMaster := MakeBox(PnlCD, 800, 542, 190, 92);
@@ -1204,15 +1212,7 @@ begin
 
   { Quelle: Öffnen + Ansicht }
   PlaceCtl(BtnOpen, CDSource, 10, 24, 170, 26);
-  PlaceCtl(BtnViewCompact, CDSource, 10, 54, 84, 24);
-  PlaceCtl(BtnViewWave, CDSource, 96, 54, 84, 24);
-  PlaceCtl(BtnViewCD, CDSource, 10, 82, 84, 24);
-  PlaceCtl(BtnViewPlatte, CDSource, 96, 82, 84, 24);
-  { etwas kleinere Schrift, damit auch "FORMA DE ONDA" (Spanisch) passt }
-  BtnViewCompact.Font.Size := 7;
-  BtnViewWave.Font.Size := 7;
-  BtnViewCD.Font.Size := 7;
-  BtnViewPlatte.Font.Size := 7;
+  PlaceCtl(BtnView, CDSource, 10, 78, 170, 26);
 
   { Hören }
   PlaceCtl(BtnModeStems, CDMode, 10, 24, 84, 24);
@@ -1267,11 +1267,8 @@ begin
   PlaceCtl(BtnClip, PLMaster, 392, 47, 66, 26);
 
   { Öffnen + Ansicht }
-  PlaceCtl(BtnOpen, PnlPlatte, 520, 484, 92, 32);
-  PlaceCtl(BtnViewCompact, PnlPlatte, 616, 484, 90, 32);
-  PlaceCtl(BtnViewWave, PnlPlatte, 710, 484, 106, 32);
-  PlaceCtl(BtnViewCD, PnlPlatte, 820, 484, 70, 32);
-  PlaceCtl(BtnViewPlatte, PnlPlatte, 894, 484, 96, 32);
+  PlaceCtl(BtnOpen, PnlPlatte, 520, 484, 262, 32);
+  PlaceCtl(BtnView, PnlPlatte, 790, 484, 200, 32);
 
   { Loop-Spur: Original-Welle zum Springen, Lupe, Loop-Knöpfe }
   PlaceCtl(TrkPos, PLLoop, 12, 8, 744, 26);
@@ -1361,10 +1358,6 @@ begin
     BtnStop.Caption := '';
     BtnStop.RoundShape := False;
     BtnPlay.RoundShape := False;
-    BtnViewCompact.Font.Size := Font.Size;   // wieder wie das Fenster
-    BtnViewWave.Font.Size := Font.Size;
-    BtnViewCD.Font.Size := Font.Size;
-    BtnViewPlatte.Font.Size := Font.Size;
     for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := FShowWaves;
     Constraints.MinWidth := 720;
     if FShowWaves then Constraints.MinHeight := BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA
@@ -1383,12 +1376,26 @@ begin
   end;
 end;
 
+{ Auswahlknopf zeigt die aktuelle Ansicht, im Menü ist sie abgehakt }
 procedure TMainForm.UpdateViewButtons;
+var
+  i: Integer;
 begin
-  BtnViewCompact.Down := FView = vmCompact;
-  BtnViewWave.Down := FView = vmWave;
-  BtnViewCD.Down := FView = vmCD;
-  BtnViewPlatte.Down := FView = vmPlatte;
+  BtnView.Caption := ViewName(FView);
+  for i := 0 to MnuView.Items.Count - 1 do
+    MnuView.Items[i].Checked := MnuView.Items[i].Tag = Ord(FView);
+end;
+
+{ Anzeigename einer Ansicht (Knopf und Menü) }
+function TMainForm.ViewName(V: TViewMode): string;
+begin
+  case V of
+    vmCompact: Result := _('KOMPAKT');
+    vmWave:    Result := _('WELLENFORM');
+    vmCD:      Result := _('CD-PLAYER');
+  else
+    Result := _('PLATTENSPIELER');
+  end;
 end;
 
 { Pads, Farbstreifen, Ringe und Punkte wie die Stem-Zeilen färben:
@@ -1587,13 +1594,63 @@ begin
   end;
 end;
 
+{ Klick auf den Auswahlknopf: Menü direkt unter dem Knopf aufklappen }
 procedure TMainForm.ViewClick(Sender: TObject);
+var
+  P: TPoint;   // linke untere Ecke des Knopfs in Bildschirmkoordinaten
 begin
-  if Sender = BtnViewCD then SetView(vmCD)
-  else if Sender = BtnViewPlatte then SetView(vmPlatte)
-  else if Sender = BtnViewWave then SetView(vmWave)
-  else SetView(vmCompact);
+  P := BtnView.ClientToScreen(Point(0, BtnView.Height));
+  MnuView.PopUp(P.X, P.Y);
+end;
+
+{ Ansicht im Menü gewählt }
+procedure TMainForm.ViewMenuClick(Sender: TObject);
+begin
+  SetView(TViewMode((Sender as TMenuItem).Tag));
   SaveViewSetting;
+end;
+
+{ Menüeinträge so breit wie der Knopf und gut klickbar hoch }
+procedure TMainForm.ViewMenuMeasure(Sender: TObject; ACanvas: TCanvas;
+  var AWidth, AHeight: Integer);
+begin
+  ACanvas.Font.Assign(Font);
+  ACanvas.Font.Style := [fsBold];
+  AWidth := Math.Max(BtnView.Width - 20, ACanvas.TextWidth((Sender as TMenuItem).Caption) + 40);
+  AHeight := 30;
+end;
+
+{ Menüeintrag im Player-Stil: dunkel, unter der Maus heller,
+  die aktuelle Ansicht mit grünem Streifen links und heller Schrift }
+procedure TMainForm.ViewMenuDraw(Sender: TObject; ACanvas: TCanvas;
+  ARect: TRect; AState: TOwnerDrawState);
+var
+  Item: TMenuItem;   // der zu zeichnende Eintrag
+  TS: TTextStyle;    // Textausrichtung
+begin
+  Item := Sender as TMenuItem;
+  with ACanvas do
+  begin
+    if odSelected in AState then Brush.Color := BlendColor(DJ_BTN, clWhite, 0.10)
+    else Brush.Color := DJ_PANEL;
+    FillRect(ARect);
+    if Item.Checked then
+    begin
+      Brush.Color := DJ_GREEN;
+      FillRect(ARect.Left, ARect.Top + 5, ARect.Left + 4, ARect.Bottom - 5);
+    end;
+    Font.Assign(Self.Font);
+    Font.Style := [fsBold];
+    if Item.Checked or (odSelected in AState) then Font.Color := DJ_TEXT
+    else Font.Color := $00B0B0B0;
+    TS := TextStyle;
+    TS.Layout := tlCenter;
+    TS.SingleLine := True;
+    Brush.Style := bsClear;
+    TextRect(Rect(ARect.Left + 16, ARect.Top, ARect.Right - 8, ARect.Bottom),
+      ARect.Left + 16, ARect.Top, Item.Caption, TS);
+    Brush.Style := bsSolid;
+  end;
 end;
 
 { Wellenform-Berechnung abbrechen und warten, bis der Thread seine
