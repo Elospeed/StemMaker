@@ -55,6 +55,16 @@ const
   DISPLAY_BG = $00110F0E; // Display des CD-Players   #0E0F11
 
 type
+  { Eigenes 32-Bit-Bild (Windows-DIB) mit Speicher-DC und direktem Zugriff
+    auf die Pixel. Für den Tonarm mit weichen Kanten und Transparenz. }
+  TDib = record
+    DC  : HDC;
+    Bmp : HBITMAP;
+    Old : HBITMAP;    // vorher im DC ausgewähltes Bild (zum Aufräumen)
+    Bits: PDWord;     // Pixel $AARRGGBB, Zeile für Zeile von oben
+    W, H: Integer;
+  end;
+
   { ---------- Pad-Knopf in der Stemfarbe ---------- }
   TStemPad = class(TGraphicControl)
   private
@@ -147,7 +157,12 @@ type
     FBack     : TBitmap;  // vorgezeichnet: Teller, Rillen, Ringe, Etikett
     FBuf      : TBitmap;
     FDirty    : Boolean;  // FBack neu zeichnen (Ringe, Farben, Titel geändert)
-    FHandQ, FSpinQ, FArmQ: Integer;   // zuletzt gezeichnete Lage von Zeiger, Etikett, Tonarm
+    FHandQ, FSpinQ, FArmQ: Integer;   // zuletzt gezeichnete Lage von Zeiger, Etikett, Tonarm (1/4 Pixel)
+    { Tonarm als fertiges Bild mit weichen Kanten (siehe RenderArm) }
+    FArm      : TDib;
+    FArmX, FArmY: Integer;   // Lage des Bildes im Steuerelement
+    FArmKey   : Integer;     // Nadel-Radius in 1/4 Pixel, mit dem FArm gezeichnet ist
+    FArmSize  : Integer;     // Width * 10000 + Height beim Zeichnen von FArm
     { Drehen mit der Maus }
     FArmed    : Boolean;
     FDragging : Boolean;
@@ -166,6 +181,7 @@ type
     function  Fraction: Double;
     procedure StylusRadius(out RS: Double);
     procedure RenderBack;
+    procedure RenderArm(PX, PY, SX, SY, VX, VY: Double);
     function  AngleAt(X, Y: Integer): Double;
     function  RadiusAt(X, Y: Integer): Double;
   protected
@@ -246,6 +262,51 @@ begin
   SetBrushOrgEx(DC, 0, 0, nil);   // nötig nach HALFTONE (laut Windows-Doku)
   StretchBlt(DC, 0, 0, Small.Width, Small.Height,
              Big.Canvas.Handle, 0, 0, Big.Width, Big.Height, SRCCOPY);
+end;
+
+{ Bild mit Transparenz (vormultipliertes Alpha) aus gdi32. Eigener Name,
+  damit es nicht mit einer Deklaration in der Windows-Unit kollidiert. }
+function DibAlphaBlend(hdcDest: HDC; xDest, yDest, wDest, hDest: Integer;
+  hdcSrc: HDC; xSrc, ySrc, wSrc, hSrc: Integer; Blend: DWORD): BOOL; stdcall;
+  external 'gdi32.dll' name 'GdiAlphaBlend';
+
+const
+  { BLENDFUNCTION: AC_SRC_OVER, Flags 0, Deckkraft 255, AC_SRC_ALPHA }
+  BLEND_PIXEL_ALPHA = $01FF0000;
+
+procedure DibFree(var D: TDib);
+begin
+  if D.DC <> 0 then
+  begin
+    SelectObject(D.DC, D.Old);
+    DeleteObject(D.Bmp);
+    DeleteDC(D.DC);
+  end;
+  FillChar(D, SizeOf(D), 0);
+end;
+
+{ Neues schwarzes, ganz durchsichtiges 32-Bit-Bild }
+procedure DibCreate(var D: TDib; W, H: Integer);
+var
+  BI: Windows.BITMAPINFO;
+  P: Pointer;
+begin
+  DibFree(D);
+  FillChar(BI, SizeOf(BI), 0);
+  BI.bmiHeader.biSize := SizeOf(BITMAPINFOHEADER);
+  BI.bmiHeader.biWidth := W;
+  BI.bmiHeader.biHeight := -H;      // negativ = erste Zeile oben
+  BI.bmiHeader.biPlanes := 1;
+  BI.bmiHeader.biBitCount := 32;
+  BI.bmiHeader.biCompression := BI_RGB;
+  P := nil;
+  D.DC := CreateCompatibleDC(0);
+  D.Bmp := Windows.CreateDIBSection(D.DC, BI, DIB_RGB_COLORS, P, 0, 0);
+  D.Old := SelectObject(D.DC, D.Bmp);
+  D.Bits := PDWord(P);
+  D.W := W;
+  D.H := H;
+  if D.Bits <> nil then FillChar(D.Bits^, W * H * 4, 0);
 end;
 
 { Text waagrecht zentriert um CX ausgeben (Oberkante Y) }
@@ -647,6 +708,7 @@ end;
 
 destructor TTurntable.Destroy;
 begin
+  DibFree(FArm);
   FBack.Free;
   FBuf.Free;
   inherited Destroy;
@@ -699,7 +761,7 @@ begin
   StylusRadius(RS);
   if (Round(Fraction * 1440) <> FHandQ) or
      (Round(FPos / FFramesPerRev * 360) mod 360 <> FSpinQ) or
-     (Round(RS * 2) <> FArmQ) then
+     (Round(RS * 4) <> FArmQ) then
     Invalidate;
 end;
 
@@ -928,7 +990,8 @@ begin
   StylusRadius(RS);
   FHandQ := Round(Fraction * 1440);
   FSpinQ := Round(FPos / FFramesPerRev * 360) mod 360;
-  FArmQ := Round(RS * 2);
+  FArmQ := Round(RS * 4);
+  RS := FArmQ / 4;   // Tonarm genau zur Lage zeichnen, die auch das Neuzeichnen auslöst
 
   with FBuf.Canvas do
   begin
@@ -987,30 +1050,120 @@ begin
       SY := CY + AA * UY + H * NY;
       VX := (SX - PX) / L;   // Richtung Drehpunkt -> Nadel
       VY := (SY - PY) / L;
-      { Gegengewicht hinter dem Drehpunkt }
-      Pen.Width := 12;
-      Pen.Color := $00585452;
-      Line(Round(PX - VX * 8), Round(PY - VY * 8), Round(PX - VX * 30), Round(PY - VY * 30));
-      { Rohr }
-      Pen.Width := 5;
-      Pen.Color := $00A8A8A8;
-      Line(PX, PY, Round(SX - VX * 20), Round(SY - VY * 20));
-      Pen.Width := 1;
-      Pen.Color := $00E0E0E0;
-      Line(PX - 1, PY - 1, Round(SX - VX * 20) - 1, Round(SY - VY * 20) - 1);
-      { Tonkopf }
-      Pen.Width := 10;
-      Pen.Color := $00383634;
-      Line(Round(SX - VX * 22), Round(SY - VY * 22), Round(SX + VX * 3), Round(SY + VY * 3));
-      { Lager oben drauf }
-      Pen.Width := 1;
-      Pen.Color := $00909090;
-      Brush.Color := $00C8C8C8;
-      Circle(FBuf.Canvas, PX, PY, 8);
+      { Tonarm als ein Stück mit weichen Kanten. Vorher wurden Rohr und
+        Tonkopf einzeln mit ganzen Pixeln gezeichnet: die beiden Teile
+        sprangen zu verschiedenen Zeitpunkten um ein Pixel und wackelten
+        gegeneinander. Jetzt wird der Arm nur neu gerechnet, wenn die
+        Nadel um 1/4 Pixel weiterwandert, und jedes Bild nur noch kopiert. }
+      if (FArmQ <> FArmKey) or (FArmSize <> Self.Width * 10000 + Self.Height) or
+         (FArm.DC = 0) then
+      begin
+        RenderArm(PX, PY, SX, SY, VX, VY);
+        FArmKey := FArmQ;
+        FArmSize := Self.Width * 10000 + Self.Height;
+      end;
+      if FArm.DC <> 0 then
+        DibAlphaBlend(Handle, FArmX, FArmY, FArm.W, FArm.H,
+                      FArm.DC, 0, 0, FArm.W, FArm.H, BLEND_PIXEL_ALPHA);
     end;
     Pen.Width := 1;
   end;
   Canvas.Draw(0, 0, FBuf);
+end;
+
+{ Tonarm in doppelter Grösse zeichnen und weich verkleinern, als Bild mit
+  Transparenz (FArm). Zweimal gezeichnet: einmal farbig auf Schwarz, einmal
+  weiss auf Schwarz als Maske. Nach dem Verkleinern ist die Maske die
+  Deckkraft jedes Pixels, das farbige Bild ist schon mit ihr multipliziert
+  (genau das Format, das GdiAlphaBlend erwartet).
+  P = Drehpunkt, S = Nadel, V = Richtung P -> S (Länge 1). }
+procedure TTurntable.RenderArm(PX, PY, SX, SY, VX, VY: Double);
+const
+  PAD = 14;   // Rand um den Arm (halbe Breite des Gegengewichts + Luft)
+var
+  Big, Small: array[0..1] of TDib;   // [0] = Farbe, [1] = Maske
+  C: TCanvas;
+  X0, Y0, X1, Y1: Double;
+  BX, BY, W, H, k, i: Integer;
+  M, CR, CG, CB: DWord;
+  Pix: DWord;
+
+  procedure Seg(AX, AY, BX2, BY2: Double; AWidth: Integer; AColor: TColor);
+  begin
+    C.Pen.Width := AWidth * SS;
+    if k = 1 then C.Pen.Color := clWhite else C.Pen.Color := AColor;
+    C.Line(Round((AX - BX) * SS), Round((AY - BY) * SS),
+           Round((BX2 - BX) * SS), Round((BY2 - BY) * SS));
+  end;
+
+begin
+  { Umriss: Gegengewicht hinter P bis Nadelspitze vor S }
+  X0 := Min(PX - VX * 34, SX + VX * 6);  X1 := Max(PX - VX * 34, SX + VX * 6);
+  Y0 := Min(PY - VY * 34, SY + VY * 6);  Y1 := Max(PY - VY * 34, SY + VY * 6);
+  X0 := Min(X0, PX);  X1 := Max(X1, PX);
+  Y0 := Min(Y0, PY);  Y1 := Max(Y1, PY);
+  BX := Floor(X0) - PAD;
+  BY := Floor(Y0) - PAD;
+  W := Ceil(X1) + PAD - BX;
+  H := Ceil(Y1) + PAD - BY;
+  FillChar(Big, SizeOf(Big), 0);
+  FillChar(Small, SizeOf(Small), 0);
+  C := TCanvas.Create;
+  try
+    for k := 0 to 1 do
+    begin
+      DibCreate(Big[k], W * SS, H * SS);
+      DibCreate(Small[k], W, H);
+      C.Handle := Big[k].DC;
+      C.Brush.Style := bsSolid;
+      { Gegengewicht, Rohr mit Lichtkante, Tonkopf }
+      Seg(PX - VX * 8, PY - VY * 8, PX - VX * 30, PY - VY * 30, 12, $00585452);
+      Seg(PX, PY, SX - VX * 21, SY - VY * 21, 5, $00A8A8A8);
+      if k = 0 then
+        Seg(PX - 1, PY - 1, SX - VX * 21 - 1, SY - VY * 21 - 1, 1, $00E0E0E0);
+      Seg(SX - VX * 21, SY - VY * 21, SX + VX * 3, SY + VY * 3, 10, $00383634);
+      { Lager oben drauf }
+      C.Pen.Width := SS;
+      if k = 1 then
+      begin
+        C.Pen.Color := clWhite;
+        C.Brush.Color := clWhite;
+      end
+      else
+      begin
+        C.Pen.Color := $00909090;
+        C.Brush.Color := $00C8C8C8;
+      end;
+      Circle(C, (PX - BX) * SS, (PY - BY) * SS, 8 * SS);
+      C.Handle := 0;
+      SetStretchBltMode(Small[k].DC, HALFTONE);
+      SetBrushOrgEx(Small[k].DC, 0, 0, nil);
+      StretchBlt(Small[k].DC, 0, 0, W, H, Big[k].DC, 0, 0, W * SS, H * SS, SRCCOPY);
+    end;
+    GdiFlush;   // alle Zeichenbefehle ausführen, bevor die Pixel gelesen werden
+
+    DibCreate(FArm, W, H);
+    if (FArm.Bits <> nil) and (Small[0].Bits <> nil) and (Small[1].Bits <> nil) then
+      for i := 0 to W * H - 1 do
+      begin
+        M := Small[1].Bits[i] and $FF;          // Deckkraft aus der Maske
+        Pix := Small[0].Bits[i];
+        CR := Min((Pix shr 16) and $FF, M);      // vormultipliert: nie heller als die Deckkraft
+        CG := Min((Pix shr 8) and $FF, M);
+        CB := Min(Pix and $FF, M);
+        FArm.Bits[i] := (M shl 24) or (CR shl 16) or (CG shl 8) or CB;
+      end;
+    FArmX := BX;
+    FArmY := BY;
+  finally
+    C.Handle := 0;
+    C.Free;
+    for k := 0 to 1 do
+    begin
+      DibFree(Big[k]);
+      DibFree(Small[k]);
+    end;
+  end;
 end;
 
 function TTurntable.AngleAt(X, Y: Integer): Double;
