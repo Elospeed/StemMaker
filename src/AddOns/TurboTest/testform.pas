@@ -190,6 +190,27 @@ begin
     Result := Format('%d:%.2d min', [T div 60, T mod 60]);
 end;
 
+{ Windows-Fehlercode in einer Zeile, z.B. "887A0004". Grafikkarten-Fehler
+  (887Axxxx) sagen mehr als das allgemeine 80004005 daneben. }
+function HexCode(const Line: string): string;
+var
+  I, N: Integer;
+begin
+  I := Pos('887A', UpperCase(Line));
+  if (I > 0) and (I + 7 <= Length(Line)) then
+    Exit(Copy(Line, I, 8));
+  Result := '?';
+  N := 0;
+  for I := Length(Line) downto 1 do
+    if Line[I] in ['0'..'9', 'A'..'F', 'a'..'f'] then
+      Inc(N)
+    else
+    begin
+      if N = 8 then Exit(Copy(Line, I + 1, 8));
+      N := 0;
+    end;
+end;
+
 { für mailto: alles außer Buchstaben und Ziffern als %XX (UTF-8) }
 function UrlEncode(const S: string): string;
 var
@@ -617,14 +638,23 @@ begin
     Pct := Round(DotFloat(Copy(Line, P + 1, Pos('%', Line) - P - 1), 0));
     pbTest.Position := 60 + Pct * 2 div 5;
   end
-  else if Copy(Line, 1, 16) = '  Trennen      : ' then
-    FSepSec := DotFloat(StringReplace(Copy(Line, 17, MaxInt), ' s', '', []), 0)
+  else if Pos('Trennen      :', Line) > 0 then
+    FSepSec := DotFloat(StringReplace(Copy(Line, Pos(':', Line) + 1, MaxInt), ' s', '', []), 0)
   else if Pos('Sekunden Rechenzeit pro Audiominute', Line) > 0 then
     FSepPerMin := DotFloat(Copy(Line, Pos('=>', Line) + 2, Pos(' Sekunden', Line) - Pos('=>', Line) - 2), 0)
   else if (Copy(Line, 1, 7) = '[ERROR]') or (Copy(Line, 1, 3) = '-> ') then
   begin
     FErrors.Add(Line);
     Txt := Line;
+    { Meldungen von DirectML sind lang (mit Quellpfad): nur was gemacht wurde
+      und den Fehlercode zeigen, ganz stehen sie im Bericht }
+    if Copy(Line, 1, 7) = '[ERROR]' then
+    begin
+      Txt := Trim(Copy(Line, 8, MaxInt));
+      P := Pos(': ', Txt);
+      if (P > 0) and (Length(Txt) > 80) then
+        Txt := Copy(Txt, 1, P - 1) + ': ' + L('Fehler', 'error', 'error') + ' ' + HexCode(Line);
+    end;
     if Length(Txt) > 100 then Txt := Copy(Txt, 1, 97) + '...';
     AddStep('  ! ' + Txt);
   end;
@@ -633,6 +663,7 @@ end;
 procedure TTestForm.ThreadDone(Sender: TObject);
 var
   Gpu, S: string;
+  LoadSec: Double;
 begin
   FDone := True;
   btnClose.Caption := L('Schliessen', 'Close', 'Cerrar');
@@ -653,6 +684,11 @@ begin
   lblStep.Caption := L('Fertig - bitte den Bericht senden', 'Done - please send the report',
     'Terminado - envía el informe, por favor');
   AddStep('• ' + L('Fertig', 'Done', 'Terminado'));
+  { Laden des Modells kommt einmal pro Song dazu }
+  if Pos('Grafikkarte', FDevice) = 1 then
+    LoadSec := DotFloat(FValues.Values['gpu_laden_s'], 5)
+  else
+    LoadSec := DotFloat(FValues.Values['cpu_laden_s'], 5);
   Gpu := FValues.Values['gpu_name'];
   if Pos('|', Gpu) > 0 then Gpu := Copy(Gpu, 1, Pos('|', Gpu) - 1);
   if Pos('Grafikkarte', FDevice) = 1 then
@@ -664,7 +700,7 @@ begin
   S := S + ' ' + Format(L('Trennen: %s pro Minute Musik. Ein Song von 3 Minuten ist in etwa %s getrennt.',
     'Separation: %s per minute of music. A 3-minute song is separated in about %s.',
     'Separación: %s por minuto de música. Una canción de 3 minutos se separa en unos %s.'),
-    [SecText(FSepPerMin), SecText(3 * FSepPerMin + DotFloat(FValues.Values['gpu_laden_s'], 5))]);
+    [SecText(FSepPerMin), SecText(3 * FSepPerMin + LoadSec)]);
   lblResult.Caption := S + LineEnding + L('Bitte jetzt "Per Mail senden" oder "Bericht kopieren".',
     'Please click "Send by e-mail" or "Copy report" now.',
     'Ahora pulsa "Enviar por correo" o "Copiar informe".');
@@ -674,7 +710,11 @@ procedure TTestForm.BuildReport;
 var
   R: TStringList;
   I: Integer;
+  S, Home: string;
+  FS: TFormatSettings;
 begin
+  FS := DefaultFormatSettings;
+  FS.DecimalSeparator := '.';
   R := TStringList.Create;
   try
     R.Add('StemMaker Turbo-Test ' + TOOL_VERSION + '  ' + FormatDateTime('yyyy-mm-dd hh:nn', Now));
@@ -683,20 +723,30 @@ begin
     R.Add('  Betriebssystem : ' + SysWindowsVersion);
     R.Add('  Prozessor      : ' + SysCPUName);
     R.Add('  Kerne          : ' + IntToStr(TThread.ProcessorCount) + ' logische');
-    R.Add('  Arbeitsspeicher: ' + Format('%.1f GB', [SysRAMTotalMB / 1024]));
+    R.Add('  Arbeitsspeicher: ' + Format('%.1f GB', [SysRAMTotalMB / 1024], FS));
     R.Add('  Grafikkarte    : ' + SysGPUInfo);
-    R.Add('  Sprache        : ' + GLang);
+    case GLang of
+      'd': R.Add('  Sprache        : de');
+      's': R.Add('  Sprache        : es');
+    else
+      R.Add('  Sprache        : en');
+    end;
     R.Add('');
     R.Add('== Ergebnis ==');
     if FThread.Failed <> '' then
       R.Add('  FEHLER         : ' + FThread.Failed);
-    R.Add('  Vortest CPU    : ' + FValues.Values['cpu_s_pro_min'] + ' s pro Minute Musik');
-    R.Add('  Vortest GPU    : ' + FValues.Values['gpu_name'] + ' -> ' + FValues.Values['gpu_status'] +
-      ', ' + FValues.Values['gpu_s_pro_min'] + ' s pro Minute, Abstand zur CPU ' +
-      FValues.Values['gpu_snr_db'] + ' dB');
+    R.Add('  Vortest CPU    : ' + FValues.Values['cpu_s_pro_min'] + ' s pro Minute Musik, Laden ' +
+      FValues.Values['cpu_laden_s'] + ' s');
+    S := '  Vortest GPU    : ' + FValues.Values['gpu_name'] + ' -> ' + FValues.Values['gpu_status'];
+    if FValues.Values['gpu_s_pro_min'] <> '' then
+      S := S + ', ' + FValues.Values['gpu_s_pro_min'] + ' s pro Minute Musik, Laden ' +
+        FValues.Values['gpu_laden_s'] + ' s';
+    if FValues.Values['gpu_snr_db'] <> '' then
+      S := S + ', Abstand zur CPU ' + FValues.Values['gpu_snr_db'] + ' dB';
+    R.Add(S);
     R.Add('  Gerät beim Song: ' + FDevice);
     R.Add(Format('  Song 67 s      : Trennen %.1f s (%.1f s pro Minute Musik), ganzer Aufruf %.1f s',
-      [FSepSec, FSepPerMin, FThread.SepWallSec]));
+      [FSepSec, FSepPerMin, FThread.SepWallSec], FS));
     if FThread.LoadText <> '' then
       R.Add(FThread.LoadText);
     if FErrors.Count > 0 then
@@ -709,9 +759,14 @@ begin
     R.Add('');
     R.Add('== Ausgabe StemOnnx ==');
     for I := 0 to FRaw.Count - 1 do
-      if Pos('[THREAD 0]', FRaw[I]) = 0 then   // Fortschritt weglassen
+      { Fortschritt und Dateinamen (mit Benutzerordner) weglassen }
+      if (Pos('[THREAD 0]', FRaw[I]) = 0) and (Pos('Writing wav file', FRaw[I]) = 0) then
         R.Add('  ' + FRaw[I]);
     FReport := R.Text;
+    { Benutzername kommt so nicht in den Bericht }
+    Home := SysUtils.GetEnvironmentVariable('USERPROFILE');
+    if Home <> '' then
+      FReport := StringReplace(FReport, Home, '%USERPROFILE%', [rfReplaceAll, rfIgnoreCase]);
   finally
     R.Free;
   end;
