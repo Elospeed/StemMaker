@@ -1,0 +1,121 @@
+# Turbo-Test als Vor-Release für externe Tester (z. B. aus dem Mixxx-Forum).
+#
+# Packt StemMaker-Turbo-Test.zip aus dem fertigen Build-Artefakt (gleicher
+# Commit) und legt es als Vor-Release mit eigenem Tag an. Die Tester bekommen
+# nur den Download-Link. Das Modell kommt NICHT ins ZIP, der Test lädt es selbst.
+#
+# Tags beginnen bewusst nicht mit "test-", sonst löscht der Job "aufraeumen"
+# aus build.yml das Vor-Release wieder.
+#
+# Auslöser: Push auf den Turbo-Branch (nur wenn sich diese Datei ändert) oder
+# von Hand mit "Run workflow". Gibt es den Tag schon, passiert nichts.
+
+name: Turbo-Test Vor-Release
+
+on:
+  push:
+    branches: [elospeed/onnx-engine-pdbfg7]
+    paths: [.github/workflows/turbo-test.yml]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag des Vor-Releases (z. B. turbo-test-2)"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  TAG: ${{ inputs.tag || 'turbo-test-1' }}
+
+jobs:
+  vorab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Gibt es den Tag schon?
+        id: da
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "Vor-Release $TAG gibt es schon, nichts zu tun."
+            echo "fertig=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Auf den Build dieses Commits warten
+        if: steps.da.outputs.fertig != '1'
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Build läuft parallel (Pull Request oder main), höchstens 40 Minuten warten
+          for i in $(seq 1 80); do
+            RUN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --commit "$GITHUB_SHA" \
+              --json databaseId,status,conclusion \
+              --jq '[.[] | select(.conclusion == "success")][0].databaseId // empty')
+            if [ -n "$RUN" ]; then echo "run=$RUN" >> "$GITHUB_OUTPUT"; exit 0; fi
+            OFFEN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --commit "$GITHUB_SHA" \
+              --json status --jq '[.[] | select(.status != "completed")] | length')
+            if [ "$OFFEN" = "0" ] && [ "$i" -gt 4 ]; then
+              echo "::error::Kein erfolgreicher Build für $GITHUB_SHA"; exit 1
+            fi
+            sleep 30
+          done
+          echo "::error::Build nicht rechtzeitig fertig"; exit 1
+
+      - name: Exes holen
+        if: steps.da.outputs.fertig != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${{ steps.build.outputs.run }}" --repo "$GITHUB_REPOSITORY" \
+            --pattern 'StemMaker-Win64-*' --dir art
+          EXES=$(dirname "$(find art -name StemMaker-Turbo-Test.exe | head -1)")
+          test -f "$EXES/onnx/StemOnnx.exe"
+          (cd "$EXES" && sha256sum -c --ignore-missing SHA256SUMS.txt)
+          echo "EXES=$EXES" >> "$GITHUB_ENV"
+
+      - name: ZIP packen
+        if: steps.da.outputs.fertig != '1'
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg zip
+          mkdir -p ausgabe
+          ffmpeg -v error -y -i src/AddOns/TurboTest/musik/The-Hardline.flac \
+            -map_metadata -1 -fflags +bitexact -c:a pcm_s16le ausgabe/The-Hardline.wav
+          sh src/AddOns/TurboTest/paket.sh "$PWD/$EXES" "$PWD/$EXES/onnx" \
+            "$PWD/ausgabe/The-Hardline.wav" "$PWD/ausgabe/StemMaker-Turbo-Test.zip"
+
+      - name: Vor-Release anlegen
+        if: steps.da.outputs.fertig != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SHA=$(sha256sum ausgabe/StemMaker-Turbo-Test.zip | cut -d' ' -f1)
+          cat > notes.md <<EOF
+          **StemMaker 2.0 Turbo-Test (pre-release, not a StemMaker version)**
+
+          A small standalone test that measures how fast the new Turbo engine of StemMaker 2.0 separates stems on your PC, with the CPU and the graphics card. Nothing is installed.
+
+          1. Download StemMaker-Turbo-Test.zip and extract the whole ZIP into a folder.
+          2. Double-click StemMaker-Turbo-Test.exe (if Windows SmartScreen warns: "More info" -> "Run anyway").
+          3. Wait 2 to 10 minutes. The test downloads the separation model once (84 MB).
+          4. Click "Send by e-mail" or "Copy report" and send the report to elospeed.dev@gmail.com.
+          5. Close. Model, test music and program are deleted.
+
+          The report contains Windows version, processor, RAM, graphics card with driver, the measured times and the load. No personal data.
+
+          ---
+          **Deutsch:** ZIP entpacken, StemMaker-Turbo-Test.exe starten, warten, Bericht per Mail senden oder kopieren, schliessen. Es wird nichts installiert.
+
+          **Español:** Descomprime el ZIP, abre StemMaker-Turbo-Test.exe, espera, envía o copia el informe y cierra. No se instala nada.
+
+          Test music: "The Hardline" by Elospeed. SHA-256 of the ZIP: \`$SHA\`
+          EOF
+          gh release create "$TAG" ausgabe/StemMaker-Turbo-Test.zip --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --prerelease --title "StemMaker 2.0 Turbo-Test" --notes-file notes.md
+          echo "Download: https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/StemMaker-Turbo-Test.zip"
