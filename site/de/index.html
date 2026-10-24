@@ -205,6 +205,53 @@
   </div>
 </section>
 
+<section id="bald" class="alt">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <span class="badge">Demnächst</span>
+        <h2>StemMaker 2.0 mit Turbo</h2>
+        <p class="sub" style="margin-bottom:0">Die grösste Änderung seit dem ersten Release: eine neue Trenn-Engine, die ein Vielfaches schneller ist. Schon gebaut und im Test. Die Update-Funktion von StemMaker bietet es an, sobald es erschienen ist.</p>
+        <div class="soon">
+          <h3>Turbo-Engine</h3>
+          <ul class="ticks">
+            <li><strong>Auf der CPU etwa 6- bis 10-mal schneller</strong> als bisher, mit dem gleichen Modell (htdemucs) und <strong>gleicher Qualität</strong>: Die Stems sind nachgemessen praktisch identisch</li>
+            <li><strong>Grafikkarte automatisch (Beta)</strong>: NVIDIA, AMD und Intel über DirectML, ohne Zusatz-Installation. StemMaker probiert die Karte zuerst an einem Stück Musik aus und nimmt sie nur, wenn sie richtig und schneller rechnet, sonst rechnet die CPU</li>
+            <li>Weiterhin <strong>kein Python, kein CUDA, kein Konto</strong>, alles läuft auf deinem PC</li>
+          </ul>
+        </div>
+        <div class="soon">
+          <h3>Vortest beim ersten Start</h3>
+          <p>Ein kleines Fenster misst mit Fortschrittsbalken CPU und Grafikkarte und sagt am Ende, <strong>wie lange ein 3-Minuten-Track auf deinem PC dauert</strong>.</p>
+        </div>
+        <div class="soon">
+          <h3>Klassisch bleibt als Rückfall</h3>
+          <p>Die bewährte Engine demucs.cpp lässt sich in den Einstellungen wählen und <strong>springt automatisch ein</strong>, falls Turbo bei einer Datei scheitert. Die Liste läuft weiter. Lange DJ-Mixe brauchen mit Turbo zudem wenig Arbeitsspeicher.</p>
+        </div>
+      </div>
+      <figure class="shot light">
+        <div class="bar"><img src="../img/icon-32.png" alt=""><span>Turbo-Vortest</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+        <img src="../img/turbo-vortest.png" width="598" height="463" alt="Fenster Turbo-Vortest nach dem Test: StemMaker trennt mit der Grafikkarte NVIDIA GeForce RTX 4060 Ti, ein Track von 3 Minuten dauert etwa 27 Sekunden" loading="lazy">
+      </figure>
+    </div>
+    <div class="race">
+      <h3>So viel schneller: ein Track von 4 Minuten</h3>
+      <div class="pc">
+        <b>Intel i5-2500 (2011, 4 Kerne)</b>
+        <div class="row"><span>Klassisch, CPU</span><span class="track"><i style="width:100%"></i></span><span class="t">ca. 27 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:13%"></i></span><span class="t">ca. 3½ min</span></div>
+      </div>
+      <div class="pc">
+        <b>Intel i7-12700KF (2021, 12 Kerne) mit GeForce RTX 4060 Ti</b>
+        <div class="row"><span>Klassisch, CPU</span><span class="track"><i style="width:28%"></i></span><span class="t">ca. 7–8 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:3.7%"></i></span><span class="t">ca. 1 min</span></div>
+        <div class="row turbo"><span>Turbo, Grafikkarte</span><span class="track"><i style="width:1%"></i></span><span class="t">ca. 16 s</span></div>
+      </div>
+      <p class="note">Reine Trennzeit mit htdemucs (Standard), gemessen mit Testversionen der Turbo-Engine. Das Verpacken in die Stem-Datei kommt dazu (wenige Sekunden pro Songminute). Wie schnell es auf deinem PC geht, zeigt der Vortest.</p>
+    </div>
+  </div>
+</section>
+
 <section id="faq" class="alt">
   <div class="wrap">
     <h2>Fragen und Antworten</h2>
