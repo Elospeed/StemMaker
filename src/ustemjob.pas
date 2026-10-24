@@ -1515,6 +1515,7 @@ var
   Mem: Integer;
   Proc: TProcessUTF8;
   Load: TLoadSampler;              // Auslastung CPU/Kerne/Grafikkarte beim Trennen
+  LoadLines: TStringArray;
   Buf: array[0..4095] of Char;
   Pending: string;                 // angefangene Zeile, noch ohne Zeilenende
   N, I, K: Integer;
@@ -1639,8 +1640,13 @@ begin
     end;
     {$ENDIF}
     if Load <> nil then
-      if FUsedTurbo then LogLine(Load.Summary('Turbo'))
-      else LogLine(Load.Summary('demucs'));
+    begin
+      { jede Zeile einzeln, damit alle eine Uhrzeit bekommen }
+      if FUsedTurbo then LoadLines := Load.Summary('Turbo').Split([LineEnding])
+      else LoadLines := Load.Summary('demucs').Split([LineEnding]);
+      for I := 0 to High(LoadLines) do
+        LogLine(LoadLines[I]);
+    end;
     LogLine(Format('  Beendet mit Code %d', [Result]));
   finally
     Load.Free;

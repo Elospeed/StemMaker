@@ -241,7 +241,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 702;
+  Height := 716;
   ShowHint := True;
 
   { --- Umwandlung --- }
@@ -283,7 +283,7 @@ begin
     'eingestellt wie vorher. Der Bildschirm darf ausgehen.'));
 
   { --- Engine (ab 2.0) --- }
-  gb := NewGroup(_('Engine (trennt die Stems)'), 92);
+  gb := NewGroup(_('Engine (trennt die Stems)'), 106);
   NewLabel(gb, 12, 10, _('Engine:'));
   cbEngine := TComboBox.Create(Self);
   cbEngine.Parent := gb;
@@ -314,9 +314,12 @@ begin
     'auf diesem PC etwa dauert');
   btnTest.ShowHint := True;
   btnTest.OnClick := @btnVortestClick;
-  lblTurbo := NewLabel(gb, 12, 66, '');
+  { Ergebnis des Vortests, bis zwei Zeilen (auf Windows war eine Zeile
+    zu kurz und unten abgeschnitten) }
+  lblTurbo := NewLabel(gb, 12, 64, '');
   lblTurbo.AutoSize := False;
-  lblTurbo.SetBounds(12, 66, 560, 16);
+  lblTurbo.WordWrap := True;
+  lblTurbo.SetBounds(12, 64, 560, 30);
   lblTurbo.Font.Color := clGrayText;
   lblTurbo.ShowHint := True;
 
