@@ -204,6 +204,53 @@
   </div>
 </section>
 
+<section id="soon" class="alt">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <span class="badge">Coming soon</span>
+        <h2>StemMaker 2.0 with Turbo</h2>
+        <p class="sub" style="margin-bottom:0">The biggest change since the first release: a new separation engine that is many times faster. Already built and in testing. The update function in StemMaker will offer it as soon as it is released.</p>
+        <div class="soon">
+          <h3>Turbo engine</h3>
+          <ul class="ticks">
+            <li><strong>About 6 to 10 times faster on the CPU</strong> than before, with the same model (htdemucs) and <strong>the same quality</strong>: measured, the stems are practically identical</li>
+            <li><strong>Graphics card used automatically (beta)</strong>: NVIDIA, AMD and Intel via DirectML, nothing extra to install. StemMaker first tries the card on a piece of music and only uses it if it computes correctly and faster, otherwise the CPU does the work</li>
+            <li>Still <strong>no Python, no CUDA, no account</strong>, everything runs on your PC</li>
+          </ul>
+        </div>
+        <div class="soon">
+          <h3>Pre-test on first start</h3>
+          <p>A small window with a progress bar measures CPU and graphics card and tells you <strong>how long a 3-minute track will take on your PC</strong>.</p>
+        </div>
+        <div class="soon">
+          <h3>Classic stays as a fallback</h3>
+          <p>The proven demucs.cpp engine can be selected in the settings and <strong>takes over automatically</strong> if Turbo fails on a file. The list keeps running. With Turbo, long DJ mixes also need little memory.</p>
+        </div>
+      </div>
+      <figure class="shot light">
+        <div class="bar"><img src="img/icon-32.png" alt=""><span>Turbo pre-test</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+        <img src="img/turbo-pretest-en.png" width="600" height="470" alt="Turbo pre-test window: progress bar, the measuring steps for CPU and graphics card and the forecast for a 3-minute track" loading="lazy">
+      </figure>
+    </div>
+    <div class="race">
+      <h3>How much faster: one 4-minute track</h3>
+      <div class="pc">
+        <b>Intel i5-2500 (2011, 4 cores)</b>
+        <div class="row"><span>Classic, CPU</span><span class="track"><i style="width:100%"></i></span><span class="t">approx. 27 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:13%"></i></span><span class="t">approx. 3½ min</span></div>
+      </div>
+      <div class="pc">
+        <b>Intel i7-12700KF (2021, 12 cores) with GeForce RTX 4060 Ti</b>
+        <div class="row"><span>Classic, CPU</span><span class="track"><i style="width:28%"></i></span><span class="t">approx. 7–8 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:3.7%"></i></span><span class="t">approx. 1 min</span></div>
+        <div class="row turbo"><span>Turbo, graphics card</span><span class="track"><i style="width:1%"></i></span><span class="t">approx. 16 s</span></div>
+      </div>
+      <p class="note">Separation time only, with htdemucs (default), measured with test versions of the Turbo engine. Packing into the stem file comes on top (a few seconds per minute of music). The pre-test shows how fast it is on your PC.</p>
+    </div>
+  </div>
+</section>
+
 <section id="faq" class="alt">
   <div class="wrap">
     <h2>Questions and answers</h2>
