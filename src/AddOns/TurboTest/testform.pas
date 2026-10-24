@@ -741,7 +741,8 @@ begin
     if FValues.Values['gpu_s_pro_min'] <> '' then
       S := S + ', ' + FValues.Values['gpu_s_pro_min'] + ' s pro Minute Musik, Laden ' +
         FValues.Values['gpu_laden_s'] + ' s';
-    if FValues.Values['gpu_snr_db'] <> '' then
+    { Abstand nur, wenn die Grafikkarte wirklich gerechnet hat (sonst steht 0 dB) }
+    if (FValues.Values['gpu_snr_db'] <> '') and (FValues.Values['gpu_s_pro_min'] <> '') then
       S := S + ', Abstand zur CPU ' + FValues.Values['gpu_snr_db'] + ' dB';
     R.Add(S);
     R.Add('  Gerät beim Song: ' + FDevice);
