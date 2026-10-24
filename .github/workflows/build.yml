@@ -85,7 +85,7 @@ jobs:
         run: |
           set -e
           # -B = alle Units des Projekts neu übersetzen (kein alter Stand aus einem Cache)
-          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi src/AddOns/StemDecks/StemDecks.lpi src/AddOns/StemDecks/Stem51.lpi; do
+          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi src/AddOns/StemDecks/StemDecks.lpi src/AddOns/StemDecks/Stem51.lpi src/AddOns/TurboTest/TurboTest.lpi; do
             echo "::group::$lpi"
             lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 "$lpi"
             echo "::endgroup::"
@@ -95,7 +95,7 @@ jobs:
         run: |
           set -e
           mkdir -p ausgabe
-          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe src/AddOns/StemDecks/StemDecks.exe src/AddOns/StemDecks/Stem51.exe ausgabe/
+          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe src/AddOns/StemDecks/StemDecks.exe src/AddOns/StemDecks/Stem51.exe src/AddOns/TurboTest/StemMaker-Turbo-Test.exe ausgabe/
 
           # Debug-Infos entfernen (StemMaker: ca. 29 MB -> 3,5 MB). Es fehlen dann
           # nur die Zeilennummern im Absturz-Log. strip.exe liegt bei FPC dabei.
