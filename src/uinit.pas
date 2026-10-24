@@ -66,6 +66,10 @@ const
   DEF_FFMPEG_SHA256 = 'd350ded1fd523fdae90064c11b954497d2ba8f9ef3b10a2447f6717acc210af0';
   DEF_MODEL_SHA256_V4 = '72b17c42d308982ddb5069bc3bf48b81a5aac4cb6516e4366c0fa7cef6df0064';
   DEF_MODEL_SHA256_V3 = 'f72a3b8ecce3aa50da9e062a91c46367e15b5f5a71d070874217c5e4cb6b35a4';
+  DEF_MODEL_SHA256_FT_DRUMS = 'cda268755cc80deb5f4616a99f9d09f26bc5ce3882aa35e0bc504708a12604bb';
+  DEF_MODEL_SHA256_FT_BASS = 'e6ded215aa15fb4eff7a37f3a51fd596ee17c94ae0ddb7ef3f2f6ecf8b86cdb5';
+  DEF_MODEL_SHA256_FT_OTHER = 'cbc315571584d512e7853c9d40a499182393a7f4155cb8723a9040a685c2435b';
+  DEF_MODEL_SHA256_FT_VOCALS = '19186500a45a551a034d96e9500415ebe73c8bd570bf55337ddc8cc8f53a9120';
   FFMPEG_MB = 60;                       // ungefähre Downloadgröße für die Anzeige (feste Version aus update.json)
   MIN_MODEL_SIZE = 40 * 1024 * 1024;    // echte Modelle sind 53..160 MB groß
 
@@ -220,7 +224,15 @@ begin
     if N = 'ggml-model-htdemucs-4s-f16.bin' then
       Result := DEF_MODEL_SHA256_V4
     else if N = 'ggml-model-hdemucs_mmi-v3-f16.bin' then
-      Result := DEF_MODEL_SHA256_V3;
+      Result := DEF_MODEL_SHA256_V3
+    else if N = 'ggml-model-htdemucs_ft_drums-4s-f16.bin' then
+      Result := DEF_MODEL_SHA256_FT_DRUMS
+    else if N = 'ggml-model-htdemucs_ft_bass-4s-f16.bin' then
+      Result := DEF_MODEL_SHA256_FT_BASS
+    else if N = 'ggml-model-htdemucs_ft_other-4s-f16.bin' then
+      Result := DEF_MODEL_SHA256_FT_OTHER
+    else if N = 'ggml-model-htdemucs_ft_vocals-4s-f16.bin' then
+      Result := DEF_MODEL_SHA256_FT_VOCALS;
   end;
 end;
 
@@ -426,7 +438,7 @@ begin
   { Zuerst update.json holen (max. 5 s): Dort stehen die festen Download-
     Adressen und die SHA-256-Prüfsummen. Klappt das nicht (offline, GitHub
     gestört), wird mit den eingebauten Adressen und Prüfsummen geladen
-    (siehe BuiltinHash; für die htdemucs_ft-Modelle gibt es noch keine). }
+    (siehe BuiltinHash). }
   HaveInfo := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, E);
   if HaveInfo then
     LogLine(Format('update.json gelesen (Version %s, ffmpeg %s)', [Info.Version, Info.FFmpegVer]))
