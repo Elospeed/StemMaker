@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, UTF8Process, Process, FileUtil, LazFileUtils, IniFiles,
   {$IFDEF CPUX86_64}cpu,{$ENDIF}     // Unit 'cpu' = AVX2-Erkennung
   {$IFDEF WINDOWS}Windows,{$ENDIF}
-  uStemMP4, uLog;
+  uStemMP4, uLog, uLoad;
 
 type
   { Welches Trenn-Modell benutzt wird }
@@ -1514,6 +1514,7 @@ var
   LastMemCheck: QWord;
   Mem: Integer;
   Proc: TProcessUTF8;
+  Load: TLoadSampler;              // Auslastung CPU/Kerne/Grafikkarte beim Trennen
   Buf: array[0..4095] of Char;
   Pending: string;                 // angefangene Zeile, noch ohne Zeilenende
   N, I, K: Integer;
@@ -1544,6 +1545,7 @@ begin
   Pending := '';
   LastMemCheck := 0;
   Mem := 0;
+  Load := nil;
   Proc := TProcessUTF8.Create(nil);
   try
     Proc.Executable := Exe;
@@ -1570,6 +1572,8 @@ begin
     {$IFDEF WINDOWS}
     AddToToolJob(Proc.ProcessHandle);   // stirbt mit StemMaker, siehe oben
     {$ENDIF}
+    if IsDemucs then
+      Load := TLoadSampler.Create(Proc.ProcessHandle, Proc.ProcessID);
 
     { Hauptschleife: Ausgabe lesen, solange das Programm läuft }
     while True do
@@ -1598,6 +1602,7 @@ begin
         if Mem > FPeakMemMB then FPeakMemMB := Mem;
       end;
       {$ENDIF}
+      if Load <> nil then Load.Tick;
 
       if FCancelled then
       begin
@@ -1633,8 +1638,12 @@ begin
         LogLine('  demucs Speicher (Spitze): unbekannt');
     end;
     {$ENDIF}
+    if Load <> nil then
+      if FUsedTurbo then LogLine(Load.Summary('Turbo'))
+      else LogLine(Load.Summary('demucs'));
     LogLine(Format('  Beendet mit Code %d', [Result]));
   finally
+    Load.Free;
     Proc.Free;
   end;
 end;
