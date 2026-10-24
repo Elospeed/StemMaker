@@ -65,6 +65,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <wchar.h>
 #include <math.h>
 #include <dxgi.h>
@@ -672,6 +673,22 @@ static int device_lost(void)
       || strstr(g_lasterr, "887a0005") || strstr(g_lasterr, "887a0006") || strstr(g_lasterr, "887a0007");
 }
 
+/* Kurzer Grund für "Probe abgestürzt": nur der Windows-Fehlercode (z. B.
+   887A0006), nicht die lange Meldung von ONNX Runtime mit Quellpfad */
+static void crash_reason(char *merk, size_t merk_size)
+{
+  static const char *pre[] = { "887A", "887a", "8007" };
+  for (int k = 0; k < 3; k++) {
+    const char *p = strstr(g_lasterr, pre[k]);
+    if (p && isxdigit((unsigned char)p[4]) && isxdigit((unsigned char)p[5])
+          && isxdigit((unsigned char)p[6]) && isxdigit((unsigned char)p[7])) {
+      snprintf(merk, merk_size, "aus: Probe abgestürzt (Fehler %.8s)", p);
+      return;
+    }
+  }
+  snprintf(merk, merk_size, "aus: Probe abgestürzt");
+}
+
 
 /* ---------- Grafikkarte prüfen ---------- */
 
@@ -698,7 +715,7 @@ static OrtSession *try_gpu(int gpu_id, float *in, float *res, const float *res_c
     /* zweimal: der erste Lauf richtet die Grafikkarte erst ein */
     int ok = !ort_fail(run_segment(g, g_mem, in, res, &t1), "Probe auf der Grafikkarte");
     if (ok) ok = !ort_fail(run_segment(g, g_mem, in, res, &t2), "Probe auf der Grafikkarte");
-    if (!ok) snprintf(merk, merk_size, "aus: Probe abgestürzt (%.60s)", g_lasterr);
+    if (!ok) crash_reason(merk, merk_size);
     if (t_gpu) *t_gpu = t2;
     if (t_first) *t_first = t1;
     if (ok && !plausible(res, &mx)) {
@@ -955,7 +972,7 @@ static int run_vortest(const wchar_t *model_file, int gpu_id, const wchar_t *erg
       for (int q = 0; q < 2 && dev != DEV_CPU; q++) {
         w0 = now_s();
         if (ort_fail(run_segment(g, g_mem, in, res, NULL), "Test auf der Grafikkarte")) {
-          snprintf(merk, sizeof merk, "aus: Probe abgestürzt (%.60s)", g_lasterr);
+          crash_reason(merk, sizeof merk);
           dev = DEV_CPU;
           wall_gpu = 0;
         } else {
