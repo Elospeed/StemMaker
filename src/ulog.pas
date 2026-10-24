@@ -600,7 +600,7 @@ begin
     '  Kerne          : ' + IntToStr(TThread.ProcessorCount) + ' logische' + LineEnding +
     '  Arbeitsspeicher: ' + Format('%.1f GB', [SysRAMTotalMB / 1024]) + LineEnding +
     '  Grafikkarte    : ' + SysGPUInfo + LineEnding +
-    '                   (wird NICHT genutzt - demucs.cpp rechnet nur mit der CPU)';
+    '                   (Turbo nutzt sie nur, wenn sie im Vortest richtig und schneller rechnet)';
 end;
 
 initialization

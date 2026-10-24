@@ -1,4 +1,4 @@
-# StemOnnx – schnelle Trenn-Engine (in Arbeit)
+# StemOnnx – Turbo-Engine von StemMaker
 
 [English](README.md)
 
@@ -7,7 +7,7 @@ StemOnnx trennt Songs mit demselben KI-Modell wie StemMaker (htdemucs = Demucs v
 - auf der **Grafikkarte** über DirectML (NVIDIA, AMD, Intel, ohne Zusatz-Installation)
 - ohne passende Grafikkarte auf der **CPU**, dort etwa 4 bis 6x schneller als demucs.cpp
 
-**Stand: getrennt von StemMaker.** StemMaker benutzt weiterhin demucs.cpp. Nichts in diesem Ordner wird in StemMaker eingebaut, bevor die Engine fertig getestet ist. Die bewährte demucs.cpp-Engine bleibt danach als Rückfall erhalten.
+**Stand: ab StemMaker 2.0 eingebaut (Version 0.4) und dort Standard („Turbo“).** Das Paket liegt im Release unter `tools\onnx\`. Die bewährte demucs.cpp-Engine bleibt als „Klassisch“ wählbar und springt automatisch ein, wenn StemOnnx bei einer Datei mit einem Fehler endet.
 
 ## Qualität
 
@@ -41,6 +41,8 @@ Die ersten vier Parameter sind dieselben wie bei demucs.cpp, damit StemMaker die
 
 ```
 StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile] [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]
+StemOnnx.exe <modell> --vortest [--gpu <nummer>] [--ergebnis <datei>]
+StemOnnx.exe --karten
 ```
 
 - `<modell>`: `ggml-model-htdemucs-4s-f16.bin` aus `StemMaker\models`, oder für htdemucs_ft der Ordner mit den 4 ft-Dateien
@@ -50,6 +52,10 @@ StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile] [--geraet auto|gpu|c
 - Das Ergebnis der Prüfung merkt sich StemOnnx in `%LOCALAPPDATA%\StemOnnx\geraet.txt`, zusammen mit Name und Treiber-Version der Grafikkarte. Hat die Karte versagt, wird sie beim nächsten Start gleich übersprungen (Werkstatt-PC mit GT 1030: 1,5 statt 28,5 s Start). Hat sie bestanden, entfällt beim nächsten Start der Vergleichs-Abschnitt auf der CPU (nur noch die Plausibilitätsprüfung), das spart auf schnellen PCs 1 bis 2 s pro Song. Nach einem Treiber-Update oder mit `--neu-pruefen` wird wieder voll geprüft. Ohne echte Grafikkarte wird gar nicht erst probiert.
 - Ergebnis: `target_0_drums.wav`, `target_1_bass.wav`, `target_2_other.wav`, `target_3_vocals.wav` (32-Bit-Float) wie bei demucs.cpp, Fortschritt als `( 12.345%)`-Zeilen wie bei demucs.cpp.
 - hdemucs_mmi (v3) wird nicht unterstützt: Exit-Code 10, dann bleibt es bei demucs.cpp.
+- **Wenig Arbeitsspeicher auch bei langen DJ-Mixen:** Die Stems werden während der Rechnung Abschnitt für Abschnitt in die WAV-Dateien geschrieben. Im Speicher liegt nur ein Abschnitt (knapp 6 s) pro Stem, nicht der ganze Song.
+- `--vortest`: der Vortest, den StemMaker beim ersten Start zeigt. Misst Laden des Modells, die CPU (4 Durchgänge, die ersten zwei wärmen nur auf) und die Grafikkarte (richtig und schneller?). Schreibt Fortschritt als `SCHRITT <prozent>: <text>` und die Messwerte als `VORTEST <name>=<wert>`.
+- `--karten`: meldet nur die Grafikkarten in einer Zeile `KARTEN <name>|<treiber>;...` (schnell). StemMaker merkt sich das und wiederholt den Vortest, wenn eine Karte oder ein Treiber wechselt.
+- Die Telemetrie von ONNX Runtime ist abgeschaltet.
 
 ## Modell: wir liefern keine Gewichte mit
 
@@ -89,4 +95,3 @@ Entstanden aus dem Versuch StemGPU (12. und 13.10.2026). Die Export-Anpassungen 
 - Test auf mehr PCs (Grafikkarten von AMD und Intel, ältere CPUs ohne AVX2)
 - htdemucs_ft mit echten ft-Modellen testen
 - CUDA als Zusatz für NVIDIA (grosses Paket, nur wenn DirectML deutlich langsamer ist)
-- Einbau in StemMaker als wählbare Engine mit demucs.cpp als Rückfall

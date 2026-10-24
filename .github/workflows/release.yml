@@ -10,7 +10,8 @@
 # Was passiert:
 # 1. Prüfen: Version passt zu APP_VERSION, CHANGELOG hat den Abschnitt, Tag gibt
 #    es noch nicht.
-# 2. StemMaker, StemCLI und StemPlayer bauen (wie build.yml).
+# 2. StemMaker, StemCLI und StemPlayer bauen (wie build.yml), dazu Turbo
+#    (StemOnnx, engines/onnx) im Job "stemonnx" auf Linux mit mingw.
 # 3. Release-ZIP zusammenstellen (installer/release-zip.sh). Die Teile, die nicht
 #    im Repository liegen (demucs.cpp in tools\), kommen aus dem letzten
 #    Release-ZIP laut update.json, mit Prüfsummen-Kontrolle.
@@ -43,7 +44,30 @@ env:
   LAZARUS_VERSION: "3.8"
 
 jobs:
+  stemonnx:
+    # Turbo-Engine: baut StemOnnx.exe und holt ONNX Runtime + DirectML
+    # (feste Versionen mit Prüfsumme, siehe engines/onnx/build.sh)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+      - name: mingw installieren
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gcc-mingw-w64-x86-64-posix
+      - name: StemOnnx bauen
+        run: engines/onnx/build.sh
+      - name: Paket weitergeben
+        uses: actions/upload-artifact@v4
+        with:
+          name: StemOnnx-release
+          path: engines/onnx/dist/StemOnnx
+          retention-days: 3
+
   release:
+    needs: stemonnx
     runs-on: windows-latest
     defaults:
       run:
@@ -98,13 +122,19 @@ jobs:
           "$STRIP" exes/*.exe
           ls -l exes
 
+      - name: Turbo (StemOnnx) holen
+        uses: actions/download-artifact@v4
+        with:
+          name: StemOnnx-release
+          path: stemonnx
+
       - name: Release-ZIP zusammenstellen
         run: |
           set -e
           read -r URL SHA < <(python -c "import json; d=json.load(open('update.json', encoding='utf-8')); print(d['zip_url'], d['zip_sha256'])" | tr -d '\r')
           curl -sSfL -o alt.zip "$URL"
           echo "$SHA  alt.zip" | sha256sum -c -
-          bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe
+          bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe stemonnx
           ZIPSHA=$(sha256sum "ausgabe/StemMaker-$VERSION.zip" | cut -d' ' -f1)
           echo "ZIPSHA=$ZIPSHA" >> "$GITHUB_ENV"
 
