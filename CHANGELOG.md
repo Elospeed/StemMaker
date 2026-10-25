@@ -19,13 +19,13 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - Die Zeit-Schätzung lernt das Tempo von Turbo und Klassisch getrennt.
 - Das Release-ZIP ist dadurch etwa 16 MB grösser (ONNX Runtime und DirectML von Microsoft in `tools\onnx\`). Die Telemetrie von ONNX Runtime ist abgeschaltet.
 
+### StemMaker 2.0 – Handbuch
+- **Bebildertes Benutzerhandbuch (PDF)** auf Deutsch, Englisch und Spanisch: von der Funktionsweise über die Bedienung bis zum StemPlayer, mit Bildern. Im Programm öffnet **Info → Handbuch (PDF)** das Handbuch in der eingestellten Sprache, auf der Projektseite liegt es zum Herunterladen.
+
 ## 1.9 – 23. Oktober 2026
 
 ### StemMaker – neue Sprache
 - **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“. Danke an **David GJ** für die Übersetzung! Alle Helfer stehen jetzt unter „Info“ im neuen Reiter „Danke“.
-
-### StemMaker – Handbuch
-- **Bebildertes Benutzerhandbuch (PDF)** auf Deutsch, Englisch und Spanisch: von der Funktionsweise über die Bedienung bis zum StemPlayer, mit Bildern. Im Programm öffnet **Info → Handbuch (PDF)** das Handbuch in der eingestellten Sprache, auf der Projektseite liegt es zum Herunterladen.
 
 ### StemPlayer 1.6
 - **Loop A-B:** Ein Abschnitt wird endlos wiederholt, so wie ein Loop in Traktor. Praktisch, um eine Stelle mit Mute und Solo genau zu prüfen, z. B. ob in den Vocals noch Drums durchklingen. Punkt A und B setzt man mit den Knöpfen oder den Tasten A und B an der aktuellen Stelle, oder man zieht den Bereich mit der rechten Maustaste in einer Wellenform auf. Der Rücksprung ist nahtlos. Taste L schaltet den Loop aus und wieder an, die Rücktaste löscht ihn. Der Loop-Bereich ist in allen Wellenformen grün hinterlegt.

@@ -7,6 +7,9 @@ Ablauf:  pandoc macht aus dem Markdown eine HTML-Seite, Chrome/Chromium
          druckt sie als PDF. Danach liest pdftotext, auf welcher Seite jede
          Überschrift gelandet ist, und ein zweiter Durchgang trägt die
          Seitenzahlen ins Inhaltsverzeichnis ein.
+         Verweise schreibt man im Markdown als [§](#anker): Das § wird
+         durch die Kapitelnummer ersetzt (z. B. 5.3), so stimmen die
+         Nummern auch, wenn ein Kapitel dazukommt.
 
 Aufruf:  python3 build.py                 alle Sprachen nach ausgabe/
          python3 build.py de              nur Deutsch
@@ -62,6 +65,23 @@ def pandoc(sprache, seiten, html_datei):
         "--variable", "seiten=" + json.dumps(seiten),
         "--output", html_datei,
     ], check=True)
+    verweise(html_datei)
+
+
+def verweise(html_datei):
+    """[§](#anker) -> Nummer des Kapitels oder Abschnitts mit diesem Anker."""
+    text = open(html_datei, encoding="utf-8").read()
+    nummern = {}
+    for m in re.finditer(r'<h[1-6]\s[^>]*id="([^"]+)"[^>]*>\s*<span\s+class="header-section-number">([^<]*)<', text):
+        nummern[m.group(1)] = m.group(2)
+
+    def ersetze(m):
+        if m.group(1) not in nummern:
+            print("  Warnung: Verweis auf unbekannten Anker", m.group(1))
+            return m.group(0)
+        return '<a href="#%s">%s</a>' % (m.group(1), nummern[m.group(1)])
+    text = re.sub(r'<a\s+href="#([^"]+)">§</a>', ersetze, text)
+    open(html_datei, "w", encoding="utf-8").write(text)
 
 
 def drucken(chrome, html_datei, pdf_datei):
@@ -83,7 +103,7 @@ def ueberschriften(html_datei):
     text = open(html_datei, encoding="utf-8").read()
     text = text[text.index("<main>"):]
     liste = []
-    for m in re.finditer(r'<h[12] [^>]*id="([^"]+)"[^>]*>(.*?)</h[12]>', text, re.S):
+    for m in re.finditer(r'<h[12]\s[^>]*id="([^"]+)"[^>]*>(.*?)</h[12]>', text, re.S):
         inhalt = m.group(2)
         nummer = re.search(r'header-section-number">([^<]*)<', inhalt)
         rein = html.unescape(re.sub(r"<[^>]+>", "", inhalt)).strip()

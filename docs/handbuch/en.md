@@ -2,7 +2,7 @@
 titel: Elospeed StemMaker
 untertitel: User Manual
 versionstext: Version
-version: "1.9"
+version: "2.0"
 datum: October 2026
 umfang: "Split music into Traktor stems, preview them and play them out. Including the StemPlayer for quick listening."
 fusszeile: "Free and open source (MIT License) · © 2026 Elospeed"
@@ -39,7 +39,7 @@ ffmpeg turns the song into an uncompressed WAV file.
 :::: schritt
 **2. Separate**
 
-An AI model (Demucs) listens to the song and splits it into drums, bass, other and vocals.
+An AI model (Demucs) listens to the song and splits it into drums, bass, other and vocals, with Turbo on the CPU or graphics card.
 ::::
 :::: schritt
 **3. Polish**
@@ -53,30 +53,31 @@ Master and four stems go into one `.stem.mp4` with tags, cover art and stem info
 ::::
 :::
 
-The separation runs **on your PC's processor (CPU)**. Your music never leaves your computer: no account, no cloud, nothing running in the background. StemMaker only goes online on the first start (to download ffmpeg and the separation model) and to check for updates.
+The separation runs **on your PC**: with the Turbo engine on the processor (CPU) or, if it works, on the graphics card (chapter [§](#turbo)). Your music never leaves your computer: no account, no cloud, nothing running in the background. StemMaker only goes online on the first start (to download ffmpeg and the separation model) and to check for updates.
 
 ::: info
-**Good to know:** A normal music player plays a stem file like any MP4 and only plays the finished song (track 1). You hear the individual stems in your DJ software or in the included **StemPlayer** (chapter [7](#stemplayer)).
+**Good to know:** A normal music player plays a stem file like any MP4 and only plays the finished song (track 1). You hear the individual stems in your DJ software or in the included **StemPlayer** (chapter [§](#stemplayer)).
 :::
 
 ## What you need
 
 - Windows 10 or 11, 64-bit
 - at least 8 GB of RAM, 16 GB or more is better
-- about 300 MB for the program, ffmpeg and the model, plus room for the stem files (about three times the size of a 320 kbit/s MP3)
+- about 320 MB for the program, the Turbo engine, ffmpeg and the model, plus room for the stem files (about three times the size of a 320 kbit/s MP3)
 - an internet connection on the first start
 - music you have the rights to, for example tracks you bought yourself
 
 ## How long it takes
 
-Separating is hard work for the computer. On a current PC, a song takes about **twice as long as the song itself** with the default model, much longer on older PCs. That is why StemMaker is built to work through a whole list in one go, for example overnight (section [4.4](#sammlung)).
+Separating is hard work for the computer. Since version 2.0 the **Turbo engine** separates about **5 to 8 times faster** than before, depending on the PC, with the same quality. With a graphics card that works, a song is done in **under a minute**. StemMaker measures how fast your PC is in the pre-test on the first start (section [§](#vortest)).
 
-| Computer | default model (htdemucs) | fast model (v3) |
+| Computer (4-min song, default model) | Turbo (from 2.0) | Classic (up to 1.9) |
 |---|---|---|
-| Intel i7-12700KF (2021) | approx. 7–8 min per 4-min song | approx. 4 min |
-| Intel i5-2500 (2011) | approx. 27 min per 4-min song | – |
+| NVIDIA RTX 4060 Ti (graphics card) | approx. 35 s | – |
+| Laptop with Intel Iris Xe (graphics card) | approx. 2–3 min | – |
+| Intel i5-2500 from 2011 (CPU only) | approx. 4–6 min | approx. 27 min |
 
-The best model (htdemucs_ft) takes about four times as long as the default model. Laptops on battery are slowed down; StemMaker then shows a note.
+The best model (htdemucs_ft) takes about three times as long as the default model. For large batches it is still worth letting the list run overnight (section [§](#sammlung)). Laptops on battery are slowed down; StemMaker then shows a note.
 
 # Installation and first start {#installieren}
 
@@ -84,8 +85,8 @@ The best model (htdemucs_ft) takes about four times as long as the default model
 
 The project page <https://elospeed.github.io/StemMaker/> and the GitHub release page offer two downloads with the same program:
 
-- **`StemMaker-1.9-Setup.exe`** (installer): installs StemMaker for your Windows user only, without administrator rights, with a Start menu entry. Uninstall it as usual under *Settings → Apps*.
-- **`StemMaker-1.9.zip`** (portable): unzip it anywhere, for example to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
+- **`StemMaker-2.0-Setup.exe`** (installer): installs StemMaker for your Windows user only, without administrator rights, with a Start menu entry. Uninstall it as usual under *Settings → Apps*.
+- **`StemMaker-2.0.zip`** (portable): unzip it anywhere, for example to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
 
 Either way you start `StemMaker.exe` (after the installer, via the Start menu entry "StemMaker").
 
@@ -114,14 +115,14 @@ Next you see the disclaimer and the license notes. Read them, tick the box at th
 
 ## Check window and first download {#pruefen}
 
-On every start StemMaker quickly checks that everything is in place: processor, ffmpeg, the separation programs (demucs.cpp), the separation model and the temp folder. If everything is green, the main window opens after about a second.
+On every start StemMaker quickly checks that everything is in place: processor, ffmpeg, the separation programs, the separation model and the temp folder. If everything is green, the main window opens after about a second.
 
-On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (approx. 81 MB) are still missing. Clicking **Download** fetches both with a progress bar. Every file is verified with a checksum; a damaged file is rejected. StemMaker then starts by itself.
+On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (approx. 81 MB) are still missing. Clicking **Download** fetches both with a progress bar. Every file is verified with a checksum; a damaged file is rejected. StemMaker then starts by itself and measures once in the **Turbo pre-test** how fast your PC separates (section [§](#vortest)).
 
 ![First start: ffmpeg and the model are still missing](img/en/pruefen-download.png)
 
 ::: info
-**Something stays red?** Hover the mouse over the red line to see the exact reason. If a file in the `tools` folder is missing, please unzip the ZIP file again completely. If the download fails, check your internet connection, firewall or proxy (chapter [9](#probleme)).
+**Something stays red?** Hover the mouse over the red line to see the exact reason. If a file in the `tools` folder is missing, please unzip the ZIP file again completely. If the download fails, check your internet connection, firewall or proxy (chapter [§](#probleme)).
 :::
 
 # The main window {#hauptfenster}
@@ -133,12 +134,12 @@ At the top is the list of files, below it the settings for the next conversion, 
 ![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
 
 ::: marken
-1. **Info**: version, guide, manual, updates, error report and logs (chapter [8](#info)).
+1. **Info**: version, guide, manual, updates, error report and logs (chapter [§](#info)).
 2. **Add files…** and **Folder…**: add single songs or whole folders (including subfolders) to the list. Even easier: drag files and folders from Explorer straight into the window.
 3. **Remove** and **Clear list**: delete selected entries or the whole list. The music files themselves are not touched.
-4. **Check stem…** and **Copy log**: check a finished stem file (section [6.3](#stem-pruefen)) and copy the log to the clipboard.
+4. **Check stem…** and **Copy log**: check a finished stem file (section [§](#stem-pruefen)) and copy the log to the clipboard.
 5. **The file list** with name, status and path of every file. Double-clicking a finished file opens it in the StemPlayer.
-6. **Settings** for the next conversion: output folder, separation model, audio format and the switches for club level, bass fix and shutdown (chapter [5](#einstellungen)).
+6. **Settings** for the next conversion: output folder, separation model, audio format and the switches for club level, bass fix and shutdown (chapter [§](#einstellungen)).
 7. **More settings…** (gear): everything you set up once.
 8. **Start**, **Cancel**, **Open folder** and **Listen**: start or stop the conversion, open the folder with the finished files or start the StemPlayer.
 9. **Two progress bars**: the current file on top, the whole list below, each with elapsed and estimated remaining time.
@@ -202,6 +203,48 @@ StemMaker copies the tags and the **cover art** from the source file: title, art
 
 During a conversion StemMaker shows an icon in the notification area of the taskbar. Hover over it to see the progress, for example "StemMaker - 45 % (file 3 of 12)"; a click brings the window to the front. When everything is done and StemMaker is not in the foreground, a notification shows how many files succeeded, were skipped or failed.
 
+# Turbo: faster separation {#turbo}
+
+## What Turbo is
+
+Since version 2.0 StemMaker separates the stems with the **Turbo engine** (StemOnnx). It runs the same Demucs model as before, so the stems are just as good, but it uses **ONNX Runtime** by Microsoft. That is much faster on the processor than the previous engine demucs.cpp and can also use the **graphics card** (NVIDIA, AMD or Intel, via DirectML, nothing extra to install).
+
+Turbo is the default, you don't have to do anything. The previous engine stays on board as **Classic**: StemMaker uses it by itself when Turbo does not work for a file, and for the v3 model, which Turbo can't run.
+
+## The pre-test {#vortest}
+
+On the first start with Turbo, StemMaker measures once how fast your PC separates stems: first the CPU, then the graphics card. This takes about a minute. The pre-test comes back by itself when you put in a different graphics card or the graphics driver is new, and you can start it any time under **More settings → Pre-test ...**.
+
+![The Turbo pre-test on a PC with a graphics card](img/en/vortest.png)
+
+- The **bar** and the keywords show what is being tested right now.
+- At the end the **bold line** says what StemMaker computes on with this PC, and how many seconds of computing one minute of music needs.
+- Below it you see roughly how long a **3-minute track** takes, with the default model and with the best model. The number is there during the test already and gets more precise with every measurement.
+
+The result goes straight into the time estimate in the main window. After the first real song, StemMaker uses the measured speed anyway.
+
+## Graphics card (beta)
+
+The graphics card is only used if it delivers **the same stems** as the CPU in the pre-test and is **faster**. Otherwise StemMaker separates on the CPU, and the pre-test says why, for example "is not faster than the CPU" or "crashed during the test". Older or weak graphics cards (for example without DirectX 12) are skipped this way by themselves.
+
+If the graphics card drops out in the middle of a song, StemMaker finishes that song on the CPU. For every file the log says whether Turbo computed on the graphics card or the CPU, or Classic.
+
+::: info
+**Beta means:** With NVIDIA RTX and Intel Iris Xe it works on the tested PCs. An AMD Vega 8 and a GeForce GT 1030 were excluded by StemMaker in the test, which then correctly used the CPU. Not every combination of graphics card and driver has been tried. If the graphics card causes trouble, set the device to **CPU only** under **More settings**.
+:::
+
+## Setting engine and device
+
+Under **More settings** in the **Engine** area (section [§](#weitere-einstellungen)):
+
+| Setting | Choice |
+|---|---|
+| Engine | **Turbo (fast, default)** or **Classic (demucs.cpp, as up to 1.9)** |
+| Device | **Automatic (graphics card if it works)** or **CPU only** |
+| Pre-test ... | measures CPU and graphics card again |
+
+You normally don't need Classic. It is meant for the case that Turbo does not run on a PC at all.
+
 # Settings {#einstellungen}
 
 ## In the main window
@@ -211,35 +254,38 @@ The main window only holds what you change per conversion:
 | Setting | Meaning |
 |---|---|
 | Output folder | where the stem files go, or with the tick **save next to the original file** |
-| Separation model | quality versus speed, see section [5.3](#modelle) |
+| Separation model | quality versus speed, see section [§](#modelle) |
 | Audio format | **AAC automatic** (default): the stem file gets the bitrate of the source, e.g. MP3 320 → AAC 320; sources below 192 kbit/s get 192, lossless sources 320. **AAC 256** is the NI standard, **AAC 320** fixed, **ALAC** lossless and very large (only useful for WAV/FLAC). |
 | Normalize loudness (club level) | On by default. Quiet files are raised until the loudest peak sits at about −1 dB. All five tracks get the same gain, no limiter, the dynamics stay. In Traktor the waveforms are then large and easy to read. |
 | Bass fix | On by default. StemMaker moves the sub bass below 80 Hz that the separation leaves in the "Other" stem into the bass stem. The bass stem sounds fuller, all stems together stay the same. Skipped for files over 20 minutes (DJ mixes). |
-| Shut down the PC when finished | only for the next run, see section [4.4](#sammlung) |
+| Shut down the PC when finished | only for the next run, see section [§](#sammlung) |
 | Open folder after conversion | opens Explorer with the finished file |
 
 ## More settings (gear) {#weitere-einstellungen}
 
 Everything you set up once is behind the gear button **More settings…**.
 
-![The "Settings" window](img/en/einstellungen.png){marken="1:2.3,11.4 2:2.3,17.7 3:51.5,27.7 4:15,46.3 5:16.6,68.1 6:2.3,96.1"}
+![The "Settings" window](img/en/einstellungen.png){marken="1:2.3,9.9 2:2.3,15.4 3:2.3,27.9 4:51.5,40.4 5:15,56.2 6:16.6,75.3 7:2.3,96.6"}
 
 ::: marken
-1. **Parts / Auto**: how many parts of the song are separated at the same time. **Auto** (default) uses as many parts as the processor has real cores (at most 4), and only as many as the RAM can handle (a good 2 GB per part). Next to it you see how the cores are shared out.
+1. **Parts / Auto**: how many parts of the song are separated at the same time. **Auto** (default) uses as many parts as the processor has real cores (at most 4), and only as many as the RAM can handle (a good 2 GB per part). Next to it you see how the cores are shared out. This only applies to Classic; Turbo spreads the work over all cores by itself.
 2. **Overwrite, subfolders, keep awake**: redo existing stem files, recreate the folder structure in the output folder, prevent sleep during the conversion.
-3. **Stems**: name and colour of the four stems as Traktor shows them. **Traktor colours** uses the colours from Traktor's own stem files. Traktor always shows the icons (drum, speaker, wave, microphone) by slot 1 to 4.
-4. **Program**: language (applies from the next start), update check at startup, icon next to the clock when minimized, and a notification when the conversion is done.
-5. **Tools**: where ffmpeg, the separation programs and the models are (display only; change them in `StemMaker.ini`, see appendix).
-6. **Restore defaults** resets all values in this window; **Open INI folder** shows where `StemMaker.ini` is.
+3. **Engine**: Turbo or Classic, the device (Automatic or CPU only) and **Pre-test ...**; below it the result of the last pre-test (chapter [§](#turbo)).
+4. **Stems**: name and colour of the four stems as Traktor shows them. **Traktor colours** uses the colours from Traktor's own stem files. Traktor always shows the icons (drum, speaker, wave, microphone) by slot 1 to 4.
+5. **Program**: language (applies from the next start), update check at startup, icon next to the clock when minimized, and a notification when the conversion is done.
+6. **Tools**: where ffmpeg, the separation programs and the models are (display only; change them in `StemMaker.ini`, see appendix).
+7. **Restore defaults** resets all values in this window; **Open INI folder** shows where `StemMaker.ini` is.
 :::
 
 ## Which separation model? {#modelle}
 
 | Model | Quality | Speed | When to use |
 |---|---|---|---|
-| htdemucs (default) | very good | approx. 2× song length | almost always |
-| htdemucs_ft | best | approx. 4× slower than htdemucs | single important tracks, especially clean vocals |
-| hdemucs_mmi (v3) | good | approx. 1× song length | older PCs, large batches |
+| htdemucs (default) | very good | fast (with Turbo) | almost always |
+| htdemucs_ft | best | approx. 3× slower than htdemucs | single important tracks, especially clean vocals |
+| hdemucs_mmi (v3) | good | Classic only | only if Turbo does not run on your PC |
+
+v3 can't run on Turbo and always computes with Classic. With Turbo the default model is therefore faster than v3, and better.
 
 If you choose a model that is not installed yet, StemMaker asks whether to download it now.
 
@@ -355,7 +401,7 @@ The **Info** button at the top left opens the Info window with version, build da
 ::: marken
 1. **Guide**, **Thanks** and **Licenses**: the short guide (README), everyone who helped, and the disclaimer and license texts.
 2. **Check for updates**: check right now whether there is a newer version.
-3. **Send error report…**: send a log to Elospeed (section [8.4](#fehlerbericht)).
+3. **Send error report…**: send a log to Elospeed (section [§](#fehlerbericht)).
 4. **Manual (PDF)**: opens this manual in your language in the browser, always the latest edition.
 5. **Open logs folder**, **Donate now** and **Close**.
 :::
@@ -398,7 +444,13 @@ Check your internet connection, firewall or proxy. If needed, do it by hand: dow
 The log at the bottom gives the reason. Common causes: unusual characters in the path (e.g. Japanese; accented letters are fine) or a path longer than 259 characters. Move the file to a shorter, simple folder and start again.
 
 **The conversion is very slow.**
-Separating needs a lot of computing power. Plug laptops in, close other big programs, use the v3 model for large batches, or let the list run overnight. Older processors without AVX2 (Intel Core i 2nd/3rd generation) are much slower.
+Check under **More settings** that the engine is set to **Turbo**, and measure again with **Pre-test ...**. For every file the log says whether Turbo or Classic separated it. Plug laptops in and close other big programs. Large batches are best left to run overnight.
+
+**The graphics card is not used.**
+The pre-test says why (section [§](#vortest)): the card is not faster than the CPU, computes inaccurately or can't be switched on. A current graphics driver from the manufacturer often helps; the pre-test then comes back by itself on the next start. If it runs reliably on the CPU, that is not an error.
+
+**The log says "Turbo did not work".**
+Then StemMaker automatically separated this file with Classic, and the stem file is fine anyway. If it happens with every file, please send an error report (section [§](#fehlerbericht)).
 
 **My music player only plays the normal song.**
 That is expected: normal players only play the master track. You hear the stems in Traktor, Mixxx or the StemPlayer.
@@ -423,6 +475,7 @@ StemMaker\
     StemPlayer.exe       test player for stem files
     StemCLI.exe          command line version
   tools\                 ffmpeg.exe and the separation programs (demucs.cpp)
+    onnx\                Turbo engine: StemOnnx.exe, ONNX Runtime, DirectML
   models\                separation models (downloaded on first start)
   lang\                  language files
 ```
@@ -448,12 +501,16 @@ ModelsDir=D:\Models                         ; keep the models elsewhere
 
 [Update]
 AutoCheck=0                                 ; don't check for updates at startup
+
+[Turbo]
+Engine=klassisch                            ; turbo (default) or klassisch (Classic)
+Geraet=cpu                                  ; auto (default) or cpu
 ```
 
 ## Licenses and thanks
 
 - StemMaker: © 2026 Elospeed, MIT License.
-- demucs.cpp by Sevag Hanssian (MIT); Demucs models by Meta AI Research (downloaded from their original location, not redistributed by StemMaker); FFmpeg (LGPL); principle and metadata based on Stemgen by axeldelafosse (MIT).
+- demucs.cpp by Sevag Hanssian (MIT); Demucs models by Meta AI Research (downloaded from their original location, not redistributed by StemMaker); ONNX Runtime (MIT) and DirectML (Microsoft license) by Microsoft for Turbo; FFmpeg (LGPL); principle and metadata based on Stemgen by axeldelafosse (MIT).
 - Traktor and STEMS are trademarks of Native Instruments. StemMaker is an independent project.
 - Thanks to **David GJ** for the Spanish translation.
 - StemMaker comes without any warranty. Please only convert music you have the rights to.

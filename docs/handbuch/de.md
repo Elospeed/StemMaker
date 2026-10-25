@@ -2,7 +2,7 @@
 titel: Elospeed StemMaker
 untertitel: Benutzerhandbuch
 versionstext: Version
-version: "1.9"
+version: "2.0"
 datum: Oktober 2026
 umfang: "Musik in Traktor-Stems zerlegen, vorher reinhören und auflegen. Mit dem StemPlayer zum Probehören."
 fusszeile: "Kostenlos und quelloffen (MIT-Lizenz) · © 2026 Elospeed"
@@ -39,7 +39,7 @@ ffmpeg wandelt den Song in eine unkomprimierte WAV-Datei um.
 :::: schritt
 **2. Trennen**
 
-Ein KI-Modell (Demucs) hört den Song durch und trennt ihn in Drums, Bass, Other und Vox.
+Ein KI-Modell (Demucs) hört den Song durch und trennt ihn in Drums, Bass, Other und Vox, mit Turbo auf CPU oder Grafikkarte.
 ::::
 :::: schritt
 **3. Feinschliff**
@@ -53,30 +53,31 @@ Master und vier Stems kommen mit Tags, Cover und Stem-Infos in eine `.stem.mp4`.
 ::::
 :::
 
-Die Trennung rechnet **auf dem Prozessor (CPU) deines PCs**. Deine Musik verlässt den Rechner nicht: Es gibt kein Konto, keine Cloud und nichts, was im Hintergrund läuft. Ins Internet geht StemMaker nur beim ersten Start (ffmpeg und das Trenn-Modell herunterladen) und für die Update-Prüfung.
+Die Trennung rechnet **auf deinem PC**: mit der Turbo-Engine auf dem Prozessor (CPU) oder, wenn sie mitmacht, auf der Grafikkarte (Kapitel [§](#turbo)). Deine Musik verlässt den Rechner nicht: Es gibt kein Konto, keine Cloud und nichts, was im Hintergrund läuft. Ins Internet geht StemMaker nur beim ersten Start (ffmpeg und das Trenn-Modell herunterladen) und für die Update-Prüfung.
 
 ::: info
-**Gut zu wissen:** Ein normaler Musikplayer spielt eine Stem-Datei wie eine gewöhnliche MP4 und spielt nur den fertigen Song (Spur 1). Die einzelnen Stems hörst du im DJ-Programm oder im mitgelieferten **StemPlayer** (Kapitel [7](#stemplayer)).
+**Gut zu wissen:** Ein normaler Musikplayer spielt eine Stem-Datei wie eine gewöhnliche MP4 und spielt nur den fertigen Song (Spur 1). Die einzelnen Stems hörst du im DJ-Programm oder im mitgelieferten **StemPlayer** (Kapitel [§](#stemplayer)).
 :::
 
 ## Was du brauchst
 
 - Windows 10 oder 11, 64 Bit
 - mindestens 8 GB Arbeitsspeicher, besser 16 GB oder mehr
-- etwa 300 MB Platz für Programm, ffmpeg und Modell, dazu Platz für die Stem-Dateien (etwa dreimal so gross wie eine MP3 mit 320 kbit/s)
+- etwa 320 MB Platz für Programm, Turbo-Engine, ffmpeg und Modell, dazu Platz für die Stem-Dateien (etwa dreimal so gross wie eine MP3 mit 320 kbit/s)
 - beim ersten Start eine Internetverbindung
 - Musik, an der du die nötigen Rechte hast, zum Beispiel selbst gekaufte Titel
 
 ## Wie lange es dauert
 
-Das Trennen ist Rechenarbeit. Auf einem aktuellen PC dauert ein Song mit dem Standard-Modell etwa **doppelt so lang wie der Song selbst**, auf älteren PCs deutlich länger. StemMaker ist deshalb darauf ausgelegt, eine ganze Liste am Stück abzuarbeiten, zum Beispiel über Nacht (Abschnitt [4.4](#sammlung)).
+Das Trennen ist Rechenarbeit. Seit Version 2.0 trennt die **Turbo-Engine** je nach PC etwa **5- bis 8-mal so schnell** wie früher, bei gleicher Qualität. Mit einer Grafikkarte, die mitmacht, ist ein Song in **unter einer Minute** fertig. Wie schnell dein PC ist, misst StemMaker beim ersten Start im Vortest (Abschnitt [§](#vortest)).
 
-| Rechner | Standard-Modell (htdemucs) | schnelles Modell (v3) |
+| Rechner (4-min-Song, Standard-Modell) | Turbo (ab 2.0) | Klassisch (bis 1.9) |
 |---|---|---|
-| Intel i7-12700KF (2021) | ca. 7–8 min pro 4-min-Song | ca. 4 min |
-| Intel i5-2500 (2011) | ca. 27 min pro 4-min-Song | – |
+| NVIDIA RTX 4060 Ti (Grafikkarte) | ca. 35 s | – |
+| Laptop mit Intel Iris Xe (Grafikkarte) | ca. 2–3 min | – |
+| Intel i5-2500 von 2011 (nur CPU) | ca. 4–6 min | ca. 27 min |
 
-Das beste Modell (htdemucs_ft) braucht etwa viermal so lang wie das Standard-Modell. Laptops auf Akku rechnen gebremst; StemMaker zeigt dann einen Hinweis.
+Das beste Modell (htdemucs_ft) braucht etwa dreimal so lang wie das Standard-Modell. Für grosse Mengen lohnt es sich trotzdem, die Liste über Nacht laufen zu lassen (Abschnitt [§](#sammlung)). Laptops auf Akku rechnen gebremst; StemMaker zeigt dann einen Hinweis.
 
 # Installieren und erster Start {#installieren}
 
@@ -84,8 +85,8 @@ Das beste Modell (htdemucs_ft) braucht etwa viermal so lang wie das Standard-Mod
 
 Auf der Projektseite <https://elospeed.github.io/StemMaker/> und auf der GitHub-Release-Seite gibt es zwei Downloads mit demselben Programm:
 
-- **`StemMaker-1.9-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
-- **`StemMaker-1.9.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
+- **`StemMaker-2.0-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
+- **`StemMaker-2.0.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
 
 Gestartet wird in beiden Fällen `StemMaker.exe` (nach dem Installer über den Startmenü-Eintrag „StemMaker“).
 
@@ -114,14 +115,14 @@ Danach erscheinen der Haftungsausschluss und die Lizenzhinweise. Lies sie durch,
 
 ## Prüffenster und erster Download {#pruefen}
 
-Bei jedem Start prüft StemMaker kurz, ob alles da ist: Prozessor, ffmpeg, die Trennprogramme (demucs.cpp), das Trenn-Modell und der Temp-Ordner. Ist alles grün, geht nach knapp einer Sekunde das Hauptfenster auf.
+Bei jedem Start prüft StemMaker kurz, ob alles da ist: Prozessor, ffmpeg, die Trennprogramme, das Trenn-Modell und der Temp-Ordner. Ist alles grün, geht nach knapp einer Sekunde das Hauptfenster auf.
 
-Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (ca. 81 MB). Ein Klick auf **Herunterladen** lädt beides mit Fortschrittsbalken. Jede Datei wird mit einer Prüfsumme kontrolliert, eine beschädigte Datei wird verworfen. Danach startet StemMaker von selbst.
+Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (ca. 81 MB). Ein Klick auf **Herunterladen** lädt beides mit Fortschrittsbalken. Jede Datei wird mit einer Prüfsumme kontrolliert, eine beschädigte Datei wird verworfen. Danach startet StemMaker von selbst und misst einmal im **Turbo-Vortest**, wie schnell dein PC trennt (Abschnitt [§](#vortest)).
 
 ![Erster Start: ffmpeg und das Modell fehlen noch](img/de/pruefen-download.png)
 
 ::: info
-**Etwas bleibt rot?** Fährst du mit der Maus über die rote Zeile, steht dort der genaue Grund. Fehlt eine Datei im Ordner `tools`, die ZIP-Datei bitte komplett neu entpacken. Klappt der Download nicht, Internetverbindung, Firewall oder Proxy prüfen (Kapitel [9](#probleme)).
+**Etwas bleibt rot?** Fährst du mit der Maus über die rote Zeile, steht dort der genaue Grund. Fehlt eine Datei im Ordner `tools`, die ZIP-Datei bitte komplett neu entpacken. Klappt der Download nicht, Internetverbindung, Firewall oder Proxy prüfen (Kapitel [§](#probleme)).
 :::
 
 # Das Hauptfenster {#hauptfenster}
@@ -133,12 +134,12 @@ Oben ist die Liste der Dateien, darunter die Einstellungen für die nächste Umw
 ![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
 
 ::: marken
-1. **Info**: Version, Anleitung, Handbuch, Updates, Fehlerbericht und Logs (Kapitel [8](#info)).
+1. **Info**: Version, Anleitung, Handbuch, Updates, Fehlerbericht und Logs (Kapitel [§](#info)).
 2. **Dateien hinzufügen…** und **Ordner…**: einzelne Songs oder ganze Ordner (mit Unterordnern) in die Liste holen. Einfacher: Dateien und Ordner aus dem Explorer direkt ins Fenster ziehen.
 3. **Entfernen** und **Liste leeren**: markierte Einträge oder die ganze Liste löschen. Die Musikdateien selbst bleiben unangetastet.
-4. **Stem prüfen…** und **Log kopieren**: eine fertige Stem-Datei kontrollieren (Abschnitt [6.3](#stem-pruefen)) und das Protokoll in die Zwischenablage legen.
+4. **Stem prüfen…** und **Log kopieren**: eine fertige Stem-Datei kontrollieren (Abschnitt [§](#stem-pruefen)) und das Protokoll in die Zwischenablage legen.
 5. **Die Dateiliste** mit Name, Status und Pfad jeder Datei. Ein Doppelklick auf eine fertige Datei öffnet sie im StemPlayer.
-6. **Einstellungen** für die nächste Umwandlung: Ausgabeordner, Trenn-Modell, Audio-Format und die Schalter Club-Pegel, Bass-Fix und Herunterfahren (Kapitel [5](#einstellungen)).
+6. **Einstellungen** für die nächste Umwandlung: Ausgabeordner, Trenn-Modell, Audio-Format und die Schalter Club-Pegel, Bass-Fix und Herunterfahren (Kapitel [§](#einstellungen)).
 7. **Weitere Einstellungen…** (Zahnrad): alles, was man einmal einstellt.
 8. **Start**, **Abbrechen**, **Ordner öffnen** und **Anhören**: Umwandlung starten oder stoppen, den Ordner mit den fertigen Dateien öffnen oder den StemPlayer starten.
 9. **Zwei Fortschrittsbalken**: oben die aktuelle Datei, unten die ganze Liste, jeweils mit vergangener und geschätzter Restzeit.
@@ -202,6 +203,48 @@ StemMaker übernimmt die Tags und das **Cover** aus der Quelldatei: Titel, Artis
 
 Während einer Umwandlung zeigt StemMaker ein Symbol im Infobereich der Taskleiste. Fährst du mit der Maus darüber, siehst du den Fortschritt, zum Beispiel „StemMaker - 45 % (Datei 3 von 12)“; ein Klick holt das Fenster nach vorne. Ist alles fertig und StemMaker gerade nicht im Vordergrund, erscheint eine Meldung mit der Anzahl erfolgreicher, übersprungener und fehlgeschlagener Dateien.
 
+# Turbo: schneller trennen {#turbo}
+
+## Was Turbo ist
+
+Seit Version 2.0 trennt StemMaker die Stems mit der **Turbo-Engine** (StemOnnx). Sie rechnet dasselbe Demucs-Modell wie bisher, die Stems sind also gleich gut, nutzt aber **ONNX Runtime** von Microsoft. Das rechnet auf dem Prozessor viel schneller als die bisherige Engine demucs.cpp und kann zusätzlich die **Grafikkarte** nutzen (NVIDIA, AMD oder Intel, über DirectML, ohne Zusatz-Installation).
+
+Turbo ist voreingestellt, du musst nichts tun. Die bisherige Engine bleibt als **Klassisch** an Bord: StemMaker nimmt sie von selbst, wenn Turbo bei einer Datei nicht klappt, und für das Modell v3, das Turbo nicht kann.
+
+## Der Vortest {#vortest}
+
+Beim ersten Start mit Turbo misst StemMaker einmal, wie schnell dein PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute. Der Vortest kommt von selbst wieder, wenn du eine andere Grafikkarte einbaust oder der Grafiktreiber neu ist, und du kannst ihn jederzeit unter **Weitere Einstellungen → Vortest ...** starten.
+
+![Der Turbo-Vortest auf einem PC mit Grafikkarte](img/de/vortest.png)
+
+- Der **Balken** und die Stichworte zeigen, was gerade getestet wird.
+- Die **fette Zeile** sagt am Ende, worauf StemMaker auf diesem PC rechnet, und wie viele Sekunden Rechenzeit eine Minute Musik braucht.
+- Darunter steht, wie lange ein **Track von 3 Minuten** etwa dauert, mit dem Standard-Modell und mit dem besten Modell. Die Zahl steht schon während des Tests da und wird mit jedem Messwert genauer.
+
+Das Ergebnis fliesst gleich in die Zeitschätzung im Hauptfenster ein. Nach dem ersten echten Song rechnet StemMaker ohnehin mit dem gemessenen Tempo.
+
+## Grafikkarte (Beta)
+
+Die Grafikkarte wird nur genommen, wenn sie im Vortest **dieselben Stems** liefert wie die CPU und **schneller** ist. Sonst trennt StemMaker mit der CPU, und der Vortest sagt, warum, zum Beispiel „ist nicht schneller als die CPU“ oder „ist beim Test abgestürzt“. Ältere oder schwache Grafikkarten (etwa ohne DirectX 12) lässt StemMaker so von selbst links liegen.
+
+Steigt die Grafikkarte mitten in einem Song aus, rechnet StemMaker diesen Song auf der CPU zu Ende. Im Protokoll steht pro Datei, ob Turbo auf der Grafikkarte oder der CPU gerechnet hat, oder Klassisch.
+
+::: info
+**Beta heisst:** Mit NVIDIA RTX und Intel Iris Xe klappt es auf den getesteten PCs. Eine AMD Vega 8 und eine GeForce GT 1030 hat StemMaker im Test ausgeschlossen und richtig mit der CPU gerechnet. Nicht jede Kombination aus Grafikkarte und Treiber ist ausprobiert. Macht die Grafikkarte Ärger, stelle unter **Weitere Einstellungen** das Gerät auf **Nur CPU**.
+:::
+
+## Engine und Gerät einstellen
+
+Unter **Weitere Einstellungen** im Bereich **Engine** (Abschnitt [§](#weitere-einstellungen)):
+
+| Einstellung | Auswahl |
+|---|---|
+| Engine | **Turbo (schnell, Standard)** oder **Klassisch (demucs.cpp, wie bis 1.9)** |
+| Gerät | **Automatisch (Grafikkarte, wenn sie mitmacht)** oder **Nur CPU** |
+| Vortest ... | misst CPU und Grafikkarte neu |
+
+Klassisch brauchst du normalerweise nicht. Es ist für den Fall gedacht, dass Turbo auf einem PC gar nicht läuft.
+
 # Einstellungen {#einstellungen}
 
 ## Im Hauptfenster
@@ -211,35 +254,38 @@ Im Hauptfenster steht nur, was man pro Umwandlung ändert:
 | Einstellung | Bedeutung |
 |---|---|
 | Ausgabeordner | wohin die Stem-Dateien kommen, oder mit Häkchen **neben der Originaldatei speichern** |
-| Trenn-Modell | Qualität gegen Tempo, siehe Abschnitt [5.3](#modelle) |
+| Trenn-Modell | Qualität gegen Tempo, siehe Abschnitt [§](#modelle) |
 | Audio-Format | **AAC automatisch** (Standard): die Stem-Datei bekommt die Bitrate der Quelle, z. B. MP3 320 → AAC 320, Quellen unter 192 kbit/s bekommen 192, verlustfreie Quellen 320. **AAC 256** ist der NI-Standard, **AAC 320** fest, **ALAC** verlustfrei und sehr gross (nur bei WAV/FLAC sinnvoll). |
 | Lautstärke angleichen (Club-Pegel) | Standard an. Leise Dateien werden angehoben, bis die lauteste Stelle bei etwa −1 dB liegt. Alle fünf Spuren bekommen denselben Wert, ohne Limiter, die Dynamik bleibt. In Traktor sind die Wellenformen dann gross und gut lesbar. |
 | Bass-Fix | Standard an. Den Tiefbass unter 80 Hz, den die Trennung im Stem „Other“ lässt, schiebt StemMaker in den Bass-Stem. Der Bass-Stem klingt voller, alle Stems zusammen bleiben gleich. Bei Dateien über 20 Minuten (DJ-Mixe) wird er ausgelassen. |
-| PC nach Abschluss herunterfahren | nur für den nächsten Durchlauf, siehe Abschnitt [4.4](#sammlung) |
+| PC nach Abschluss herunterfahren | nur für den nächsten Durchlauf, siehe Abschnitt [§](#sammlung) |
 | Ordner nach der Umwandlung öffnen | öffnet den Explorer mit der fertigen Datei |
 
 ## Weitere Einstellungen (Zahnrad) {#weitere-einstellungen}
 
 Alles, was man einmal einstellt, liegt hinter dem Zahnrad **Weitere Einstellungen…**.
 
-![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:2.3,11.4 2:2.3,17.7 3:51.5,27.7 4:15,46.3 5:16.6,68.1 6:2.3,96.1"}
+![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:2.3,9.9 2:2.3,15.4 3:2.3,27.9 4:51.5,40.4 5:15,56.2 6:16.6,75.3 7:2.3,96.6"}
 
 ::: marken
-1. **Teile / Auto**: wie viele Teile des Songs gleichzeitig getrennt werden. **Auto** (Standard) nimmt so viele Teile, wie der Prozessor echte Kerne hat (höchstens 4), und nur so viele, wie der Arbeitsspeicher verkraftet (pro Teil gut 2 GB). Daneben steht, wie die Kerne verteilt werden.
+1. **Teile / Auto**: wie viele Teile des Songs gleichzeitig getrennt werden. **Auto** (Standard) nimmt so viele Teile, wie der Prozessor echte Kerne hat (höchstens 4), und nur so viele, wie der Arbeitsspeicher verkraftet (pro Teil gut 2 GB). Daneben steht, wie die Kerne verteilt werden. Das gilt nur für Klassisch; Turbo verteilt die Arbeit selbst auf alle Kerne.
 2. **Überschreiben, Unterordner, PC wach halten**: vorhandene Stem-Dateien neu machen, Ordnerstruktur im Ausgabeordner nachbauen, Ruhezustand während der Umwandlung verhindern.
-3. **Stems**: Name und Farbe der vier Stems, so wie Traktor sie anzeigt. **Traktor-Farben** übernimmt die Farben aus Traktors eigenen Stem-Dateien. Die Symbole (Trommel, Lautsprecher, Welle, Mikrofon) zeigt Traktor fest nach Platz 1 bis 4.
-4. **Programm**: Sprache (gilt ab dem nächsten Start), Update-Prüfung beim Start, Symbol neben der Uhr beim Minimieren und Meldung, wenn die Umwandlung fertig ist.
-5. **Werkzeuge**: wo ffmpeg, die Trennprogramme und die Modelle liegen (nur Anzeige; ändern geht in `StemMaker.ini`, siehe Anhang).
-6. **Standard wiederherstellen** setzt alle Werte in diesem Fenster zurück; **INI-Ordner öffnen** zeigt, wo `StemMaker.ini` liegt.
+3. **Engine**: Turbo oder Klassisch, das Gerät (Automatisch oder Nur CPU) und **Vortest ...**; darunter das Ergebnis des letzten Vortests (Kapitel [§](#turbo)).
+4. **Stems**: Name und Farbe der vier Stems, so wie Traktor sie anzeigt. **Traktor-Farben** übernimmt die Farben aus Traktors eigenen Stem-Dateien. Die Symbole (Trommel, Lautsprecher, Welle, Mikrofon) zeigt Traktor fest nach Platz 1 bis 4.
+5. **Programm**: Sprache (gilt ab dem nächsten Start), Update-Prüfung beim Start, Symbol neben der Uhr beim Minimieren und Meldung, wenn die Umwandlung fertig ist.
+6. **Werkzeuge**: wo ffmpeg, die Trennprogramme und die Modelle liegen (nur Anzeige; ändern geht in `StemMaker.ini`, siehe Anhang).
+7. **Standard wiederherstellen** setzt alle Werte in diesem Fenster zurück; **INI-Ordner öffnen** zeigt, wo `StemMaker.ini` liegt.
 :::
 
 ## Welches Trenn-Modell? {#modelle}
 
 | Modell | Qualität | Tempo | Wann nehmen |
 |---|---|---|---|
-| htdemucs (Standard) | sehr gut | ca. 2× Songlänge | fast immer |
-| htdemucs_ft | am besten | ca. 4× langsamer als htdemucs | einzelne wichtige Tracks, Gesang besonders sauber |
-| hdemucs_mmi (v3) | gut | ca. 1× Songlänge | ältere PCs, grosse Mengen |
+| htdemucs (Standard) | sehr gut | schnell (mit Turbo) | fast immer |
+| htdemucs_ft | am besten | ca. 3× langsamer als htdemucs | einzelne wichtige Tracks, Gesang besonders sauber |
+| hdemucs_mmi (v3) | gut | nur Klassisch | nur, wenn Turbo auf deinem PC nicht läuft |
+
+v3 kann Turbo nicht und rechnet immer klassisch. Mit Turbo ist das Standard-Modell deshalb schneller als v3 und besser.
 
 Wählst du ein Modell, das noch nicht installiert ist, fragt StemMaker, ob es jetzt heruntergeladen werden soll.
 
@@ -355,7 +401,7 @@ Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum 
 ::: marken
 1. **Anleitung**, **Danke** und **Lizenzen**: die Kurzanleitung (LIESMICH), alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
 2. **Nach Updates suchen**: sofort nachsehen, ob es eine neuere Version gibt.
-3. **Fehlerbericht senden…**: ein Log an Elospeed schicken (Abschnitt [8.4](#fehlerbericht)).
+3. **Fehlerbericht senden…**: ein Log an Elospeed schicken (Abschnitt [§](#fehlerbericht)).
 4. **Handbuch (PDF)**: öffnet dieses Handbuch in deiner Sprache im Browser, immer in der neuesten Fassung.
 5. **Logs-Ordner öffnen**, **Jetzt spenden** und **Schliessen**.
 :::
@@ -398,7 +444,13 @@ Internetverbindung, Firewall oder Proxy prüfen. Notfalls von Hand: ffmpeg von <
 Im Protokoll unten steht der Grund. Häufig: ungewöhnliche Zeichen im Pfad (z. B. Japanisch; Umlaute sind in Ordnung) oder ein Pfad über 259 Zeichen. Datei in einen kürzeren, einfachen Ordner verschieben und nochmals starten.
 
 **Die Umwandlung ist sehr langsam.**
-Das Trennen braucht viel Rechenleistung. Laptops ans Netzteil hängen, andere grosse Programme schliessen, für grosse Mengen das Modell v3 nehmen oder die Liste über Nacht laufen lassen. Ältere Prozessoren ohne AVX2 (Intel Core i der 2./3. Generation) sind deutlich langsamer.
+Unter **Weitere Einstellungen** prüfen, ob die Engine auf **Turbo** steht, und mit **Vortest ...** neu messen. Im Protokoll steht pro Datei, ob Turbo oder Klassisch getrennt hat. Laptops ans Netzteil hängen und andere grosse Programme schliessen. Grosse Mengen am besten über Nacht laufen lassen.
+
+**Die Grafikkarte wird nicht genutzt.**
+Der Vortest sagt, warum (Abschnitt [§](#vortest)): Die Karte ist nicht schneller als die CPU, rechnet ungenau oder lässt sich nicht einschalten. Oft hilft ein aktueller Grafiktreiber vom Hersteller; danach kommt der Vortest beim nächsten Start von selbst. Läuft es mit der CPU zuverlässig, ist das kein Fehler.
+
+**Im Protokoll steht „Turbo hat nicht geklappt“.**
+Dann hat StemMaker diese Datei automatisch mit Klassisch getrennt, die Stem-Datei ist trotzdem in Ordnung. Passiert das bei jeder Datei, bitte einen Fehlerbericht schicken (Abschnitt [§](#fehlerbericht)).
 
 **Mein Musikplayer spielt nur den normalen Song.**
 Das ist richtig so: Normale Player spielen nur die Master-Spur. Die Stems hörst du in Traktor, Mixxx oder im StemPlayer.
@@ -423,6 +475,7 @@ StemMaker\
     StemPlayer.exe       Testplayer für Stem-Dateien
     StemCLI.exe          Kommandozeilen-Version
   tools\                 ffmpeg.exe und die Trennprogramme (demucs.cpp)
+    onnx\                Turbo-Engine: StemOnnx.exe, ONNX Runtime, DirectML
   models\                Trenn-Modelle (beim ersten Start geladen)
   lang\                  Sprachdateien
 ```
@@ -448,12 +501,16 @@ ModelsDir=D:\Modelle                         ; Modelle woanders ablegen
 
 [Update]
 AutoCheck=0                                  ; beim Start nicht nach Updates suchen
+
+[Turbo]
+Engine=klassisch                             ; turbo (Standard) oder klassisch
+Geraet=cpu                                   ; auto (Standard) oder cpu
 ```
 
 ## Lizenzen und Danke
 
 - StemMaker: © 2026 Elospeed, MIT-Lizenz.
-- demucs.cpp von Sevag Hanssian (MIT); Demucs-Modelle von Meta AI Research (werden von ihrem Originalort geladen, nicht von StemMaker weiterverteilt); FFmpeg (LGPL); Prinzip und Metadaten nach Stemgen von axeldelafosse (MIT).
+- demucs.cpp von Sevag Hanssian (MIT); Demucs-Modelle von Meta AI Research (werden von ihrem Originalort geladen, nicht von StemMaker weiterverteilt); ONNX Runtime (MIT) und DirectML (Microsoft-Lizenz) von Microsoft für Turbo; FFmpeg (LGPL); Prinzip und Metadaten nach Stemgen von axeldelafosse (MIT).
 - Traktor und STEMS sind Marken von Native Instruments. StemMaker ist ein unabhängiges Projekt.
 - Danke an **David GJ** für die spanische Übersetzung.
 - StemMaker wird ohne jede Gewährleistung bereitgestellt. Bitte nur Musik umwandeln, an der du die Rechte hast.
