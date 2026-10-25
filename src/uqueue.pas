@@ -88,14 +88,18 @@ procedure QueueDelete;
 function ProbeDurationMS(const FFmpegExe, FileName: string;
   Abort: TProbeAbort = nil): Int64;
 
-{ gelerntes Tempo: Sekunden Rechenzeit pro Minute Musik (0 = unbekannt) }
-function SpeedLoad(const IniName: string; Model: TStemModel): Double;
+{ gelerntes Tempo: Sekunden Rechenzeit pro Minute Musik (0 = unbekannt).
+  Turbo und Klassisch werden getrennt gemerkt (Turbo ist viel schneller). }
+function SpeedLoad(const IniName: string; Model: TStemModel; Turbo: Boolean): Double;
 { nach einer fertigen Datei: Tempo nachführen }
-procedure SpeedLearn(const IniName: string; Model: TStemModel;
+procedure SpeedLearn(const IniName: string; Model: TStemModel; Turbo: Boolean;
   WorkMS, AudioMS: Int64);
+{ Tempo fest eintragen (z.B. aus dem Turbo-Vortest), ohne Mittelwert }
+procedure SpeedStore(const IniName: string; Model: TStemModel; Turbo: Boolean;
+  SecPerMin: Double);
 { grobe Startwerte, solange noch nichts gelernt ist (gemessen auf einem
   i7-12700KF; auf anderen PCs entsprechend schneller/langsamer) }
-function SpeedDefault(Model: TStemModel): Double;
+function SpeedDefault(Model: TStemModel; Turbo: Boolean): Double;
 
 implementation
 
@@ -354,7 +358,7 @@ end;
   Neuer Wert = Mittel aus altem und neuem Messwert (so wirken einzelne
   Ausreisser, z.B. wenn nebenher gespielt wurde, nicht zu stark).
   --------------------------------------------------------------------------- }
-function SpeedKey(Model: TStemModel): string;
+function SpeedKey(Model: TStemModel; Turbo: Boolean): string;
 begin
   case Model of
     smHTDemucsFT: Result := 'htdemucs_ft';
@@ -362,10 +366,13 @@ begin
   else
     Result := 'htdemucs';
   end;
+  { Turbo bekommt einen eigenen Schlüssel, Klassisch bleibt wie bis 1.9 }
+  if Turbo then
+    Result := Result + '_turbo';
   Result := Result + '|' + SysCPUName;
 end;
 
-function SpeedLoad(const IniName: string; Model: TStemModel): Double;
+function SpeedLoad(const IniName: string; Model: TStemModel; Turbo: Boolean): Double;
 var
   Ini: TIniFile;
   FS: TFormatSettings;
@@ -376,7 +383,7 @@ begin
   try
     Ini := TIniFile.Create(IniName);
     try
-      Result := StrToFloatDef(Ini.ReadString('Speed', SpeedKey(Model), '0'), 0, FS);
+      Result := StrToFloatDef(Ini.ReadString('Speed', SpeedKey(Model, Turbo), '0'), 0, FS);
     finally
       Ini.Free;
     end;
@@ -385,25 +392,33 @@ begin
   end;
 end;
 
-procedure SpeedLearn(const IniName: string; Model: TStemModel;
+procedure SpeedLearn(const IniName: string; Model: TStemModel; Turbo: Boolean;
   WorkMS, AudioMS: Int64);
 var
-  Ini: TIniFile;
   Old, Now_: Double;
-  FS: TFormatSettings;
 begin
   if (AudioMS < 30000) or (WorkMS <= 0) then
     Exit;                                 // zu kurz für eine sinnvolle Messung
   Now_ := (WorkMS / 1000) / (AudioMS / 60000);
-  Old := SpeedLoad(IniName, Model);
+  Old := SpeedLoad(IniName, Model, Turbo);
   if Old > 0 then
     Now_ := (Old + Now_) / 2;
+  SpeedStore(IniName, Model, Turbo, Now_);
+end;
+
+procedure SpeedStore(const IniName: string; Model: TStemModel; Turbo: Boolean;
+  SecPerMin: Double);
+var
+  Ini: TIniFile;
+  FS: TFormatSettings;
+begin
+  if SecPerMin <= 0 then Exit;
   FS := DefaultFormatSettings;
   FS.DecimalSeparator := '.';
   try
     Ini := TIniFile.Create(IniName);
     try
-      Ini.WriteString('Speed', SpeedKey(Model), FormatFloat('0.0', Now_, FS));
+      Ini.WriteString('Speed', SpeedKey(Model, Turbo), FormatFloat('0.0', SecPerMin, FS));
     finally
       Ini.Free;
     end;
@@ -412,8 +427,19 @@ begin
   end;
 end;
 
-function SpeedDefault(Model: TStemModel): Double;
+function SpeedDefault(Model: TStemModel; Turbo: Boolean): Double;
 begin
+  { Turbo auf der CPU: i7-12700KF ca. 15, i5-2500 ca. 52-80 s pro Minute
+    Musik (Oktober 2026), dazu Dekodieren und Kodieren. Grafikkarte
+    schneller, aber unbekannt, bis gemessen ist. }
+  if Turbo then
+  begin
+    if Model = smHTDemucsFT then
+      Result := 120
+    else
+      Result := 30;
+    Exit;
+  end;
   { Messwerte von Elospeeds i7-12700KF (12-Minuten-Track):
       htdemucs 22:16 -> ca. 111 s pro Minute Musik
       v3       12:33 -> ca.  63 s pro Minute Musik

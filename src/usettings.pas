@@ -14,6 +14,8 @@
   Alles, was man einmal einstellt und dann vergisst, steht hier:
     - Umwandlung: Teile (Kerne), Überschreiben, Unterordner nachbauen,
                   PC wach halten
+    - Engine:     Turbo (StemOnnx) oder Klassisch (demucs.cpp), Gerät für
+                  Turbo, Knopf "Vortest ..." (ab 2.0, siehe uTurboTest)
     - Stems:      Namen und Farben der 4 Stems (so zeigt Traktor sie an)
     - Programm:   Sprache, beim Start nach Updates suchen, Symbol im
                   Infobereich (neben der Uhr, siehe uMain)
@@ -23,8 +25,9 @@
 
   Die Werte kommen als TStemPrefs-Record vom Hauptfenster und gehen nur
   bei OK zurück. Gespeichert (StemMaker.ini) wird wie bisher vom
-  Hauptfenster. Ausnahme: Sprache und Update-Prüfung schreibt dieses
-  Fenster bei OK selbst (die haben eigene Funktionen in uLangUI/uUpdate).
+  Hauptfenster. Ausnahme: Sprache, Update-Prüfung und Engine schreibt
+  dieses Fenster bei OK selbst (die haben eigene Funktionen in uLangUI,
+  uUpdate und uStemJob.SaveTurboSettings).
 
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei), wie das
   Info-Fenster.
@@ -37,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls, Spin,
-  Buttons, Dialogs, LCLIntf;
+  Buttons, Dialogs, LCLIntf, uStemJob;
 
 type
   { Die Einstellungen, die dieses Fenster bearbeitet }
@@ -49,6 +52,8 @@ type
     KeepAwake  : Boolean;                 // PC während der Arbeit wach halten
     TrayMinimize: Boolean;                // minimiert: nur noch Symbol neben der Uhr
     TrayNotify : Boolean;                 // Meldung neben der Uhr, wenn alles fertig ist
+    Engine     : TStemEngine;             // Turbo oder Klassisch (ab 2.0)
+    TurboDevice: TTurboDevice;            // Turbo: automatisch oder nur CPU
     StemNames  : array[0..3] of string;   // Drums, Bass, Other, Vox
     StemColors : array[0..3] of TColor;
   end;
@@ -69,7 +74,7 @@ procedure LoadGearGlyph(Btn: TBitBtn);
 implementation
 
 uses
-  uStemJob, uLang, uLangUI, uUpdate;
+  uLang, uLangUI, uUpdate, uTurboTest;
 
 {$I gearicon.inc}
 
@@ -87,7 +92,12 @@ type
     cbLang: TComboBox;
     chkAutoUpdate: TCheckBox;
     chkTrayMinimize, chkTrayNotify: TCheckBox;
+    cbEngine, cbDevice: TComboBox;
+    lblTurbo: TLabel;
     procedure chkAutoThreadsChange(Sender: TObject);
+    procedure cbEngineChange(Sender: TObject);
+    procedure btnVortestClick(Sender: TObject);
+    procedure ShowTurboSummary;
     procedure seThreadsChange(Sender: TObject);
     procedure btnDefaultsClick(Sender: TObject);
     procedure btnTraktorColorsClick(Sender: TObject);
@@ -130,6 +140,8 @@ begin
   Result.KeepAwake := True;
   Result.TrayMinimize := False;    // aus: sonst sucht man das Fenster
   Result.TrayNotify := True;
+  Result.Engine := D.Engine;
+  Result.TurboDevice := D.TurboDevice;
   for I := 0 to 3 do
   begin
     Result.StemNames[I] := D.Stems[I].Name;
@@ -204,7 +216,7 @@ const
 var
   gb: TGroupBox;
   pnlBottom: TPanel;
-  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor: TButton;
+  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor, btnTest: TButton;
   lbl: TLabel;
   edt: TEdit;
   I: Integer;
@@ -229,7 +241,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 634;
+  Height := 716;
   ShowHint := True;
 
   { --- Umwandlung --- }
@@ -269,6 +281,47 @@ begin
     _('Verhindert den Ruhezustand und setzt den Energiesparmodus ' +
     'vorübergehend aus.') + LineEnding + _('Danach wird alles wieder so ' +
     'eingestellt wie vorher. Der Bildschirm darf ausgehen.'));
+
+  { --- Engine (ab 2.0) --- }
+  gb := NewGroup(_('Engine (trennt die Stems)'), 106);
+  NewLabel(gb, 12, 10, _('Engine:'));
+  cbEngine := TComboBox.Create(Self);
+  cbEngine.Parent := gb;
+  cbEngine.Style := csDropDownList;
+  cbEngine.SetBounds(110, 6, 300, 25);
+  cbEngine.Items.Add(_('Turbo (schnell, Standard)'));
+  cbEngine.Items.Add(_('Klassisch (demucs.cpp, wie bis 1.9)'));
+  cbEngine.Hint := _('Beide rechnen dasselbe Modell, die Stems sind gleich. ' +
+    'Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen.') +
+    LineEnding + _('Klappt Turbo bei einer Datei nicht, nimmt StemMaker für ' +
+    'diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch.');
+  cbEngine.ShowHint := True;
+  NewLabel(gb, 12, 40, _('Gerät:'));
+  cbDevice := TComboBox.Create(Self);
+  cbDevice.Parent := gb;
+  cbDevice.Style := csDropDownList;
+  cbDevice.SetBounds(110, 36, 300, 25);
+  cbDevice.Items.Add(_('Automatisch (Grafikkarte, wenn sie mitmacht)'));
+  cbDevice.Items.Add(_('Nur CPU'));
+  cbDevice.Hint := _('Automatisch: Die Grafikkarte wird nur genommen, wenn sie ' +
+    'im Test gleiche Stems liefert und schneller ist als die CPU (Beta).');
+  cbDevice.ShowHint := True;
+  btnTest := TButton.Create(Self);
+  btnTest.Parent := gb;
+  btnTest.SetBounds(420, 6, 150, 26);
+  btnTest.Caption := _('Vortest ...');
+  btnTest.Hint := _('Misst CPU und Grafikkarte und sagt, wie lange ein Track ' +
+    'auf diesem PC etwa dauert');
+  btnTest.ShowHint := True;
+  btnTest.OnClick := @btnVortestClick;
+  { Ergebnis des Vortests, bis zwei Zeilen (auf Windows war eine Zeile
+    zu kurz und unten abgeschnitten) }
+  lblTurbo := NewLabel(gb, 12, 64, '');
+  lblTurbo.AutoSize := False;
+  lblTurbo.WordWrap := True;
+  lblTurbo.SetBounds(12, 64, 560, 30);
+  lblTurbo.Font.Color := clGrayText;
+  lblTurbo.ShowHint := True;
 
   { --- Stems --- }
   gb := NewGroup(_('Stems (Namen und Farben, so zeigt Traktor sie an)'), 118);
@@ -326,11 +379,11 @@ begin
     _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
   { --- Werkzeuge (nur Anzeige) --- }
-  gb := NewGroup(_('Werkzeuge'), 150);
-  PathRow(6, 'ffmpeg:', FFmpegExe);
-  PathRow(36, 'demucs.cpp:', DemucsDir);
-  PathRow(66, _('Modelle:'), ModelsDir);
-  lbl := NewLabel(gb, 12, 100, _('Ändern nur bei Bedarf: StemMaker.ini, ' +
+  gb := NewGroup(_('Werkzeuge'), 116);
+  PathRow(4, 'ffmpeg:', FFmpegExe);
+  PathRow(31, 'demucs.cpp:', DemucsDir);
+  PathRow(58, _('Modelle:'), ModelsDir);
+  lbl := NewLabel(gb, 12, 86, _('Ändern nur bei Bedarf: StemMaker.ini, ' +
     'Abschnitt [Tools] (bei geschlossenem StemMaker).'));
   lbl.Font.Color := clGrayText;
 
@@ -375,6 +428,7 @@ begin
   { OnChange erst nach dem Aufbau setzen }
   chkAutoThreads.OnChange := @chkAutoThreadsChange;
   seThreads.OnChange := @seThreadsChange;
+  cbEngine.OnChange := @cbEngineChange;
 end;
 
 destructor TfrmSettings.Destroy;
@@ -400,6 +454,10 @@ begin
     clrStem[I].ButtonColor := P.StemColors[I];
   end;
   chkAutoThreadsChange(nil);
+  cbEngine.ItemIndex := Ord(P.Engine);
+  cbDevice.ItemIndex := Ord(P.TurboDevice);
+  cbEngineChange(nil);
+  ShowTurboSummary;
 end;
 
 procedure TfrmSettings.SetPrefs(const P: TStemPrefs);
@@ -425,12 +483,15 @@ begin
       Result.StemNames[I] := DefaultStemSettings.Stems[I].Name;
     Result.StemColors[I] := clrStem[I].ButtonColor;
   end;
+  Result.Engine := TStemEngine(cbEngine.ItemIndex);
+  Result.TurboDevice := TTurboDevice(cbDevice.ItemIndex);
 end;
 
 { Sprache und Update-Prüfung haben eigene Speicher-Funktionen }
 procedure TfrmSettings.SaveProgramPrefs;
 begin
   UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
+  SaveTurboSettings(TStemEngine(cbEngine.ItemIndex), TTurboDevice(cbDevice.ItemIndex));
   if (cbLang.ItemIndex >= 0) and (cbLang.ItemIndex < FLangCodes.Count) and
      (FLangCodes[cbLang.ItemIndex] <> LangCode) then
   begin
@@ -473,6 +534,32 @@ begin
   end
   else
     lblCores.Font.Color := clDefault;
+end;
+
+{ Gerät und Teile gelten je nur für eine Engine }
+procedure TfrmSettings.cbEngineChange(Sender: TObject);
+begin
+  cbDevice.Enabled := cbEngine.ItemIndex = Ord(seTurbo);
+end;
+
+procedure TfrmSettings.ShowTurboSummary;
+begin
+  lblTurbo.Caption := TurboTestSummary;
+  if lblTurbo.Caption = '' then
+    lblTurbo.Caption := _('Noch kein Vortest auf diesem PC.');
+  lblTurbo.Hint := lblTurbo.Caption;
+end;
+
+{ Vortest mit der gerade gewählten Einstellung (auch vor OK) }
+procedure TfrmSettings.btnVortestClick(Sender: TObject);
+var
+  S: TStemSettings;
+begin
+  S := DefaultStemSettings;
+  LoadToolSettings(S);
+  S.TurboDevice := TTurboDevice(cbDevice.ItemIndex);
+  ShowTurboTest(S);
+  ShowTurboSummary;
 end;
 
 procedure TfrmSettings.btnDefaultsClick(Sender: TObject);

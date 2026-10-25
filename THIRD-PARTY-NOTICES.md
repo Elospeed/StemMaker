@@ -18,6 +18,11 @@ It builds on the work of the people and projects listed below. Thank you!
   - **libnyquist** by Dimitri Diakopoulos (audio file I/O) – https://github.com/ddiakopoulos/libnyquist – **BSD 2-Clause**, with bundled decoders under their own permissive licenses (FLAC, libogg, libvorbis, opus: BSD-style; minimp3: CC0; musepack, wavpack: BSD-style).
   - **OpenMP / libgomp** and the **MinGW-w64** runtime (GCC Runtime Library Exception / permissive licenses).
 
+### Turbo engine (StemOnnx) – `tools\onnx\` (from StemMaker 2.0)
+- **StemOnnx** itself (`StemOnnx.exe`, `htdemucs-geruest.onnx`) is part of StemMaker (MIT, © 2026 Elospeed), source in `engines/onnx/`. The `.onnx` file is only the structure of the htdemucs network **without weights**; the weights are read at run time from the Demucs model files that StemMaker downloads (see below).
+- **ONNX Runtime** (`onnxruntime.dll`, `onnxruntime_providers_shared.dll`) – © Microsoft Corporation – https://github.com/microsoft/onnxruntime – **MIT**. License and third-party notices are included in `tools\onnx\lizenzen\`. StemOnnx switches off the optional usage telemetry of the Windows build (`DisableTelemetryEvents`).
+- **DirectML** (`DirectML.dll`, used for the graphics card) – © Microsoft Corporation – https://github.com/microsoft/DirectML – **Microsoft Software License Terms** (redistribution with applications allowed). Full terms and notices in `tools\onnx\lizenzen\`.
+
 ### Free Pascal and Lazarus – the StemMaker program itself
 - Free Pascal RTL/FCL and Lazarus LCL/LazUtils – https://www.freepascal.org, https://www.lazarus-ide.org
 - License: **modified LGPL** with a static-linking exception, which allows distributing programs built with them under any license.
