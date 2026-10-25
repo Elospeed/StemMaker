@@ -107,7 +107,14 @@ static char g_lasterr[1024];                 /* Text des letzten Fehlers */
 static int ort_fail(OrtStatus *st, const char *was)
 {
   if (st == NULL) return 0;
-  snprintf(g_lasterr, sizeof g_lasterr, "%s", g_ort->GetErrorMessage(st));
+  const char *m = g_ort->GetErrorMessage(st);
+  /* DirectML-Fehler beginnen mit dem Quellcode-Pfad von Microsofts Build-PC
+     ("E:\_work\1\s\onnxruntime\...cc(524)\onnxruntime.dll!...: (caller: ...)
+     Exception(2) tid(3228) 887A0004 ..."). Tester hielten das für ein
+     Laufwerk auf ihrem PC: nur den Teil ab Fehlercode zeigen. */
+  const char *t = strstr(m, " tid(");
+  if (t && (t = strstr(t, ") ")) != NULL) m = t + 2;
+  snprintf(g_lasterr, sizeof g_lasterr, "%s", m);
   say("[ERROR] %s: %s\n", was, g_lasterr);
   g_ort->ReleaseStatus(st);
   return 1;
