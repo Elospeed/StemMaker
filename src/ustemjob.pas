@@ -54,7 +54,7 @@ type
   { Welches Trenn-Modell benutzt wird }
   TStemModel = (smHTDemucs,     // Demucs v4 - Standard
                 smHTDemucsFT,   // Demucs v4 fine-tuned - beste Qualität, 4 Modelle
-                smHDemucsV3);   // Demucs v3 - schneller
+                smHDemucsV3);   // Demucs v3 - nur klassische Engine
 
   { Welche Engine die Stems trennt }
   TStemEngine = (seTurbo,       // StemOnnx (ONNX Runtime), Standard ab 2.0
@@ -183,7 +183,7 @@ const
   StemModelNames: array[TStemModel] of string = (
     'htdemucs (Standard, Demucs v4)',
     'htdemucs_ft (beste Qualität, ca. 4x langsamer)',
-    'hdemucs_mmi (Demucs v3, schneller)');
+    'hdemucs_mmi (Demucs v3, ältere Engine)');
   { Hinweis: StemModelNames bleibt deutsch (feste Konstante, _() geht hier
     nicht). Für die ANZEIGE StemModelDisplayName benutzen - das übersetzt. }
 
@@ -492,7 +492,7 @@ begin
   { gleiche Texte wie in StemModelNames, aber übersetzbar }
   case M of
     smHTDemucsFT: Result := _('htdemucs_ft (beste Qualität, ca. 4x langsamer)');
-    smHDemucsV3 : Result := _('hdemucs_mmi (Demucs v3, schneller)');
+    smHDemucsV3 : Result := _('hdemucs_mmi (Demucs v3, ältere Engine)');
   else
     Result := _('htdemucs (Standard, Demucs v4)');
   end;
