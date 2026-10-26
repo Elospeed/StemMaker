@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.9
+# Elospeed StemMaker 2.0
 
 **by Elospeed**
 
@@ -201,7 +201,7 @@ Mit der **Turbo-Engine** (Standard ab 2.0) misst der Vortest beim ersten Start d
 |---|---|---|
 | Intel i5-2500 (4 Kerne, 2011) | CPU | 52 (Klassisch: 440 bis 584) |
 | Intel i7-12700KF (12 Kerne, 2021) | CPU | 15 |
-| Intel i7-12700KF | RTX 4060 Ti (DirectML) | 4 |
+| Intel i7-12700KF | RTX 4060 Ti (DirectML) | 3 |
 
 Dazu kommt das Kodieren der fünf Spuren in die Stem-Datei (einige Sekunden pro Songminute).
 
@@ -212,7 +212,7 @@ Die **klassische Engine** (demucs.cpp) läuft rein auf dem Prozessor (CPU). Geme
 | Intel i7-12700KF (12 Kerne, 2021) | 22 min → ca. **7–8 min** pro 4-min-Track | 12,5 min → ca. **4 min** pro 4-min-Track |
 | Intel i5-2500 (4 Kerne, 2011) | 1 h 22 min → ca. **27 min** pro 4-min-Track | – |
 
-Faustregel: Auf einem aktuellen PC dauert htdemucs etwa **doppelt so lang wie der Song**, v3 etwa **so lang wie der Song**. htdemucs_ft braucht rund viermal so lang wie htdemucs. Die Zeit wächst mit der Songlänge. Grössere Mengen am besten über Nacht laufen lassen.
+Faustregel für Klassisch: Auf einem aktuellen PC dauert htdemucs etwa **doppelt so lang wie der Song**, v3 etwa **so lang wie der Song**. htdemucs_ft braucht rund viermal so lang wie htdemucs. Die Zeit wächst mit der Songlänge. Grössere Mengen am besten über Nacht laufen lassen.
 
 Ältere Prozessoren ohne AVX2 (z. B. Intel Core i 2./3. Generation) sind deutlich langsamer: Ein 12-Minuten-Track kann dort über eine Stunde dauern. Laptops auf Akku rechnen ebenfalls gebremst, StemMaker zeigt dann einen Hinweis. War der PC zwischendurch im Ruhezustand, steht das am Ende im Log.
 
