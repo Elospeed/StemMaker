@@ -7,6 +7,12 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## Unveröffentlicht
+
+### StemMaker
+- **„Anhören“ spielt die fertige Datei gleich ab:** Der StemPlayer öffnet die markierte oder zuletzt umgewandelte Stem-Datei direkt, ohne Öffnen-Fenster.
+- **Kein Explorer-Fenster mehr nach der Umwandlung:** Das Häkchen „Ordner nach der Umwandlung öffnen“ ist jetzt aus. Wer die Datei gleich in Traktor ziehen will, setzt es wieder oder klickt „Ordner öffnen“.
+
 ## 2.0 – 26. Oktober 2026
 
 ### StemMaker – Turbo-Engine
