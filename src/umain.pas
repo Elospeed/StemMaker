@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest;
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType;
 
 {$I version.inc}   // APP_VERSION
 
@@ -205,6 +205,13 @@ type
     FInTray    : Boolean;          // Fenster ist gerade ins Symbol versteckt
     FTrayNotice: Boolean;          // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
     FDonatePending: Boolean;       // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    { Rechtsklick-Menü der Dateiliste }
+    FMenuListen: TMenuItem;
+    FMenuRemove: TMenuItem;
+    procedure SetupListMenu;
+    procedure ListMenuPopup(Sender: TObject);
+    procedure ListMenuListenClick(Sender: TObject);
+    procedure lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ShowDonate(Data: PtrInt);
     procedure SetupTray;
     procedure UpdateTray;
@@ -564,6 +571,7 @@ begin
   FIniName := StemIniFileName;
   LoadSettings;
   SetupTray;
+  SetupListMenu;
   UpdateToolStatus;
   SetRunning(False);
   AddLog(Format(_('%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen.'),
@@ -1665,6 +1673,51 @@ begin
   else
     AddLog(Format(_('Noch keine Stem-Datei für "%s" - zuerst umwandeln.'),
       [lvFiles.Selected.Caption]));
+end;
+
+{ Rechtsklick-Menü der Dateiliste: "Anhören" (wie Doppelklick) und
+  "Aus Liste entfernen" (wie der Knopf "Entfernen"; die Dateien auf der
+  Platte bleiben). Die Entf-Taste entfernt ebenfalls. }
+procedure TfrmMain.SetupListMenu;
+var
+  Pop: TPopupMenu;
+begin
+  Pop := TPopupMenu.Create(Self);
+  Pop.OnPopup := @ListMenuPopup;
+  FMenuListen := TMenuItem.Create(Pop);
+  FMenuListen.Caption := _('Anhören');
+  FMenuListen.Default := True;             // fett: das macht auch der Doppelklick
+  FMenuListen.OnClick := @ListMenuListenClick;
+  Pop.Items.Add(FMenuListen);
+  FMenuRemove := TMenuItem.Create(Pop);
+  FMenuRemove.Caption := _('Aus Liste entfernen');
+  FMenuRemove.OnClick := @btnRemoveClick;
+  Pop.Items.Add(FMenuRemove);
+  lvFiles.PopupMenu := Pop;
+  lvFiles.OnKeyDown := @lvFilesKeyDown;
+end;
+
+{ Menüeinträge nur anbieten, wenn sie gerade etwas tun können }
+procedure TfrmMain.ListMenuPopup(Sender: TObject);
+begin
+  FMenuListen.Enabled := (lvFiles.Selected <> nil) and
+    FileExists(ItemOutFile(lvFiles.Selected.Index));
+  FMenuRemove.Enabled := btnRemove.Enabled and (lvFiles.SelCount > 0);
+end;
+
+procedure TfrmMain.ListMenuListenClick(Sender: TObject);
+begin
+  lvFilesDblClick(Sender);
+end;
+
+procedure TfrmMain.lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and (Shift = []) then
+  begin
+    if btnRemove.Enabled and (lvFiles.SelCount > 0) then
+      btnRemoveClick(Sender);
+    Key := 0;
+  end;
 end;
 
 { ---------------------------------------------------------------------------
