@@ -1,0 +1,60 @@
+Elospeed StemTagger 0.1  -  von Elospeed  (ko-fi.com/elospeed)
+=================================================================
+
+Setzt Titel, Interpret, Album, Genre, Jahr, Track-Nr., BPM, Tonart, Label,
+Kommentar und Cover in Traktor-Stem-Dateien (.stem.mp4).
+
+WARUM EIN EIGENES PROGRAMM?
+  Normale Tag-Editoren schreiben eine Stem-Datei beim Speichern manchmal so
+  um, dass Traktor sie danach nur noch als normalen Track lädt. Der
+  StemTagger ändert nur die Tag-Liste in der Datei. Die 5 Audiospuren und
+  die Stem-Daten (Namen und Farben der Stems) bleiben Byte für Byte gleich.
+  Vor dem Ersetzen wird die neue Datei geprüft (gleiche Spurenzahl, gleiche
+  Stem-Daten). Klappt etwas nicht, bleibt das Original unverändert.
+
+INSTALLATION
+  StemTagger.exe in den Ordner AddOns\ von StemMaker kopieren. Er läuft
+  aber auch allein. Die Sprache (Deutsch, Englisch, Spanisch) kommt aus
+  den Einstellungen von StemMaker, sonst aus der Sprache von Windows.
+
+BEDIENUNG
+  - Stem-Dateien oder ganze Ordner auf das Fenster ziehen
+    (oder "Dateien..." / "Ordner..."; Ordner werden mit Unterordnern
+    nach *.stem.mp4 durchsucht).
+  - Eine oder mehrere Zeilen markieren und unten die Felder ändern.
+    Bei mehreren markierten Dateien gilt eine Änderung für alle.
+    Graues "<verschieden>" heisst: die Dateien haben unterschiedliche
+    Werte. Lässt man das Feld leer, behält jede Datei ihren Wert.
+  - Cover: Bild auf das Fenster ziehen, "Bild..." oder "Einfügen"
+    (Strg+V, z.B. ein im Browser kopiertes Bild). JPEG und PNG werden
+    unverändert übernommen, BMP und GIF in JPEG umgewandelt. Bilder über
+    1000 Pixel werden auf Wunsch verkleinert (Häkchen unten).
+  - "Interpret/Titel aus Dateiname": "Kungs - Clap Your Hands.stem.mp4"
+    ergibt Interpret "Kungs" und Titel "Clap Your Hands". Eine Tracknummer
+    vorne ("03. ") wird weggelassen.
+  - Speichern (Strg+S) schreibt alle geänderten Dateien.
+    "Änderungen verwerfen" setzt alles auf den Stand der Dateien zurück.
+  - "Sicherungskopie anlegen": vor dem ersten Speichern wird
+    <Datei>.bak angelegt (nur einmal, so bleibt das echte Original).
+
+  Tasten: Strg+S speichern, Strg+V Cover einfügen, Entf aus der Liste
+  nehmen, Strg+A alle markieren.
+
+HINWEIS ZU TRAKTOR
+  Traktor merkt sich die Tags in seiner Sammlung (collection.nml). Bei
+  Tracks, die schon in Traktor sind, erscheinen neue Tags erst nach
+  erneutem Laden bzw. nach "Check Consistency". Ist in Traktor
+  "Write all tags to file" eingeschaltet, kann Traktor eigene Werte
+  zurückschreiben. Die Datei darf beim Speichern nicht in Traktor
+  geladen sein.
+
+WAS (NOCH) NICHT GEHT
+  MP3-Dateien kommen in einer späteren Version.
+
+PROTOKOLL
+  logs\StemTagger.log neben der exe (bei schreibgeschütztem Ordner in
+  %APPDATA%\StemMaker\logs\).
+
+LIZENZ
+  Freie Software (MIT), wie Elospeed StemMaker. Keine Fremdbibliotheken
+  ausser Free Pascal / Lazarus.
