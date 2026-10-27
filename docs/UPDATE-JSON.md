@@ -31,7 +31,7 @@ Wer in `StemMaker.ini` unter `[Download]` eine eigene Adresse einträgt (`FFmpeg
 
 ## Ablauf bei einem neuen Release (Beispiel 1.7)
 
-1. Speedy erstellt das Release: unter Actions → „Release erstellen“ → „Run workflow“ die Version eintragen (z. B. `1.7.2`). Der Workflow baut das ZIP (inkl. `AddOns\StemPlayer.exe`), legt das Release `v1.7.2` an und startet danach „Setup zum Release“. Die Prüfsumme des ZIPs steht in der Zusammenfassung des Laufs. Vorher müssen `APP_VERSION` in `src/version.inc`, die Versionsinfo in `src/StemMaker.lpi` und `src/StemCLI.lpi` (ProductVersion und Versionsnummern) und der CHANGELOG-Abschnitt auf `main` sein. Der Workflow prüft das.
+1. Speedy erstellt das Release: unter Actions → „Release erstellen“ → „Run workflow“ die Version eintragen (z. B. `1.7.2`). Der Workflow baut das ZIP (inkl. `AddOns\StemPlayer.exe`), legt das Release `v1.7.2` an und startet danach „Setup zum Release“. Die Prüfsumme des ZIPs steht in der Zusammenfassung des Laufs. Vorher müssen `APP_VERSION` in `src/version.inc`, die Versionsinfo in `src/StemMaker.lpi` und `src/StemCLI.lpi` (ProductVersion und Versionsnummern) der CHANGELOG-Abschnitt und je ein kurzer Abschnitt in `src/versionen/de.md`, `en.md` und `es.md` (Reiter „Versionen“ im Info-Fenster, gleiche Punkte wie `notes_de/en/es` in `update.json`) auf `main` sein. Der Workflow prüft das.
 2. Prüfsumme ausrechnen, z. B. in PowerShell:
    `Get-FileHash .\StemMaker-1.7.zip -Algorithm SHA256`
    (oder Elospeed rechnet sie aus dem Release aus).
