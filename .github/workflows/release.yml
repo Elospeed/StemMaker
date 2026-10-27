@@ -114,13 +114,13 @@ jobs:
       - name: Exes bauen und verkleinern
         run: |
           set -e
-          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi; do
+          for lpi in src/StemMaker.lpi src/StemCLI.lpi src/AddOns/StemPlayer/StemPlayer.lpi src/AddOns/StemTagger/StemTagger.lpi; do
             echo "::group::$lpi"
             lazbuild -B --os=win64 --cpu=x86_64 --ws=win32 "$lpi"
             echo "::endgroup::"
           done
           mkdir -p exes
-          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe exes/
+          cp bin/StemMaker.exe bin/StemCLI.exe src/AddOns/StemPlayer/StemPlayer.exe src/AddOns/StemTagger/StemTagger.exe exes/
           STRIP=$(find /c/lazarus -iname strip.exe 2>/dev/null | head -n 1 || true)
           if [ -z "$STRIP" ]; then STRIP=$(command -v strip || true); fi
           [ -n "$STRIP" ] || { echo "::error::strip.exe nicht gefunden"; exit 1; }

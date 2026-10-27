@@ -19,7 +19,7 @@ function Installieren([string] $Log) {
 
 # 1. Erstinstallation
 Installieren "$env:RUNNER_TEMP\setup1.log"
-foreach ($f in 'StemMaker.exe', 'AddOns\StemPlayer.exe', 'AddOns\StemCLI.exe', 'tools\demucs_mt.cpp.main.exe', 'lang\en.po', 'unins000.exe') {
+foreach ($f in 'StemMaker.exe', 'AddOns\StemPlayer.exe', 'AddOns\StemTagger.exe', 'AddOns\StemCLI.exe', 'tools\demucs_mt.cpp.main.exe', 'lang\en.po', 'unins000.exe') {
   if (-not (Test-Path (Join-Path $App $f))) { Fehler "nach der Installation fehlt $f" }
 }
 if (Test-Path (Join-Path $App 'src')) { Fehler 'Quelltext-Ordner src wurde mitinstalliert' }

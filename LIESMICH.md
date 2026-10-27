@@ -14,6 +14,7 @@ Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stem
 - **Traktor-Format statt vier Einzeldateien:** Master und die vier Stems landen in einer `.stem.mp4` mit den NI-Stem-Metadaten, fertig für das Stem-Deck. Kein Routing von Hand, keine Zusatzsoftware für den Container, keine Traktor-Lizenz zum Umwandeln.
 - **Für ganze Sammlungen gebaut:** ganze Ordner hinzufügen, vorher die geschätzte Dauer sehen, über Nacht laufen lassen. Die Liste wird nach jeder Datei gespeichert, ein Absturz oder Stromausfall kostet also einen Track und nicht den ganzen Lauf. Unterordner werden im Ausgabeordner nachgebaut.
 - **Vorher reinhören:** `AddOns\StemPlayer.exe` spielt eine fertige Stem-Datei mit Stumm, Solo, Lautstärke und Pegelanzeige pro Stem und A/B gegen das Original. Kein Testimport in Traktor nötig.
+- **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, BPM, Tonart, Cover und mehr in `.stem.mp4`-Dateien, auch für viele Dateien auf einmal. Die Stems bleiben unangetastet (getestet in Traktor Pro 4 und Mixxx 2.6 Beta).
 - **Pegel und Bass sitzen:** Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, und Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem.
 - **Qualität:** Im direkten Vergleich mit einer Stem-Datei, die Traktor Pro 4 aus demselben Track gemacht hat, waren Drums, Kick, Gesang und Pegel praktisch gleich.
 - **Deine Musik bleibt lokal:** kein Konto, keine Cloud, keine Telemetrie, nichts, was im Hintergrund läuft.
@@ -50,7 +51,7 @@ Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htd
 
 ## Windows-Warnung („Der Computer wurde durch Windows geschützt“)
 
-StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe` oder `AddOns\StemPlayer.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
+StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe` oder `AddOns\StemTagger.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
 
 **So startest du es trotzdem:**
 1. Im blauen Fenster auf **„Weitere Informationen“** klicken.
@@ -89,6 +90,7 @@ StemMaker\
   AddOns\                Zusatzprogramme für Fortgeschrittene
     StemCLI.exe          Kommandozeilen-Version (Batch/Skripte, Aufgabenplanung)
     StemPlayer.exe       Testplayer für .stem.mp4-Dateien (Mute/Solo pro Stem)
+    StemTagger.exe       Tags und Cover für .stem.mp4-Dateien
   tools\
     onnx\                       Turbo-Engine: StemOnnx.exe, ONNX Runtime, DirectML, Netz-Gerüst ohne Gewichte
     demucs_mt.cpp.main.exe      Trennung „Klassisch“, Demucs v4 (AVX2-Version)
@@ -192,6 +194,10 @@ Für die meisten ist das nicht nötig: Das Hauptfenster kann ganze Ordner, Warte
 ### Testplayer (AddOns\StemPlayer.exe)
 
 Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit **Anhören** (spielt die markierte oder zuletzt umgewandelte Datei gleich ab) per Doppelklick auf eine fertige Datei in der Liste oder per Rechtsklick und **Anhören**. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
+
+### Tag-Editor (AddOns\StemTagger.exe)
+
+Titel, Interpret, Album, Album-Interpret, Genre, Jahr, Tracknummer, BPM, Tonart, Label, Kommentar und Cover in `.stem.mp4`-Dateien setzen, z.B. für Stem-Dateien aus anderen Programmen, die ganz ohne Tags kommen. Einzelne Dateien oder ganze Ordner laden, mehrere Zeilen markieren und Album oder Cover für alle auf einmal setzen, ein Cover mit Strg+V einfügen oder ein Bild aufs Fenster ziehen, oder Interpret und Titel aus dem Dateinamen übernehmen. Grosse Cover werden auf Wunsch auf 1000 px verkleinert, eine Sicherungskopie `.bak` ist möglich. Neu geschrieben wird nur die Tag-Liste in der Datei: Audio, die vier Stems und Traktors eigene Daten bleiben bytegenau gleich. Aus StemMaker startet er per Rechtsklick auf fertige Dateien und **Tags bearbeiten...**, sonst als Parameter: `AddOns\StemTagger.exe "Track.stem.mp4"`. Deutsch, Englisch und Spanisch. Quellcode: `src/AddOns/StemTagger/`. MP3 ist geplant.
 
 ## Dauer
 

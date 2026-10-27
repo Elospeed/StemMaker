@@ -7,13 +7,14 @@
 # <altes ZIP>   das letzte Release-ZIP (aus update.json). Daraus kommen die Teile,
 #               die nicht im Repository liegen: demucs.cpp in tools\ und der
 #               Ordner models\ mit dem Hinweis.
-# <Exes>        frisch gebaute StemMaker.exe, StemCLI.exe und StemPlayer.exe
+# <Exes>        frisch gebaute StemMaker.exe, StemCLI.exe, StemPlayer.exe und StemTagger.exe
 # <Version>     z. B. 1.7.2
 # <StemOnnx>    (ab 2.0) frisch gebauter Ordner von engines/onnx/build.sh
 #               (dist/StemOnnx). Kommt nach tools\onnx\ und ersetzt dort alles.
 #
-# Aufbau wie bisher: alles im Ordner StemMaker\, StemCLI und StemPlayer unter
-# AddOns\, dazu Quelltext (Hauptprogramm + StemPlayer), Sprachdateien und Doku.
+# Aufbau wie bisher: alles im Ordner StemMaker\, StemCLI, StemPlayer und StemTagger
+# unter AddOns\, dazu Quelltext (Hauptprogramm, StemPlayer, StemTagger),
+# Sprachdateien und Doku.
 # Alle Dateien, die es auch im Repository gibt, kommen aus dem aktuellen Stand.
 #
 # Ergebnis: <Ausgabeordner>/StemMaker-<Version>.zip
@@ -36,18 +37,20 @@ Z="$ARBEIT/StemMaker"
   if [ -f "$REPO/$f" ]; then cp "$REPO/$f" "$Z/$f"; fi
 done
 
-# 2. Quelltext: Hauptprogramm (ohne andere AddOns) und StemPlayer, neue Dateien inklusive
-(cd "$REPO" && git ls-files src | grep -v '^src/AddOns/'; cd "$REPO" && git ls-files src/AddOns/StemPlayer) |
+# 2. Quelltext: Hauptprogramm (ohne andere AddOns), StemPlayer und StemTagger, neue Dateien inklusive
+(cd "$REPO" && git ls-files src | grep -v '^src/AddOns/'; cd "$REPO" && git ls-files src/AddOns/StemPlayer src/AddOns/StemTagger) |
 while read -r f; do
   mkdir -p "$Z/$(dirname "$f")"
   cp "$REPO/$f" "$Z/$f"
 done
 
-# 3. Sprachdateien, neue Exes, Hinweis zum StemPlayer
+# 3. Sprachdateien, neue Exes, Hinweise zu StemPlayer und StemTagger
 cp "$REPO"/src/lang/*.po "$REPO"/src/lang/*.pot "$Z/lang/"
 cp "$EXES/StemMaker.exe" "$Z/"
-cp "$EXES/StemCLI.exe" "$EXES/StemPlayer.exe" "$Z/AddOns/"
+cp "$EXES/StemCLI.exe" "$EXES/StemPlayer.exe" "$EXES/StemTagger.exe" "$Z/AddOns/"
 cp "$REPO/src/AddOns/StemPlayer/LIESMICH.txt" "$Z/AddOns/StemPlayer-LIESMICH.txt"
+cp "$REPO/src/AddOns/StemTagger/LIESMICH.txt" "$Z/AddOns/StemTagger-LIESMICH.txt"
+cp "$REPO/src/AddOns/StemTagger/README.txt" "$Z/AddOns/StemTagger-README.txt"
 
 # 3b. Turbo (StemOnnx): Exe, ONNX Runtime, DirectML, Gerüst, Lizenzen.
 #     Die Test-Batch für Entwickler kommt nicht mit.

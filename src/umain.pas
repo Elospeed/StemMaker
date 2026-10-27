@@ -208,9 +208,11 @@ type
     { Rechtsklick-Menü der Dateiliste }
     FMenuListen: TMenuItem;
     FMenuRemove: TMenuItem;
+    FMenuTags: TMenuItem;
     procedure SetupListMenu;
     procedure ListMenuPopup(Sender: TObject);
     procedure ListMenuListenClick(Sender: TObject);
+    procedure ListMenuTagsClick(Sender: TObject);
     procedure lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ShowDonate(Data: PtrInt);
     procedure SetupTray;
@@ -232,6 +234,7 @@ type
     function ItemOutDir(Index: Integer): string;
     function PlannedOutFiles: TStringArray;
     procedure OpenInPlayer(const StemFile: string);
+    procedure OpenInTagger(Files: TStrings);
     procedure ShowInExplorer(const FileName: string);
     procedure UpdateTimes;
     procedure EndPower;
@@ -1488,6 +1491,40 @@ begin
   end;
 end;
 
+{ StemTagger (AddOns\StemTagger.exe) mit den Stem-Dateien starten, um Titel,
+  Interpret, Cover usw. zu setzen. Läuft unabhängig von StemMaker weiter. }
+procedure TfrmMain.OpenInTagger(Files: TStrings);
+var
+  Exe: string;
+  P: TProcessUTF8;
+  I: Integer;
+begin
+  Exe := AppBaseDir + 'AddOns' + PathDelim + ExeName('StemTagger');
+  if not FileExists(Exe) then
+  begin
+    MessageDlg(Format(_('StemTagger nicht gefunden:%s%s'), [LineEnding + LineEnding, Exe]),
+      mtWarning, [mbOK], 0);
+    Exit;
+  end;
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Executable := Exe;
+    P.CurrentDirectory := ExtractFilePath(Exe);
+    for I := 0 to Files.Count - 1 do
+      P.Parameters.Add(Files[I]);
+    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+    try
+      P.Execute;
+      LogLine(Format('StemTagger gestartet (%d Dateien)', [Files.Count]));
+    except
+      on E: Exception do
+        AddLog(Format(_('StemTagger konnte nicht gestartet werden: %s'), [E.Message]));
+    end;
+  finally
+    P.Free;
+  end;
+end;
+
 { Explorer öffnen und die Datei darin markieren - so kann man sie gleich
   in Traktor ziehen. Gibt es die Datei nicht, wird nur ihr Ordner geöffnet. }
 procedure TfrmMain.ShowInExplorer(const FileName: string);
@@ -1689,6 +1726,10 @@ begin
   FMenuListen.Default := True;             // fett: das macht auch der Doppelklick
   FMenuListen.OnClick := @ListMenuListenClick;
   Pop.Items.Add(FMenuListen);
+  FMenuTags := TMenuItem.Create(Pop);
+  FMenuTags.Caption := _('Tags bearbeiten...');
+  FMenuTags.OnClick := @ListMenuTagsClick;
+  Pop.Items.Add(FMenuTags);
   FMenuRemove := TMenuItem.Create(Pop);
   FMenuRemove.Caption := _('Aus Liste entfernen');
   FMenuRemove.OnClick := @btnRemoveClick;
@@ -1702,12 +1743,36 @@ procedure TfrmMain.ListMenuPopup(Sender: TObject);
 begin
   FMenuListen.Enabled := (lvFiles.Selected <> nil) and
     FileExists(ItemOutFile(lvFiles.Selected.Index));
+  FMenuTags.Enabled := FMenuListen.Enabled;
   FMenuRemove.Enabled := btnRemove.Enabled and (lvFiles.SelCount > 0);
 end;
 
 procedure TfrmMain.ListMenuListenClick(Sender: TObject);
 begin
   lvFilesDblClick(Sender);
+end;
+
+{ "Tags bearbeiten": alle markierten fertigen Stem-Dateien im StemTagger öffnen }
+procedure TfrmMain.ListMenuTagsClick(Sender: TObject);
+var
+  Files: TStringList;
+  I: Integer;
+  F: string;
+begin
+  Files := TStringList.Create;
+  try
+    for I := 0 to lvFiles.Items.Count - 1 do
+      if lvFiles.Items[I].Selected then
+      begin
+        F := ItemOutFile(I);
+        if FileExists(F) then
+          Files.Add(F);
+      end;
+    if Files.Count > 0 then
+      OpenInTagger(Files);
+  finally
+    Files.Free;
+  end;
 end;
 
 procedure TfrmMain.lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

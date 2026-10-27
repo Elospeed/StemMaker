@@ -14,6 +14,15 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Kein Explorer-Fenster mehr nach der Umwandlung:** Das Häkchen „Ordner nach der Umwandlung öffnen“ ist jetzt aus. Wer die Datei gleich in Traktor ziehen will, setzt es wieder oder klickt „Ordner öffnen“.
 - **Rechtsklick-Menü in der Dateiliste:** Rechtsklick auf eine Zeile bietet „Anhören“ (spielt eine fertige Datei im StemPlayer ab, wie der Doppelklick) und „Aus Liste entfernen“. Die Entf-Taste entfernt die markierten Zeilen ebenfalls. Erstellte Stem-Dateien bleiben dabei erhalten.
 - **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
+- **„Tags bearbeiten...“ im Rechtsklick-Menü:** öffnet die markierten fertigen Stem-Dateien im neuen StemTagger.
+
+### StemTagger (neues AddOn, 0.1)
+- **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Album-Interpret, Genre, Jahr, Tracknummer, BPM, Tonart, Label, Kommentar und Cover in `.stem.mp4`-Dateien. Gedacht vor allem für Stem-Dateien ohne Tags.
+- **Viele Dateien auf einmal:** Ordner laden, mehrere Zeilen markieren und z.B. Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange man sie nicht ändert.
+- **Cover bequem:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit Strg+V einfügen oder Datei wählen. Grosse Bilder werden auf Wunsch auf 1000 px verkleinert, BMP und GIF in JPEG umgewandelt. Das Cover lässt sich auch wieder als Bild speichern.
+- **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
+- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Auf Wunsch bleibt eine Sicherungskopie `.bak`. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
+- Deutsch, Englisch und Spanisch.
 
 ## 2.0 – 26. Oktober 2026
 

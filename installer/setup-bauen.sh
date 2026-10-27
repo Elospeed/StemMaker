@@ -7,7 +7,8 @@
 # <ZIP>          Release-ZIP, z. B. StemMaker-1.7.zip (enthält den Ordner StemMaker\)
 # <Version>      z. B. 1.7 (steht dann unter "Apps & Features")
 # <Ausgabename>  Dateiname des Setups ohne .exe, z. B. StemMaker-1.7-Setup
-# [Exes]         optional: frisch gebaute StemMaker.exe, StemCLI.exe, StemPlayer.exe.
+# [Exes]         optional: frisch gebaute StemMaker.exe, StemCLI.exe, StemPlayer.exe
+#                (und StemTagger.exe, falls vorhanden).
 #                Sie ersetzen die aus dem ZIP (für die Testversionen). Dazu kommen
 #                die Sprachdateien aus src/lang.
 #
@@ -35,6 +36,8 @@ QUELLE="quelle/StemMaker"
 if [ -n "$NEU" ]; then
   cp "$NEU/StemMaker.exe" "$QUELLE/"
   cp "$NEU/StemCLI.exe" "$NEU/StemPlayer.exe" "$QUELLE/AddOns/"
+  # StemTagger gibt es erst ab 2.1 - in älteren Release-ZIPs fehlt er
+  if [ -f "$NEU/StemTagger.exe" ]; then cp "$NEU/StemTagger.exe" "$QUELLE/AddOns/"; fi
   cp ../src/lang/*.po ../src/lang/*.pot "$QUELLE/lang/"
 fi
 

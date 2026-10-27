@@ -78,6 +78,8 @@ Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 [CustomMessages]
 de.StartPlayer=StemPlayer (Stem-Dateien anhören)
 en.StartPlayer=StemPlayer (listen to stem files)
+de.StartTagger=StemTagger (Titel und Cover in Stem-Dateien setzen)
+en.StartTagger=StemTagger (set title and cover in stem files)
 de.AskDeleteData=Sollen auch die heruntergeladenen Modelle, ffmpeg, die Einstellungen und die Logs gelöscht werden?%n%nBei „Nein“ bleiben sie im Ordner%n%1%nund werden bei einer späteren Installation wieder benutzt.
 en.AskDeleteData=Also delete the downloaded models, ffmpeg, the settings and the logs?%n%nIf you choose "No", they stay in the folder%n%1%nand are used again by a later installation.
 
@@ -96,6 +98,7 @@ Source: "{#SourceDir}\*"; DestDir: "{app}"; \
 [Icons]
 Name: "{autoprograms}\StemMaker"; Filename: "{app}\StemMaker.exe"
 Name: "{autoprograms}\{cm:StartPlayer}"; Filename: "{app}\AddOns\StemPlayer.exe"
+Name: "{autoprograms}\{cm:StartTagger}"; Filename: "{app}\AddOns\StemTagger.exe"; Check: TaggerVorhanden
 Name: "{autodesktop}\StemMaker"; Filename: "{app}\StemMaker.exe"; Tasks: desktopicon
 
 [Run]
@@ -109,6 +112,12 @@ Type: files; Name: "{app}\AddOns\*.old"
 Type: filesandordirs; Name: "{app}\_update_tmp"
 
 [Code]
+{ Startmenü-Eintrag für den StemTagger nur, wenn er im Paket ist (ältere Pakete haben ihn nicht) }
+function TaggerVorhanden: Boolean;
+begin
+  Result := FileExists(ExpandConstant('{app}\AddOns\StemTagger.exe'));
+end;
+
 { Beim Deinstallieren: Die grossen Downloads (Modelle, ffmpeg) und die Einstellungen
   hat StemMaker selbst angelegt, nicht das Setup. Ohne Nachfrage bleiben sie liegen.
   Wer von Hand deinstalliert, wird gefragt. Bei einer stillen Deinstallation
@@ -122,6 +131,7 @@ begin
   DeleteFile(AppDir + '\tools\ffmpeg.exe');
   DeleteFile(AppDir + '\StemMaker.ini');
   DeleteFile(AppDir + '\AddOns\StemPlayer.ini');
+  DeleteFile(AppDir + '\AddOns\StemTagger.ini');
   DeleteFile(AppDir + '\StemMaker_queue.txt');
   { Turbo merkt sich hier, ob die Grafikkarte mitmacht (StemOnnx) }
   DelTree(ExpandConstant('{localappdata}\StemOnnx'), True, True, True);
