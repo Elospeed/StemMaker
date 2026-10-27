@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.9
+# Elospeed StemMaker 2.0
 
 **by Elospeed**
 
@@ -9,7 +9,8 @@ It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), ju
 
 **Why StemMaker**
 
-- **Nothing to set up:** one 4 MB Windows exe. The separation engine is C++ ([demucs.cpp](https://github.com/sevagh/demucs.cpp)) instead of Python, so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software. It runs on the processor of any 64-bit Windows PC.
+- **Nothing to set up:** no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software. It runs on any 64-bit Windows PC.
+- **Fast (Turbo engine, since 2.0):** separation runs with ONNX Runtime, on the CPU about 6 to 10 times faster than before, and on the graphics card (DirectML: NVIDIA, AMD, Intel) when the card computes correctly and faster. Same model, same quality. A short pre-test on first start checks CPU and graphics card and tells you how long a 3-minute track will take. The proven demucs.cpp engine stays as "Classic" and takes over automatically if Turbo fails on a file.
 - **Traktor format, not four loose files:** master plus the four stems land in one `.stem.mp4` with the NI stem metadata, ready for a stem deck. No routing by hand, no extra software for the container, no Traktor licence to convert.
 - **Built for whole collections:** add complete folders, see the expected time beforehand, let it run overnight. The list is saved after every file, so a crash or a power cut costs one track instead of the run, and subfolders are rebuilt in the output folder.
 - **Check before you play:** `AddOns\StemPlayer.exe` plays a finished stem file with mute, solo, volume and level meters per stem and A/B against the original, so you don't have to import into Traktor just to listen.
@@ -22,7 +23,7 @@ StemMaker is a one-person hobby project, built in the evenings. If it saves you 
 The German version of this guide is `LIESMICH.md`.
 
 ```
-MP3 ──ffmpeg──► 44.1 kHz WAV ──demucs.cpp──► drums / bass / other / vocals
+MP3 ──ffmpeg──► 44.1 kHz WAV ──Turbo (or demucs.cpp)──► drums / bass / other / vocals
                                                      │
       Master + 4 stems ──ffmpeg (AAC/ALAC)──► MP4 with 5 tracks
                                                      │
@@ -91,7 +92,8 @@ StemMaker\
     StemCLI.exe          command-line version (batch files, Task Scheduler)
     StemPlayer.exe       test player for .stem.mp4 files (mute/solo per stem)
   tools\
-    demucs_mt.cpp.main.exe      separation, Demucs v4 (AVX2 build)
+    onnx\                       Turbo engine: StemOnnx.exe, ONNX Runtime, DirectML, network graph without weights
+    demucs_mt.cpp.main.exe      separation "Classic", Demucs v4 (AVX2 build)
     demucs_ft_mt.cpp.main.exe   separation, Demucs v4 fine-tuned
     demucs_v3_mt.cpp.main.exe   separation, Demucs v3
     avx\...                     same, for CPUs with AVX but without AVX2 (approx. 2011-2013)
@@ -162,11 +164,11 @@ After a crash, StemMaker asks on the next start whether you want to send an erro
 
 Either way, the whole report is also on the clipboard (Ctrl+V).
 
-The graphics card is only listed. demucs.cpp computes on the CPU only.
+The log also shows which engine and which device separated each file (e.g. "Turbo runs on: CPU"), and the pre-test writes each of its steps into the log, so a failing graphics card can be narrowed down from the report.
 
 ### Settings
 
-The main window only shows what you change per conversion: output folder, separation model, audio format, club level, bass fix and shutdown. Everything you set once sits behind the gear button **"More settings..."**: parts, overwrite, rebuild subfolders, keep the PC awake, stem names and colors, language, update check at startup, and the paths to ffmpeg, demucs.cpp and the models (display only). **"Restore defaults"** there resets everything to the shipped state.
+The main window only shows what you change per conversion: output folder, separation model, audio format, club level, bass fix and shutdown. Everything you set once sits behind the gear button **"More settings..."**: engine (Turbo or Classic), device (automatic or CPU only) with the **"Pre-test ..."** button, parts, overwrite, rebuild subfolders, keep the PC awake, stem names and colors, language, update check at startup, and the paths to ffmpeg, demucs.cpp and the models (display only). **"Restore defaults"** there resets everything to the shipped state.
 
 | Setting | Meaning |
 |---|---|
@@ -195,14 +197,24 @@ Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at on
 
 ## Processing time
 
-Separation runs purely on the processor (CPU). Measured with a 12-minute track (extended mix), converted to a normal 4-minute track:
+With the **Turbo engine** (default since 2.0) the pre-test on first start measures your PC and shows the expected time for a 3-minute track. Separation time measured with the engine:
+
+| Computer | Device | seconds per minute of music |
+|---|---|---|
+| Intel i5-2500 (4 cores, 2011) | CPU | 52 (Classic: 440 to 584) |
+| Intel i7-12700KF (12 cores, 2021) | CPU | 15 |
+| Intel i7-12700KF | RTX 4060 Ti (DirectML) | 3 |
+
+Encoding the five tracks into the stem file comes on top (a few seconds per minute of music).
+
+The **Classic engine** (demucs.cpp) runs purely on the processor (CPU). Measured with a 12-minute track (extended mix), converted to a normal 4-minute track:
 
 | Computer | htdemucs (default) | hdemucs_mmi (v3) |
 |---|---|---|
 | Intel i7-12700KF (12 cores, 2021) | 22 min → approx. **7–8 min** per 4-min track | 12.5 min → approx. **4 min** per 4-min track |
 | Intel i5-2500 (4 cores, 2011) | 1 h 22 min → approx. **27 min** per 4-min track | – |
 
-Rule of thumb: on a current PC, htdemucs takes about **twice as long as the song**, v3 about **as long as the song**. htdemucs_ft takes roughly four times as long as htdemucs. Time grows with song length. Larger batches are best run overnight.
+Rule of thumb for Classic: on a current PC, htdemucs takes about **twice as long as the song**, v3 about **as long as the song**. htdemucs_ft takes roughly four times as long as htdemucs. Time grows with song length. Larger batches are best run overnight.
 
 Older processors without AVX2 (e.g. 2nd/3rd generation Intel Core i) are much slower: a 12-minute track can take over an hour there. Laptops on battery are also throttled; StemMaker shows a notice in that case. If the PC went to sleep in between, this is noted at the end of the log.
 
@@ -219,6 +231,11 @@ Same as Stemgen with `ni-stem`/MP4Box:
 [Tools]
 FFmpeg=D:\Programs\ffmpeg\bin\ffmpeg.exe    ; use an existing ffmpeg
 DemucsDir=...                                ; different folder for demucs
+OnnxDir=...                                  ; different folder for the Turbo engine
+
+[Turbo]
+Engine=turbo                                 ; turbo or klassisch (Classic, demucs.cpp)
+Geraet=auto                                  ; auto (graphics card if it works) or cpu
 ModelsDir=D:\Models                          ; store models elsewhere
 
 [Download]
@@ -268,10 +285,12 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
   | `ulang.pas` | multilingual support: `_()` function and `.po` reader |
   | `ulangui.pas` | language picker at first start, translates forms |
   | `uqueue.pas` | Remembers the queue, reads song lengths, learns the speed |
+  | `uturbotest.pas` | pre-test window for the Turbo engine (CPU, graphics card, forecast) |
   | `stemcli.lpr` | command-line version |
 
 - **Language files:** `lang-tools/i18n.py` collects all texts from the code (`_('...')` and `.lfm`) and generates `src/lang/StemMaker.pot` and `src/lang/en.po` (copied to `lang\` in the release) from `lang-tools/en.json`.
 - **Icon:** `art/make_icon.py` (Python + Pillow) draws the program icon: four bars in the stem colors. The result `StemMaker.ico` goes into `src\`; Lazarus embeds it automatically.
+- **Turbo engine:** `engines/onnx/build.sh` (Linux, mingw) builds `StemOnnx.exe` and the package, see [engines/onnx/README.md](engines/onnx/README.md).
 - **demucs.cpp for Windows:** `demucs-build/build_demucs_windows.sh` (cross-build on Linux/WSL with mingw-w64). The patch changes only 3 things: `.string()` for Windows paths, selectable CPU architecture instead of `-march=native`, and the tests are not built.
 
 ## Development
@@ -283,6 +302,7 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
 
 - StemMaker: © 2026 Elospeed, MIT License (see `LICENSE`).
 - [demucs.cpp](https://github.com/sevagh/demucs.cpp) by Sevag Hanssian (MIT) – the separation programs shipped in `tools\`.
+- [ONNX Runtime](https://onnxruntime.ai) (MIT) and DirectML (Microsoft license terms) by Microsoft – the Turbo engine in `tools\onnx\`. Telemetry of ONNX Runtime is switched off.
 - The [Demucs](https://github.com/facebookresearch/demucs) models are by Alexandre Défossez et al. / Meta AI. They are downloaded from their original location and not redistributed by StemMaker – see the licensing note in `THIRD-PARTY-NOTICES.md`.
 - [FFmpeg](https://ffmpeg.org) (LGPL, downloaded separately on first start from this repository's releases; unmodified Windows build by BtbN, version pinned in `update.json`).
 - Approach and metadata values based on [Stemgen](https://github.com/axeldelafosse/stemgen) by axeldelafosse (MIT).

@@ -5,9 +5,9 @@
   htdemucs_ft), aber mit ONNX Runtime: auf der Grafikkarte über DirectML
   (NVIDIA, AMD, Intel) oder auf der CPU, dort etwa 4x schneller als demucs.cpp.
 
-  Noch getrennt von StemMaker: StemMaker benutzt weiter demucs.cpp. StemOnnx
-  versteht aber schon dieselben Aufrufe und schreibt dieselben Dateien, damit
-  es später einfach eingebaut werden kann.
+  Ab StemMaker 2.0 die Standard-Engine ("Turbo") für htdemucs und htdemucs_ft.
+  StemOnnx versteht dieselben Aufrufe wie demucs.cpp und schreibt dieselben
+  Dateien. Klappt etwas nicht, nimmt StemMaker für diese Datei demucs.cpp.
 
   Aufruf (die ersten vier Parameter wie bei demucs.cpp):
     StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile] [Optionen]
@@ -28,6 +28,12 @@
       --neu-pruefen           Grafikkarte neu prüfen, auch wenn sie früher
                               versagt hat (sonst gemerkt, siehe gpu_key)
 
+  Vortest (Testfenster beim ersten Start von StemMaker):
+    StemOnnx.exe <modell> --vortest [--gpu <nummer>] [--ergebnis <datei>]
+    misst CPU und Grafikkarte mit einem erzeugten Testsignal, siehe run_vortest
+  StemOnnx.exe --karten
+    meldet nur die Grafikkarten ("KARTEN Name|Treiber;..."), schnell
+
   Ergebnis: target_0_drums.wav, target_1_bass.wav, target_2_other.wav,
   target_3_vocals.wav (32-Bit-Float, 44,1 kHz, Stereo) wie bei demucs.cpp.
   Fortschritt: Zeilen mit "( 12.3%)", für htdemucs_ft mit "DRUMS" usw. davor.
@@ -44,7 +50,8 @@
     3. in Abschnitte von 7,8 s (343980 Samples) teilen, 25 % Überlappung
     4. je Abschnitt: STFT (hier im Programm), Modell, iSTFT (hier im Programm)
     5. Abschnitte mit Dreiecks-Gewichtung wieder zusammensetzen
-    6. Normalisierung rückgängig machen, 4 WAV-Dateien schreiben
+    6. Normalisierung rückgängig machen und abschnittweise in 4 WAV-Dateien
+     schreiben (auch lange DJ-Mixe brauchen so wenig Arbeitsspeicher)
 
   Exit-Codes: 0 OK, 1 falscher Aufruf, 2 onnxruntime.dll fehlt/ungültig,
   3 WAV-Fehler, 4 Modell-Fehler, 5 Fehler beim Trennen, 6 Schreibfehler,
@@ -58,12 +65,13 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <wchar.h>
 #include <math.h>
 #include <dxgi.h>
 #include "onnxruntime_c_api.h"
 
-#define STEMONNX_VERSION "0.3"
+#define STEMONNX_VERSION "0.4"
 
 #define SR       44100
 #define SEG      343980          /* 7,8 s bei 44,1 kHz, feste Eingangslänge des Modells */
@@ -99,7 +107,14 @@ static char g_lasterr[1024];                 /* Text des letzten Fehlers */
 static int ort_fail(OrtStatus *st, const char *was)
 {
   if (st == NULL) return 0;
-  snprintf(g_lasterr, sizeof g_lasterr, "%s", g_ort->GetErrorMessage(st));
+  const char *m = g_ort->GetErrorMessage(st);
+  /* DirectML-Fehler beginnen mit dem Quellcode-Pfad von Microsofts Build-PC
+     ("E:\_work\1\s\onnxruntime\...cc(524)\onnxruntime.dll!...: (caller: ...)
+     Exception(2) tid(3228) 887A0004 ..."). Tester hielten das für ein
+     Laufwerk auf ihrem PC: nur den Teil ab Fehlercode zeigen. */
+  const char *t = strstr(m, " tid(");
+  if (t && (t = strstr(t, ") ")) != NULL) m = t + 2;
+  snprintf(g_lasterr, sizeof g_lasterr, "%s", m);
   say("[ERROR] %s: %s\n", was, g_lasterr);
   g_ort->ReleaseStatus(st);
   return 1;
@@ -117,7 +132,8 @@ static const char *u8(const wchar_t *w)
 
 /* ---------- WAV lesen / schreiben ---------- */
 
-/* Liest eine WAV-Datei in zwei Kanäle (float). Rückgabe: Anzahl Samples, 0 = Fehler. */
+/* Geschrieben wird abschnittweise, siehe Writer (wav_open, writer_flush).
+   Liest eine WAV-Datei in zwei Kanäle (float). Rückgabe: Anzahl Samples, 0 = Fehler. */
 static long read_wav(const wchar_t *path, float **left, float **right)
 {
   FILE *f = _wfopen(path, L"rb");
@@ -179,34 +195,6 @@ bad:
   return 0;
 }
 
-/* Schreibt Stereo als 32-Bit-Float-WAV (wie demucs.cpp). Float, damit nichts
-   abgeschnitten wird: Stems können kurz über 0 dBFS gehen, StemMaker gleicht
-   den Pegel danach selbst an. */
-static int write_wav(const wchar_t *path, const float *l, const float *r, long n)
-{
-  FILE *f = _wfopen(path, L"wb");
-  if (!f) { say("[ERROR] kann %s nicht schreiben\n", u8(path)); return 0; }
-  unsigned int data = (unsigned int)(n * 8), riff = 4 + 26 + 12 + 8 + data;
-  unsigned int rate = SR, byterate = SR * 8, fsz = 18, fact = 4, frames = (unsigned int)n;
-  unsigned short fmt = 3, ch = 2, align = 8, bits = 32, cb = 0;
-  fwrite("RIFF", 1, 4, f); fwrite(&riff, 4, 1, f); fwrite("WAVEfmt ", 1, 8, f);
-  fwrite(&fsz, 4, 1, f); fwrite(&fmt, 2, 1, f); fwrite(&ch, 2, 1, f); fwrite(&rate, 4, 1, f);
-  fwrite(&byterate, 4, 1, f); fwrite(&align, 2, 1, f); fwrite(&bits, 2, 1, f); fwrite(&cb, 2, 1, f);
-  fwrite("fact", 1, 4, f); fwrite(&fact, 4, 1, f); fwrite(&frames, 4, 1, f);
-  fwrite("data", 1, 4, f); fwrite(&data, 4, 1, f);
-  const long BLK = 65536;
-  float *buf = malloc(sizeof(float) * 2 * BLK);
-  int ok = 1;
-  for (long i = 0; i < n && ok; i += BLK) {
-    long m = n - i < BLK ? n - i : BLK;
-    for (long k = 0; k < m; k++) { buf[2 * k] = l[i + k]; buf[2 * k + 1] = r[i + k]; }
-    ok = fwrite(buf, sizeof(float) * 2, m, f) == (size_t)m;
-  }
-  free(buf);
-  if (fclose(f) != 0) ok = 0;
-  if (!ok) say("[ERROR] Schreiben von %s fehlgeschlagen (Festplatte voll?)\n", u8(path));
-  return ok;
-}
 
 
 /* ---------- Gewichte aus der ggml-Datei von demucs.cpp ----------
@@ -692,6 +680,83 @@ static int device_lost(void)
       || strstr(g_lasterr, "887a0005") || strstr(g_lasterr, "887a0006") || strstr(g_lasterr, "887a0007");
 }
 
+/* Kurzer Grund für "Probe abgestürzt": nur der Windows-Fehlercode (z. B.
+   887A0006), nicht die lange Meldung von ONNX Runtime mit Quellpfad */
+static void crash_reason(char *merk, size_t merk_size)
+{
+  static const char *pre[] = { "887A", "887a", "8007" };
+  for (int k = 0; k < 3; k++) {
+    const char *p = strstr(g_lasterr, pre[k]);
+    if (p && isxdigit((unsigned char)p[4]) && isxdigit((unsigned char)p[5])
+          && isxdigit((unsigned char)p[6]) && isxdigit((unsigned char)p[7])) {
+      snprintf(merk, merk_size, "aus: Probe abgestürzt (Fehler %.8s)", p);
+      return;
+    }
+  }
+  snprintf(merk, merk_size, "aus: Probe abgestürzt");
+}
+
+
+/* ---------- Grafikkarte prüfen ---------- */
+
+/* Probiert die DirectML-Varianten mit dem Abschnitt in "in". Jede Variante
+   muss ihn richtig rechnen. Mit Vergleich (res_cpu != NULL) muss das Ergebnis
+   ausserdem mit der CPU übereinstimmen (gemessen: 56 bis 66 dB Abstand, also
+   nur Rundung) und mindestens 1,2x schneller sein.
+   Rückgabe: Sitzung der Grafikkarte oder NULL. Ergebnis des Abschnitts in res,
+   Grund für "aus" in merk. t_gpu/snr/t_open (dürfen NULL sein): Rechenzeit,
+   Abstand zur CPU, Zeit zum Einschalten der Grafikkarte. */
+static OrtSession *try_gpu(int gpu_id, float *in, float *res, const float *res_cpu, double t_cpu,
+                           int *dev, char *merk, size_t merk_size,
+                           double *t_gpu, double *snr_out, double *t_open, double *t_first)
+{
+  OrtSession *sess = NULL;
+  for (int d = DEV_DML; d <= DEV_DML_NOMETA && !sess; d++) {
+    say("Probiere %s ...\n", DEV_NAMES[d]);
+    double to = now_s();
+    OrtSession *g = new_session(d, gpu_id);
+    if (t_open) *t_open = now_s() - to;
+    if (!g) { snprintf(merk, merk_size, "aus: lässt sich nicht einschalten"); continue; }
+    double t1 = 0, t2 = 0;
+    float mx;
+    /* zweimal: der erste Lauf richtet die Grafikkarte erst ein */
+    int ok = !ort_fail(run_segment(g, g_mem, in, res, &t1), "Probe auf der Grafikkarte");
+    if (ok) ok = !ort_fail(run_segment(g, g_mem, in, res, &t2), "Probe auf der Grafikkarte");
+    if (!ok) crash_reason(merk, merk_size);
+    if (t_gpu) *t_gpu = t2;
+    if (t_first) *t_first = t1;
+    if (ok && !plausible(res, &mx)) {
+      say("Probe rechnet falsch (Wert %g)\n", mx);
+      snprintf(merk, merk_size, "aus: rechnet falsch");
+      ok = 0;
+    }
+    if (ok && res_cpu) {
+      double snr = snr_db(res_cpu, res);
+      if (snr_out) *snr_out = snr;
+      say("Probe Grafikkarte: %.2f s, Abstand zur CPU %.0f dB\n", t2, snr);
+      if (snr < 40) {
+        say("-> Grafikkarte rechnet ungenau, nicht benutzt\n");
+        snprintf(merk, merk_size, "aus: rechnet ungenau (%.0f dB)", snr);
+        ok = 0;
+      } else if (t2 * 1.2 > t_cpu) {
+        say("-> Grafikkarte nicht schneller als die CPU, rechne auf der CPU\n");
+        snprintf(merk, merk_size, "aus: nicht schneller als die CPU (%.2f s gegen %.2f s)", t2, t_cpu);
+        g_ort->ReleaseSession(g);
+        break;
+      }
+    }
+    if (ok) { sess = g; *dev = d; }
+    else {
+      g_ort->ReleaseSession(g);
+      if (device_lost()) {
+        say("-> Grafikkarte wurde von Windows zurückgesetzt, keine weitere Variante\n");
+        break;
+      }
+    }
+  }
+  return sess;
+}
+
 
 /* ---------- Hauptprogramm ---------- */
 
@@ -699,6 +764,7 @@ static int device_lost(void)
    mittig mit echtem Audio davor aufgefüllt (wie demucs, TensorChunk.padded). */
 static long g_n, g_stride;
 static float *g_inL, *g_inR;
+static float g_mean, g_std;
 static void fill_segment(long off, float *in, long *st_out, long *len_out)
 {
   long len = g_n - off < SEG ? g_n - off : SEG;
@@ -712,6 +778,253 @@ static void fill_segment(long off, float *in, long *st_out, long *len_out)
   *st_out = st; *len_out = len;
 }
 
+/* Normalisieren: Mittelwert und Streuung der Mono-Summe (wie demucs) */
+static void normalize_input(void)
+{
+  long n = g_n;
+  double sum = 0, sum2 = 0;
+  for (long i = 0; i < n; i++) { double m = 0.5 * (g_inL[i] + g_inR[i]); sum += m; sum2 += m * m; }
+  g_mean = (float)(sum / n);
+  double var = n > 1 ? (sum2 - sum * sum / n) / (n - 1) : 0;    /* wie torch.std (n-1) */
+  g_std = (float)sqrt(var > 0 ? var : 0);
+  if (g_std < 1e-8f) g_std = 1e-8f;
+  for (long i = 0; i < n; i++) { g_inL[i] = (g_inL[i] - g_mean) / g_std; g_inR[i] = (g_inR[i] - g_mean) / g_std; }
+}
+
+/* ONNX Runtime, STFT und Puffer für die Gewichte vorbereiten */
+static Tensor **g_order;
+static int init_ort(void)
+{
+  if (ort_fail(g_ort->CreateEnv(ORT_LOGGING_LEVEL_ERROR, "StemOnnx", &g_env_ort), "ONNX Runtime starten")) return 0;
+  /* Die Windows-Pakete von ONNX Runtime können Nutzungsdaten an Microsoft
+     melden. StemOnnx schaltet das ab (kein Fehler, wenn es nicht geht). */
+  OrtStatus *tel = g_ort->DisableTelemetryEvents(g_env_ort);
+  if (tel) g_ort->ReleaseStatus(tel);
+  if (ort_fail(g_ort->CreateCpuMemoryInfo(OrtArenaAllocator, OrtMemTypeDefault, &g_mem), "Speicher")) return 0;
+  stft_init();
+  g_spec = malloc(sizeof(float) * 4 * NBIN * LE);
+  g_wvals = calloc(g_nslot, sizeof(OrtValue *));
+  g_wnames = calloc(g_nslot, sizeof(char *));
+  g_order = calloc(g_nslot, sizeof(Tensor *));
+  return g_spec && g_wvals && g_wnames && g_order;
+}
+
+/* Gewichte einer ggml-Datei lesen und ONNX Runtime bereitstellen.
+   Rückgabe: 0 OK, sonst Exit-Code */
+static int load_model(const wchar_t *file, Weights *wt)
+{
+  memset(wt, 0, sizeof *wt);
+  if (!read_ggml(file, wt)) return 4;
+  if (!match_weights(wt, g_order)) {
+    say("[ERROR] Modell wird von StemOnnx nicht unterstützt (passt nicht zum htdemucs-Gerüst): %s\n", u8(file));
+    return 10;
+  }
+  if (!prepare_weights(g_order)) return 4;
+  return 0;
+}
+
+
+/* ---------- Stems abschnittweise schreiben ----------
+   Früher lagen alle 4 Stems über den ganzen Song im Speicher (32 Byte pro
+   Sample, bei einem DJ-Mix von 1 Stunde über 5 GB). Jetzt wird nur noch ein
+   Abschnitt aufgehoben: Die Abschnitte kommen der Reihe nach, und sobald der
+   nächste Abschnitt beginnt, ist alles davor fertig gewichtet und wird gleich
+   in die WAV-Dateien geschrieben. */
+
+typedef struct {
+  FILE *f[NSRC];
+  float *acc;          /* NSRC x 2 x SEG: noch nicht fertige Summe */
+  float *wacc;         /* SEG: Summe der Gewichte dazu */
+  long base;           /* Sample-Nummer von acc[0] */
+  float *buf;          /* Zwischenpuffer zum Schreiben (verschachtelt L/R) */
+} Writer;
+
+static FILE *wav_open(const wchar_t *path, long n)
+{
+  FILE *f = _wfopen(path, L"wb");
+  if (!f) { say("[ERROR] kann %s nicht schreiben\n", u8(path)); return NULL; }
+  unsigned int data = (unsigned int)(n * 8), riff = 4 + 26 + 12 + 8 + data;
+  unsigned int rate = SR, byterate = SR * 8, fsz = 18, fact = 4, frames = (unsigned int)n;
+  unsigned short fmt = 3, ch = 2, align = 8, bits = 32, cb = 0;
+  fwrite("RIFF", 1, 4, f); fwrite(&riff, 4, 1, f); fwrite("WAVEfmt ", 1, 8, f);
+  fwrite(&fsz, 4, 1, f); fwrite(&fmt, 2, 1, f); fwrite(&ch, 2, 1, f); fwrite(&rate, 4, 1, f);
+  fwrite(&byterate, 4, 1, f); fwrite(&align, 2, 1, f); fwrite(&bits, 2, 1, f); fwrite(&cb, 2, 1, f);
+  fwrite("fact", 1, 4, f); fwrite(&fact, 4, 1, f); fwrite(&frames, 4, 1, f);
+  fwrite("data", 1, 4, f); fwrite(&data, 4, 1, f);
+  return f;
+}
+
+/* Alles vor Sample "upto" ist fertig: normalisiert zurückrechnen, schreiben,
+   Puffer nachrücken. Nur die Stems mit active[s] != 0. */
+static int writer_flush(Writer *w, long upto, const int *active)
+{
+  long cnt = upto - w->base;
+  if (cnt <= 0) return 1;
+  for (int s = 0; s < NSRC; s++) {
+    if (!active[s]) continue;
+    const float *L = w->acc + ((size_t)s * 2 + 0) * SEG, *R = w->acc + ((size_t)s * 2 + 1) * SEG;
+    for (long k = 0; k < cnt; k++) {
+      w->buf[2 * k] = L[k] / w->wacc[k] * g_std + g_mean;
+      w->buf[2 * k + 1] = R[k] / w->wacc[k] * g_std + g_mean;
+    }
+    if (fwrite(w->buf, sizeof(float) * 2, cnt, w->f[s]) != (size_t)cnt) {
+      say("[ERROR] Schreiben der Stems fehlgeschlagen (Festplatte voll?)\n");
+      return 0;
+    }
+  }
+  /* Rest nach vorne schieben, hinten mit 0 auffüllen */
+  for (int p = 0; p < NSRC * 2; p++) {
+    float *a = w->acc + (size_t)p * SEG;
+    memmove(a, a + cnt, sizeof(float) * (SEG - cnt));
+    memset(a + SEG - cnt, 0, sizeof(float) * cnt);
+  }
+  memmove(w->wacc, w->wacc + cnt, sizeof(float) * (SEG - cnt));
+  memset(w->wacc + SEG - cnt, 0, sizeof(float) * cnt);
+  w->base = upto;
+  return 1;
+}
+
+
+/* ---------- Vortest (für das Testfenster in StemMaker) ----------
+   Aufruf: StemOnnx.exe <modell> --vortest [--gpu N] [--ergebnis datei]
+   Rechnet einen Abschnitt eines erzeugten Testsignals auf der CPU und (wenn
+   vorhanden) auf der Grafikkarte, vergleicht beide und merkt sich das
+   Ergebnis wie ein normaler Lauf (geraet.txt). Fortschritt als
+   "SCHRITT <prozent>: <text>", Ergebnis als "VORTEST name=wert". */
+static void step(int pct, const char *text)
+{
+  say("SCHRITT %d: %s\n", pct, text);
+}
+
+static int run_vortest(const wchar_t *model_file, int gpu_id, const wchar_t *ergebnis)
+{
+  step(5, "Testsignal erzeugen");
+  /* Testsignal: Bass, Akkord, Hi-Hat-Rauschen und Kick (immer gleich, damit
+     CPU und Grafikkarte dasselbe rechnen) */
+  g_n = SEG;
+  g_inL = malloc(sizeof(float) * SEG); g_inR = malloc(sizeof(float) * SEG);
+  if (!g_inL || !g_inR) { say("[ERROR] zu wenig Arbeitsspeicher\n"); return 5; }
+  unsigned int z = 12345;
+  for (long i = 0; i < SEG; i++) {
+    double t = i / (double)SR, beat = fmod(t, 0.5);
+    z = z * 1664525u + 1013904223u;
+    double noise = ((z >> 8) / 16777216.0 - 0.5) * (fmod(t, 0.25) < 0.05 ? 1.0 : 0.1);
+    double kick = exp(-beat * 18) * sin(2 * M_PI * (50 + 80 * exp(-beat * 30)) * t);
+    double bass = 0.3 * sin(2 * M_PI * 55 * t);
+    double chord = 0.08 * (sin(2 * M_PI * 220 * t) + sin(2 * M_PI * 277.2 * t) + sin(2 * M_PI * 329.6 * t));
+    g_inL[i] = (float)(0.5 * kick + bass + chord + 0.15 * noise);
+    g_inR[i] = (float)(0.5 * kick + bass + 0.9 * chord + 0.12 * noise);
+  }
+  normalize_input();
+  if (!init_ort()) return 4;
+
+  step(10, "Modell lesen");
+  double tl = now_s();
+  Weights wt;
+  int rc = load_model(model_file, &wt);
+  if (rc) return rc;
+  double t_read = now_s() - tl;
+
+  step(20, "CPU vorbereiten");
+  tl = now_s();
+  OrtSession *cpu = new_session(DEV_CPU, -1);
+  if (!cpu) return 4;
+  double t_load_cpu = t_read + now_s() - tl;
+
+  float *in = malloc(sizeof(float) * 2 * SEG);
+  float *res = malloc(sizeof(float) * NSRC * 2 * SEG);
+  float *res_cpu = malloc(sizeof(float) * NSRC * 2 * SEG);
+  if (!in || !res || !res_cpu) { say("[ERROR] zu wenig Arbeitsspeicher\n"); return 5; }
+  long st, len;
+  fill_segment(0, in, &st, &len);
+
+  /* Die ersten zwei Durchgänge sind langsamer (ONNX Runtime richtet
+     Speicher und Threads ein, gemessen unter Wine: 12-14 s statt 4 s).
+     Gemessen wird darum erst danach, der schnellere von zwei Durchgängen. */
+  double t_cpu = 0, wall_cpu = 1e9, w0, t_warm = 0;
+  static const char *cpu_steps[] = {"CPU einrichten (Durchgang 1 von 4)", "CPU einrichten (Durchgang 2 von 4)",
+                                    "CPU messen (Durchgang 3 von 4)", "CPU messen (Durchgang 4 von 4)"};
+  for (int q = 0; q < 4; q++) {
+    step(25 + q * 8, cpu_steps[q]);
+    w0 = now_s();
+    if (ort_fail(run_segment(cpu, g_mem, in, res_cpu, &t_cpu), "Test auf der CPU")) return 5;
+    double t = now_s() - w0;
+    say("CPU Durchgang %d: %.2f s\n", q + 1, t);
+    if (q == 0) t_warm = t;
+    if (q >= 2 && t < wall_cpu) wall_cpu = t;
+  }
+  /* Mehrzeit des ersten Durchgangs zählt zum Laden. Der zweite ist im Test
+     auch langsam, beim echten Trennen aber kaum (gemessen unter Wine:
+     Kungs 75 s, 13 Abschnitte, im Schnitt 4,3 s statt 4,1 s) */
+  t_warm -= wall_cpu;
+  if (t_warm < 0) t_warm = 0;
+  float mx;
+  if (!plausible(res_cpu, &mx)) { say("[ERROR] CPU rechnet falsch (Wert %g)\n", mx); return 5; }
+  say("CPU: %.2f s pro Abschnitt\n", wall_cpu);
+  g_ort->ReleaseSession(cpu);
+
+  step(60, "Grafikkarte suchen");
+  char key[512], merk[256] = "keine";
+  gpu_key(key, sizeof key);
+  say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
+  int dev = DEV_CPU;
+  double t_gpu = 0, snr = 0, t_open = 0, wall_gpu = 0, t_first = 0;
+  if (key[0]) {
+    step(65, "Grafikkarte prüfen (kann bis 30 s dauern)");
+    snprintf(merk, sizeof merk, "aus: unbekannt");
+    OrtSession *g = try_gpu(gpu_id, in, res, res_cpu, t_cpu, &dev, merk, sizeof merk, &t_gpu, &snr, &t_open, &t_first);
+    if (g) {
+      step(90, "Grafikkarte messen");
+      wall_gpu = 1e9;
+      for (int q = 0; q < 2 && dev != DEV_CPU; q++) {
+        w0 = now_s();
+        if (ort_fail(run_segment(g, g_mem, in, res, NULL), "Test auf der Grafikkarte")) {
+          crash_reason(merk, sizeof merk);
+          dev = DEV_CPU;
+          wall_gpu = 0;
+        } else {
+          double t = now_s() - w0;
+          say("Grafikkarte Durchgang %d: %.2f s\n", q + 1, t);
+          if (t < wall_gpu) wall_gpu = t;
+          snprintf(merk, sizeof merk, "ein");
+        }
+      }
+      g_ort->ReleaseSession(g);
+    }
+    cache_write(key, merk);
+  }
+  free_weights(&wt);
+
+  step(100, "Fertig");
+  double seg_min = 60.0 * SR / g_stride;            /* Abschnitte pro Audiominute */
+  int lp = 0;
+  { SYSTEM_INFO si; GetSystemInfo(&si); lp = (int)si.dwNumberOfProcessors; }
+  say("VORTEST version=%s\n", STEMONNX_VERSION);
+  say("VORTEST cpu_kerne=%d\n", lp);
+  /* Laden = einmal pro Song: Modell lesen, Sitzung anlegen, Einrichten */
+  say("VORTEST cpu_laden_s=%.2f\n", t_load_cpu + t_warm);
+  say("VORTEST cpu_s_pro_min=%.1f\n", wall_cpu * seg_min);
+  say("VORTEST gpu_name=%s\n", key);
+  say("VORTEST gpu_status=%s\n", merk);
+  if (t_gpu > 0) say("VORTEST gpu_snr_db=%.0f\n", snr);
+  if (wall_gpu > 0) {
+    say("VORTEST gpu_laden_s=%.2f\n", t_read + t_open + (t_first > wall_gpu ? t_first - wall_gpu : 0));
+    say("VORTEST gpu_s_pro_min=%.1f\n", wall_gpu * seg_min);
+  }
+  say("VORTEST geraet=%s\n", dev == DEV_CPU ? "cpu" : "gpu");
+  if (ergebnis) {
+    FILE *e = _wfopen(ergebnis, L"a");
+    if (e) {
+      fprintf(e, "StemOnnx %s | Vortest | CPU %.1f s/min, Laden %.1f s | Grafikkarte %s: %s",
+              STEMONNX_VERSION, wall_cpu * seg_min, t_load_cpu + t_warm, key[0] ? key : "keine", merk);
+      if (wall_gpu > 0) fprintf(e, ", %.1f s/min, %.0f dB", wall_gpu * seg_min, snr);
+      fprintf(e, "\n");
+      fclose(e);
+    }
+  }
+  return 0;
+}
+
 int wmain(int argc, wchar_t **argv)
 {
   SetConsoleOutputCP(CP_UTF8);   /* Umlaute richtig anzeigen */
@@ -722,7 +1035,7 @@ int wmain(int argc, wchar_t **argv)
   int npos = 0, gpu_id = -1;
   const char *geraet = "auto";
   const wchar_t *ergebnis = NULL;
-  int neu_pruefen = 0;
+  int neu_pruefen = 0, vortest = 0, karten = 0;
   for (int i = 1; i < argc; i++) {
     if (!wcscmp(argv[i], L"--geraet") && i + 1 < argc) {
       i++;
@@ -733,11 +1046,23 @@ int wmain(int argc, wchar_t **argv)
     else if (!wcscmp(argv[i], L"--kerne") && i + 1 < argc) g_kerne = _wtoi(argv[++i]);
     else if (!wcscmp(argv[i], L"--ergebnis") && i + 1 < argc) ergebnis = argv[++i];
     else if (!wcscmp(argv[i], L"--neu-pruefen")) neu_pruefen = 1;
+    else if (!wcscmp(argv[i], L"--vortest")) vortest = 1;
+    else if (!wcscmp(argv[i], L"--karten")) karten = 1;
     else if (npos < 4) pos[npos++] = argv[i];
   }
-  if (npos < 3) {
+  if (karten) {
+    /* nur die Grafikkarten melden (Name|Treiber), damit StemMaker merkt, wenn
+       sich seit dem Vortest etwas geändert hat. Braucht kein ONNX Runtime. */
+    char key[512];
+    gpu_key(key, sizeof key);
+    say("KARTEN %s\n", key);
+    return 0;
+  }
+  if (npos < (vortest ? 1 : 3)) {
     say("\nAufruf: StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile]\n"
-        "        [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]\n\n"
+        "        [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]\n"
+        "        StemOnnx.exe <modell> --vortest [--gpu <nummer>] [--ergebnis <datei>]\n"
+        "        StemOnnx.exe --karten\n\n"
         "<modell>: ggml-model-htdemucs-4s-f16.bin oder der Ordner mit den 4 htdemucs_ft-Dateien\n");
     return 1;
   }
@@ -767,6 +1092,7 @@ int wmain(int argc, wchar_t **argv)
     return 4;
   }
   if (!read_slots(p)) return 4;
+  g_stride = (long)(0.75 * SEG);
 
   /* --- Modell(e): eine Datei = htdemucs, ein Ordner = htdemucs_ft --- */
   wchar_t model_files[NSRC][MAX_PATH * 2];
@@ -789,52 +1115,55 @@ int wmain(int argc, wchar_t **argv)
       return 10;
     }
   }
+  if (vortest) return run_vortest(model_files[0], gpu_id, ergebnis);
 
   /* --- Audio lesen und normalisieren --- */
   long n = read_wav(wav_path, &g_inL, &g_inR);
   if (n <= 0) return 3;
   g_n = n;
-  double sum = 0, sum2 = 0;
-  for (long i = 0; i < n; i++) { double m = 0.5 * (g_inL[i] + g_inR[i]); sum += m; sum2 += m * m; }
-  float mean = (float)(sum / n);
-  double var = n > 1 ? (sum2 - sum * sum / n) / (n - 1) : 0;    /* wie torch.std (n-1) */
-  float std = (float)sqrt(var > 0 ? var : 0);
-  if (std < 1e-8f) std = 1e-8f;
-  for (long i = 0; i < n; i++) { g_inL[i] = (g_inL[i] - mean) / std; g_inR[i] = (g_inR[i] - mean) / std; }
+  normalize_input();
   say("Audio: %.1f s\n", n / (double)SR);
 
   /* --- ONNX Runtime vorbereiten --- */
   double t0 = now_s();
-  if (ort_fail(g_ort->CreateEnv(ORT_LOGGING_LEVEL_ERROR, "StemOnnx", &g_env_ort), "ONNX Runtime starten")) return 4;
-  if (ort_fail(g_ort->CreateCpuMemoryInfo(OrtArenaAllocator, OrtMemTypeDefault, &g_mem), "Speicher")) return 4;
-  stft_init();
-  g_spec = malloc(sizeof(float) * 4 * NBIN * LE);
-  g_wvals = calloc(g_nslot, sizeof(OrtValue *));
-  g_wnames = calloc(g_nslot, sizeof(char *));
-  Tensor **order = calloc(g_nslot, sizeof(Tensor *));
+  if (!init_ort()) return 4;
 
-  /* Ergebnis-Puffer: alle 4 Stems über den ganzen Song + Gewichts-Summe */
-  float *out = calloc((size_t)NSRC * 2 * n, sizeof(float));
-  float *wsum = calloc(n, sizeof(float));
+  /* Puffer für einen Abschnitt; das Ergebnis geht abschnittweise in die
+     Dateien (siehe Writer) */
+  Writer wr = {0};
+  wr.acc = calloc((size_t)NSRC * 2 * SEG, sizeof(float));
+  wr.wacc = calloc(SEG, sizeof(float));
+  wr.buf = malloc(sizeof(float) * 2 * SEG);
   float *w = malloc(sizeof(float) * SEG);
   float *in = malloc(sizeof(float) * 2 * SEG);
   float *res = malloc(sizeof(float) * NSRC * 2 * SEG);
   float *res_cpu = malloc(sizeof(float) * NSRC * 2 * SEG);
-  if (!out || !wsum || !w || !in || !res || !res_cpu || !g_spec) {
-    say("[ERROR] zu wenig Arbeitsspeicher für %.0f Minuten Audio\n", n / (double)SR / 60);
+  float *res_probe = malloc(sizeof(float) * NSRC * 2 * SEG);
+  if (!wr.acc || !wr.wacc || !wr.buf || !w || !in || !res || !res_cpu || !res_probe || !g_spec) {
+    say("[ERROR] zu wenig Arbeitsspeicher\n");
     return 5;
   }
   /* Dreiecks-Gewichtung wie demucs: 1..SEG/2 und zurück, auf 1 normiert */
   for (int k = 0; k < SEG / 2; k++) w[k] = (float)(k + 1);
   for (int k = SEG / 2; k < SEG; k++) w[k] = (float)(SEG - k);
   for (int k = 0; k < SEG; k++) w[k] /= (float)(SEG / 2);
-  g_stride = (long)(0.75 * SEG);
   int chunks = (int)((n + g_stride - 1) / g_stride);
   /* Probe-Abschnitt für die Wahl des Geräts: der bei ca. 30 s (dort ist meist
-     volle Musik), bei kurzen Songs der mittlere. Sein Ergebnis wird benutzt,
-     nicht weggeworfen. */
+     volle Musik), bei kurzen Songs der mittlere. Sein Ergebnis wird
+     aufgehoben und an seiner Stelle benutzt, nicht weggeworfen. */
   int probe = (int)(30L * SR / g_stride);
   if (probe >= chunks) probe = chunks / 2;
+
+  /* Ausgabedateien gleich anlegen (Länge ist bekannt) */
+  CreateDirectoryW(out_dir, NULL);
+  for (int s = 0; s < NSRC; s++) {
+    size_t L = wcslen(out_dir);
+    int sep = L > 0 && (out_dir[L - 1] == L'\\' || out_dir[L - 1] == L'/');
+    swprintf(p, MAX_PATH * 2, L"%ls%lstarget_%d_%hs.wav", out_dir, sep ? L"" : L"\\", s, SRC_NAMES[s]);
+    say("Writing wav file %s\n", u8(p));
+    wr.f[s] = wav_open(p, n);
+    if (!wr.f[s]) return 6;
+  }
 
   int dev = DEV_CPU;
   char dev_txt[160] = "CPU";
@@ -842,15 +1171,15 @@ int wmain(int argc, wchar_t **argv)
   /* auto: Grafikkarte nur probieren, wenn es eine gibt und sie nicht schon
      einmal versagt hat */
   char key[512], merk[256] = "aus: unbekannt";
-  int try_gpu = strcmp(geraet, "cpu") != 0;
+  int try_gpu_now = strcmp(geraet, "cpu") != 0;
   int bewaehrt = 0;            /* Grafikkarte hat die volle Prüfung schon bestanden */
   gpu_key(key, sizeof key);
   if (!strcmp(geraet, "auto")) {
     say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
-    if (!key[0]) try_gpu = 0;
+    if (!key[0]) try_gpu_now = 0;
     else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strncmp(merk, "aus", 3) == 0) {
       say("Grafikkarte übersprungen, frühere Prüfung: %s (neu prüfen mit --neu-pruefen)\n", merk);
-      try_gpu = 0;
+      try_gpu_now = 0;
     } else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strcmp(merk, "ein") == 0) {
       /* schon einmal gegen die CPU verglichen: der Vergleichs-Abschnitt auf
          der CPU entfällt, die Plausibilitätsprüfung bleibt */
@@ -862,25 +1191,19 @@ int wmain(int argc, wchar_t **argv)
   for (int mi = 0; mi < nmodels; mi++) {
     /* Gewichte dieses Modells laden */
     double tl = now_s();
-    Weights wt = {0};
-    if (!read_ggml(model_files[mi], &wt)) return 4;
-    if (!match_weights(&wt, order)) {
-      say("[ERROR] Modell wird von StemOnnx nicht unterstützt (passt nicht zum htdemucs-Gerüst): %s\n",
-          u8(model_files[mi]));
-      return 10;
-    }
-    if (!prepare_weights(order)) return 4;
+    Weights wt;
+    int rc = load_model(model_files[mi], &wt);
+    if (rc) return rc;
 
     OrtSession *sess = NULL;
-    int done_probe = 0;
+    int have_probe = 0;
     const char *prefix = nmodels > 1 ? SRC_UPPER[mi] : "";
     const char *tab = nmodels > 1 ? "\t " : "";
+    /* htdemucs_ft: jedes Modell liefert nur "seinen" Stem */
+    int active[NSRC];
+    for (int s = 0; s < NSRC; s++) active[s] = nmodels == 1 || s == mi;
 
-    if (mi == 0 && try_gpu) {
-      /* Grafikkarte probieren: jede Variante muss den Probe-Abschnitt richtig
-         rechnen. Bei "auto" auch schneller als die CPU sein, und das Ergebnis
-         muss mit der CPU übereinstimmen (gemessen: 56 bis 66 dB Abstand,
-         also nur Rundung). */
+    if (mi == 0 && try_gpu_now) {
       long pst, plen;
       fill_segment((long)probe * g_stride, in, &pst, &plen);
       double t_cpu = 0;
@@ -891,66 +1214,17 @@ int wmain(int argc, wchar_t **argv)
         if (ort_fail(run_segment(cpu, g_mem, in, res_cpu, &t_cpu), "Probe auf der CPU")) return 5;
         say("Probe CPU: %.2f s\n", t_cpu);
       }
-      for (int d = DEV_DML; d <= DEV_DML_NOMETA && !sess; d++) {
-        say("Probiere %s ...\n", DEV_NAMES[d]);
-        OrtSession *g = new_session(d, gpu_id);
-        if (!g) { snprintf(merk, sizeof merk, "aus: lässt sich nicht einschalten"); continue; }
-        double t1 = 0, t2 = 0;
-        float mx;
-        /* zweimal: der erste Lauf richtet die Grafikkarte erst ein */
-        int ok = !ort_fail(run_segment(g, g_mem, in, res, &t1), "Probe auf der Grafikkarte");
-        if (ok) ok = !ort_fail(run_segment(g, g_mem, in, res, &t2), "Probe auf der Grafikkarte");
-        if (!ok) snprintf(merk, sizeof merk, "aus: Probe abgestürzt");
-        if (ok && !plausible(res, &mx)) {
-          say("Probe rechnet falsch (Wert %g)\n", mx);
-          snprintf(merk, sizeof merk, "aus: rechnet falsch");
-          ok = 0;
-        }
-        if (ok && cpu) {
-          double snr = snr_db(res_cpu, res);
-          say("Probe Grafikkarte: %.2f s, Abstand zur CPU %.0f dB\n", t2, snr);
-          if (snr < 40) {
-            say("-> Grafikkarte rechnet ungenau, nicht benutzt\n");
-            snprintf(merk, sizeof merk, "aus: rechnet ungenau (%.0f dB)", snr);
-            ok = 0;
-          } else if (t2 * 1.2 > t_cpu) {
-            say("-> Grafikkarte nicht schneller als die CPU, rechne auf der CPU\n");
-            snprintf(merk, sizeof merk, "aus: nicht schneller als die CPU (%.2f s gegen %.2f s)", t2, t_cpu);
-            g_ort->ReleaseSession(g);
-            break;
-          }
-        }
-        if (ok) { sess = g; dev = d; }
-        else {
-          g_ort->ReleaseSession(g);
-          if (device_lost()) {
-            say("-> Grafikkarte wurde von Windows zurückgesetzt, keine weitere Variante\n");
-            break;
-          }
-        }
-      }
+      sess = try_gpu(gpu_id, in, res, cpu ? res_cpu : NULL, t_cpu, &dev, merk, sizeof merk, NULL, NULL, NULL, NULL);
       /* Ergebnis merken (nur bei auto, dort wurde richtig verglichen) */
       if (!strcmp(geraet, "auto") && key[0]) cache_write(key, sess ? "ein" : merk);
       if (sess) {
         if (cpu) g_ort->ReleaseSession(cpu);
-        cpu = NULL;
+        memcpy(res_probe, res, sizeof(float) * NSRC * 2 * SEG);
+        have_probe = 1;
       } else if (cpu) {
         sess = cpu; dev = DEV_CPU;
-        memcpy(res, res_cpu, sizeof(float) * NSRC * 2 * SEG);
-      }
-      if (sess) {
-        /* Ergebnis des Probe-Abschnitts übernehmen (bei auto das der CPU,
-           wenn die CPU gewählt wurde, sonst das der Grafikkarte) */
-        long skip = (long)probe * g_stride - pst;
-        for (int s = 0; s < NSRC; s++)
-          for (int c = 0; c < 2; c++) {
-            if (nmodels > 1 && s != mi) continue;   /* htdemucs_ft: nur der eigene Stem */
-            const float *src = res + ((size_t)s * 2 + c) * SEG + skip;
-            float *dst = out + ((size_t)s * 2 + c) * n + (long)probe * g_stride;
-            for (long k = 0; k < plen; k++) dst[k] += w[k] * src[k];
-          }
-        for (long k = 0; k < plen; k++) wsum[(long)probe * g_stride + k] += w[k];
-        done_probe = 1;
+        memcpy(res_probe, res_cpu, sizeof(float) * NSRC * 2 * SEG);
+        have_probe = 1;
       }
       snprintf(dev_txt, sizeof dev_txt, "%s", DEV_NAMES[dev]);
     }
@@ -966,66 +1240,60 @@ int wmain(int argc, wchar_t **argv)
     t_load += now_s() - tl;
     if (mi == 0) say("Rechnet auf: %s\n", dev_txt);
 
-    /* --- Abschnitte trennen und zusammensetzen --- */
+    /* --- Abschnitte der Reihe nach trennen, zusammensetzen, schreiben --- */
     double ts = now_s();
-    int nr = done_probe;
+    memset(wr.acc, 0, sizeof(float) * NSRC * 2 * SEG);
+    memset(wr.wacc, 0, sizeof(float) * SEG);
+    wr.base = 0;
     for (int ci = 0; ci < chunks; ci++) {
-      if (done_probe && ci == probe) continue;
       long off = (long)ci * g_stride, st, len;
       fill_segment(off, in, &st, &len);
-      OrtStatus *rs = run_segment(sess, g_mem, in, res, NULL);
-      float mx;
-      if (!rs && dev != DEV_CPU && !plausible(res, &mx)) {
-        say("[ERROR] Grafikkarte rechnet falsch (Wert %g)\n", mx);
-        rs = g_ort->CreateStatus(ORT_FAIL, "unplausibles Ergebnis");
-      }
-      if (rs && dev != DEV_CPU) {
-        /* Grafikkarte fällt mitten im Song aus (z. B. setzt Windows eine
-           schwache Karte nach 2 s Rechenzeit zurück): auf der CPU weiter */
-        ort_fail(rs, "Trennen auf der Grafikkarte");
-        say("-> Grafikkarte ausgefallen, rechne ab hier auf der CPU weiter\n");
-        if (key[0]) cache_write(key, "aus: mitten im Song ausgefallen");
-        g_ort->ReleaseSession(sess);
-        dev = DEV_CPU;
-        sess = new_session(DEV_CPU, -1);
-        if (!sess) return 4;
-        snprintf(dev_txt + strlen(dev_txt), sizeof dev_txt - strlen(dev_txt), ", ab Abschnitt %d CPU", nr + 1);
+      OrtStatus *rs = NULL;
+      const float *r = res;
+      if (have_probe && ci == probe) r = res_probe;  /* schon gerechnet */
+      else {
         rs = run_segment(sess, g_mem, in, res, NULL);
+        float mx;
+        if (!rs && dev != DEV_CPU && !plausible(res, &mx)) {
+          say("[ERROR] Grafikkarte rechnet falsch (Wert %g)\n", mx);
+          rs = g_ort->CreateStatus(ORT_FAIL, "unplausibles Ergebnis");
+        }
+        if (rs && dev != DEV_CPU) {
+          /* Grafikkarte fällt mitten im Song aus (z. B. setzt Windows eine
+             schwache Karte nach 2 s Rechenzeit zurück): auf der CPU weiter */
+          ort_fail(rs, "Trennen auf der Grafikkarte");
+          say("-> Grafikkarte ausgefallen, rechne ab hier auf der CPU weiter\n");
+          if (key[0]) cache_write(key, "aus: mitten im Song ausgefallen");
+          g_ort->ReleaseSession(sess);
+          dev = DEV_CPU;
+          sess = new_session(DEV_CPU, -1);
+          if (!sess) return 4;
+          snprintf(dev_txt + strlen(dev_txt), sizeof dev_txt - strlen(dev_txt), ", ab Abschnitt %d CPU", ci + 1);
+          rs = run_segment(sess, g_mem, in, res, NULL);
+        }
+        if (ort_fail(rs, "Trennen")) return 5;
       }
-      if (ort_fail(rs, "Trennen")) return 5;
-      long skip = off - st;
+      long skip = off - st, at = off - wr.base;
       for (int s = 0; s < NSRC; s++) {
-        /* htdemucs_ft: jedes Modell liefert nur "seinen" Stem */
-        if (nmodels > 1 && s != mi) continue;
+        if (!active[s]) continue;
         for (int c = 0; c < 2; c++) {
-          const float *src = res + ((size_t)s * 2 + c) * SEG + skip;
-          float *dst = out + ((size_t)s * 2 + c) * n + off;
+          const float *src = r + ((size_t)s * 2 + c) * SEG + skip;
+          float *dst = wr.acc + ((size_t)s * 2 + c) * SEG + at;
           for (long k = 0; k < len; k++) dst[k] += w[k] * src[k];
         }
       }
-      if (mi == 0) for (long k = 0; k < len; k++) wsum[off + k] += w[k];
-      nr++;
-      say("%s%s[THREAD 0] (%7.3f%%) Abschnitt %d von %d\n", prefix, tab, 100.0 * nr / chunks, nr, chunks);
+      for (long k = 0; k < len; k++) wr.wacc[at + k] += w[k];
+      /* alles vor dem nächsten Abschnitt ist fertig */
+      long upto = ci + 1 < chunks ? (long)(ci + 1) * g_stride : n;
+      if (!writer_flush(&wr, upto, active)) return 6;
+      say("%s%s[THREAD 0] (%7.3f%%) Abschnitt %d von %d\n", prefix, tab, 100.0 * (ci + 1) / chunks, ci + 1, chunks);
     }
     t_sep += now_s() - ts;
     g_ort->ReleaseSession(sess);
     free_weights(&wt);
   }
-
-  /* --- Normalisierung rückgängig machen und speichern --- */
-  CreateDirectoryW(out_dir, NULL);
-  float *l = malloc(sizeof(float) * n), *r = malloc(sizeof(float) * n);
-  for (int s = 0; s < NSRC; s++) {
-    for (long i = 0; i < n; i++) {
-      l[i] = out[((size_t)s * 2 + 0) * n + i] / wsum[i] * std + mean;
-      r[i] = out[((size_t)s * 2 + 1) * n + i] / wsum[i] * std + mean;
-    }
-    size_t L = wcslen(out_dir);
-    int sep = L > 0 && (out_dir[L - 1] == L'\\' || out_dir[L - 1] == L'/');
-    swprintf(p, MAX_PATH * 2, L"%ls%lstarget_%d_%hs.wav", out_dir, sep ? L"" : L"\\", s, SRC_NAMES[s]);
-    say("Writing wav file %s\n", u8(p));
-    if (!write_wav(p, l, r, n)) return 6;
-  }
+  for (int s = 0; s < NSRC; s++)
+    if (fclose(wr.f[s]) != 0) { say("[ERROR] Schreiben der Stems fehlgeschlagen (Festplatte voll?)\n"); return 6; }
 
   double audio_min = n / (double)SR / 60.0;
   say("\nFertig.\n  Gerät        : %s\n  Modell laden : %.1f s\n  Trennen      : %.1f s\n"

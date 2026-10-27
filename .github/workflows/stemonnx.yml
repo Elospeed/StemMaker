@@ -1,7 +1,9 @@
 # Build der schnellen Trenn-Engine StemOnnx (engines/onnx).
 #
-# Läuft nur, wenn sich etwas in engines/onnx ändert. Hat nichts mit dem
-# StemMaker-Build zu tun: StemMaker benutzt StemOnnx noch nicht.
+# Läuft nur, wenn sich etwas in engines/onnx ändert, für einen schnellen Test
+# der Engine allein. Ab StemMaker 2.0 baut auch build.yml (Job "stemonnx")
+# die Engine mit und legt sie als onnx\ ins Artefakt, release.yml packt sie
+# nach tools\onnx\ ins Release-ZIP.
 # Das fertige Paket (StemOnnx.exe + ONNX Runtime + DirectML + Gerüst) liegt
 # als Workflow-Artefakt beim Lauf (privat, 14 Tage).
 

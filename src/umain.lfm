@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
   Left = 300
-  Height = 700
+  Height = 724
   Top = 150
   Width = 860
   AllowDropFiles = True
   Caption = 'StemMaker'
-  ClientHeight = 700
+  ClientHeight = 724
   ClientWidth = 860
   Constraints.MinHeight = 560
   Constraints.MinWidth = 800
@@ -406,6 +406,33 @@ object frmMain: TfrmMain
     ScrollBars = ssAutoBoth
     TabOrder = 5
     WordWrap = False
+  end
+  object pnlFoot: TPanel
+    Left = 0
+    Height = 24
+    Top = 700
+    Width = 860
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 24
+    ClientWidth = 860
+    TabOrder = 6
+    object pbKofi: TPaintBox
+      Left = 710
+      Height = 24
+      Hint = 'ko-fi.com/elospeed'
+      Top = 0
+      Width = 146
+      Align = alRight
+      BorderSpacing.Right = 4
+      Cursor = crHandPoint
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = pbKofiClick
+      OnMouseEnter = pbKofiMouseEnter
+      OnMouseLeave = pbKofiMouseLeave
+      OnPaint = pbKofiPaint
+    end
   end
   object tmrTime: TTimer
     Enabled = False

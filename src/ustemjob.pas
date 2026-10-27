@@ -16,10 +16,14 @@
 
     1. ffmpeg     : Eingangsdatei auspacken -> mix.wav
                     (44.1 kHz, Stereo - so will es das Trenn-Modell)
-    2. demucs.cpp : mix.wav in 4 Spuren zerlegen:
+    2. Trennen    : mix.wav in 4 Spuren zerlegen:
                     drums.wav, bass.wav, other.wav, vocals.wav
-                    (demucs.cpp = C++-Version von Demucs, dem KI-Modell von
-                     Meta; github.com/sevagh/demucs.cpp)
+                    Standard ab 2.0 ist "Turbo" = StemOnnx (eigene Engine
+                    mit ONNX Runtime, tools\onnx\, CPU oder Grafikkarte).
+                    Klappt Turbo nicht, oder ist "Klassisch" eingestellt,
+                    rechnet demucs.cpp (C++-Version von Demucs, dem
+                    KI-Modell von Meta; github.com/sevagh/demucs.cpp).
+                    Beide rechnen dasselbe Modell mit denselben Gewichten.
     3. ffmpeg     : Master + 4 Stems als 5 Audiospuren in EINE MP4 packen
                     (AAC oder ALAC). Tags und Cover werden aus der
                     Originaldatei übernommen. Nur Spur 1 (Master) ist
@@ -44,13 +48,21 @@ uses
   Classes, SysUtils, UTF8Process, Process, FileUtil, LazFileUtils, IniFiles,
   {$IFDEF CPUX86_64}cpu,{$ENDIF}     // Unit 'cpu' = AVX2-Erkennung
   {$IFDEF WINDOWS}Windows,{$ENDIF}
-  uStemMP4, uLog;
+  uStemMP4, uLog, uLoad;
 
 type
   { Welches Trenn-Modell benutzt wird }
   TStemModel = (smHTDemucs,     // Demucs v4 - Standard
                 smHTDemucsFT,   // Demucs v4 fine-tuned - beste Qualität, 4 Modelle
-                smHDemucsV3);   // Demucs v3 - schneller
+                smHDemucsV3);   // Demucs v3 - nur klassische Engine
+
+  { Welche Engine die Stems trennt }
+  TStemEngine = (seTurbo,       // StemOnnx (ONNX Runtime), Standard ab 2.0
+                 seClassic);    // demucs.cpp, wie bis 1.9
+
+  { Wo Turbo rechnen darf }
+  TTurboDevice = (tdAuto,       // Grafikkarte, wenn sie richtig UND schneller rechnet
+                  tdCPU);       // nur CPU
 
   { Audio-Format in der Stem-Datei }
   TStemCodec = (scAAC,          // verlustbehaftet, NI-Standard
@@ -66,10 +78,14 @@ type
   TStemSettings = record
     FFmpegExe   : string;   // voller Pfad zu ffmpeg.exe
     DemucsDir   : string;   // Ordner mit den demucs-Programmen
+    OnnxDir     : string;   // Ordner mit StemOnnx.exe (Turbo), normal tools\onnx
     ModelsDir   : string;   // Ordner mit den Modelldateien (ggml-model-*.bin)
     OutputDir   : string;   // Zielordner; leer = neben der Originaldatei
     Model       : TStemModel;
+    Engine      : TStemEngine;   // Turbo oder Klassisch
+    TurboDevice : TTurboDevice;  // Turbo: automatisch oder nur CPU
     Threads     : Integer;  // in wie viele Teile demucs den Song aufteilt
+                            // (nur Klassisch; Turbo verteilt selbst)
     Codec       : TStemCodec;
     AACBitrate  : Integer;  // kbit/s bei AAC, z.B. 256 (NI-Standard) oder 320
                             // bei AACAuto: die HÖCHSTE erlaubte Bitrate
@@ -101,6 +117,9 @@ type
     FThreadPct : array[0..127] of Double;   // Prozent je demucs-Teil
     FPhase     : Integer;          // bei htdemucs_ft: welches der 4 Modelle läuft
     FPhaseCount: Integer;          // 1 oder 4 Modelle nacheinander
+    FProgParts : Integer;          // so viele Teile melden Prozente (Turbo: 1)
+    FUsedTurbo : Boolean;          // diese Datei wurde mit Turbo getrennt
+    FTurboDev  : string;           // Turbo: worauf gerechnet wurde (aus der Ausgabe)
     { jeder Arbeitsschritt belegt einen Bereich des Fortschrittsbalkens: }
     FStageLo, FStageHi: Integer;   // z.B. 4..90 % für demucs
     FStageName : string;
@@ -133,6 +152,7 @@ type
     procedure HandleLine(const Line: string; IsDemucs: Boolean);
     function DemucsExePath: string;
     function DemucsModelArg: string;
+    function RunTurbo(const MixWav, StemDir: string): Boolean;
     function OmpThreads: Integer;
   public
     constructor Create(const ASettings: TStemSettings);
@@ -149,6 +169,9 @@ type
     property PeakMemMB: Integer read FPeakMemMB;
     { AAC-Bitrate der letzten Datei (0 = ALAC) }
     property UsedKbps: Integer read FUsedKbps;
+    { letzte Datei mit Turbo getrennt? Und worauf (z.B. 'CPU')? }
+    property UsedTurbo: Boolean read FUsedTurbo;
+    property TurboDevName: string read FTurboDev;
     { Anzahl Kerne, die jedes demucs-Teilstück zusätzlich nutzt }
     function OmpThreadsPublic: Integer;
     property OnLog: TStemLogEvent read FOnLog write FOnLog;
@@ -160,7 +183,7 @@ const
   StemModelNames: array[TStemModel] of string = (
     'htdemucs (Standard, Demucs v4)',
     'htdemucs_ft (beste Qualität, ca. 4x langsamer)',
-    'hdemucs_mmi (Demucs v3, schneller)');
+    'hdemucs_mmi (Demucs v3, ältere Engine)');
   { Hinweis: StemModelNames bleibt deutsch (feste Konstante, _() geht hier
     nicht). Für die ANZEIGE StemModelDisplayName benutzen - das übersetzt. }
 
@@ -239,6 +262,18 @@ function AutoThreadsRAMLimit: Integer;
 function ChooseAACBitrate(const SrcCodec: string; SrcKbps, MaxKbps: Integer): Integer;
 { Name der demucs-Version, die verwendet wird: 'AVX2', 'AVX' oder 'generic' }
 function DemucsVariantName(const ExePath: string): string;
+
+{ ---- Turbo (StemOnnx) ---- }
+{ voller Pfad zu StemOnnx.exe }
+function OnnxExeFor(const OnnxDir: string): string;
+{ Rechnet diese Einstellung mit Turbo? (Turbo gewählt, Modell v4 oder ft,
+  StemOnnx vorhanden). v3 (hdemucs_mmi) kann StemOnnx nicht, das läuft
+  immer klassisch. }
+function TurboFor(const S: TStemSettings): Boolean;
+{ nur die Engine-Einstellung aus StemMaker.ini lesen ([Turbo], OnnxDir) }
+procedure LoadTurboSettings(var S: TStemSettings);
+{ Engine-Einstellung speichern ([Turbo] in StemMaker.ini) }
+procedure SaveTurboSettings(Engine: TStemEngine; Device: TTurboDevice);
 
 implementation
 
@@ -457,7 +492,7 @@ begin
   { gleiche Texte wie in StemModelNames, aber übersetzbar }
   case M of
     smHTDemucsFT: Result := _('htdemucs_ft (beste Qualität, ca. 4x langsamer)');
-    smHDemucsV3 : Result := _('hdemucs_mmi (Demucs v3, schneller)');
+    smHDemucsV3 : Result := _('hdemucs_mmi (Demucs v3, ältere Engine)');
   else
     Result := _('htdemucs (Standard, Demucs v4)');
   end;
@@ -508,9 +543,12 @@ begin
   Result := Default(TStemSettings);
   Result.FFmpegExe  := AppDir + 'tools' + PathDelim + ExeName('ffmpeg');
   Result.DemucsDir  := AppDir + 'tools';
+  Result.OnnxDir    := AppDir + 'tools' + PathDelim + 'onnx';
   Result.ModelsDir  := AppDir + 'models';
   Result.OutputDir  := '';
   Result.Model      := smHTDemucs;
+  Result.Engine     := seTurbo;        // ab 2.0
+  Result.TurboDevice:= tdAuto;
   Result.Threads    := AutoThreads;    // siehe AutoThreads
   Result.Codec      := scAAC;
   Result.AACBitrate := 320;            // Obergrenze ...
@@ -662,6 +700,8 @@ begin
   end;
 end;
 
+procedure LoadTurboSettingsFrom(Ini: TIniFile; var S: TStemSettings); forward;
+
 procedure LoadToolSettings(var S: TStemSettings);
 var
   Ini: TIniFile;
@@ -674,6 +714,7 @@ begin
     S.FFmpegExe := Ini.ReadString('Tools', 'FFmpeg', S.FFmpegExe);
     S.DemucsDir := Ini.ReadString('Tools', 'DemucsDir', S.DemucsDir);
     S.ModelsDir := Ini.ReadString('Tools', 'ModelsDir', S.ModelsDir);
+    LoadTurboSettingsFrom(Ini, S);
     M := Ini.ReadInteger('Main', 'Model', Ord(S.Model));
     if (M >= Ord(Low(TStemModel))) and (M <= Ord(High(TStemModel))) then
       S.Model := TStemModel(M);
@@ -839,6 +880,70 @@ begin
     Result := 'AVX2';
 end;
 
+{ Engine (ab 2.0). Feste Wörter statt Zahlen, damit man die INI lesen kann }
+procedure LoadTurboSettingsFrom(Ini: TIniFile; var S: TStemSettings);
+begin
+  S.OnnxDir := Ini.ReadString('Tools', 'OnnxDir', S.OnnxDir);
+  if SameText(Ini.ReadString('Turbo', 'Engine', 'turbo'), 'klassisch') then
+    S.Engine := seClassic
+  else
+    S.Engine := seTurbo;
+  if SameText(Ini.ReadString('Turbo', 'Geraet', 'auto'), 'cpu') then
+    S.TurboDevice := tdCPU
+  else
+    S.TurboDevice := tdAuto;
+end;
+
+procedure LoadTurboSettings(var S: TStemSettings);
+var
+  Ini: TIniFile;
+begin
+  if not FileExists(StemIniFileName) then Exit;
+  try
+    Ini := TIniFile.Create(StemIniFileName);
+    try
+      LoadTurboSettingsFrom(Ini, S);
+    finally
+      Ini.Free;
+    end;
+  except
+  end;
+end;
+
+function OnnxExeFor(const OnnxDir: string): string;
+begin
+  Result := IncludeTrailingPathDelimiter(OnnxDir) + ExeName('StemOnnx');
+end;
+
+function TurboFor(const S: TStemSettings): Boolean;
+begin
+  Result := (S.Engine = seTurbo) and (S.Model in [smHTDemucs, smHTDemucsFT]) and
+    FileExists(OnnxExeFor(S.OnnxDir));
+end;
+
+procedure SaveTurboSettings(Engine: TStemEngine; Device: TTurboDevice);
+var
+  Ini: TIniFile;
+begin
+  try
+    Ini := TIniFile.Create(StemIniFileName);
+    try
+      if Engine = seClassic then
+        Ini.WriteString('Turbo', 'Engine', 'klassisch')
+      else
+        Ini.WriteString('Turbo', 'Engine', 'turbo');
+      if Device = tdCPU then
+        Ini.WriteString('Turbo', 'Geraet', 'cpu')
+      else
+        Ini.WriteString('Turbo', 'Geraet', 'auto');
+    finally
+      Ini.Free;
+    end;
+  except
+    { schreibgeschützt - dann gilt die Einstellung nur bis zum Neustart nicht }
+  end;
+end;
+
 function DemucsExeFor(const DemucsDir: string; Model: TStemModel): string;
 var
   D, Base: string;
@@ -908,6 +1013,7 @@ begin
     FSettings.Threads := 1;
   if FSettings.Threads > High(FThreadPct) + 1 then
     FSettings.Threads := High(FThreadPct) + 1;
+  FProgParts := 1;
   FTail := TStringList.Create;
 end;
 
@@ -1093,6 +1199,48 @@ begin
 end;
 {$ENDIF}
 
+{ Trennen mit Turbo (StemOnnx). Aufruf wie demucs.cpp, dazu das Gerät.
+  Rückgabe False = hat nicht geklappt, dann trennt Run mit demucs.cpp.
+  Abbrechen löst wie immer EStemCancelled aus (kein Rückfall). }
+function TStemJob.RunTurbo(const MixWav, StemDir: string): Boolean;
+var
+  Code, I: Integer;
+  Dev: string;
+begin
+  SetStage(4, 90, _('Stems trennen (Turbo)'));
+  FillChar(FThreadPct, SizeOf(FThreadPct), 0);
+  FPhase := 0;
+  if FSettings.Model = smHTDemucsFT then FPhaseCount := 4 else FPhaseCount := 1;
+  FProgParts := 1;                 // StemOnnx meldet nur "[THREAD 0]"
+  FTurboDev := '';
+  FUsedTurbo := True;              // HandleLine wertet jetzt die Turbo-Zeilen aus
+  if FSettings.TurboDevice = tdCPU then
+  begin
+    Dev := 'cpu';
+    Log('  ' + _('Turbo (StemOnnx), nur CPU'));
+  end
+  else
+  begin
+    Dev := 'auto';
+    Log('  ' + _('Turbo (StemOnnx), Grafikkarte wenn sie mitmacht'));
+  end;
+  Code := RunTool(OnnxExeFor(FSettings.OnnxDir), [DemucsModelArg, MixWav, StemDir,
+    '1', '--geraet', Dev], True);
+  Result := Code = 0;
+  if Result then
+    for I := 0 to 3 do
+      if not FileExists(StemDir + PathDelim + STEM_WAVS[I]) then
+        Result := False;
+  if not Result then
+  begin
+    FUsedTurbo := False;
+    Log('  ' + Format(_('Turbo hat nicht geklappt (Code %d), diese Datei trennt jetzt demucs.cpp'), [Code]));
+    { halbe Ergebnisse weg, demucs.cpp schreibt neu }
+    for I := 0 to 3 do
+      SysUtils.DeleteFile(StemDir + PathDelim + STEM_WAVS[I]);
+  end;
+end;
+
 function TStemJob.CheckTools(out Problems: string): Boolean;
 var
   I: Integer;
@@ -1250,7 +1398,23 @@ begin
     Exit;
   end;
 
-  { ---- demucs ---- }
+  { ---- demucs / Turbo ---- }
+  { Turbo: worauf gerechnet wird, und wenn die Grafikkarte mitten im Song
+    aussteigt ("-> Grafikkarte ausgefallen ...") }
+  if FUsedTurbo then
+  begin
+    if Pos('Rechnet auf: ', Line) = 1 then
+    begin
+      FTurboDev := Trim(Copy(Line, 14, MaxInt));
+      Log('  ' + Format(_('Turbo rechnet auf: %s'), [FTurboDev]));
+    end
+    else if Pos('-> ', Line) = 1 then
+      Log('  ' + Trim(Line));
+    { "Gerät : CPU, ab Abschnitt 5 CPU" in der Zusammenfassung am Ende }
+    P := Pos('Gerät        : ', Line);
+    if P > 0 then
+      FTurboDev := Trim(Copy(Line, P + Length('Gerät        : '), MaxInt));
+  end;
   { wichtige Zeilen ins Protokoll übernehmen }
   if Pos('Writing wav file', Line) > 0 then
     Log('  ' + Trim(Line));
@@ -1303,7 +1467,7 @@ begin
     FThreadPct[T] := Pct;          // Fortschritt dieses Teilstücks merken
 
   { Durchschnitt über alle Teilstücke }
-  N := FSettings.Threads;
+  N := FProgParts;
   if Pos('[THREAD ', Line) = 0 then N := 1;
   Sum := 0;
   for I := 0 to N - 1 do
@@ -1350,6 +1514,8 @@ var
   LastMemCheck: QWord;
   Mem: Integer;
   Proc: TProcessUTF8;
+  Load: TLoadSampler;              // Auslastung CPU/Kerne/Grafikkarte beim Trennen
+  LoadLines: TStringArray;
   Buf: array[0..4095] of Char;
   Pending: string;                 // angefangene Zeile, noch ohne Zeilenende
   N, I, K: Integer;
@@ -1380,6 +1546,7 @@ begin
   Pending := '';
   LastMemCheck := 0;
   Mem := 0;
+  Load := nil;
   Proc := TProcessUTF8.Create(nil);
   try
     Proc.Executable := Exe;
@@ -1406,6 +1573,8 @@ begin
     {$IFDEF WINDOWS}
     AddToToolJob(Proc.ProcessHandle);   // stirbt mit StemMaker, siehe oben
     {$ENDIF}
+    if IsDemucs then
+      Load := TLoadSampler.Create(Proc.ProcessHandle, Proc.ProcessID);
 
     { Hauptschleife: Ausgabe lesen, solange das Programm läuft }
     while True do
@@ -1434,6 +1603,7 @@ begin
         if Mem > FPeakMemMB then FPeakMemMB := Mem;
       end;
       {$ENDIF}
+      if Load <> nil then Load.Tick;
 
       if FCancelled then
       begin
@@ -1469,8 +1639,17 @@ begin
         LogLine('  demucs Speicher (Spitze): unbekannt');
     end;
     {$ENDIF}
+    if Load <> nil then
+    begin
+      { jede Zeile einzeln, damit alle eine Uhrzeit bekommen }
+      if FUsedTurbo then LoadLines := Load.Summary('Turbo').Split([LineEnding])
+      else LoadLines := Load.Summary('demucs').Split([LineEnding]);
+      for I := 0 to High(LoadLines) do
+        LogLine(LoadLines[I]);
+    end;
     LogLine(Format('  Beendet mit Code %d', [Result]));
   finally
+    Load.Free;
     Proc.Free;
   end;
 end;
@@ -1514,7 +1693,7 @@ var
     MODEL_IDS: array[TStemModel] of string = ('htdemucs', 'htdemucs_ft', 'hdemucs_mmi');
   var
     FS: TFormatSettings;
-    Fmt: string;
+    Fmt, EngineText: string;
 
     { Messwert als Text, leer wenn nicht gemessen }
     function LoudText(Found: Boolean; V: Double): string;
@@ -1532,11 +1711,15 @@ var
       Fmt := 'ALAC'
     else
       Fmt := Format('AAC %d', [FUsedKbps]);
+    if FUsedTurbo then
+      EngineText := 'Turbo ' + FTurboDev
+    else
+      EngineText := 'Klassisch';
     LogStatRow(
       ['Datum', 'Datei', 'Endung', 'Groesse_MB', 'Laenge_s', 'Quelle',
        'Quelle_kbps', 'Modell', 'Teile', 'Kerne_je_Teil', 'Stem_Format',
        'Stem_MB', 'Umwandlung_s', 's_pro_Audiominute', 'RAM_Spitze_MB',
-       'LUFS', 'LRA_LU', 'TruePeak_dBFS', 'CPU', 'Ergebnis'],
+       'LUFS', 'LRA_LU', 'TruePeak_dBFS', 'CPU', 'Ergebnis', 'Engine'],
       [FormatDateTime('yyyy-mm-dd hh:nn:ss', Now),
        ExtractFileName(InputFile),
        LowerCase(ExtractFileExt(InputFile)),
@@ -1556,7 +1739,8 @@ var
        LoudText(FLoudFound, FLoudLRA),
        LoudText(FPeakFound, FTruePeak),
        SysCPUName,
-       StatResult]);
+       StatResult,
+       EngineText]);
   end;
 
   { Fehler auslösen und dabei die letzten Ausgabezeilen des Programms
@@ -1735,20 +1919,27 @@ begin
       { ---- 2. Trennen mit demucs.cpp ------------------------------------
         Aufruf: demucs <Modell> <mix.wav> <Ausgabeordner> <Anzahl Teile>
         Ergebnis: target_0_drums.wav ... target_3_vocals.wav }
-      SetStage(4, 90, _('Stems trennen (demucs)'));
-      FillChar(FThreadPct, SizeOf(FThreadPct), 0);
-      FPhase := 0;
-      if FSettings.Model = smHTDemucsFT then FPhaseCount := 4 else FPhaseCount := 1;
-      Log('  ' + Format(_('demucs: %s (%s), %d Teile x je %d Kerne'),
-        [ExtractFileName(DemucsExePath), DemucsVariantName(DemucsExePath),
-         FSettings.Threads, OmpThreads]));
-      Code := RunTool(DemucsExePath, [DemucsModelArg, MixWav, StemDir,
-        IntToStr(FSettings.Threads)], True);
-      if Code <> 0 then
-        Fail(Format(_('demucs.cpp ist fehlgeschlagen (Code %d)'), [Code]));
-      for I := 0 to 3 do
-        if not FileExists(StemDir + PathDelim + STEM_WAVS[I]) then
-          Fail(Format(_('demucs.cpp hat %s nicht erzeugt'), [STEM_WAVS[I]]));
+      FUsedTurbo := False;
+      if TurboFor(FSettings) then
+        RunTurbo(MixWav, StemDir);   // setzt FUsedTurbo, False = Rückfall
+      if not FUsedTurbo then
+      begin
+        SetStage(4, 90, _('Stems trennen (demucs)'));
+        FillChar(FThreadPct, SizeOf(FThreadPct), 0);
+        FPhase := 0;
+        if FSettings.Model = smHTDemucsFT then FPhaseCount := 4 else FPhaseCount := 1;
+        FProgParts := FSettings.Threads;
+        Log('  ' + Format(_('demucs: %s (%s), %d Teile x je %d Kerne'),
+          [ExtractFileName(DemucsExePath), DemucsVariantName(DemucsExePath),
+           FSettings.Threads, OmpThreads]));
+        Code := RunTool(DemucsExePath, [DemucsModelArg, MixWav, StemDir,
+          IntToStr(FSettings.Threads)], True);
+        if Code <> 0 then
+          Fail(Format(_('demucs.cpp ist fehlgeschlagen (Code %d)'), [Code]));
+        for I := 0 to 3 do
+          if not FileExists(StemDir + PathDelim + STEM_WAVS[I]) then
+            Fail(Format(_('demucs.cpp hat %s nicht erzeugt'), [STEM_WAVS[I]]));
+      end;
 
       DoBassFix := FSettings.BassFix and (FDurationSec > 0) and
         (FDurationSec <= BASSFIX_MAX_SEC);

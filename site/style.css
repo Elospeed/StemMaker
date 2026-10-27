@@ -133,7 +133,7 @@ header.top nav .lang {
 @media (max-width: 560px) { .shot .bar i { width: 32px; } }
 .shot img { width: 100%; }
 figcaption { color: var(--muted); font-size: 14px; text-align: center; margin-top: 12px; }
-.hero-shot { max-width: 900px; margin: 46px auto 0; }
+.hero-shot { max-width: 862px; margin: 46px auto 0; }
 
 /* ---- Demovideo: volle Breite bis 960 px, Seitenverhältnis 16:9 bleibt erhalten ---- */
 .video { margin: 28px auto 0; max-width: 960px; }
@@ -229,3 +229,28 @@ code { background: #0f1011; border: 1px solid var(--line); border-radius: 4px; p
 .soon p { color: var(--muted); margin: 0; }
 .soon p strong { color: var(--text); }
 .soon ul.ticks { margin-top: 8px; }
+
+/* Tempo-Vergleich Klassisch gegen Turbo (Balken, linear in Minuten) */
+.race {
+  margin-top: 40px; padding: 22px 24px 18px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.race h3 { margin: 0; }
+.race .pc { margin-top: 18px; }
+.race .pc > b { display: block; font-size: 15px; margin-bottom: 4px; }
+.race .row {
+  display: grid; grid-template-columns: 170px 1fr 96px; gap: 12px; align-items: center;
+  font-size: 15px; color: var(--muted); margin-top: 5px;
+}
+.race .track { height: 12px; background: var(--bg-2); border-radius: 999px; overflow: hidden; }
+.race .track i { display: block; height: 100%; min-width: 6px; border-radius: 999px; background: #5c5f66; }
+.race .row.turbo .track i { background: var(--accent); }
+.race .row.turbo { color: var(--text); }
+.race .row .t { text-align: right; white-space: nowrap; }
+.race .row.turbo .t { font-weight: 700; }
+.race .note { color: var(--muted); font-size: 14px; margin: 16px 0 0; }
+@media (max-width: 560px) {
+  .race { padding: 18px 16px 14px; }
+  .race .row { grid-template-columns: 1fr auto; }
+  .race .row .track { grid-column: 1 / -1; grid-row: 2; }
+}

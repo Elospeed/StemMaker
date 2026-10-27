@@ -1688,7 +1688,8 @@ begin
     WaveMaster.Visible := True;
     TrkPos.Visible := False;
     if FPeakThread.Fine.Valid and (Engine <> nil) then
-      Zoom.SetPeaks(FPeakThread.Fine, 1 / M, Engine.TotalFrames);
+      Zoom.SetPeaks(FPeakThread.Fine, 1 / M, Engine.TotalFrames,
+        FTempDir + 'track0.raw');
   end;
   FreeAndNil(FPeakThread);
 end;

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>StemMaker – free MP3 to Traktor Stems converter for Windows</title>
 <meta name="description" content="Elospeed StemMaker turns your MP3, WAV and FLAC files into Traktor stem files (.stem.mp4) with drums, bass, melody and vocals. Free, open source, no Python. Installer or portable ZIP. For Windows.">
-<meta name="keywords" content="Traktor stems, stem.mp4, MP3 to stems, stem separation, Demucs, htdemucs, Traktor Pro 4, DJ, stem converter, Windows, free, open source">
+<meta name="keywords" content="Traktor stems, stem.mp4, MP3 to stems, stem separation, Demucs, htdemucs, Traktor Pro 4, Mixxx stems, DJ, stem converter, Windows, free, open source">
 <meta name="author" content="Elospeed">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://elospeed.github.io/StemMaker/">
@@ -43,7 +43,7 @@
   "description": "Converts MP3, WAV, FLAC, AIFF, M4A, AAC, OGG and Opus files into Traktor stem files (.stem.mp4) with four stems: drums, bass, other (melody) and vocals.",
   "url": "https://elospeed.github.io/StemMaker/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "1.9",
+  "softwareVersion": "2.0",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -58,6 +58,7 @@
   <div class="wrap">
     <a class="brand" href="./"><img src="img/icon-192.png" alt="" width="30" height="30">Elospeed StemMaker</a>
     <nav>
+      <a class="hide-m" href="#turbo">Turbo</a>
       <a class="hide-m" href="#features">Features</a>
       <a class="hide-m" href="#how">How it works</a>
       <a class="hide-m" href="#faq">FAQ</a>
@@ -73,7 +74,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Turn your MP3s into<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. One small Windows program, free and open source: no Python, no PyTorch, no graphics drivers, nothing to set up.</p>
+    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. One small Windows program, free and open source: no Python, no PyTorch, no graphics drivers, nothing to set up. New in 2.0: the Turbo engine separates a song in about a minute on a normal PC, and in seconds with a graphics card.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download for Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">View source on GitHub</a>
@@ -81,14 +82,14 @@
     <ul class="facts">
       <li>Free &amp; MIT licensed</li>
       <li>Windows 10 / 11</li>
-      <li>No Python, no graphics card</li>
+      <li>No Python, graphics card optional</li>
       <li>Runs locally on your PC</li>
       <li>Whole folders in one go</li>
       <li>Up to 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 1.9 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="img/stemmaker-en.png" width="860" height="700" alt="StemMaker main window with a list of MP3 files being converted into Traktor stem files">
+      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 2.0 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <img src="img/stemmaker-en.png" width="860" height="724" alt="StemMaker main window with a list of MP3 files being converted into Traktor stem files">
     </figure>
   </div>
 </section>
@@ -101,7 +102,7 @@
       <video controls playsinline preload="none" width="1280" height="720" poster="video/poster-en.jpg" aria-label="Demo video: converting an MP3 into a Traktor stem file with StemMaker and checking it in the StemPlayer">
         <source src="video/stemmaker-en.mp4" type="video/mp4">
       </video>
-      <figcaption>64 seconds. The conversion is shown as a time-lapse; in reality it takes about 5 to 15 minutes per song, depending on the PC.</figcaption>
+      <figcaption>64 seconds. The conversion is shown as a time-lapse; with the Turbo engine a song really takes from under a minute to a few minutes, depending on the PC.</figcaption>
     </figure>
   </div>
 </section>
@@ -112,12 +113,13 @@
     <p class="sub">Install or unzip, start, drag your music in. On the first start StemMaker downloads ffmpeg and the separation model by itself.</p>
     <div class="grid">
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Four real stems</h3><p>Drums, Bass, Other (melody) and Vox, plus the original as master track, in the format Traktor expects. Names and colours are adjustable.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Quality on par with Traktor</h3><p>Uses the open-source Demucs v4 model (htdemucs). In a side-by-side test against a stem file made by Traktor Pro 4, drums, vocals and level came out practically the same. Three models to pick from: htdemucs_ft for the best quality, Demucs v3 when you want it quicker.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Quality on par with Traktor</h3><p>Uses the open-source Demucs v4 model (htdemucs). In a side-by-side test against a stem file made by Traktor Pro 4, drums, vocals and level came out practically the same. Three models to pick from: htdemucs_ft for the best quality and the older Demucs v3.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Built for whole collections</h3><p>Add complete folders, see a time estimate before you start, let it run overnight. The list shows a progress bar for the running file and a check mark with four colour dots for every finished one. The list is saved after every file, so a crash or a power cut costs you one track, not the run. In our own stress test 400 files in nested folders came out complete, even after cancelling and killing the program in between, with the folder tree rebuilt one to one.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Tags and cover art kept</h3><p>Title, artist, album, genre, year, track number, BPM, key, label and cover are copied from your MP3, so the stem file looks right in your Traktor collection.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The whole program is a 4 MB Windows exe, the separation engine is C++ (demucs.cpp) instead of Python and PyTorch. No Python or drivers to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The separation runs natively with ONNX Runtime (Turbo) or demucs.cpp instead of Python and PyTorch. No Python, CUDA or drivers to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read and a stem does not drop in volume when you bring it into your set. Low bass that the model leaves in the melody stem is moved into the bass stem, like Traktor does, so the kick and bass stay solid.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Picks the fastest build for your processor (AVX2, AVX or generic), keeps the PC awake during long runs and can shut it down when done.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Tests on the first start whether your graphics card helps and uses it only if it computes correctly and faster, otherwise the processor does the work. Keeps the PC awake during long runs and can shut it down when done.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>English, German and Spanish</h3><p>StemMaker and the StemPlayer speak <strong>English, Deutsch and Español</strong>, picked on the first start. Special thanks to <strong>David GJ</strong> for the Spanish translation! Everyone who helped is listed under Info in the “Thanks” tab.</p></div>
     </div>
   </div>
 </section>
@@ -134,7 +136,7 @@
     <div class="flow" aria-label="Processing chain">
       <span class="n">MP3</span><span class="a">→</span>
       <span class="n">ffmpeg</span><span class="a">→</span>
-      <span class="n">demucs.cpp</span><span class="a">→</span>
+      <span class="n">Turbo</span><span class="a">→</span>
       <span class="stems"><span style="background:var(--drums)">Drums</span><span style="background:var(--bass)">Bass</span><span style="background:var(--other)">Other</span><span style="background:var(--vox)">Vox</span></span>
       <span class="a">→</span><span class="n">.stem.mp4</span>
     </div>
@@ -147,7 +149,7 @@
     <p class="sub">Most stem separators are command-line tools. Getting them to run is usually the hard part, and the result is four loose files.</p>
     <ul class="ticks">
       <li><strong>No Python environment</strong>, no PyTorch, no CUDA drivers and no version conflicts to untangle</li>
-      <li><strong>No graphics card</strong>: separation runs on the processor of any 64-bit Windows PC</li>
+      <li><strong>No graphics card needed</strong>: Turbo runs on the processor of any 64-bit Windows PC and uses a graphics card only when it helps</li>
       <li><strong>No routing by hand</strong>: the four stems and the original mix land in one <code>.stem.mp4</code>, ready for a stem deck</li>
       <li><strong>No paid extra software</strong> to build the Traktor container, and no Traktor licence to convert</li>
       <li><strong>No track-by-track clicking</strong>: point StemMaker at a folder and come back later</li>
@@ -165,64 +167,64 @@
         <li><strong>A waveform for every stem</strong> in its stem colour, click to jump anywhere (or switch to the compact view)</li>
         <li><strong>Mute, solo and volume</strong> for every stem, with level meters. Solo works like on a DJ mixer, hold Ctrl for several</li>
         <li><strong>A/B comparison</strong> with the original mix</li>
+        <li><strong>Loop A-B</strong>: set start and end with the A and B keys or buttons, or drag with the right mouse button across any waveform. The loop repeats without a gap, mute and solo keep working</li>
+        <li><strong>Magnifier</strong> below the waveform: a magnified section around the playhead with a time grid, where A and B can be set and moved to the millisecond</li>
+        <li><strong>Scrubbing</strong>: drag the waveform in the magnifier and the sound follows like a record under your hand, backwards too</li>
         <li><strong>“Rest” mode</strong> shows what the separation left out</li>
         <li>Opens by drag &amp; drop or straight from StemMaker</li>
       </ul>
     </div>
     <figure class="shot">
       <div class="bar"><img src="img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="img/stemplayer.png" width="820" height="766" alt="StemPlayer add-on in a dark Traktor style with a waveform, mute, solo and volume controls for drums, bass, other and vocals" loading="lazy">
+      <img src="img/stemplayer-loop-en.png" width="820" height="830" alt="StemPlayer in a dark Traktor style with an active A-B loop: waveforms, mute, solo and volume for every stem, and the magnifier showing the A and B markers up close" loading="lazy">
     </figure>
   </div>
 </section>
 
-<section>
-  <div class="wrap split rev">
-    <div>
-      <h2>Honest about speed</h2>
-      <p>Separation runs on the processor only, so it takes a while. In return it works on almost any Windows PC and never uploads your music anywhere.</p>
-      <ul class="ticks">
-        <li>Current PC: htdemucs takes about <strong>twice the song length</strong>, Demucs v3 about the song length</li>
-        <li>htdemucs_ft (best quality) is about four times slower than htdemucs</li>
-        <li>StemMaker learns the speed of your PC and shows how long the list will take</li>
-      </ul>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <caption class="sr" style="caption-side:bottom;color:var(--muted);font-size:14px;padding:10px">Measured time for a normal 4-minute track</caption>
-        <thead><tr><th>Computer</th><th>htdemucs (default)</th><th>Demucs v3</th></tr></thead>
-        <tbody>
-          <tr><td>Intel i7-12700KF (2021)</td><td>approx. 7–8 min</td><td>approx. 4 min</td></tr>
-          <tr><td>Intel i5-2500 (2011)</td><td>approx. 27 min</td><td>approx. 13 min</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<section id="soon" class="alt">
-  <div class="wrap split">
-    <div>
-      <span class="badge">Coming soon</span>
-      <h2>Coming with the next update</h2>
-      <p class="sub" style="margin-bottom:0">Already built and in testing. The update function in StemMaker will offer it as soon as it is released.</p>
-      <div class="soon">
-        <h3>StemPlayer with Loop A-B</h3>
-        <ul class="ticks">
-          <li><strong>Loop any part</strong> of a track to listen closely to a single passage</li>
-          <li>Set start and end with the <strong>A and B keys</strong> or buttons, or simply <strong>drag with the right mouse button</strong> across any waveform</li>
-          <li><strong>Seamless</strong>: the loop repeats without a gap or click, mute and solo keep working</li>
-        </ul>
+<section id="turbo" class="alt">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <span class="badge">New in 2.0</span>
+        <h2>Turbo: many times faster</h2>
+        <p class="sub" style="margin-bottom:0">The biggest change since the first release: a new separation engine that is many times faster. Already using StemMaker? The built-in update brings you version 2.0 with one click.</p>
+        <div class="soon">
+          <h3>Turbo engine</h3>
+          <ul class="ticks">
+            <li><strong>About 6 to 10 times faster on the CPU</strong> than before, with the same model (htdemucs) and <strong>the same quality</strong>: measured, the stems are practically identical</li>
+            <li><strong>Graphics card used automatically (beta)</strong>: NVIDIA, AMD and Intel via DirectML, nothing extra to install. StemMaker first tries the card on a piece of music and only uses it if it computes correctly and faster, otherwise the CPU does the work</li>
+            <li>Still <strong>no Python, no CUDA, no account</strong>, everything runs on your PC</li>
+          </ul>
+        </div>
+        <div class="soon">
+          <h3>Pre-test on first start</h3>
+          <p>A small window with a progress bar measures CPU and graphics card and tells you <strong>how long a 3-minute track will take on your PC</strong>.</p>
+        </div>
+        <div class="soon">
+          <h3>Classic as a fallback</h3>
+          <p>The proven demucs.cpp engine can be selected in the settings and <strong>takes over automatically</strong> if Turbo fails on a file. The list keeps running. With Turbo, long DJ mixes also need little memory.</p>
+        </div>
       </div>
-      <div class="soon">
-        <h3>StemMaker in Spanish</h3>
-        <p>StemMaker speaks <strong>Español</strong> too, alongside English and German. Special thanks to <strong>David GJ</strong> for the Spanish translation!</p>
-      </div>
+      <figure class="shot light">
+        <div class="bar"><img src="img/icon-32.png" alt=""><span>Turbo pre-test</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+        <img src="img/turbo-pretest-en.png" width="600" height="470" alt="Turbo pre-test window: progress bar, the measuring steps for CPU and graphics card and the forecast for a 3-minute track" loading="lazy">
+      </figure>
     </div>
-    <figure class="shot">
-      <div class="bar"><img src="img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="img/stemplayer-loop.png" width="820" height="770" alt="StemPlayer with an active A-B loop: green markers show the looped passage in the waveform of every stem" loading="lazy">
-    </figure>
+    <div class="race">
+      <h3>How much faster: one 4-minute track</h3>
+      <div class="pc">
+        <b>Intel i5-2500 (2011, 4 cores)</b>
+        <div class="row"><span>Classic, CPU</span><span class="track"><i style="width:100%"></i></span><span class="t">approx. 27 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:13%"></i></span><span class="t">approx. 3½ min</span></div>
+      </div>
+      <div class="pc">
+        <b>Intel i7-12700KF (2021, 12 cores) with GeForce RTX 4060 Ti</b>
+        <div class="row"><span>Classic, CPU</span><span class="track"><i style="width:28%"></i></span><span class="t">approx. 7–8 min</span></div>
+        <div class="row turbo"><span>Turbo, CPU</span><span class="track"><i style="width:3.7%"></i></span><span class="t">approx. 1 min</span></div>
+        <div class="row turbo"><span>Turbo, graphics card</span><span class="track"><i style="width:1%"></i></span><span class="t">approx. 10 s</span></div>
+      </div>
+      <p class="note">Separation time only, with htdemucs (default), measured on our own PCs. Packing into the stem file comes on top (a few seconds per minute of music). htdemucs_ft (best quality) takes about three to four times as long. The pre-test shows how fast it is on your PC, and StemMaker learns the speed and shows how long the list will take.</p>
+    </div>
   </div>
 </section>
 
@@ -234,12 +236,17 @@
       <p>Yes. StemMaker is open source under the MIT licence. There are no ads, no account and no paid version. If you like it, you can leave a voluntary donation on <a href="https://ko-fi.com/elospeed">Ko-fi</a>.</p>
     </details>
     <details>
-      <summary>Which Traktor versions can play the stem files?</summary>
-      <p>The files follow the open NI stem format (an MP4 with master plus four stems and stem metadata), the same way Stemgen builds them. They have been tested in Traktor Pro 4. Any software that reads <code>.stem.mp4</code> should work.</p>
+      <summary>Which DJ software can play the stem files?</summary>
+      <p>The files follow the open NI stem format (an MP4 with master plus four stems and stem metadata), the same way Stemgen builds them. Confirmed so far:</p>
+      <ul class="ticks">
+        <li><strong>Traktor Pro 4</strong>: tested by us, all four stems play in the Stem Decks.</li>
+        <li><strong>Mixxx 2.6</strong> (currently in beta): tested by us, the files load as stems with four stem controls, names, colours and a coloured stem waveform. The stable Mixxx 2.5 cannot play stems yet.</li>
+      </ul>
+      <p>Any other software that reads <code>.stem.mp4</code> should work too.</p>
     </details>
     <details>
       <summary>Do I need a graphics card or Python?</summary>
-      <p>No. StemMaker is a single Windows program with the separation engine built in as C++ code (demucs.cpp), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. It runs on the processor. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB).</p>
+      <p>No. StemMaker brings its separation engine along (ONNX Runtime, with demucs.cpp as a fallback), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. It runs fast on the processor. If you have a graphics card (NVIDIA, AMD or Intel), StemMaker tests it on the first start and uses it only if it computes correctly and faster; that part is still marked beta. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB).</p>
     </details>
     <details>
       <summary>Windows shows “Windows protected your PC”. Is that a problem?</summary>
@@ -251,7 +258,7 @@
     </details>
     <details>
       <summary>Traktor Pro 4 can make stems itself. Why StemMaker?</summary>
-      <p>Honestly: Traktor 4 is faster per track, and if its own separation works for you, you don't need StemMaker. Traktor keeps its stems inside its own collection, though: in its Stems folder, with hashed file names, linked to the original track. StemMaker writes standalone <code>.stem.mp4</code> files with readable names next to your music, so you can copy them to another laptop or a USB stick and use them with any software that reads <code>.stem.mp4</code>. It works through complete folders on its own, for example overnight, shows the expected time beforehand and continues after a stop or power cut. You don't need a Traktor licence for it, and it raises quiet files to club level, so the waveforms are easy to read.</p>
+      <p>Honestly: if Traktor's own separation works for you, you don't need StemMaker. Since version 2.0 StemMaker is about as fast as Traktor 4 on the same processor, and much faster with a suitable graphics card. Traktor keeps its stems inside its own collection, though: in its Stems folder, with hashed file names, linked to the original track. StemMaker writes standalone <code>.stem.mp4</code> files with readable names next to your music, so you can copy them to another laptop or a USB stick and use them with any software that reads <code>.stem.mp4</code>. It works through complete folders on its own, for example overnight, shows the expected time beforehand and continues after a stop or power cut. You don't need a Traktor licence for it, and it raises quiet files to club level, so the waveforms are easy to read.</p>
     </details>
     <details>
       <summary>Are tags and cover art carried over?</summary>
@@ -289,7 +296,7 @@
 <footer>
   <div class="wrap">
     <div>© Elospeed · StemMaker is open source under the <a href="https://github.com/Elospeed/StemMaker/blob/main/LICENSE">MIT licence</a></div>
-    <div>Built with <a href="https://github.com/sevagh/demucs.cpp">demucs.cpp</a>, <a href="https://github.com/facebookresearch/demucs">Demucs</a> and <a href="https://ffmpeg.org">ffmpeg</a> · <a href="https://github.com/Elospeed/StemMaker/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a></div>
+    <div>Built with <a href="https://onnxruntime.ai">ONNX Runtime</a>, <a href="https://github.com/sevagh/demucs.cpp">demucs.cpp</a>, <a href="https://github.com/facebookresearch/demucs">Demucs</a> and <a href="https://ffmpeg.org">ffmpeg</a> · <a href="https://github.com/Elospeed/StemMaker/blob/main/THIRD-PARTY-NOTICES.md">Third-party notices</a></div>
     <div>Traktor is a trademark of Native Instruments. StemMaker is not affiliated with Native Instruments.</div>
   </div>
 </footer>

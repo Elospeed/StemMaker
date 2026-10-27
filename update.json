@@ -1,12 +1,13 @@
 {
   "_info": "Wird von StemMaker beim Start gelesen (ab 1.7). Aufbau und Pflege: docs/UPDATE-JSON.md",
-  "version": "1.8.1",
-  "date": "2026-10-20",
+  "version": "2.0",
+  "date": "2026-10-26",
   "page": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "notes_de": "Titel, Interpret, Album und BPM aus OGG- und Opus-Dateien kommen jetzt mit in die Stem-Datei\nFenstertitel sagt „aus Audiodateien“ statt „aus MP3“",
-  "notes_en": "Title, artist, album and BPM from OGG and Opus files now end up in the stem file\nWindow title says \"from audio files\" instead of \"from MP3\"",
-  "zip_url": "https://github.com/Elospeed/StemMaker/releases/download/v1.8.1/StemMaker-1.8.1.zip",
-  "zip_sha256": "2b879fe8886f8183b2e951f3eaee4f8cb4ee919d036a005fdf44b7b55d9af0d3",
+  "notes_de": "Neue Turbo-Engine: die Stems werden auf der CPU etwa 6- bis 10-mal schneller getrennt, gleiche Qualität\nMit passender Grafikkarte (NVIDIA, AMD, Intel) nur noch Sekunden pro Song (Beta)\nEin kurzer Vortest beim ersten Start misst CPU und Grafikkarte und sagt, wie lange ein Song etwa dauert\nDie bisherige Engine bleibt wählbar und springt automatisch ein, falls Turbo bei einer Datei scheitert\nLange DJ-Mixe brauchen viel weniger Arbeitsspeicher",
+  "notes_en": "New Turbo engine: stems are separated about 6 to 10 times faster on the CPU, same quality\nWith a suitable graphics card (NVIDIA, AMD, Intel) it takes only seconds per song (beta)\nA short pre-test on first start measures CPU and graphics card and tells you how long a song will take\nThe previous engine can still be selected and steps in automatically if Turbo fails on a file\nLong DJ mixes need much less memory",
+  "notes_es": "Nuevo motor Turbo: los stems se separan en la CPU unas 6 a 10 veces más rápido, con la misma calidad\nCon una tarjeta gráfica adecuada (NVIDIA, AMD, Intel) solo tarda segundos por canción (beta)\nUna breve prueba previa al primer inicio mide la CPU y la tarjeta gráfica e indica cuánto tardará una canción\nEl motor anterior se puede seguir eligiendo y entra automáticamente si Turbo falla con un archivo\nLas mezclas largas de DJ necesitan mucha menos memoria",
+  "zip_url": "https://github.com/Elospeed/StemMaker/releases/download/v2.0/StemMaker-2.0.zip",
+  "zip_sha256": "23de58ade65611bc015374d5e60e0129f3230446f9ab822e3328a55f89034fac",
   "ffmpeg": {
     "version": "9.0.2",
     "url": "https://github.com/Elospeed/StemMaker/releases/download/ffmpeg-9.0.2/ffmpeg-9.0.2-win64-lgpl.zip",
@@ -19,10 +20,10 @@
     "sha256": {
       "ggml-model-htdemucs-4s-f16.bin": "72b17c42d308982ddb5069bc3bf48b81a5aac4cb6516e4366c0fa7cef6df0064",
       "ggml-model-hdemucs_mmi-v3-f16.bin": "f72a3b8ecce3aa50da9e062a91c46367e15b5f5a71d070874217c5e4cb6b35a4",
-      "ggml-model-htdemucs_ft_drums-4s-f16.bin": "",
-      "ggml-model-htdemucs_ft_bass-4s-f16.bin": "",
-      "ggml-model-htdemucs_ft_other-4s-f16.bin": "",
-      "ggml-model-htdemucs_ft_vocals-4s-f16.bin": ""
+      "ggml-model-htdemucs_ft_drums-4s-f16.bin": "cda268755cc80deb5f4616a99f9d09f26bc5ce3882aa35e0bc504708a12604bb",
+      "ggml-model-htdemucs_ft_bass-4s-f16.bin": "e6ded215aa15fb4eff7a37f3a51fd596ee17c94ae0ddb7ef3f2f6ecf8b86cdb5",
+      "ggml-model-htdemucs_ft_other-4s-f16.bin": "cbc315571584d512e7853c9d40a499182393a7f4155cb8723a9040a685c2435b",
+      "ggml-model-htdemucs_ft_vocals-4s-f16.bin": "19186500a45a551a034d96e9500415ebe73c8bd570bf55337ddc8cc8f53a9120"
     }
   }
 }

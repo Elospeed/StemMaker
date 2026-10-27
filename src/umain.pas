@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate;
+  uSettings, uStatusDraw, uDonate, uTurboTest;
 
 {$I version.inc}   // APP_VERSION
 
@@ -72,6 +72,7 @@ type
     FSyncStatus: TItemState;
     FSyncDone  : Integer;
     FSyncOut   : string;           // fertige Stem-Datei (leer = keine)
+    FSyncTurbo : Boolean;          // diese Datei hat Turbo getrennt (für das Tempo-Lernen)
     FLastPct   : Integer;          // zuletzt gemeldete Prozentzahl
     FCancelled : Boolean;
     procedure JobLog(const Msg: string);
@@ -86,6 +87,9 @@ type
     CancelCount: Integer;                      // abgebrochen (zählt nicht als Fehler)
     MaxPeakMemMB: Integer;                     // höchster RAM-Bedarf von demucs
     OmpPerPart  : Integer;                     // Kerne pro demucs-Teilstück
+    TurboCount  : Integer;                     // Dateien mit Turbo getrennt
+    ClassicCount: Integer;                     // Dateien mit demucs.cpp getrennt
+    TurboDev    : string;                      // Turbo: Gerät der letzten Datei
     constructor Create(AForm: TfrmMain; const ASettings: TStemSettings);
     destructor Destroy; override;
     procedure AddFile(const FileName, OutFile: string; ListIndex: Integer);
@@ -131,6 +135,8 @@ type
     dlgFolder: TSelectDirectoryDialog;
     pnlTop: TPanel;
     pbAccent: TPaintBox;
+    pnlFoot: TPanel;
+    pbKofi: TPaintBox;
     pnlRun: TPanel;
     pbFile: TProgressBar;
     pbTotal: TProgressBar;
@@ -147,6 +153,10 @@ type
     procedure lvFilesCustomDrawSubItem(Sender: TCustomListView; Item: TListItem;
       SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure pbAccentPaint(Sender: TObject);
+    procedure pbKofiClick(Sender: TObject);
+    procedure pbKofiMouseEnter(Sender: TObject);
+    procedure pbKofiMouseLeave(Sender: TObject);
+    procedure pbKofiPaint(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure chkBesideChange(Sender: TObject);
@@ -182,11 +192,13 @@ type
     FChangePending: Boolean;       // AfterListChange ist schon angemeldet
     FRestoring : Boolean;          // Liste wird gerade aus der Datei geladen
     FOKAudioMS : Int64;            // Musik-Länge aller fertigen Dateien (für das Tempo)
+    FItemTurbo : Boolean;          // die gemeldete Datei lief mit Turbo (sonst demucs.cpp)
     FCurIndex  : Integer;          // Zeile der Datei, die gerade läuft
     FUserCancelled: Boolean;       // Benutzer hat "Abbrechen" gedrückt
     FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
     FUpdate    : TUpdateInfo;      // gefundenes Update (ohne ModelHashes)
     FHasUpdate : Boolean;          // ... wartet darauf, angeboten zu werden
+    FKofiHover : Boolean;          // Maus ist über dem Ko-fi-Knopf
     { Symbol im Infobereich (neben der Uhr), siehe "Symbol neben der Uhr" }
     FTray      : TTrayIcon;
     FTrayTimer : TTimer;           // fragt ab, ob ein zweiter Start "zeig dich" will
@@ -208,6 +220,7 @@ type
     procedure AppEndSession(Sender: TObject);
     procedure UpdateFound(const Info: TUpdateInfo);
     procedure OfferUpdate(Data: PtrInt);
+    procedure CheckTurboTest(Data: PtrInt);
     function ItemOutFile(Index: Integer): string;
     function ItemOutDir(Index: Integer): string;
     function PlannedOutFiles: TStringArray;
@@ -403,6 +416,7 @@ begin
   { zuerst die Zieldatei merken - SetItemStatus kann sie schon brauchen }
   if FSyncOut <> '' then
     FForm.SetItemOutFile(FSyncItem, FSyncOut);
+  FForm.FItemTurbo := FSyncTurbo;
   FForm.SetItemStatus(FSyncItem, FSyncStatus, FSyncDone);
 end;
 
@@ -450,6 +464,15 @@ begin
       if Job.PeakMemMB > MaxPeakMemMB then
         MaxPeakMemMB := Job.PeakMemMB;
       OmpPerPart := Job.OmpThreadsPublic;
+      FSyncTurbo := Job.UsedTurbo;
+      if OK and not WasSkipped then
+        if Job.UsedTurbo then
+        begin
+          Inc(TurboCount);
+          TurboDev := Job.TurboDevName;
+        end
+        else
+          Inc(ClassicCount);
     finally
       EnterCriticalSection(FLock);
       FJob := nil;
@@ -534,6 +557,9 @@ begin
   cbModel.ItemIndex := 0;
   cbFormat.ItemIndex := 0;
   LoadGearGlyph(btnSettings);      // Zahnrad-Symbol (uSettings)
+  { Ko-fi-Knopf unten rechts: Breite passend zum (übersetzten) Text }
+  pbKofi.Canvas.Font.Style := [fsBold];
+  pbKofi.Width := KofiButtonWidth(pbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
 
   FIniName := StemIniFileName;
   LoadSettings;
@@ -575,6 +601,22 @@ begin
 
   { Update-Prüfung im Hintergrund (max. 5 s, abschaltbar, siehe uUpdateUI) }
   StartUpdateCheck(APP_VERSION, @UpdateFound);
+  { Turbo-Vortest beim ersten Start (oder nach neuer Grafikkarte/Treiber) }
+  Application.QueueAsyncCall(@CheckTurboTest, 0);
+end;
+
+{ Beim ersten Start mit Turbo einmal messen, wie schnell dieser PC ist und
+  ob die Grafikkarte mitmacht (uTurboTest). Danach nur noch, wenn sich
+  Grafikkarte oder Treiber geändert haben. }
+procedure TfrmMain.CheckTurboTest(Data: PtrInt);
+var
+  Reason: string;
+begin
+  if FWorker <> nil then Exit;     // läuft schon etwas: nicht stören
+  if not TurboTestNeeded(CurrentSettings, Reason) then Exit;
+  LogLine('Turbo-Vortest nötig: ' + Reason);
+  ShowTurboTest(CurrentSettings);
+  UpdateEstimate;                  // Zeitschätzung mit dem neuen Tempo
 end;
 
 { ---------------------------------------------------------------------------
@@ -699,6 +741,11 @@ var
 begin
   D := DefaultStemSettings;
   FPrefs := DefaultStemPrefs;
+  { Engine steht in [Turbo] und wird vom Einstellungs-Fenster selbst
+    gespeichert (uStemJob.SaveTurboSettings), hier nur für die Anzeige }
+  LoadTurboSettings(D);
+  FPrefs.Engine := D.Engine;
+  FPrefs.TurboDevice := D.TurboDevice;
   Ini := TIniFile.Create(FIniName);
   try
     edtOut.Directory := Ini.ReadString('Main', 'OutputDir', '');
@@ -800,6 +847,7 @@ var
   I: Integer;
 begin
   Result := DefaultStemSettings;
+  LoadTurboSettings(Result);       // Engine (Turbo/Klassisch) aus [Turbo]
   Result.FFmpegExe := FToolFFmpeg;
   Result.DemucsDir := FToolDemucs;
   Result.ModelsDir := FToolModels;
@@ -838,7 +886,10 @@ begin
   try
     if Job.CheckTools(Problems) then
     begin
-      lblTools.Caption := _('Tools: ffmpeg, demucs.cpp und Modell gefunden');
+      if TurboFor(CurrentSettings) then
+        lblTools.Caption := _('Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden')
+      else
+        lblTools.Caption := _('Tools: ffmpeg, demucs.cpp und Modell gefunden');
       lblTools.Font.Color := clGreen;
       lblTools.Hint := '';
     end
@@ -885,7 +936,8 @@ begin
     FToolModels) then
   begin
     SaveSettings;
-    UpdateEstimate;                // andere Teile-Zahl = andere Dauer
+    UpdateToolStatus;              // Engine kann sich geändert haben
+    UpdateEstimate;                // andere Teile-Zahl oder Engine = andere Dauer
     pbAccent.Invalidate;           // Stem-Farben können sich geändert haben
     lvFiles.Invalidate;
   end;
@@ -969,7 +1021,8 @@ begin
         if ItemDurMS(Index) > 0 then
         begin
           Inc(FOKAudioMS, ItemDurMS(Index));
-          SpeedLearn(FIniName, FRunSettings.Model,
+          { nach dem Tempo der Engine, die wirklich getrennt hat (Rückfall = demucs.cpp) }
+          SpeedLearn(FIniName, FRunSettings.Model, FItemTurbo,
             GetTickCount64 - FFileStart, ItemDurMS(Index));
         end;
         AddLog(Format(_('  Dauer: %s'), [Dur]));
@@ -1518,6 +1571,32 @@ begin
   DrawAccentStrip(pbAccent.Canvas, pbAccent.ClientRect, FPrefs.StemColors);
 end;
 
+{ Ko-fi-Knopf unten rechts (gezeichnet in uStatusDraw) }
+procedure TfrmMain.pbKofiPaint(Sender: TObject);
+begin
+  pbKofi.Canvas.Font.Style := [fsBold];
+  DrawKofiButton(pbKofi.Canvas, pbKofi.ClientRect, _('Kaffee spendieren'),
+    FKofiHover, pnlFoot.Color, Screen.PixelsPerInch);
+end;
+
+procedure TfrmMain.pbKofiClick(Sender: TObject);
+begin
+  OpenDonatePage;
+  LogLine('Ko-fi-Knopf im Hauptfenster geklickt');
+end;
+
+procedure TfrmMain.pbKofiMouseEnter(Sender: TObject);
+begin
+  FKofiHover := True;
+  pbKofi.Invalidate;
+end;
+
+procedure TfrmMain.pbKofiMouseLeave(Sender: TObject);
+begin
+  FKofiHover := False;
+  pbKofi.Invalidate;
+end;
+
 { Spalte "Status" der Dateiliste selbst zeichnen (Balken, Häkchen, Farben).
   Alle anderen Spalten zeichnet Windows wie immer. }
 procedure TfrmMain.lvFilesCustomDrawSubItem(Sender: TCustomListView;
@@ -1883,13 +1962,22 @@ begin
       [FOKTimeMS / FOKAudioMS * 60]));
   AddLog(Format(_('  Modell         : %s'), [StemModelDisplayName(FRunSettings.Model)]));
   AddLog(Format(_('  Format         : %s'), [Fmt]));
-  AddLog(Format(_('  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s'),
-    [FRunSettings.Threads, W.OmpPerPart, Used, PhysicalCoreCount, TThread.ProcessorCount,
-     DemucsVariantName(DemucsExeFor(FRunSettings.DemucsDir, FRunSettings.Model))]));
+  { Engine: wie viele Dateien Turbo und wie viele demucs.cpp getrennt hat }
+  if W.TurboCount > 0 then
+    AddLog(Format(_('  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s'),
+      [W.TurboCount, W.TurboDev]));
+  if W.ClassicCount > 0 then
+  begin
+    AddLog(Format(_('  Engine         : Klassisch (demucs.cpp) für %d Datei(en)'), [W.ClassicCount]));
+    AddLog(Format(_('  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s'),
+      [FRunSettings.Threads, W.OmpPerPart, Used, PhysicalCoreCount, TThread.ProcessorCount,
+       DemucsVariantName(DemucsExeFor(FRunSettings.DemucsDir, FRunSettings.Model))]));
+  end;
   if W.MaxPeakMemMB > 0 then
-    AddLog(Format(_('  RAM demucs     : max. %d MB  (Gesamt-RAM %.1f GB)'),
+    AddLog(Format(_('  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)'),
       [W.MaxPeakMemMB, SysRAMTotalMB / 1024]));
-  AddLog(_('  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)'));
+  if W.TurboCount = 0 then
+    AddLog(_('  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)'));
   AddLog(Format(_('                   vorhanden: %s'), [SysGPUInfo]));
   AddLog(Format(_('  Energie        : %s'), [PowerSummaryText(FPower)]));
   Slept := PowerSleptMS(FPower);
@@ -1952,16 +2040,23 @@ function TfrmMain.RateMsPerMs: Double;
 var
   M: TStemModel;
   SecPerMin: Double;
+  Turbo: Boolean;
 begin
   if (FWorker <> nil) and (FOKAudioMS > 0) then
     Exit(FOKTimeMS / FOKAudioMS);
   if FWorker <> nil then
-    M := FRunSettings.Model
+  begin
+    M := FRunSettings.Model;
+    Turbo := TurboFor(FRunSettings);
+  end
   else
+  begin
     M := TStemModel(cbModel.ItemIndex);
-  SecPerMin := SpeedLoad(FIniName, M);
+    Turbo := TurboFor(CurrentSettings);
+  end;
+  SecPerMin := SpeedLoad(FIniName, M, Turbo);
   if SecPerMin <= 0 then
-    SecPerMin := SpeedDefault(M);
+    SecPerMin := SpeedDefault(M, Turbo);
   Result := SecPerMin / 60;      // X s Arbeit pro 60 s Musik = X/60 ms Arbeit pro ms Musik
 end;
 
@@ -2163,7 +2258,8 @@ begin
     lblTotal.Caption := Format(_('%d Dateien offen - Länge wird ermittelt ...'), [Open]);
     Exit;
   end;
-  Measured := SpeedLoad(FIniName, TStemModel(cbModel.ItemIndex)) > 0;
+  Measured := SpeedLoad(FIniName, TStemModel(cbModel.ItemIndex),
+    TurboFor(CurrentSettings)) > 0;
   { unbekannte Längen: wie der Schnitt der bekannten annehmen }
   Est := Audio * RateMsPerMs * Open / (Open - Unknown);
   S := Format(_('%d Dateien offen, %s Musik - Dauer ca. %s'),

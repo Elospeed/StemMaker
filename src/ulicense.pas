@@ -156,6 +156,8 @@ begin
     _('StemMaker ist Open Source unter der MIT-Lizenz (© 2026 Elospeed). ' +
     'Fremde Bestandteile:') + LineEnding +
     _('- demucs.cpp von Sevag Hanssian (MIT) - die Trenn-Programme in tools\') + LineEnding +
+    _('- ONNX Runtime (MIT) und DirectML (Microsoft-Lizenz) von Microsoft - ' +
+    'für Turbo in tools\onnx\') + LineEnding +
     _('- FFmpeg (LGPL) - wird beim ersten Start heruntergeladen') + LineEnding +
     _('- Demucs-Modelle von Meta AI Research - werden von der Originalquelle ' +
     'heruntergeladen, nicht mit StemMaker verteilt. Die Lizenz der trainierten ' +

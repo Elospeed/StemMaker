@@ -10,12 +10,24 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## Unveröffentlicht
 
 ### StemPlayer 1.8 (Testversion)
-- **Zwei neue Designs im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt **CD-Player** und **Plattenspieler**. Die Ansicht wählst du oben in einem Ausklapp-Menü, so bleibt die Fläche übersichtlich. Beide können dasselbe wie die normale Ansicht, sehen nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.
+- **Neues Design CD-Player im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt den **CD-Player**. Die Ansicht wählst du oben in einem Ausklapp-Menü, so bleibt die Fläche übersichtlich. Er kann dasselbe wie die normale Ansicht, sieht nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.
 - **CD-Player:** Display mit Zeit, Restzeit und den Wellenformen aller Stems, ein Jogwheel (der blaue Ring zeigt die Restzeit, mit der Maus gedreht hört man den Ton wie bei einer Platte unter der Hand), runde Knöpfe CUE und Play/Pause und grosse Stem-Pads zum Stummschalten und für Solo.
-- **Plattenspieler:** Jeder Stem ist ein farbiger Wellenform-Ring auf der Platte, einmal rundherum ist der ganze Track. Ein Zeiger zeigt die aktuelle Stelle, der Tonarm wandert mit, ein Loop erscheint als grüner Bogen. Klick auf einen Ring springt dorthin, Drehen der Platte mit der Maus ist Scrubbing.
-- **Loop-Spur in beiden Designs:** Lupe und Loop-Knöpfe A, B, AN und × wie in der normalen Ansicht.
+- **Loop-Spur:** Lupe und Loop-Knöpfe A, B, AN und × wie in der normalen Ansicht.
 
-## 1.9 – 22. Oktober 2026
+## 2.0 – 26. Oktober 2026
+
+### StemMaker – Turbo-Engine
+- **Turbo trennt viel schneller:** Die Stems werden jetzt mit ONNX Runtime getrennt statt mit demucs.cpp. Gleiches Modell (htdemucs bzw. htdemucs_ft), gleiche Qualität, aber auf der CPU je nach PC etwa 6- bis 10-mal schneller (Werkstatt-PC mit i5-2500: 52 statt 440 bis 584 Sekunden pro Songminute; auf einem i5-750 von 2009 dauert ein 4-Minuten-Song rund 8 Minuten statt 1 Stunde 20). Mit einer passenden Grafikkarte sind es nur noch Sekunden (RTX 4060 Ti: ein 3-Minuten-Song in etwa 26 Sekunden, ganzer Ablauf).
+- **Grafikkarte, wenn sie mitmacht (Beta):** StemMaker probiert die Grafikkarte (NVIDIA, AMD, Intel über DirectML, ohne Zusatz-Installation) an einem Abschnitt des Songs aus und nimmt sie nur, wenn sie richtig und schneller als die CPU rechnet. Sonst rechnet die CPU. Fällt die Karte mitten im Song aus, rechnet die CPU weiter.
+- **Vortest beim ersten Start:** Ein Fenster misst CPU und Grafikkarte, zeigt mit Fortschrittsbalken und Stichworten, was gerade getestet wird, und sagt am Ende, wie StemMaker auf diesem PC rechnet und wie lange ein 3-Minuten-Track etwa dauert. Jeder Schritt landet im Log und im Fehlerbericht. Nach einem neuen Grafiktreiber oder einer neuen Karte kommt der Vortest von selbst wieder, sonst jederzeit unter „Weitere Einstellungen“ → „Vortest ...“.
+- **Klassisch bleibt:** demucs.cpp lässt sich unter „Weitere Einstellungen“ → „Engine“ wieder wählen. Scheitert Turbo bei einer Datei, trennt demucs.cpp diese Datei automatisch, die Liste läuft weiter. hdemucs_mmi (v3) rechnet immer klassisch.
+- **Lange DJ-Mixe brauchen wenig Arbeitsspeicher:** Turbo schreibt die Stems während der Rechnung weg, statt den ganzen Song im Speicher zu halten.
+- **Log zeigt die Engine:** Pro Datei steht im Log, ob Turbo (und auf welchem Gerät) oder demucs.cpp getrennt hat, ebenso in der Zusammenfassung und in `statistik.csv`.
+- Die Zeit-Schätzung lernt das Tempo von Turbo und Klassisch getrennt.
+- Die vier htdemucs_ft-Modelle werden beim Herunterladen jetzt wie die anderen Modelle mit einer Prüfsumme kontrolliert.
+- Das Release-ZIP ist dadurch etwa 16 MB grösser (ONNX Runtime und DirectML von Microsoft in `tools\onnx\`). Die Telemetrie von ONNX Runtime ist abgeschaltet.
+
+## 1.9 – 23. Oktober 2026
 
 ### StemMaker – neue Sprache
 - **Spanisch:** StemMaker gibt es jetzt auch auf Spanisch. Auswählen beim ersten Start oder unter „Weitere Einstellungen“ → „Sprache:“. Danke an **David GJ** für die Übersetzung! Alle Helfer stehen jetzt unter „Info“ im neuen Reiter „Danke“.
