@@ -83,6 +83,7 @@ type
     function  FieldText(F: TMp4TagField): string;
     procedure SetFieldText(F: TMp4TagField; const V: string; Mixed: Boolean);
     procedure CheckBpmField;
+    procedure SetFieldHint(F: TMp4TagField; const H: string);
     procedure ComboSelect(Sender: TObject);
     procedure ComboSelectAsync(Data: PtrInt);
     procedure ShowFolderHint(Data: PtrInt);
@@ -284,6 +285,13 @@ const
     'F#m   (11A / 4m)', 'A     (11B / 4d)',
     'C#m   (12A / 5m)', 'E     (12B / 5d)');
 
+  { Felder im Fenster: was Traktor und Mixxx anzeigen und durchsuchen
+    (Speedy, 27.10.2026). Album-Interpret, Track-Nr., BPM und Tonart
+    bleiben in der Datei unangetastet, werden aber nicht mehr gezeigt -
+    BPM und Tonart rechnen Traktor und Mixxx beim Analysieren selbst aus. }
+  SHOWN_FIELDS: TMp4TagFields =
+    [tfTitle, tfArtist, tfAlbum, tfGenre, tfYear, tfLabel, tfComment];
+
   BPM_MIN = 20;
   BPM_MAX = 300;
 
@@ -396,13 +404,15 @@ end;
 
 procedure TMainForm.BuildUI;
 const
-  { linke und rechte Spalte der Felder }
-  Col1: array[0..5] of TMp4TagField =
-    (tfTitle, tfArtist, tfAlbum, tfAlbumArtist, tfGenre, tfYear);
-  Col2: array[0..4] of TMp4TagField =
-    (tfTrack, tfBpm, tfKey, tfLabel, tfComment);
+  { Reihenfolge der Felder: erste Hälfte links, Rest rechts.
+    Angezeigt werden nur die Felder in SHOWN_FIELDS. }
+  FIELD_ORDER: array[0..10] of TMp4TagField =
+    (tfTitle, tfArtist, tfAlbum, tfGenre, tfYear, tfLabel, tfComment,
+     tfAlbumArtist, tfTrack, tfBpm, tfKey);
   ROW_H = 32;
 var
+  Shown: array of TMp4TagField;
+  Half: Integer;
   Cb: TComboBox;
   PnlTop, PnlEdit, Fields, CoverPanel, Frame, Btns: TPanel;
   Col: TListColumn;
@@ -539,32 +549,49 @@ begin
   Fields.BevelOuter := bvNone;
   for F := Low(TMp4TagField) to High(TMp4TagField) do
     FEdits[F] := nil;
-  for I := Low(Col1) to High(Col1) do
-    AddField(Col1[I], 8, 8 + I * ROW_H);
-  for I := Low(Col2) to High(Col2) do
-    AddField(Col2[I], 375, 8 + I * ROW_H);
-  TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
-  for I := Low(GENRES) to High(GENRES) do
-    TComboBox(FEdits[tfGenre]).Items.Add(GENRES[I]);
-  for I := Low(KEYS) to High(KEYS) do
-    TComboBox(FEdits[tfKey]).Items.Add(KEYS[I]);
-  TEdit(FEdits[tfBpm]).NumbersOnly := True;
-  TEdit(FEdits[tfBpm]).MaxLength := 3;
-  TEdit(FEdits[tfYear]).MaxLength := 10;
+  Shown := nil;
+  for I := Low(FIELD_ORDER) to High(FIELD_ORDER) do
+    if FIELD_ORDER[I] in SHOWN_FIELDS then
+    begin
+      SetLength(Shown, Length(Shown) + 1);
+      Shown[High(Shown)] := FIELD_ORDER[I];
+    end;
+  Half := (Length(Shown) + 1) div 2;
+  for I := 0 to High(Shown) do
+    if I < Half then
+      AddField(Shown[I], 8, 8 + I * ROW_H)
+    else
+      AddField(Shown[I], 375, 8 + (I - Half) * ROW_H);
+  if FEdits[tfGenre] <> nil then
+  begin
+    TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
+    for I := Low(GENRES) to High(GENRES) do
+      TComboBox(FEdits[tfGenre]).Items.Add(GENRES[I]);
+  end;
+  if FEdits[tfKey] <> nil then
+    for I := Low(KEYS) to High(KEYS) do
+      TComboBox(FEdits[tfKey]).Items.Add(KEYS[I]);
+  if FEdits[tfBpm] <> nil then
+  begin
+    TEdit(FEdits[tfBpm]).NumbersOnly := True;
+    TEdit(FEdits[tfBpm]).MaxLength := 3;
+  end;
+  if FEdits[tfYear] <> nil then
+    TEdit(FEdits[tfYear]).MaxLength := 10;
 
   { Tooltips: was gehört in welches Feld }
-  FEdits[tfTitle].Hint := _('Name des Tracks, z.B. „Clap Your Hands“');
-  FEdits[tfArtist].Hint := _('Künstler oder Band, z.B. „Kungs“');
-  FEdits[tfAlbum].Hint := _('Album, EP oder Single, auf der der Track erschienen ist');
-  FEdits[tfAlbumArtist].Hint := _('Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations.') +
-    LineEnding + _('Leer lassen, wenn er gleich ist wie der Interpret.');
-  FEdits[tfGenre].Hint := _('Musikstil: aus der Liste wählen oder selbst eintippen');
-  FEdits[tfYear].Hint := _('Erscheinungsjahr, z.B. 2016');
-  FEdits[tfTrack].Hint := _('Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)');
-  FEdits[tfBpm].Hint := Format(_('Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128.'),
+  SetFieldHint(tfTitle, _('Name des Tracks, z.B. „Clap Your Hands“'));
+  SetFieldHint(tfArtist, _('Künstler oder Band, z.B. „Kungs“'));
+  SetFieldHint(tfAlbum, _('Album, EP oder Single, auf der der Track erschienen ist'));
+  SetFieldHint(tfAlbumArtist, _('Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations.') +
+    LineEnding + _('Leer lassen, wenn er gleich ist wie der Interpret.'));
+  SetFieldHint(tfGenre, _('Musikstil: aus der Liste wählen oder selbst eintippen'));
+  SetFieldHint(tfYear, _('Erscheinungsjahr, z.B. 2016'));
+  SetFieldHint(tfTrack, _('Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)'));
+  SetFieldHint(tfBpm, Format(_('Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128.'),
     [BPM_MIN, BPM_MAX]) + LineEnding +
-    _('Traktor misst das Tempo beim Analysieren ohnehin selbst.');
-  FEdits[tfKey].Hint := _('Tonart des Tracks: aus der Liste wählen oder selbst eintippen.') + LineEnding +
+    _('Traktor misst das Tempo beim Analysieren ohnehin selbst.'));
+  SetFieldHint(tfKey, _('Tonart des Tracks: aus der Liste wählen oder selbst eintippen.') + LineEnding +
     LineEnding +
     _('Es gibt drei übliche Schreibweisen für dieselbe Tonart:') + LineEnding +
     _('  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)') + LineEnding +
@@ -572,11 +599,11 @@ begin
     _('  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)') + LineEnding +
     LineEnding +
     _('Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am).') + LineEnding +
-    _('Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B).');
-  FEdits[tfLabel].Hint := _('Plattenfirma, die den Track veröffentlicht hat');
-  FEdits[tfComment].Hint := _('Freier Text, z.B. Notizen fürs Auflegen');
+    _('Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B).'));
+  SetFieldHint(tfLabel, _('Plattenfirma, die den Track veröffentlicht hat'));
+  SetFieldHint(tfComment, _('Freier Text, z.B. Notizen fürs Auflegen'));
   FBtnFromName := MakeButton(Fields, _('Interpret/Titel aus Dateiname'),
-    490, 8 + 5 * ROW_H, 235, @BtnFromNameClick);
+    490, 8 + (Length(Shown) - Half) * ROW_H, 235, @BtnFromNameClick);
   FBtnFromName.Hint := _('"Interpret - Titel.stem.mp4" füllt Interpret und Titel');
   FBtnFromName.ShowHint := True;
 
@@ -603,8 +630,7 @@ begin
   Col := FList.Columns.Add; Col.Caption := _('Titel');     Col.Width := Scale96ToForm(170);
   Col := FList.Columns.Add; Col.Caption := _('Interpret'); Col.Width := Scale96ToForm(150);
   Col := FList.Columns.Add; Col.Caption := _('Album');     Col.Width := Scale96ToForm(110);
-  Col := FList.Columns.Add; Col.Caption := _('BPM');       Col.Width := Scale96ToForm(45);
-  Col := FList.Columns.Add; Col.Caption := _('Tonart');    Col.Width := Scale96ToForm(70);
+  Col := FList.Columns.Add; Col.Caption := _('Genre');     Col.Width := Scale96ToForm(115);
   Col := FList.Columns.Add; Col.Caption := _('Cover');     Col.Width := Scale96ToForm(65);
   Col := FList.Columns.Add; Col.Caption := _('Status');    Col.Width := Scale96ToForm(140);
 end;
@@ -786,8 +812,7 @@ begin
   Item.SubItems.Add(E.Cur.Text[tfTitle]);
   Item.SubItems.Add(E.Cur.Text[tfArtist]);
   Item.SubItems.Add(E.Cur.Text[tfAlbum]);
-  Item.SubItems.Add(E.Cur.Text[tfBpm]);
-  Item.SubItems.Add(E.Cur.Text[tfKey]);
+  Item.SubItems.Add(E.Cur.Text[tfGenre]);
   if Length(E.Cur.Cover) > 0 then
     Item.SubItems.Add(_('ja'))
   else
@@ -940,9 +965,17 @@ begin
   end;
 end;
 
+{ Tooltip für ein Feld (ausgeblendete Felder haben kein Steuerelement) }
+procedure TMainForm.SetFieldHint(F: TMp4TagField; const H: string);
+begin
+  if FEdits[F] <> nil then
+    FEdits[F].Hint := H;
+end;
+
 { BPM-Feld rot färben, solange die Eingabe ungültig ist }
 procedure TMainForm.CheckBpmField;
 begin
+  if FEdits[tfBpm] = nil then Exit;
   if BpmValid(Trim(FieldText(tfBpm))) then
     FEdits[tfBpm].Color := clWindow
   else

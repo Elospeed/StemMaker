@@ -1,8 +1,10 @@
 Elospeed StemTagger 0.1  -  von Elospeed  (ko-fi.com/elospeed)
 =================================================================
 
-Setzt Titel, Interpret, Album, Genre, Jahr, Track-Nr., BPM, Tonart, Label,
-Kommentar und Cover in Traktor-Stem-Dateien (.stem.mp4).
+Setzt Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in
+Traktor-Stem-Dateien (.stem.mp4) - das, was Traktor und Mixxx anzeigen und
+wonach man dort sucht. BPM und Tonart ermitteln Traktor und Mixxx beim
+Analysieren selbst; Werte, die schon in der Datei stehen, bleiben erhalten.
 
 WARUM EIN EIGENES PROGRAMM?
   Normale Tag-Editoren schreiben eine Stem-Datei beim Speichern manchmal so
@@ -29,10 +31,7 @@ BEDIENUNG
     Bei mehreren markierten Dateien gilt eine Änderung für alle.
     Graues "<verschieden>" heisst: die Dateien haben unterschiedliche
     Werte. Lässt man das Feld leer, behält jede Datei ihren Wert.
-  - Genre und Tonart: aus der Liste wählen oder selbst eintippen. Die
-    Tonart-Liste zeigt jede Tonart klassisch, in Camelot und in Open Key
-    (z.B. "Am (8A / 1m)"), gespeichert wird die klassische Schreibweise.
-  - BPM: nur ganze Zahlen von 20 bis 300.
+  - Genre: aus der Liste wählen oder selbst eintippen.
   - Cover: Bild auf das Fenster ziehen, "Bild..." oder "Einfügen"
     (Strg+V, z.B. ein im Browser kopiertes Bild). JPEG und PNG werden
     unverändert übernommen, BMP und GIF in JPEG umgewandelt. Bilder über

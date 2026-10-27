@@ -1,8 +1,10 @@
 Elospeed StemTagger 0.1  -  by Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
-Sets title, artist, album, genre, year, track no., BPM, key, label,
-comment and cover art in Traktor stem files (.stem.mp4).
+Sets title, artist, album, genre, year, label, comment and cover art in
+Traktor stem files (.stem.mp4) - what Traktor and Mixxx show and search.
+BPM and key are detected by Traktor and Mixxx during analysis; values that
+are already in the file are kept.
 
 WHY A SEPARATE TOOL?
   Regular tag editors sometimes rewrite a stem file in a way that makes
@@ -29,10 +31,7 @@ USAGE
     With several files selected, a change applies to all of them.
     Grey "<different>" means the files have different values. If you
     leave that field empty, every file keeps its own value.
-  - Genre and key: pick from the list or type your own. The key list
-    shows every key in classic, Camelot and Open Key notation
-    (e.g. "Am (8A / 1m)"); the classic notation is saved.
-  - BPM: whole numbers from 20 to 300 only.
+  - Genre: pick from the list or type your own.
   - Cover: drag a picture onto the window, "Picture..." or "Paste"
     (Ctrl+V, e.g. a picture copied in the browser). JPEG and PNG are kept
     as they are, BMP and GIF are converted to JPEG. Pictures larger than
