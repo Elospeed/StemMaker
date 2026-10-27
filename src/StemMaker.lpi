@@ -12,6 +12,11 @@
         <DpiAware Value="True"/>
       </XPManifest>
       <Icon Value="0"/>
+      <Resources Count="3">
+        <Resource_0 FileName="versionen/de.md" Type="RCDATA" ResourceName="VERSIONEN_DE"/>
+        <Resource_1 FileName="versionen/en.md" Type="RCDATA" ResourceName="VERSIONEN_EN"/>
+        <Resource_2 FileName="versionen/es.md" Type="RCDATA" ResourceName="VERSIONEN_ES"/>
+      </Resources>
     </General>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
