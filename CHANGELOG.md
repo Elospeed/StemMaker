@@ -13,7 +13,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **„Anhören“ spielt die fertige Datei gleich ab:** Der StemPlayer öffnet die markierte oder zuletzt umgewandelte Stem-Datei direkt, ohne Öffnen-Fenster.
 - **Kein Explorer-Fenster mehr nach der Umwandlung:** Das Häkchen „Ordner nach der Umwandlung öffnen“ ist jetzt aus. Wer die Datei gleich in Traktor ziehen will, setzt es wieder oder klickt „Ordner öffnen“.
 - **Rechtsklick-Menü in der Dateiliste:** Rechtsklick auf eine Zeile bietet „Anhören“ (spielt eine fertige Datei im StemPlayer ab, wie der Doppelklick) und „Aus Liste entfernen“. Die Entf-Taste entfernt die markierten Zeilen ebenfalls. Erstellte Stem-Dateien bleiben dabei erhalten.
-- **Reiter „Versionen“ im Info-Fenster:** Zeigt kurz, was in jeder Version neu war, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
+- **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
 
 ## 2.0 – 26. Oktober 2026
 

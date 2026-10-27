@@ -297,7 +297,8 @@ end;
   eingebaut, so passt der Verlauf immer zur Version und kann nicht fehlen.
   Aufbau der Dateien:
     "## 2.0 – 26. Oktober 2026"  -> Versions-Überschrift
-    "- Text"                     -> ein Punkt
+    "### Neu"                    -> Gruppe (Neu, Verbessert, Behoben)
+    "- Stichwort"                -> ein Punkt
   Alles andere (Titel, Hinweise für die Pflege, Leerzeilen) wird nicht
   angezeigt. Der ausführliche CHANGELOG.md (nur Deutsch) bleibt auf GitHub. }
 
@@ -357,9 +358,12 @@ begin
           AddThanksGroup(Box, Trim(Copy(S, 4, MaxInt)), clGrayText);
         First := False;
       end
+      else if (Copy(S, 1, 4) = '### ') and not First then
+        AddThanksLabel(Box, Trim(Copy(S, 5, MaxInt)), 13, [fsBold],
+          clWindowText, 20, 8)
       else if (Copy(S, 1, 2) = '- ') and not First then
         AddThanksLabel(Box, '•  ' + Trim(Copy(S, 3, MaxInt)), 13, [],
-          clWindowText, 26, 3);
+          clWindowText, 30, 2);
     end;
     { etwas Luft unter dem letzten Punkt }
     AddThanksLabel(Box, ' ', 13, [], clWindowText, 14, 6);

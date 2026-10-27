@@ -3,66 +3,103 @@
 Kurzfassung für den Reiter „Versionen“ im Info-Fenster, neueste Version oben.
 Wird in StemMaker.exe eingebaut. Pro Release einen Abschnitt „## <Version> – <Datum>“
 hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
-Nur Punkte, die Nutzer merken, kurz und ohne technische Einzelheiten.
+Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
+ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
 ## 2.0 – 26. Oktober 2026
-- Neue Turbo-Engine: die Stems werden auf der CPU etwa 6- bis 10-mal schneller getrennt, gleiche Qualität
-- Mit passender Grafikkarte (NVIDIA, AMD, Intel) nur noch Sekunden pro Song (Beta)
-- Ein kurzer Vortest beim ersten Start misst CPU und Grafikkarte und sagt, wie lange ein Song etwa dauert
-- Die bisherige Engine bleibt wählbar und springt automatisch ein, falls Turbo bei einer Datei scheitert
+### Neu
+- Turbo-Engine: Stems auf der CPU etwa 6- bis 10-mal schneller, gleiche Qualität
+- Grafikkarte (NVIDIA, AMD, Intel): nur noch Sekunden pro Song (Beta)
+- Vortest beim ersten Start: misst CPU und Grafikkarte, sagt die Dauer pro Song voraus
+### Verbessert
+- Bisherige Engine weiter wählbar, springt automatisch ein, wenn Turbo scheitert
 - Lange DJ-Mixe brauchen viel weniger Arbeitsspeicher
+- Log zeigt pro Datei die verwendete Engine
 
 ## 1.9 – 23. Oktober 2026
-- StemMaker gibt es jetzt auch auf Spanisch (danke an David GJ für die Übersetzung)
-- Neuer Reiter „Danke“ unter „Info“ mit allen, die mitgeholfen haben
-- StemPlayer: Loop A-B, ein Abschnitt wird nahtlos wiederholt
-- StemPlayer: Lupe zum genauen Setzen des Loops, mit Zeitraster und Zoom
-- StemPlayer: Scrubbing, beim Ziehen der Welle hört man den Ton wie bei einer Schallplatte
-- StemPlayer spricht jetzt Deutsch, Englisch und Spanisch (wie in StemMaker eingestellt)
+### Neu
+- Spanisch (Übersetzung: David GJ)
+- Reiter „Danke“ im Info-Fenster
+- StemPlayer: Loop A-B, nahtlos
+- StemPlayer: Lupe mit Zeitraster und Zoom zum genauen Setzen des Loops
+- StemPlayer: Scrubbing wie bei einer Schallplatte
+### Verbessert
+- StemPlayer auf Deutsch, Englisch und Spanisch (wie in StemMaker eingestellt)
 
 ## 1.8.1 – 20. Oktober 2026
-- Titel, Interpret, Album und BPM aus OGG- und Opus-Dateien landen jetzt in der Stem-Datei
-- Fenstertitel sagt „aus Audiodateien“ statt „aus MP3“
+### Behoben
+- Tags (Titel, Interpret, Album, BPM) aus OGG und Opus fehlten in der Stem-Datei
+- Fenstertitel: „aus Audiodateien“ statt „aus MP3“
 
 ## 1.8 – 18. Oktober 2026
-- Hauptfenster mit Farbe: Fortschrittsbalken in der Liste, Häkchen und Stem-Farbpunkte bei fertigen Dateien
-- StemPlayer 1.5: Wellenform pro Stem, Solo wie am DJ-Mixer
-- „Nochmals konvertieren“ wandelt wirklich nochmals um, abgebrochene Songs zählen nicht mehr als Fehler
-- Vorhandene Stem-Datei geht beim Überschreiben nicht mehr verloren
-- Viele kleine Fehler behoben
+### Neu
+- Hauptfenster mit Farbe: Fortschrittsbalken in der Liste, Häkchen und Stem-Farbpunkte
+- StemPlayer 1.5: Wellenform pro Stem, Ansicht Kompakt/Wellenform
+### Verbessert
+- StemPlayer: Solo wie am DJ-Mixer
+### Behoben
+- „Nochmals konvertieren“ übersprang alle Dateien
+- Abgebrochene Songs zählten als Fehler
+- Vorhandene Stem-Datei konnte beim Überschreiben verloren gehen
+- Liste übersteht Stromausfall beim Speichern
+- Diverse kleine Fehler
 
 ## 1.7.1 – 14. Oktober 2026
-- Neues Fenster „Weitere Einstellungen“ (Zahnrad)
-- Symbol neben der Uhr: Fortschritt und Meldung, wenn alles fertig ist
-- Knopf „Traktor-Farben“ für die Stem-Farben
+### Neu
+- Fenster „Weitere Einstellungen“ (Zahnrad)
+- Symbol neben der Uhr mit Fortschritt und Fertig-Meldung
+- Knopf „Traktor-Farben“
 - Installer (Setup.exe) neben dem ZIP
-- Fehlerbericht senden (nur wenn du willst, nichts geht automatisch weg)
-- Sauberer Abbruch beim Herunterfahren von Windows, klare Meldung bei zu langen Pfaden
-- StemPlayer 1.4 und sicherere Downloads
+- Fehlerbericht senden (nur von Hand, nichts automatisch)
+### Verbessert
+- Sicherere Downloads (Prüfsummen fest eingebaut)
+- Klare Meldung bei Pfaden über 260 Zeichen
+- StemPlayer 1.4: weist falsche Dateien mit klarer Meldung ab
+### Behoben
+- Herunterfahren von Windows während einer Umwandlung: jetzt sauberer Abbruch
+- Falsche Versionsnummer unter „Apps & Features“ nach einem Update
 
 ## 1.7 – 6. Oktober 2026
-- „Anhören“ im StemPlayer und „Ordner nach der Umwandlung öffnen“
+### Neu
+- „Anhören“ im StemPlayer
+- „Ordner nach der Umwandlung öffnen“
 - Club-Pegel (Lautstärke angleichen) und Bass-Fix
-- BPM, Tonart, Label und ISRC werden in die Stem-Datei übernommen
-- Update-Prüfung beim Start und „Nach Updates suchen“ im Info-Fenster
-- StemPlayer 1.3 im Design „Traktor Dark“ mit Stumm, Solo und Regler pro Stem
-- Viele Fehler behoben
+- Update-Prüfung beim Start und „Nach Updates suchen“
+- StemPlayer 1.3: Design „Traktor Dark“, Stumm, Solo und Regler pro Stem
+### Verbessert
+- Tags: auch BPM, Tonart, Label und ISRC
+- Feste ffmpeg-Version mit Prüfsumme
+- Log mit Lautheit und Tempo, Datei statistik.csv
+### Behoben
+- StemMaker liess sich manchmal nicht beenden
+- Gleiche Dateinamen aus verschiedenen Ordnern gingen verloren
+- demucs rechnete nach einem Absturz im Hintergrund weiter
 
 ## 1.6 – 2. Oktober 2026
+### Neu
 - Erste öffentliche Version auf GitHub
-- Ganze Sammlungen umwandeln, die Liste wird nach Absturz oder Neustart fortgesetzt
+- Ganze Sammlungen umwandeln, Liste läuft nach Absturz oder Neustart weiter
 - PC danach herunterfahren (mit Countdown)
 - Deutsch und Englisch
-- Umlaute in Dateinamen funktionieren überall
+### Behoben
+- Umlaute in Dateinamen (z. B. „Tiësto“)
+- StemCLI las StemMaker.ini nicht
 
 ## 1.5
-- PC bleibt während der Umwandlung wach, Energiesparplan wird vorübergehend auf Leistung gestellt
-- Neues Programm-Icon und neuer Name „Elospeed StemMaker“
+### Neu
+- PC bleibt während der Umwandlung wach
+- Neues Programm-Icon, neuer Name „Elospeed StemMaker“
+### Verbessert
+- Energiesparplan während der Umwandlung auf Leistung (ca. 8 % schneller)
+- AAC-Bitrate richtet sich nach der Quelle
 
 ## 1.4
-- Alle Prozessorkerne werden genutzt, auf älteren PCs etwa doppelt so schnell
+### Verbessert
+- Alle Prozessorkerne genutzt, auf älteren PCs etwa doppelt so schnell
+- Bessere Restzeit-Schätzung
 
 ## 1.0 – 1.3
-- Audiodateien werden zu Traktor-Stem-Dateien mit Master, Drums, Bass, Other und Vox
-- Startfenster prüft alles und lädt ffmpeg und das Trenn-Modell selbst herunter
-- StemCLI als Kommandozeilen-Version
+### Neu
+- Audiodateien zu Traktor-Stem-Dateien (Master, Drums, Bass, Other, Vox)
+- Startfenster lädt ffmpeg und das Trenn-Modell selbst herunter
+- StemCLI für die Kommandozeile
