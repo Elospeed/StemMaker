@@ -27,8 +27,8 @@ BEDIENUNG
   0              alles zurücksetzen
   S / O / R      Modus Stems / Original / Rest
   Pfeil li/re    -/+ 5 Sekunden,  Pos1 = Anfang,  Strg+O = Öffnen
-  W              Ansicht Kompakt / Wellenform umschalten (im
-                 Design CD-Player ohne Wirkung)
+  W              Ansicht Kompakt / Wellenform umschalten (in den
+                 Designs CD-Player, Traktor-Stil, Mixxx-Stil ohne Wirkung)
   A / B          Loop-Punkt A / B an der aktuellen Stelle setzen
   L              Loop an/aus,  Shift+L oder Rücktaste = Loop löschen
   Pfeil li/re    bei aktivem Loop: ganzen Loop verschieben (sonst -/+ 5 s)
@@ -59,6 +59,24 @@ DESIGN CD-PLAYER
     Maustaste drehen = Scrubbing (eine Umdrehung = 1,8 Sekunden).
   - CUE = zurück an den Anfang und anhalten (wie der Stop-Knopf).
   - Stem-Pads: obere Reihe Mute (leuchtet = hörbar), untere Reihe Solo.
+
+SKINS TRAKTOR-STIL UND MIXXX-STIL (Testversion)
+  Zwei weitere Ansichten im Ausklapp-Menü, angelehnt an bekannte
+  DJ-Programme (nur im Stil, ohne deren Logos oder Grafiken). Gleiche
+  Funktionen, nur Schieberegler, keine Drehknöpfe.
+  - TRAKTOR-STIL: jeder Stem in einer eigenen Zeile mit Regler, M und S
+    links und gezoomter Welle rechts. Darunter die Übersicht des
+    Originals, rechts der Master-Fader, unten Play, CUE, Loop-Anzeige
+    (« » verschieben den Loop) und A, B, AN, ×. Knopf "8 s" stellt den
+    Zoom der Wellen um (2, 4, 8, 16 Sekunden).
+  - MIXXX-STIL: oben eine grosse laufende Welle mit allen 4 Stems
+    übereinander, darunter das Deck mit Titel, Zeiten, Teller
+    (Scrubbing), Übersicht, Knöpfen und den Stem-Zeilen, rechts Master
+    mit senkrechtem Pegel.
+  In allen gezoomten Wellen gilt dasselbe wie in der Lupe: ziehen =
+  Scrubbing, rechte Maustaste = Loop setzen, Marken verschieben. Das
+  Mausrad zoomt alle Wellen gemeinsam.
+  Wahl in StemPlayer.ini ([Ansicht] Design=Traktor bzw. Mixxx).
 
 LOOP A-B
   Ein Abschnitt wird endlos wiederholt, z.B. um mit Mute und Solo
@@ -151,3 +169,5 @@ VERSIONEN
   1.8  Neues Design zur Wahl: CD-Player (Jogwheel, Stem-Pads,
        Display). Gleiche Funktionen, eigene Loop-Spur. Ansicht wird
        in einem Ausklapp-Menü gewählt
+  1.9  Testversion: Skins Traktor-Stil und Mixxx-Stil (gezoomte Welle
+       pro Stem, senkrechter Master-Fader)

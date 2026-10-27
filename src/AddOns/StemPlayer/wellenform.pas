@@ -66,6 +66,12 @@
                        wächst mit dem Zoom (bei 8 s 0,1 s, ganz nah 2 ms).
     1.6  (22.10.2026)  OnScrub: meldet das Ziehen der Welle, damit man dabei
                        den Ton hört (Scrubbing, stemengine 1.3).
+    1.7  (27.10.2026)  Feine Hüllkurve für alle 5 Spuren (TPeakThread.Fines),
+                       damit die Skins Traktor-Stil und Mixxx-Stil jeden Stem
+                       gezoomt zeigen können. Lupe mit einstellbaren Farben
+                       (WaveColor, Active, BackColor, LoopColor, HeadColor),
+                       Raster/Rahmen/Fähnchen abschaltbar und Zoom von aussen
+                       setzbar (Span, OnSpanChange: alle Lupen zoomen gemeinsam).
   ============================================================================ }
 unit wellenform;
 
@@ -100,7 +106,8 @@ type
     procedure Execute; override;
   public
     Peaks: array[0..PEAK_TRACKS-1] of TPeakData;
-    Fine : TPeakData;    // feine Hüllkurve des Originals für die Lupe
+    { feine Hüllkurven für die Lupen: [0] = Original, [1..4] = Stems }
+    Fines: array[0..PEAK_TRACKS-1] of TPeakData;
     Done : Boolean;      // vom Thread gesetzt, wenn alles fertig ist
     { RawFiles wie bei TStemEngine: [0] = Master, [1..4] = Stems }
     constructor Create(const RawFiles: array of string; TotalFrames: Int64);
@@ -131,7 +138,12 @@ type
     FSelFrom  : Integer;     // Pixel, an dem das Aufziehen begann
     FSelTo    : Integer;     // aktuelles Pixel beim Aufziehen
     FOnLoopSelect: TLoopSelectEvent;
+    FBack     : TColor;      // Hintergrund (Skins, siehe Version 1.7)
+    FLoopColor: TColor;      // Farbe von Loop-Bereich und Marken
+    FHeadColor: TColor;      // Farbe des Abspielkopfs
     procedure SetColor2(AValue: TColor);
+    procedure SetBack(AValue: TColor);
+    procedure SetLoopColor(AValue: TColor);
     procedure SetActive(AValue: Boolean);
     procedure SetPosition(AValue: Single);
     procedure RenderCache;
@@ -155,6 +167,9 @@ type
     property WaveColor: TColor read FColor write SetColor2;
     property Active: Boolean read FActive write SetActive;
     property Position: Single read FPosition write SetPosition;
+    property BackColor: TColor read FBack write SetBack;
+    property LoopColor: TColor read FLoopColor write SetLoopColor;
+    property HeadColor: TColor read FHeadColor write FHeadColor;
     property OnSeek: TSeekEvent read FOnSeek write FOnSeek;
     { rechte Maustaste gezogen: neuer Loop von AFrom bis ATo (0..1) }
     property OnLoopSelect: TLoopSelectEvent read FOnLoopSelect write FOnLoopSelect;
@@ -213,6 +228,21 @@ type
       des Originals. }
     FRaw      : TFileStream;
     FRawBuf   : array of SmallInt;
+    { Aussehen (für die Skins einstellbar, siehe Version 1.7) }
+    FWaveColor: TColor;      // Farbe der Welle (Standard hellgrau)
+    FActive   : Boolean;     // False -> Welle grau (Stem stumm)
+    FBack     : TColor;      // Hintergrund
+    FLoopColor: TColor;      // Farbe des Loop-Bereichs und der Marken
+    FHeadColor: TColor;      // Farbe des Abspielkopfs
+    FShowGrid : Boolean;     // Zeitraster mit Beschriftung zeichnen
+    FShowFrame: Boolean;     // Rahmen zeichnen
+    FShowFlags: Boolean;     // Fähnchen A/B an den Loop-Marken
+    FOnSpanChange: TNotifyEvent;
+    procedure SetWaveColor(AValue: TColor);
+    procedure SetActive(AValue: Boolean);
+    procedure SetBack(AValue: TColor);
+    procedure SetLoopColor(AValue: TColor);
+    procedure SetSpan(AValue: Double);
     procedure RenderCache;
     procedure RenderCols(X0, X1: Integer);
     procedure ScrollCache(Px: Integer);
@@ -242,7 +272,19 @@ type
     procedure ClearPeaks;
     procedure SetLoop(AFrom, ATo: Int64; AOn: Boolean);
     property Position: Double read FPos write SetPos;   // in Frames
-    property Span: Double read FSpan;
+    { sichtbare Breite in Sekunden. Setzen von aussen löst OnSpanChange
+      NICHT aus (sonst schaukeln sich gekoppelte Lupen gegenseitig auf). }
+    property Span: Double read FSpan write SetSpan;
+    property WaveColor: TColor read FWaveColor write SetWaveColor;
+    property Active: Boolean read FActive write SetActive;
+    property BackColor: TColor read FBack write SetBack;
+    property LoopColor: TColor read FLoopColor write SetLoopColor;
+    property HeadColor: TColor read FHeadColor write FHeadColor;
+    property ShowGrid: Boolean read FShowGrid write FShowGrid;
+    property ShowFrame: Boolean read FShowFrame write FShowFrame;
+    property ShowFlags: Boolean read FShowFlags write FShowFlags;
+    { Mausrad hat gezoomt (zum Mitziehen der anderen Lupen) }
+    property OnSpanChange: TNotifyEvent read FOnSpanChange write FOnSpanChange;
     property OnSeek: TFrameEvent read FOnSeek write FOnSeek;
     property OnLoopSelect: TFrameRangeEvent read FOnLoopSelect write FOnLoopSelect;
     property OnMarkerMove: TMarkerMoveEvent read FOnMarkerMove write FOnMarkerMove;
@@ -320,8 +362,8 @@ begin
   begin
     if i <= High(RawFiles) then FFiles[i] := RawFiles[i] else FFiles[i] := '';
     Peaks[i].Valid := False;
+    Fines[i].Valid := False;
   end;
-  Fine.Valid := False;
   Done := False;
   Start;
 end;
@@ -341,8 +383,10 @@ var
   Frame: Int64;
   V: Single;
   P: ^TPeakData;
+  FP: ^TPeakData;    // feine Hüllkurve dieser Spur
 begin
   P := @Peaks[Idx];
+  FP := @Fines[Idx];
   if (FFiles[Idx] = '') or not FileExists(FFiles[Idx]) or (FTotalFrames <= 0) then Exit;
   SetLength(P^.Lo, PEAK_BUCKETS);
   SetLength(P^.Hi, PEAK_BUCKETS);
@@ -354,19 +398,16 @@ begin
     P^.Lo[b] := 0; P^.Hi[b] := 0; SumSq[b] := 0; Cnt[b] := 0;
   end;
   SetLength(Buf, CHUNK_FRAMES * 2);
-  { Für das Original zusätzlich die feine Hüllkurve (Lupe) }
-  FineN := 0;
-  if Idx = 0 then
+  { Zusätzlich die feine Hüllkurve für die Lupen (ca. 1,2 MB pro Spur bei
+    5 Minuten, das kostet kaum Zeit, weil die Datei ohnehin gelesen wird) }
+  FineN := (FTotalFrames + FINE_FRAMES - 1) div FINE_FRAMES;
+  SetLength(FP^.Lo, FineN);
+  SetLength(FP^.Hi, FineN);
+  SetLength(FP^.Rms, FineN);
+  SetLength(FineSq, FineN);
+  for b := 0 to FineN - 1 do
   begin
-    FineN := (FTotalFrames + FINE_FRAMES - 1) div FINE_FRAMES;
-    SetLength(Fine.Lo, FineN);
-    SetLength(Fine.Hi, FineN);
-    SetLength(Fine.Rms, FineN);
-    SetLength(FineSq, FineN);
-    for b := 0 to FineN - 1 do
-    begin
-      Fine.Lo[b] := 0; Fine.Hi[b] := 0; FineSq[b] := 0;
-    end;
+    FP^.Lo[b] := 0; FP^.Hi[b] := 0; FineSq[b] := 0;
   end;
 
   { fmShareDenyNone: die Engine hat dieselbe Datei gleichzeitig offen }
@@ -389,8 +430,8 @@ begin
         if FineN > 0 then
         begin
           fb := Frame div FINE_FRAMES;
-          if V < Fine.Lo[fb] then Fine.Lo[fb] := V;
-          if V > Fine.Hi[fb] then Fine.Hi[fb] := V;
+          if V < FP^.Lo[fb] then FP^.Lo[fb] := V;
+          if V > FP^.Hi[fb] then FP^.Hi[fb] := V;
           FineSq[fb] := FineSq[fb] + V * V;
         end;
         Inc(Frame);
@@ -407,8 +448,8 @@ begin
   if FineN > 0 then
   begin
     for k := 0 to FineN - 1 do
-      Fine.Rms[k] := Sqrt(FineSq[k] / FINE_FRAMES);
-    Fine.Valid := True;
+      FP^.Rms[k] := Sqrt(FineSq[k] / FINE_FRAMES);
+    FP^.Valid := True;
   end;
 end;
 
@@ -451,8 +492,27 @@ begin
   FLoopA := -1;
   FLoopB := -1;
   FDirty := True;
+  FBack := WAVE_BG;
+  FLoopColor := LOOP_COLOR;
+  FHeadColor := DJ_PLAYHEAD;
   Cursor := crHandPoint;
   ControlStyle := ControlStyle + [csOpaque];
+end;
+
+procedure TWaveView.SetBack(AValue: TColor);
+begin
+  if FBack = AValue then Exit;
+  FBack := AValue;
+  FDirty := True;
+  Invalidate;
+end;
+
+procedure TWaveView.SetLoopColor(AValue: TColor);
+begin
+  if FLoopColor = AValue then Exit;
+  FLoopColor := AValue;
+  FDirty := True;
+  Invalidate;
 end;
 
 destructor TWaveView.Destroy;
@@ -550,14 +610,14 @@ var
   procedure Prepare(Bmp: TBitmap);
   begin
     Bmp.SetSize(W, H);
-    Bmp.Canvas.Brush.Color := WAVE_BG;
+    Bmp.Canvas.Brush.Color := FBack;
     Bmp.Canvas.FillRect(0, 0, W, H);
     { Loop-Bereich grünlich hinterlegen: aktiv deutlich, ausgeschaltet nur
       angedeutet (man sieht, wo der gemerkte Loop liegt) }
     if (FLoopA >= 0) and (FLoopB > FLoopA) then
     begin
-      if FLoopOn then Bmp.Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.16)
-      else Bmp.Canvas.Brush.Color := Blend(LOOP_COLOR, WAVE_BG, 0.06);
+      if FLoopOn then Bmp.Canvas.Brush.Color := Blend(FLoopColor, FBack, 0.16)
+      else Bmp.Canvas.Brush.Color := Blend(FLoopColor, FBack, 0.06);
       Bmp.Canvas.FillRect(FracToX(FLoopA), 0, FracToX(FLoopB) + 1, H);
     end;
     { feine Mittellinie, damit auch eine stille Spur als Spur erkennbar ist }
@@ -582,10 +642,10 @@ begin
   if not FPeaks.Valid then Exit;
 
   if FActive then Base := FColor else Base := DJ_OFF;
-  CPeakOn  := Blend(Base, WAVE_BG, 0.55);
+  CPeakOn  := Blend(Base, FBack, 0.55);
   CRmsOn   := Base;
-  CPeakOff := Blend(Base, WAVE_BG, 0.22);
-  CRmsOff  := Blend(Base, WAVE_BG, 0.38);
+  CPeakOff := Blend(Base, FBack, 0.22);
+  CRmsOff  := Blend(Base, FBack, 0.38);
   Amp := (H / 2 - 1) * FScale;
 
   for x := 0 to W - 1 do
@@ -635,14 +695,14 @@ begin
     Beim Aufziehen mit der rechten Maustaste wird der neue Bereich gezeigt. }
   if FSelecting then
   begin
-    Canvas.Brush.Color := LOOP_COLOR;
+    Canvas.Brush.Color := FLoopColor;
     Canvas.FillRect(Min(FSelFrom, FSelTo), 0, Max(FSelFrom, FSelTo) + 1, 3);
     Canvas.FillRect(FSelFrom, 0, FSelFrom + 1, Height);
     Canvas.FillRect(FSelTo, 0, FSelTo + 1, Height);
   end
   else if FPeaks.Valid then
   begin
-    if FLoopOn then LC := LOOP_COLOR else LC := Blend(LOOP_COLOR, WAVE_BG, 0.5);
+    if FLoopOn then LC := FLoopColor else LC := Blend(FLoopColor, FBack, 0.5);
     Canvas.Brush.Color := LC;
     if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
       Canvas.FillRect(FracToX(FLoopA), 0, FracToX(FLoopB) + 1, 3);
@@ -663,17 +723,17 @@ begin
     Fr := (Xf - 1) - C;          // 0..1: wie weit der Strich in sie hineinragt
     if (C >= 0) and (C < Width) then
     begin
-      Canvas.Brush.Color := Blend(DJ_PLAYHEAD, WAVE_BG, 1 - Fr);
+      Canvas.Brush.Color := Blend(FHeadColor, FBack, 1 - Fr);
       Canvas.FillRect(C, 0, C + 1, Height);
     end;
     if (C + 1 >= 0) and (C + 1 < Width) then
     begin
-      Canvas.Brush.Color := DJ_PLAYHEAD;
+      Canvas.Brush.Color := FHeadColor;
       Canvas.FillRect(C + 1, 0, C + 2, Height);
     end;
     if (Fr > 0.02) and (C + 2 >= 0) and (C + 2 < Width) then
     begin
-      Canvas.Brush.Color := Blend(DJ_PLAYHEAD, WAVE_BG, Fr);
+      Canvas.Brush.Color := Blend(FHeadColor, FBack, Fr);
       Canvas.FillRect(C + 2, 0, C + 3, Height);
     end;
   end;
@@ -783,8 +843,59 @@ begin
   FSpareOn := TBitmap.Create;
   FSpareOff := TBitmap.Create;
   FCacheDirty := True;
+  FWaveColor := $00D0D0D0;
+  FActive := True;
+  FBack := WAVE_BG;
+  FLoopColor := LOOP_COLOR;
+  FHeadColor := DJ_PLAYHEAD;
+  FShowGrid := True;
+  FShowFrame := True;
+  FShowFlags := True;
   Cursor := crHandPoint;
   ControlStyle := ControlStyle + [csOpaque];
+end;
+
+procedure TZoomView.SetWaveColor(AValue: TColor);
+begin
+  if FWaveColor = AValue then Exit;
+  FWaveColor := AValue;
+  FCacheDirty := True;
+  Invalidate;
+end;
+
+procedure TZoomView.SetActive(AValue: Boolean);
+begin
+  if FActive = AValue then Exit;
+  FActive := AValue;
+  FCacheDirty := True;
+  Invalidate;
+end;
+
+procedure TZoomView.SetBack(AValue: TColor);
+begin
+  if FBack = AValue then Exit;
+  FBack := AValue;
+  FCacheDirty := True;
+  Invalidate;
+end;
+
+procedure TZoomView.SetLoopColor(AValue: TColor);
+begin
+  if FLoopColor = AValue then Exit;
+  FLoopColor := AValue;
+  FCacheDirty := True;
+  Invalidate;
+end;
+
+procedure TZoomView.SetSpan(AValue: Double);
+begin
+  if AValue < ZOOM_MIN_SPAN then AValue := ZOOM_MIN_SPAN;
+  if AValue > ZOOM_MAX_SPAN then AValue := ZOOM_MAX_SPAN;
+  if AValue = FSpan then Exit;
+  FSpan := AValue;
+  FLastPx := MaxInt;
+  FCacheDirty := True;
+  Invalidate;
 end;
 
 destructor TZoomView.Destroy;
@@ -1091,12 +1202,12 @@ begin
   Mid := H div 2;
   Fpp := FCacheFpp;
 
-  { Hintergrund, Loop-Bereich grünlich }
-  Both(WAVE_BG, X0, 0, X1, H);
+  { Hintergrund, Loop-Bereich in der Loop-Farbe angedeutet }
+  Both(FBack, X0, 0, X1, H);
   if (FLoopA >= 0) and (FLoopB > FLoopA) then
   begin
-    if FLoopOn then C := Blend(LOOP_COLOR, WAVE_BG, 0.16)
-    else C := Blend(LOOP_COLOR, WAVE_BG, 0.06);
+    if FLoopOn then C := Blend(FLoopColor, FBack, 0.16)
+    else C := Blend(FLoopColor, FBack, 0.06);
     xa := FX(FLoopA);
     xb := FX(FLoopB);
     Both(C, xa, 0, xb, H);
@@ -1106,6 +1217,8 @@ begin
   { Raster: feine Linien dunkel, grobe heller mit Zeit. Links etwas früher
     anfangen, damit hineinragende Beschriftungen vollständig sind. }
   Step := GridStep(Major);
+  if FShowGrid then
+  begin
   T0 := (FCacheStart + (X0 - 60) * Fpp) / WAVE_RATE;
   T1 := (FCacheStart + X1 * Fpp) / WAVE_RATE;
   T := Floor(T0 / Step) * Step;
@@ -1129,12 +1242,16 @@ begin
     end;
     T := T + Step;
   end;
+  end;
 
   { Welle }
-  CWave := Blend($00D0D0D0, WAVE_BG, 0.55);
-  CRms := $00D0D0D0;
-  CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
-  CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
+  { Farbe: eingestellte Wellenfarbe, stumm grau. Gespielt hell, der Rest
+    gedämpft. }
+  if FActive then C := FWaveColor else C := DJ_OFF;
+  CWave := Blend(C, FBack, 0.55);
+  CRms := C;
+  CWaveOff := Blend(C, FBack, 0.22);
+  CRmsOff := Blend(C, FBack, 0.40);
   Amp := (H / 2 - 2) * FScale;
   if (FRaw <> nil) and (Fpp < FINE_FRAMES) and RenderSamples then Exit;
   for x := X0 to X1 - 1 do
@@ -1178,8 +1295,9 @@ var
     if (XPos < -12) or (XPos > W + 12) then Exit;
     C.Brush.Color := LC;
     C.FillRect(XPos - 1, 0, XPos + 1, H);
+    if not FShowFlags then Exit;
     C.FillRect(XPos - 1, 0, XPos + 12, 13);
-    C.Font.Color := WAVE_BG;
+    C.Font.Color := FBack;
     C.Font.Style := [fsBold];
     C.Brush.Style := bsClear;
     C.TextOut(XPos + 2, 0, Letter);
@@ -1223,7 +1341,7 @@ begin
   if FPeaks.Valid and (FTotal > 0) then
   begin
     { Neuer Loop beim Aufziehen mit der rechten Maustaste }
-    LC := LOOP_COLOR;
+    LC := FLoopColor;
     if FSelecting then
     begin
       xa := FrameToX(Min(FSelFrom, FSelTo));
@@ -1241,7 +1359,7 @@ begin
     end
     else
     begin
-      if not FLoopOn then LC := Blend(LOOP_COLOR, WAVE_BG, 0.6);
+      if not FLoopOn then LC := Blend(FLoopColor, FBack, 0.6);
       if (FLoopA >= 0) and (FLoopB > FLoopA) and FLoopOn then
       begin
         C.Brush.Color := LC;
@@ -1252,15 +1370,18 @@ begin
     end;
 
     { Abspielkopf in der Mitte }
-    C.Brush.Color := DJ_PLAYHEAD;
+    C.Brush.Color := FHeadColor;
     C.FillRect(X0 - 1, 0, X0 + 1, H);
   end;
 
   { Rahmen }
-  C.Pen.Color := DJ_BORDER;
-  C.Brush.Style := bsClear;
-  C.Rectangle(0, 0, W, H);
-  C.Brush.Style := bsSolid;
+  if FShowFrame then
+  begin
+    C.Pen.Color := DJ_BORDER;
+    C.Brush.Style := bsClear;
+    C.Rectangle(0, 0, W, H);
+    C.Brush.Style := bsSolid;
+  end;
 
   Canvas.Draw(0, 0, FBuf);
 end;
@@ -1381,13 +1502,9 @@ function TZoomView.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
 begin
   Result := True;
-  if WheelDelta > 0 then FSpan := FSpan / 1.5
-  else if WheelDelta < 0 then FSpan := FSpan * 1.5;
-  if FSpan < ZOOM_MIN_SPAN then FSpan := ZOOM_MIN_SPAN;
-  if FSpan > ZOOM_MAX_SPAN then FSpan := ZOOM_MAX_SPAN;
-  FLastPx := MaxInt;
-  FCacheDirty := True;
-  Invalidate;
+  if WheelDelta > 0 then SetSpan(FSpan / 1.5)
+  else if WheelDelta < 0 then SetSpan(FSpan * 1.5);
+  if Assigned(FOnSpanChange) then FOnSpanChange(Self);
 end;
 
 end.
