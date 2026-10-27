@@ -20,8 +20,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Album-Interpret, Genre, Jahr, Tracknummer, BPM, Tonart, Label, Kommentar und Cover in `.stem.mp4`-Dateien. Gedacht vor allem für Stem-Dateien ohne Tags.
 - **Viele Dateien auf einmal:** Ordner laden, mehrere Zeilen markieren und z.B. Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange man sie nicht ändert.
 - **Cover bequem:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit Strg+V einfügen oder Datei wählen. Grosse Bilder werden auf Wunsch auf 1000 px verkleinert, BMP und GIF in JPEG umgewandelt. Das Cover lässt sich auch wieder als Bild speichern.
+- **Genre und Tonart mit Auswahlliste:** Genre aus rund 50 Musikstilen wählen oder selbst eintippen. Die Tonart-Liste zeigt jede Tonart klassisch, in Camelot und in Open Key (z.B. „Am (8A / 1m)“), gespeichert wird „Am“. Der Tooltip erklärt die drei Schreibweisen.
+- **Tooltip an jedem Feld**, der sagt, was hineingehört. BPM nimmt nur ganze Zahlen von 20 bis 300 an, ungültige Werte werden rot markiert und nicht gespeichert.
+- **Fehlendes auf einen Blick:** Die Spalte Status zeigt „Ohne Tags“ oder „Ohne Cover“. Klick auf eine Spaltenüberschrift sortiert die Liste.
 - **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
-- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Auf Wunsch bleibt eine Sicherungskopie `.bak`. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
+- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Eine Sicherungskopie `.bak` ist standardmässig eingeschaltet. Nach dem Laden eines Ordners erklärt ein Hinweis, was sich ändert und was nicht, und vor dem Speichern mehrerer Dateien fragt der StemTagger nach. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
 - Deutsch, Englisch und Spanisch.
 
 ## 2.0 – 26. Oktober 2026

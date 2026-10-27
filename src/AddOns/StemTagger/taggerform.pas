@@ -24,6 +24,12 @@
 
   Versionen:
     0.1  (27.10.2026)  Erste Version (nur Stem-Dateien, MP3 folgt)
+         (27.10.2026)  Wünsche Speedy: Genre und Tonart mit Auswahlliste,
+                       Tooltip an jedem Feld, BPM nur 20-300, Sicherungs-
+                       kopie standardmässig an, Hinweis nach dem Laden eines
+                       Ordners, Rückfrage vor dem Speichern mehrerer Dateien,
+                       Status "Ohne Tags"/"Ohne Cover", Sortieren per Klick
+                       auf die Spaltenüberschrift
   ============================================================================ }
 unit taggerform;
 
@@ -56,7 +62,7 @@ type
   private
     FEntries   : TFPObjectList;   // gehört der Liste, gibt Einträge frei
     FList      : TListView;
-    FEdits     : array[TMp4TagField] of TEdit;   // tfCover = nil
+    FEdits     : array[TMp4TagField] of TWinControl; // TEdit oder TComboBox, tfCover = nil
     FMixed     : array[TMp4TagField] of Boolean; // Feld zeigt "verschieden"
     FCoverImg  : TImage;
     FCoverInfo : TLabel;
@@ -69,6 +75,17 @@ type
     FLoading   : Boolean;          // Felder werden gerade befüllt -> OnChange ignorieren
     FSelPending: Boolean;          // Anzeige der Auswahl ist schon bestellt
     FLastDir   : string;
+    FFolderHint: Boolean;          // Hinweis nach dem Laden eines Ordners zeigen
+    FFolderHintPending: Boolean;
+    FSortCol   : Integer;          // zuletzt sortierte Spalte, -1 = keine
+    FSortDesc  : Boolean;
+    procedure ListColumnClick(Sender: TObject; Column: TListColumn);
+    function  FieldText(F: TMp4TagField): string;
+    procedure SetFieldText(F: TMp4TagField; const V: string; Mixed: Boolean);
+    procedure CheckBpmField;
+    procedure ComboSelect(Sender: TObject);
+    procedure ComboSelectAsync(Data: PtrInt);
+    procedure ShowFolderHint(Data: PtrInt);
 
     procedure LoadLanguage;
     procedure BuildUI;
@@ -92,7 +109,7 @@ type
     procedure ShowCover(const Data: TBytes);
     procedure ApplyCover(const Data: TBytes);
     procedure LoadCoverFile(const FileName: string);
-    function  SaveAll: Boolean;
+    function  SaveAll(Ask: Boolean): Boolean;
 
     { Ereignisse }
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -236,6 +253,61 @@ end;
   Aufbau
   ============================================================================ }
 
+const
+  { Auswahl im Feld Genre - man kann auch selbst etwas eintippen.
+    Genre-Namen sind international, deshalb nicht übersetzt. }
+  GENRES: array[0..47] of string = (
+    'Acid House', 'Afro House', 'Afrobeats', 'Amapiano', 'Ambient',
+    'Bass House', 'Big Room', 'Breakbeat', 'Chillout', 'Dance', 'Deep House',
+    'Disco', 'Downtempo', 'Drum & Bass', 'Dubstep', 'EDM', 'Electro',
+    'Electro House', 'Electronica', 'Funk', 'Funky House', 'Hard Techno',
+    'Hardcore', 'Hardstyle', 'Hip-Hop', 'House', 'Indie Dance', 'Jazz',
+    'Latin', 'Melodic House & Techno', 'Minimal', 'Nu Disco',
+    'Organic House', 'Pop', 'Progressive House', 'Psytrance', 'R&B',
+    'Reggae', 'Reggaeton', 'Rock', 'Schlager', 'Soul', 'Tech House',
+    'Techno', 'Trance', 'Trap', 'UK Garage', 'Urban');
+
+  { Tonarten in der Reihenfolge des Camelot-Rads (1A, 1B, 2A ...).
+    Gespeichert wird nur der erste Teil (z.B. "Am"), die Klammer zeigt
+    dieselbe Tonart in Camelot- und Open-Key-Schreibweise. }
+  KEYS: array[0..23] of string = (
+    'G#m   (1A / 6m)',  'B     (1B / 6d)',
+    'Ebm   (2A / 7m)',  'F#    (2B / 7d)',
+    'Bbm   (3A / 8m)',  'Db    (3B / 8d)',
+    'Fm    (4A / 9m)',  'Ab    (4B / 9d)',
+    'Cm    (5A / 10m)', 'Eb    (5B / 10d)',
+    'Gm    (6A / 11m)', 'Bb    (6B / 11d)',
+    'Dm    (7A / 12m)', 'F     (7B / 12d)',
+    'Am    (8A / 1m)',  'C     (8B / 1d)',
+    'Em    (9A / 2m)',  'G     (9B / 2d)',
+    'Bm    (10A / 3m)', 'D     (10B / 3d)',
+    'F#m   (11A / 4m)', 'A     (11B / 4d)',
+    'C#m   (12A / 5m)', 'E     (12B / 5d)');
+
+  BPM_MIN = 20;
+  BPM_MAX = 300;
+
+{ Auswahl aus der Tonart-Liste: nur den Teil vor der Klammer übernehmen }
+function CleanKey(const V: string): string;
+var
+  P: Integer;
+begin
+  Result := V;
+  P := Pos('(', Result);
+  if P > 0 then
+    Result := Trim(Copy(Result, 1, P - 1));
+end;
+
+{ leer oder ganze Zahl von BPM_MIN bis BPM_MAX }
+function BpmValid(const V: string): Boolean;
+var
+  N: Integer;
+begin
+  if V = '' then Exit(True);
+  Result := TryStrToInt(V, N) and (N >= BPM_MIN) and (N <= BPM_MAX)
+    and (Pos('-', V) = 0) and (Pos('+', V) = 0);
+end;
+
 constructor TMainForm.Create(TheOwner: TComponent);
 var
   I: Integer;
@@ -331,6 +403,7 @@ const
     (tfTrack, tfBpm, tfKey, tfLabel, tfComment);
   ROW_H = 32;
 var
+  Cb: TComboBox;
   PnlTop, PnlEdit, Fields, CoverPanel, Frame, Btns: TPanel;
   Col: TListColumn;
   Lbl: TLabel;
@@ -343,12 +416,27 @@ var
     Lbl.Parent := Fields;
     Lbl.SetBounds(Scale96ToForm(X), Scale96ToForm(Y + 5), Scale96ToForm(110), Scale96ToForm(20));
     Lbl.Caption := FieldCaption(AField);
-    FEdits[AField] := TEdit.Create(Self);
+    if AField in [tfGenre, tfKey] then
+    begin
+      { Auswahlliste, aber auch freie Eingabe }
+      Cb := TComboBox.Create(Self);
+      Cb.Style := csDropDown;
+      Cb.DropDownCount := 16;
+      Cb.OnSelect := @ComboSelect;
+      FEdits[AField] := Cb;
+    end
+    else
+      FEdits[AField] := TEdit.Create(Self);
     FEdits[AField].Parent := Fields;
     FEdits[AField].SetBounds(Scale96ToForm(X + 115), Scale96ToForm(Y),
       Scale96ToForm(235), Scale96ToForm(26));
     FEdits[AField].Tag := Ord(AField);
-    FEdits[AField].OnChange := @FieldChange;
+    if FEdits[AField] is TComboBox then
+      TComboBox(FEdits[AField]).OnChange := @FieldChange
+    else
+      TEdit(FEdits[AField]).OnChange := @FieldChange;
+    FEdits[AField].ShowHint := True;
+    Lbl.ShowHint := True;
     Lbl.FocusControl := FEdits[AField];
   end;
 
@@ -398,6 +486,10 @@ begin
   FChkBackup.Parent := Btns;
   FChkBackup.SetBounds(Scale96ToForm(364), Scale96ToForm(12), Scale96ToForm(250), Scale96ToForm(22));
   FChkBackup.Caption := _('Sicherungskopie anlegen (.bak)');
+  FChkBackup.Checked := True;
+  FChkBackup.Hint := _('Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak).') +
+    LineEnding + _('Die Kopie wird nie überschrieben, sie bleibt also das echte Original.');
+  FChkBackup.ShowHint := True;
   FChkShrink := TCheckBox.Create(Self);
   FChkShrink.Parent := Btns;
   FChkShrink.SetBounds(Scale96ToForm(620), Scale96ToForm(12), Scale96ToForm(360), Scale96ToForm(22));
@@ -451,12 +543,38 @@ begin
     AddField(Col1[I], 8, 8 + I * ROW_H);
   for I := Low(Col2) to High(Col2) do
     AddField(Col2[I], 375, 8 + I * ROW_H);
-  FEdits[tfBpm].Hint := _('Ganze Zahl, z.B. 128 (Kommazahlen werden gerundet)');
-  FEdits[tfBpm].ShowHint := True;
-  FEdits[tfTrack].Hint := _('z.B. 3 oder 3/12');
-  FEdits[tfTrack].ShowHint := True;
-  FEdits[tfKey].Hint := _('z.B. Am, 8A oder 5m');
-  FEdits[tfKey].ShowHint := True;
+  TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
+  for I := Low(GENRES) to High(GENRES) do
+    TComboBox(FEdits[tfGenre]).Items.Add(GENRES[I]);
+  for I := Low(KEYS) to High(KEYS) do
+    TComboBox(FEdits[tfKey]).Items.Add(KEYS[I]);
+  TEdit(FEdits[tfBpm]).NumbersOnly := True;
+  TEdit(FEdits[tfBpm]).MaxLength := 3;
+  TEdit(FEdits[tfYear]).MaxLength := 10;
+
+  { Tooltips: was gehört in welches Feld }
+  FEdits[tfTitle].Hint := _('Name des Tracks, z.B. „Clap Your Hands“');
+  FEdits[tfArtist].Hint := _('Künstler oder Band, z.B. „Kungs“');
+  FEdits[tfAlbum].Hint := _('Album, EP oder Single, auf der der Track erschienen ist');
+  FEdits[tfAlbumArtist].Hint := _('Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations.') +
+    LineEnding + _('Leer lassen, wenn er gleich ist wie der Interpret.');
+  FEdits[tfGenre].Hint := _('Musikstil: aus der Liste wählen oder selbst eintippen');
+  FEdits[tfYear].Hint := _('Erscheinungsjahr, z.B. 2016');
+  FEdits[tfTrack].Hint := _('Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)');
+  FEdits[tfBpm].Hint := Format(_('Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128.'),
+    [BPM_MIN, BPM_MAX]) + LineEnding +
+    _('Traktor misst das Tempo beim Analysieren ohnehin selbst.');
+  FEdits[tfKey].Hint := _('Tonart des Tracks: aus der Liste wählen oder selbst eintippen.') + LineEnding +
+    LineEnding +
+    _('Es gibt drei übliche Schreibweisen für dieselbe Tonart:') + LineEnding +
+    _('  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)') + LineEnding +
+    _('  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)') + LineEnding +
+    _('  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)') + LineEnding +
+    LineEnding +
+    _('Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am).') + LineEnding +
+    _('Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B).');
+  FEdits[tfLabel].Hint := _('Plattenfirma, die den Track veröffentlicht hat');
+  FEdits[tfComment].Hint := _('Freier Text, z.B. Notizen fürs Auflegen');
   FBtnFromName := MakeButton(Fields, _('Interpret/Titel aus Dateiname'),
     490, 8 + 5 * ROW_H, 235, @BtnFromNameClick);
   FBtnFromName.Hint := _('"Interpret - Titel.stem.mp4" füllt Interpret und Titel');
@@ -479,6 +597,8 @@ begin
   FList.HideSelection := False;
   FList.OnSelectItem := @ListSelectItem;
   FList.OnKeyDown := @ListKeyDown;
+  FList.OnColumnClick := @ListColumnClick;
+  FSortCol := -1;
   Col := FList.Columns.Add; Col.Caption := _('Datei');     Col.Width := Scale96ToForm(240);
   Col := FList.Columns.Add; Col.Caption := _('Titel');     Col.Width := Scale96ToForm(170);
   Col := FList.Columns.Add; Col.Caption := _('Interpret'); Col.Width := Scale96ToForm(150);
@@ -514,7 +634,8 @@ begin
   try
     Ini := TIniFile.Create(IniFileName);
     try
-      FChkBackup.Checked := Ini.ReadBool('Optionen', 'Sicherung', False);
+      FChkBackup.Checked := Ini.ReadBool('Optionen', 'SicherungAnlegen', True);
+      FFolderHint := Ini.ReadBool('Optionen', 'OrdnerHinweis', True);
       FChkShrink.Checked := Ini.ReadBool('Optionen', 'CoverVerkleinern', True);
       FLastDir := Ini.ReadString('Optionen', 'LetzterOrdner', '');
     finally
@@ -532,7 +653,8 @@ begin
   try
     Ini := TIniFile.Create(IniFileName);
     try
-      Ini.WriteBool('Optionen', 'Sicherung', FChkBackup.Checked);
+      Ini.WriteBool('Optionen', 'SicherungAnlegen', FChkBackup.Checked);
+      Ini.WriteBool('Optionen', 'OrdnerHinweis', FFolderHint);
       Ini.WriteBool('Optionen', 'CoverVerkleinern', FChkShrink.Checked);
       Ini.WriteString('Optionen', 'LetzterOrdner', FLastDir);
     finally
@@ -591,6 +713,15 @@ begin
       finally
         FList.Items.EndUpdate;
       end;
+      { Hinweis erst zeigen, wenn alles geladen ist (auch bei mehreren Ordnern nur einmal) }
+      if FFolderHint and (Files.Count > 0) and not FFolderHintPending then
+      begin
+        FFolderHintPending := True;
+        Application.QueueAsyncCall(@ShowFolderHint, 0);
+      end
+      else if Files.Count = 0 then
+        MessageDlg(Format(_('Im Ordner wurden keine Stem-Dateien gefunden:%s%s'), [LineEnding, Path]),
+          mtInformation, [mbOK], 0);
     finally
       Files.Free;
     end;
@@ -665,6 +796,16 @@ begin
     St := '* ' + _('geändert')
   else if E.Status <> '' then
     St := E.Status
+  else if (E.Cur.Text[tfTitle] = '') and (E.Cur.Text[tfArtist] = '') then
+  begin
+    { auf einen Blick sehen, wo noch etwas fehlt }
+    if Length(E.Cur.Cover) = 0 then
+      St := _('Ohne Tags und Cover')
+    else
+      St := _('Ohne Tags');
+  end
+  else if Length(E.Cur.Cover) = 0 then
+    St := _('Ohne Cover')
   else
     St := Format(_('Stem OK (%d Spuren)'), [E.Tracks]);
   Item.SubItems.Add(St);
@@ -736,13 +877,10 @@ begin
             Break;
           end;
       end;
-      FEdits[F].Text := V;
-      if FMixed[F] then
-        FEdits[F].TextHint := _('<verschieden>')
-      else
-        FEdits[F].TextHint := '';
+      SetFieldText(F, V, FMixed[F]);
       FEdits[F].Enabled := CanEdit;
     end;
+    CheckBpmField;
     { Cover }
     Cov := nil;
     FCoverMixed := False;
@@ -771,6 +909,87 @@ begin
   finally
     FLoading := False;
     Sel.Free;
+  end;
+end;
+
+{ Text eines Felds (TEdit oder TComboBox) }
+function TMainForm.FieldText(F: TMp4TagField): string;
+begin
+  if FEdits[F] is TComboBox then
+    Result := TComboBox(FEdits[F]).Text
+  else
+    Result := TEdit(FEdits[F]).Text;
+end;
+
+{ Feld befüllen; Mixed = Werte der markierten Dateien sind verschieden }
+procedure TMainForm.SetFieldText(F: TMp4TagField; const V: string; Mixed: Boolean);
+var
+  H: string;
+begin
+  if Mixed then H := _('<verschieden>') else H := '';
+  if FEdits[F] is TComboBox then
+  begin
+    TComboBox(FEdits[F]).ItemIndex := -1;
+    TComboBox(FEdits[F]).Text := V;
+    TComboBox(FEdits[F]).TextHint := H;
+  end
+  else
+  begin
+    TEdit(FEdits[F]).Text := V;
+    TEdit(FEdits[F]).TextHint := H;
+  end;
+end;
+
+{ BPM-Feld rot färben, solange die Eingabe ungültig ist }
+procedure TMainForm.CheckBpmField;
+begin
+  if BpmValid(Trim(FieldText(tfBpm))) then
+    FEdits[tfBpm].Color := clWindow
+  else
+    FEdits[tfBpm].Color := RGBToColor(255, 205, 205);
+end;
+
+{ Eintrag aus der Liste gewählt: Der Text steht erst nach dem Ereignis
+  sicher im Feld, deshalb kurz danach übernehmen }
+procedure TMainForm.ComboSelect(Sender: TObject);
+begin
+  Application.QueueAsyncCall(@ComboSelectAsync, PtrInt(Sender));
+end;
+
+procedure TMainForm.ComboSelectAsync(Data: PtrInt);
+var
+  Cb: TComboBox;
+  V: string;
+begin
+  Cb := TComboBox(Data);
+  if Cb = FEdits[tfKey] then
+  begin
+    { "Am   (8A / 1m)" -> "Am" }
+    V := CleanKey(Cb.Text);
+    if V <> Cb.Text then
+    begin
+      Cb.ItemIndex := -1;
+      Cb.Text := V;      // löst FieldChange aus
+    end;
+  end;
+  FieldChange(Cb);
+end;
+
+{ Nach dem Laden eines Ordners einmal erklären, was passiert und was nicht }
+procedure TMainForm.ShowFolderHint(Data: PtrInt);
+begin
+  FFolderHintPending := False;
+  if QuestionDlg(_('Ordner geladen'),
+       Format(_('%d Stem-Dateien in der Liste.'), [FList.Items.Count]) + LineEnding + LineEnding +
+       _('Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen.') +
+       LineEnding + LineEnding +
+       _('Achtung bei Mehrfachauswahl: Sind mehrere Zeilen markiert, bekommen alle markierten Dateien den neuen Wert (z.B. alle dasselbe Album oder Cover). Felder mit „<verschieden>“ bleiben pro Datei erhalten, solange du sie nicht änderst.') +
+       LineEnding + LineEnding +
+       _('Audio, Stems und Traktors eigene Daten bleiben immer unverändert, neu geschrieben werden nur die Tags.'),
+       mtInformation, [mrOk, 'OK', mrNo, _('Nicht mehr anzeigen')], 0) = mrNo then
+  begin
+    FFolderHint := False;
+    SaveSettings;
   end;
 end;
 
@@ -867,15 +1086,37 @@ end;
   Speichern
   ============================================================================ }
 
-function TMainForm.SaveAll: Boolean;
+function TMainForm.SaveAll(Ask: Boolean): Boolean;
 var
-  I, Ok, Bad: Integer;
+  I, Ok, Bad, N: Integer;
   E: TTagEntry;
   Err, Bak: string;
   Fresh: TMp4Tags;
 begin
+  Result := False;
   Ok := 0;
   Bad := 0;
+  { ungültige BPM nicht speichern }
+  N := 0;
+  for I := 0 to FEntries.Count - 1 do
+  begin
+    E := TTagEntry(FEntries[I]);
+    if (tfBpm in E.Dirty) and not BpmValid(E.Cur.Text[tfBpm]) then
+    begin
+      MessageDlg(Format(_('BPM „%s“ bei %s ist ungültig. Bitte eine ganze Zahl von %d bis %d eingeben oder das Feld leeren.'),
+        [E.Cur.Text[tfBpm], ExtractFileName(E.FileName), BPM_MIN, BPM_MAX]), mtWarning, [mbOK], 0);
+      Exit;
+    end;
+    if E.IsStem and (E.Dirty <> []) then
+      Inc(N);
+  end;
+  if N = 0 then Exit(True);
+  { bei mehreren Dateien lieber nachfragen - eine Änderung bei markierten
+    Zeilen gilt für alle markierten }
+  if Ask and (N > 1) and (MessageDlg(Format(_('%d Dateien werden geändert.'), [N]) + LineEnding + LineEnding +
+      _('Neu geschrieben werden nur die geänderten Tags, Audio und Stems bleiben unverändert.') +
+      LineEnding + _('Jetzt speichern?'), mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
+    Exit;
   Screen.Cursor := crHourGlass;
   try
     for I := 0 to FList.Items.Count - 1 do
@@ -946,6 +1187,50 @@ begin
   end;
 end;
 
+{ Vergleich für das Sortieren: Param = Spalte + 1, negativ = absteigend }
+function CompareRows(Item1, Item2: TListItem; AOptionalParam: PtrInt): Integer; stdcall;
+var
+  Col: Integer;
+
+  function CellText(It: TListItem): string;
+  begin
+    if Col = 0 then
+      Result := It.Caption
+    else if Col - 1 < It.SubItems.Count then
+      Result := It.SubItems[Col - 1]
+    else
+      Result := '';
+  end;
+
+begin
+  Col := Abs(AOptionalParam) - 1;
+  Result := UTF8CompareText(CellText(Item1), CellText(Item2));
+  if Result = 0 then
+    Result := UTF8CompareText(Item1.Caption, Item2.Caption);
+  if AOptionalParam < 0 then
+    Result := -Result;
+end;
+
+{ Klick auf eine Spaltenüberschrift sortiert, zweiter Klick umgekehrt.
+  Leere Zellen kommen zuerst - so stehen z.B. alle Tracks ohne Cover
+  zusammen. Beim Bearbeiten wird nicht neu sortiert (Zeilen springen nicht). }
+procedure TMainForm.ListColumnClick(Sender: TObject; Column: TListColumn);
+begin
+  if Column.Index = FSortCol then
+    FSortDesc := not FSortDesc
+  else
+  begin
+    FSortCol := Column.Index;
+    FSortDesc := False;
+  end;
+  if FSortDesc then
+    FList.CustomSort(@CompareRows, -(FSortCol + 1))
+  else
+    FList.CustomSort(@CompareRows, FSortCol + 1);
+  if FList.Selected <> nil then
+    FList.Selected.MakeVisible(False);
+end;
+
 procedure TMainForm.ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   I: Integer;
@@ -978,8 +1263,12 @@ var
   V: string;
 begin
   if FLoading then Exit;
-  F := TMp4TagField(TEdit(Sender).Tag);
-  V := TEdit(Sender).Text;
+  F := TMp4TagField(TControl(Sender).Tag);
+  V := Trim(FieldText(F));
+  if F = tfKey then
+    V := CleanKey(V);
+  if F = tfBpm then
+    CheckBpmField;
   Sel := SelectedEntries;
   try
     for I := 0 to Sel.Count - 1 do
@@ -1258,7 +1547,7 @@ end;
 
 procedure TMainForm.BtnSaveClick(Sender: TObject);
 begin
-  SaveAll;
+  SaveAll(True);
 end;
 
 procedure TMainForm.BtnRevertClick(Sender: TObject);
@@ -1322,7 +1611,7 @@ procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftSta
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
   begin
-    if FBtnSave.Enabled then SaveAll;
+    if FBtnSave.Enabled then SaveAll(True);
     Key := 0;
   end
   else if (ssCtrl in Shift) and (Key = VK_V) and not (ActiveControl is TCustomEdit) then
@@ -1338,7 +1627,7 @@ begin
   if DirtyCount > 0 then
     case MessageDlg(_('Es gibt ungespeicherte Änderungen. Jetzt speichern?'),
                     mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
-      mrYes: CanClose := SaveAll;
+      mrYes: CanClose := SaveAll(False);
       mrNo : CanClose := True;
     else
       CanClose := False;

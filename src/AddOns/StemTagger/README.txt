@@ -21,10 +21,18 @@ USAGE
   - Drag stem files or whole folders onto the window
     (or "Files..." / "Folder..."; folders are searched for *.stem.mp4,
     including subfolders).
+  - The Status column shows "No tags" or "No cover" where something is
+    missing. Click a column header to sort the list (e.g. all tracks
+    without a cover together), click again to reverse.
   - Select one or more rows and change the fields below.
+    Every field explains in its tooltip (hover the mouse) what goes in.
     With several files selected, a change applies to all of them.
     Grey "<different>" means the files have different values. If you
     leave that field empty, every file keeps its own value.
+  - Genre and key: pick from the list or type your own. The key list
+    shows every key in classic, Camelot and Open Key notation
+    (e.g. "Am (8A / 1m)"); the classic notation is saved.
+  - BPM: whole numbers from 20 to 300 only.
   - Cover: drag a picture onto the window, "Picture..." or "Paste"
     (Ctrl+V, e.g. a picture copied in the browser). JPEG and PNG are kept
     as they are, BMP and GIF are converted to JPEG. Pictures larger than
@@ -34,8 +42,9 @@ USAGE
     number ("03. ") is dropped.
   - Save (Ctrl+S) writes all changed files.
     "Discard changes" resets everything to what is in the files.
-  - "Create backup copy": before the first save, <file>.bak is created
-    (only once, so the real original is kept).
+    If several files were changed, StemTagger asks first.
+  - "Create backup copy" (on by default): before the first save,
+    <file>.bak is created (only once, so the real original is kept).
 
   Keys: Ctrl+S save, Ctrl+V paste cover, Del remove from the list,
   Ctrl+A select all.
