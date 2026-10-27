@@ -75,6 +75,7 @@
  "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner.": "Todos los detalles: Info -> Licencias, así como LICENSE y THIRD-PARTY-NOTICES.md en la carpeta StemMaker.",
  "Alles bereit": "Todo listo",
  "Anhören": "Escuchar",
+ "Aus Liste entfernen": "Quitar de la lista",
  "Anleitung": "Guía",
  "Anleitung, Version, Spenden, Logs": "Guía, versión, donaciones, registros",
  "Audio-Format:": "Formato de audio:",
@@ -250,7 +251,7 @@
  "StemMaker läuft schon": "StemMaker ya se está ejecutando",
  "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten.": "StemMaker seguirá funcionando. Si algo deja de funcionar correctamente, por favor reinicia el programa.",
  "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an.": "StemMaker se ofrece gratis y sin ninguna garantía (\"tal cual\"). Lo usas bajo tu propia responsabilidad. En la medida en que lo permita la ley, Elospeed no se hace responsable de daños ni pérdidas de datos derivados de su uso. Haz antes una copia de seguridad de tus archivos importantes.",
- "StemPlayer im Ordner der zuletzt umgewandelten Datei öffnen (eine bestimmte Datei: Doppelklick in der Liste)": "Abrir StemPlayer en la carpeta del último archivo convertido (para un archivo específico: doble clic en la lista)",
+ "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen": "Reproducir en StemPlayer el archivo stem seleccionado o el último convertido",
  "StemPlayer konnte nicht gestartet werden: %s": "No se pudo iniciar StemPlayer: %s",
  "StemPlayer nicht gefunden:%s%s": "StemPlayer no encontrado:%s%s",
  "Stems trennen (demucs)": "Separar stems (demucs)",
@@ -296,7 +297,7 @@
  "ffmpeg konnte die Datei nicht dekodieren (Code %d)": "ffmpeg no pudo decodificar el archivo (código %d)",
  "ffmpeg konnte die Stem-Datei nicht erstellen (Code %d)": "ffmpeg no pudo crear el archivo stem (código %d)",
  "ffmpeg nicht gefunden: %s": "ffmpeg no encontrado: %s",
- "hdemucs_mmi (Demucs v3, schneller)": "hdemucs_mmi (Demucs v3, más rápido)",
+ "hdemucs_mmi (Demucs v3, ältere Engine)": "hdemucs_mmi (Demucs v3, motor antiguo)",
  "htdemucs (Standard, Demucs v4)": "htdemucs (estándar, Demucs v4)",
  "htdemucs_ft (beste Qualität, ca. 4x langsamer)": "htdemucs_ft (mejor calidad, aprox. 4 veces más lento)",
  "je %d Kerne (%d von %d)": "%d núcleos cada una (%d de %d)",
@@ -564,5 +565,8 @@
  "Trennen auf der Grafikkarte": "separar en la tarjeta gráfica",
  "ko-fi.com/elospeed": "ko-fi.com/elospeed",
  "Handbuch (PDF)": "Manual (PDF)",
- "Öffnet das bebilderte Benutzerhandbuch im Browser (Internet nötig).": "Abre el manual de usuario ilustrado en el navegador (requiere Internet)."
+ "Öffnet das bebilderte Benutzerhandbuch im Browser (Internet nötig).": "Abre el manual de usuario ilustrado en el navegador (requiere Internet).",
+ "Versionen": "Versiones",
+ "Alle Einzelheiten stehen im CHANGELOG auf GitHub": "Todos los detalles están en el CHANGELOG de GitHub (en alemán)",
+ "Der Versionsverlauf fehlt in dieser Version.": "Falta el historial de versiones en esta versión."
 }

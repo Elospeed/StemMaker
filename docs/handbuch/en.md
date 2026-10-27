@@ -396,10 +396,10 @@ If you drag the waveform in the **magnifier** left or right with the left mouse 
 
 The **Info** button at the top left opens the Info window with version, build date and the name of the current log.
 
-![The Info window](img/en/info.png){marken="1:28.4,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![The Info window](img/en/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
-1. **Guide**, **Thanks** and **Licenses**: the short guide (README), everyone who helped, and the disclaimer and license texts.
+1. **Guide**, **Versions**, **Thanks** and **Licenses**: the short guide (README), what each version brought, everyone who helped, and the disclaimer and license texts.
 2. **Check for updates**: check right now whether there is a newer version.
 3. **Send error report…**: send a log to Elospeed (section [§](#fehlerbericht)).
 4. **Manual (PDF)**: opens this manual in your language in the browser, always the latest edition.

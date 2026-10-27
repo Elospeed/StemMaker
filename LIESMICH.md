@@ -1,4 +1,4 @@
-# Elospeed StemMaker 1.9
+# Elospeed StemMaker 2.0
 
 **by Elospeed**
 
@@ -193,7 +193,7 @@ Für die meisten ist das nicht nötig: Das Hauptfenster kann ganze Ordner, Warte
 
 ### Testplayer (AddOns\StemPlayer.exe)
 
-Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit **Anhören** (der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei) oder per Doppelklick auf eine fertige Datei in der Liste. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
+Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit **Anhören** (spielt die markierte oder zuletzt umgewandelte Datei gleich ab) per Doppelklick auf eine fertige Datei in der Liste oder per Rechtsklick und **Anhören**. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
 
 ## Dauer
 
@@ -203,7 +203,7 @@ Mit der **Turbo-Engine** (Standard ab 2.0) misst der Vortest beim ersten Start d
 |---|---|---|
 | Intel i5-2500 (4 Kerne, 2011) | CPU | 52 (Klassisch: 440 bis 584) |
 | Intel i7-12700KF (12 Kerne, 2021) | CPU | 15 |
-| Intel i7-12700KF | RTX 4060 Ti (DirectML) | 4 |
+| Intel i7-12700KF | RTX 4060 Ti (DirectML) | 3 |
 
 Dazu kommt das Kodieren der fünf Spuren in die Stem-Datei (einige Sekunden pro Songminute).
 
@@ -214,7 +214,7 @@ Die **klassische Engine** (demucs.cpp) läuft rein auf dem Prozessor (CPU). Geme
 | Intel i7-12700KF (12 Kerne, 2021) | 22 min → ca. **7–8 min** pro 4-min-Track | 12,5 min → ca. **4 min** pro 4-min-Track |
 | Intel i5-2500 (4 Kerne, 2011) | 1 h 22 min → ca. **27 min** pro 4-min-Track | – |
 
-Faustregel: Auf einem aktuellen PC dauert htdemucs etwa **doppelt so lang wie der Song**, v3 etwa **so lang wie der Song**. htdemucs_ft braucht rund viermal so lang wie htdemucs. Die Zeit wächst mit der Songlänge. Grössere Mengen am besten über Nacht laufen lassen.
+Faustregel für Klassisch: Auf einem aktuellen PC dauert htdemucs etwa **doppelt so lang wie der Song**, v3 etwa **so lang wie der Song**. htdemucs_ft braucht rund viermal so lang wie htdemucs. Die Zeit wächst mit der Songlänge. Grössere Mengen am besten über Nacht laufen lassen.
 
 Ältere Prozessoren ohne AVX2 (z. B. Intel Core i 2./3. Generation) sind deutlich langsamer: Ein 12-Minuten-Track kann dort über eine Stunde dauern. Laptops auf Akku rechnen ebenfalls gebremst, StemMaker zeigt dann einen Hinweis. War der PC zwischendurch im Ruhezustand, steht das am Ende im Log.
 

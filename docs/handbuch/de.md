@@ -396,10 +396,10 @@ Ziehst du die Welle in der **Lupe** mit der linken Maustaste nach links oder rec
 
 Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum und dem Namen des aktuellen Logs.
 
-![Das Info-Fenster](img/de/info.png){marken="1:28.4,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
-1. **Anleitung**, **Danke** und **Lizenzen**: die Kurzanleitung (LIESMICH), alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
+1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzanleitung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
 2. **Nach Updates suchen**: sofort nachsehen, ob es eine neuere Version gibt.
 3. **Fehlerbericht senden…**: ein Log an Elospeed schicken (Abschnitt [§](#fehlerbericht)).
 4. **Handbuch (PDF)**: öffnet dieses Handbuch in deiner Sprache im Browser, immer in der neuesten Fassung.

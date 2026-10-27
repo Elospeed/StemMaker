@@ -396,10 +396,10 @@ Si arrastras la onda de la **lupa** hacia la izquierda o la derecha con el botó
 
 El botón **Info** de arriba a la izquierda abre la ventana Info con la versión, la fecha de compilación y el nombre del registro actual.
 
-![La ventana Info](img/es/info.png){marken="1:28.4,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
-1. **Guía**, **Gracias** y **Licencias**: la guía breve (README), todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.
+1. **Guía**, **Versiones**, **Gracias** y **Licencias**: la guía breve (README), qué trajo cada versión, todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.
 2. **Buscar actualizaciones**: comprueba ahora mismo si hay una versión nueva.
 3. **Enviar informe de error…**: envía un registro a Elospeed (sección [§](#fehlerbericht)).
 4. **Manual (PDF)**: abre este manual en tu idioma en el navegador, siempre en su edición más reciente.
