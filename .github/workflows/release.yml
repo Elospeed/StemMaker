@@ -5,11 +5,12 @@
 # drin sein: APP_VERSION in src/version.inc, die Versionsinfo in src/StemMaker.lpi
 # und src/StemCLI.lpi
 # (Projekt -> Projektoptionen -> Versionsinfo) und ein Abschnitt "## <Version> – ..."
-# im CHANGELOG.
+# im CHANGELOG, dazu je ein kurzer Abschnitt in src/versionen/de.md, en.md und es.md
+# (Reiter "Versionen" im Info-Fenster).
 #
 # Was passiert:
-# 1. Prüfen: Version passt zu APP_VERSION, CHANGELOG hat den Abschnitt, Tag gibt
-#    es noch nicht.
+# 1. Prüfen: Version passt zu APP_VERSION, CHANGELOG und src/versionen/*.md haben
+#    den Abschnitt, Tag gibt es noch nicht.
 # 2. StemMaker, StemCLI und StemPlayer bauen (wie build.yml), dazu Turbo
 #    (StemOnnx, engines/onnx) im Job "stemonnx" auf Linux mit mingw.
 # 3. Release-ZIP zusammenstellen (installer/release-zip.sh). Die Teile, die nicht
@@ -94,6 +95,10 @@ jobs:
             grep -q "ProductVersion=\"$VERSION\"" "$LPI" || { echo "::error::$LPI hat nicht ProductVersion=\"$VERSION\""; exit 1; }
           done
           grep -q "^## $VERSION " CHANGELOG.md || { echo "::error::Im CHANGELOG fehlt der Abschnitt '## $VERSION – ...'"; exit 1; }
+          # Kurzfassung für den Reiter "Versionen" im Info-Fenster, in allen drei Sprachen
+          for V in src/versionen/de.md src/versionen/en.md src/versionen/es.md; do
+            grep -q "^## $VERSION " "$V" || { echo "::error::In $V fehlt der Abschnitt '## $VERSION – ...'"; exit 1; }
+          done
           if gh release view "v$VERSION" --repo "$REPO" > /dev/null 2>&1; then
             echo "::error::Release v$VERSION gibt es schon"; exit 1
           fi

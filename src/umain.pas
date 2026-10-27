@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest;
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType;
 
 {$I version.inc}   // APP_VERSION
 
@@ -205,6 +205,13 @@ type
     FInTray    : Boolean;          // Fenster ist gerade ins Symbol versteckt
     FTrayNotice: Boolean;          // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
     FDonatePending: Boolean;       // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    { Rechtsklick-Menü der Dateiliste }
+    FMenuListen: TMenuItem;
+    FMenuRemove: TMenuItem;
+    procedure SetupListMenu;
+    procedure ListMenuPopup(Sender: TObject);
+    procedure ListMenuListenClick(Sender: TObject);
+    procedure lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ShowDonate(Data: PtrInt);
     procedure SetupTray;
     procedure UpdateTray;
@@ -564,6 +571,7 @@ begin
   FIniName := StemIniFileName;
   LoadSettings;
   SetupTray;
+  SetupListMenu;
   UpdateToolStatus;
   SetRunning(False);
   AddLog(Format(_('%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen.'),
@@ -772,7 +780,10 @@ begin
     chkNormalize.Checked := Ini.ReadBool('Main', 'Normalize', D.Normalize);
     chkBassFix.Checked := Ini.ReadBool('Main', 'BassFix', D.BassFix);
     { ab 1.7: nach der Umwandlung den Ordner zeigen (Standard an) }
-    chkOpenWhenDone.Checked := Ini.ReadBool('Main', 'OpenWhenDone', True);
+    { Neuer Schlüssel (2.1): Der Explorer geht nach der Umwandlung nicht mehr
+      von selbst auf - "Anhören" öffnet die fertige Datei direkt im
+      StemPlayer. Wer den Explorer will, setzt das Häkchen wieder. }
+    chkOpenWhenDone.Checked := Ini.ReadBool('Main', 'OpenFolderWhenDone', False);
     for I := 0 to 3 do
     begin
       FPrefs.StemNames[I] := Ini.ReadString('Stems', 'Name' + IntToStr(I + 1), D.Stems[I].Name);
@@ -821,7 +832,7 @@ begin
       Ini.WriteBool('Main', 'TrayNotify', FPrefs.TrayNotify);
       Ini.WriteBool('Main', 'Normalize', chkNormalize.Checked);
       Ini.WriteBool('Main', 'BassFix', chkBassFix.Checked);
-      Ini.WriteBool('Main', 'OpenWhenDone', chkOpenWhenDone.Checked);
+      Ini.WriteBool('Main', 'OpenFolderWhenDone', chkOpenWhenDone.Checked);
       for I := 0 to 3 do
       begin
         Ini.WriteString('Stems', 'Name' + IntToStr(I + 1), S.Stems[I].Name);
@@ -1517,22 +1528,29 @@ begin
     OpenDocument(ExtractFilePath(lvFiles.Items[0].SubItems[1]));
 end;
 
-{ "Anhören": StemPlayer starten, der Öffnen-Dialog zeigt gleich den Ordner
-  der zuletzt umgewandelten Datei (Wunsch Speedy, 04.10.2026). Eine
-  bestimmte Datei direkt öffnen: Doppelklick in der Liste.
-  Welcher Ordner: zuletzt fertige Datei dieses Durchlaufs, sonst die
-  unterste Zeile mit vorhandener Stem-Datei, sonst der Ausgabeordner. }
+{ "Anhören": fertige Stem-Datei direkt im StemPlayer abspielen, ohne
+  Öffnen-Fenster (Speedy, 26.10.2026 - vorher zeigte der Player erst den
+  Ordner, Wunsch vom 04.10.2026).
+  Welche Datei: markierte Zeile mit fertiger Stem-Datei, sonst die zuletzt
+  fertige Datei dieses Durchlaufs, sonst die unterste Zeile mit vorhandener
+  Stem-Datei. Gibt es keine, kommt wie bisher das Öffnen-Fenster im
+  Ausgabeordner. }
 procedure TfrmMain.btnListenClick(Sender: TObject);
 var
   I: Integer;
   F, Dir: string;
   Planned: TStringArray;
 begin
-  Dir := '';
-  F := FLastOutFile;
-  if not FileExists(F) then
+  F := '';
+  if lvFiles.Selected <> nil then
   begin
-    F := '';
+    F := ItemOutFile(lvFiles.Selected.Index);
+    if not FileExists(F) then F := '';
+  end;
+  if (F = '') and FileExists(FLastOutFile) then
+    F := FLastOutFile;
+  if F = '' then
+  begin
     Planned := PlannedOutFiles;          // einmal für alle Zeilen rechnen
     for I := lvFiles.Items.Count - 1 downto 0 do
     begin
@@ -1546,8 +1564,13 @@ begin
     end;
   end;
   if F <> '' then
-    Dir := ExtractFilePath(F)
-  else if (not chkBeside.Checked) and DirectoryExists(edtOut.Directory) then
+  begin
+    OpenInPlayer(F);
+    Exit;
+  end;
+
+  Dir := '';
+  if (not chkBeside.Checked) and DirectoryExists(edtOut.Directory) then
     Dir := edtOut.Directory;
   if Dir <> '' then
   begin
@@ -1650,6 +1673,51 @@ begin
   else
     AddLog(Format(_('Noch keine Stem-Datei für "%s" - zuerst umwandeln.'),
       [lvFiles.Selected.Caption]));
+end;
+
+{ Rechtsklick-Menü der Dateiliste: "Anhören" (wie Doppelklick) und
+  "Aus Liste entfernen" (wie der Knopf "Entfernen"; die Dateien auf der
+  Platte bleiben). Die Entf-Taste entfernt ebenfalls. }
+procedure TfrmMain.SetupListMenu;
+var
+  Pop: TPopupMenu;
+begin
+  Pop := TPopupMenu.Create(Self);
+  Pop.OnPopup := @ListMenuPopup;
+  FMenuListen := TMenuItem.Create(Pop);
+  FMenuListen.Caption := _('Anhören');
+  FMenuListen.Default := True;             // fett: das macht auch der Doppelklick
+  FMenuListen.OnClick := @ListMenuListenClick;
+  Pop.Items.Add(FMenuListen);
+  FMenuRemove := TMenuItem.Create(Pop);
+  FMenuRemove.Caption := _('Aus Liste entfernen');
+  FMenuRemove.OnClick := @btnRemoveClick;
+  Pop.Items.Add(FMenuRemove);
+  lvFiles.PopupMenu := Pop;
+  lvFiles.OnKeyDown := @lvFilesKeyDown;
+end;
+
+{ Menüeinträge nur anbieten, wenn sie gerade etwas tun können }
+procedure TfrmMain.ListMenuPopup(Sender: TObject);
+begin
+  FMenuListen.Enabled := (lvFiles.Selected <> nil) and
+    FileExists(ItemOutFile(lvFiles.Selected.Index));
+  FMenuRemove.Enabled := btnRemove.Enabled and (lvFiles.SelCount > 0);
+end;
+
+procedure TfrmMain.ListMenuListenClick(Sender: TObject);
+begin
+  lvFilesDblClick(Sender);
+end;
+
+procedure TfrmMain.lvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_DELETE) and (Shift = []) then
+  begin
+    if btnRemove.Enabled and (lvFiles.SelCount > 0) then
+      btnRemoveClick(Sender);
+    Key := 0;
+  end;
 end;
 
 { ---------------------------------------------------------------------------
