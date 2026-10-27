@@ -9,8 +9,11 @@
 
   Das Info-Fenster (Button "Info" oben links im Hauptfenster):
     - oben: Programmname, Version, Autor, Build-Datum, aktuelle Log-Datei
-    - Mitte, zwei Reiter:
+    - Mitte, vier Reiter:
         "Anleitung": der Inhalt von LIESMICH.md bzw. README.md
+        "Versionen": Kurzfassung aller Versionen, neueste oben (nach 2.0),
+                     aus src/versionen/*.md, in die Exe eingebaut
+        "Danke"    : Spender und Helfende (ab 1.9)
         "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
                      THIRD-PARTY-NOTICES.md (ab 1.7)
     - darüber: "Nach Updates suchen" (ab 1.7)
@@ -33,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, LCLIntf, uDonate, uLog, uUpdate, uUpdateUI;
+  ComCtrls, LCLIntf, LCLType, uDonate, uLog, uUpdate, uUpdateUI;
 
 { Info-Fenster anzeigen. Version/Autor kommen vom Hauptfenster.
   Findet "Nach Updates suchen" eine neue Version, geht das Info-Fenster zu
@@ -56,6 +59,7 @@ type
     procedure btnLogsClick(Sender: TObject);
     procedure btnReportClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
+    procedure lblChangelogClick(Sender: TObject);
   public
     FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
     FoundInfo: TUpdateInfo;
@@ -287,13 +291,91 @@ begin
   AddThanksName(Box, 'ptrex alias DJ Pretski', _('Tempo-Vergleich'));
 end;
 
+{ --- Reiter "Versionen" ---
+  Der Text kommt aus src/versionen/de.md, en.md und es.md. Die drei
+  Dateien sind als Ressource (RCDATA, siehe StemMaker.lpi) in die Exe
+  eingebaut, so passt der Verlauf immer zur Version und kann nicht fehlen.
+  Aufbau der Dateien:
+    "## 2.0 – 26. Oktober 2026"  -> Versions-Überschrift
+    "- Text"                     -> ein Punkt
+  Alles andere (Titel, Hinweise für die Pflege, Leerzeilen) wird nicht
+  angezeigt. Der ausführliche CHANGELOG.md (nur Deutsch) bleibt auf GitHub. }
+
+const
+  CHANGELOG_URL = 'https://github.com/Elospeed/StemMaker/blob/main/CHANGELOG.md';
+
+{ Versionsverlauf in der eingestellten Sprache laden. Gibt es die Sprache
+  nicht, wird der englische genommen. Ergebnis leer, wenn nichts da ist. }
+function LoadVersionHistory: string;
+var
+  ResName: string;
+  RS: TResourceStream;
+  L: TStringList;
+begin
+  Result := '';
+  ResName := 'VERSIONEN_' + UpperCase(LangCode);
+  if FindResource(HInstance, PChar(ResName), RT_RCDATA) = 0 then
+    ResName := 'VERSIONEN_EN';
+  if FindResource(HInstance, PChar(ResName), RT_RCDATA) = 0 then Exit;
+  RS := TResourceStream.Create(HInstance, ResName, RT_RCDATA);
+  L := TStringList.Create;
+  try
+    L.LoadFromStream(RS);
+    Result := L.Text;
+  finally
+    L.Free;
+    RS.Free;
+  end;
+end;
+
+procedure BuildVersions(Box: TScrollBox);
+var
+  L: TStringList;
+  I: Integer;
+  S: string;
+  First: Boolean;       // die neueste Version bekommt die Akzentfarbe
+begin
+  L := TStringList.Create;
+  try
+    L.Text := LoadVersionHistory;
+    if L.Count = 0 then
+    begin
+      AddThanksLabel(Box, _('Der Versionsverlauf fehlt in dieser Version.'),
+        13, [], clGrayText, 14, 12);
+      Exit;
+    end;
+    First := True;
+    for I := 0 to L.Count - 1 do
+    begin
+      S := StringReplace(Trim(L[I]), '**', '', [rfReplaceAll]);
+      S := StringReplace(S, '`', '', [rfReplaceAll]);
+      if Copy(S, 1, 3) = '## ' then
+      begin
+        if First then
+          AddThanksGroup(Box, Trim(Copy(S, 4, MaxInt)), THANKS_BLUE)
+        else
+          AddThanksGroup(Box, Trim(Copy(S, 4, MaxInt)), clGrayText);
+        First := False;
+      end
+      else if (Copy(S, 1, 2) = '- ') and not First then
+        AddThanksLabel(Box, '•  ' + Trim(Copy(S, 3, MaxInt)), 13, [],
+          clWindowText, 26, 3);
+    end;
+    { etwas Luft unter dem letzten Punkt }
+    AddThanksLabel(Box, ' ', 13, [], clWindowText, 14, 6);
+  finally
+    L.Free;
+  end;
+end;
+
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
   lblTitle, lblSub, lblThanksNote: TLabel;
   memText, memLic: TMemo;
-  sbThanks: TScrollBox;
+  sbThanks, sbVersions: TScrollBox;
+  lblChangelog: TLabel;
   pcText: TPageControl;
-  tsHelp, tsThanks, tsLic: TTabSheet;
+  tsHelp, tsVersions, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
   btnDonate, btnLogs, btnClose, btnReport: TButton;
 begin
@@ -387,7 +469,7 @@ begin
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
 
-  { --- Mitte: drei Reiter (Anleitung, Danke, Lizenzen) --- }
+  { --- Mitte: vier Reiter (Anleitung, Versionen, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
   pcText.Parent := Self;
   pcText.Align := alClient;
@@ -403,6 +485,29 @@ begin
   memText.ScrollBars := ssAutoVertical;
   memText.WordWrap := True;
   memText.Text := LoadReadme;
+
+  tsVersions := pcText.AddTabSheet;
+  tsVersions.Caption := _('Versionen');
+  sbVersions := TScrollBox.Create(Self);
+  sbVersions.Parent := tsVersions;
+  sbVersions.Align := alClient;
+  sbVersions.Color := clWindow;
+  sbVersions.HorzScrollBar.Visible := False;
+  sbVersions.VertScrollBar.Tracking := True;
+  BuildVersions(sbVersions);
+
+  { Link zum ausführlichen CHANGELOG, unter der Liste }
+  lblChangelog := TLabel.Create(Self);
+  lblChangelog.Parent := tsVersions;
+  lblChangelog.Align := alBottom;
+  lblChangelog.BorderSpacing.Around := 6;
+  lblChangelog.Font.Color := THANKS_BLUE;
+  lblChangelog.Font.Style := [fsUnderline];
+  lblChangelog.Cursor := crHandPoint;
+  lblChangelog.Caption := _('Alle Einzelheiten stehen im CHANGELOG auf GitHub');
+  lblChangelog.Hint := CHANGELOG_URL;
+  lblChangelog.ShowHint := True;
+  lblChangelog.OnClick := @lblChangelogClick;
 
   tsThanks := pcText.AddTabSheet;
   tsThanks.Caption := _('Danke');
@@ -490,6 +595,11 @@ end;
 procedure TfrmInfo.btnCloseClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmInfo.lblChangelogClick(Sender: TObject);
+begin
+  OpenURL(CHANGELOG_URL);
 end;
 
 procedure ShowInfoDialog(const Version, Author: string;
