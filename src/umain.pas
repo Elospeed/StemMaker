@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType;
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar;
 
 {$I version.inc}   // APP_VERSION
 
@@ -209,6 +209,11 @@ type
     FMenuListen: TMenuItem;
     FMenuRemove: TMenuItem;
     FMenuTags: TMenuItem;
+    { Seitenleiste mit den AddOns (statt Knopf "Anhören") }
+    FAddOnBar: TAddOnBar;
+    procedure SetupAddOnBar;
+    procedure AddOnTaggerClick(Sender: TObject);
+    function  SelectedOutFiles: TStringList;
     procedure SetupListMenu;
     procedure ListMenuPopup(Sender: TObject);
     procedure ListMenuListenClick(Sender: TObject);
@@ -575,6 +580,7 @@ begin
   LoadSettings;
   SetupTray;
   SetupListMenu;
+  SetupAddOnBar;
   UpdateToolStatus;
   SetRunning(False);
   AddLog(Format(_('%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen.'),
@@ -1756,20 +1762,69 @@ end;
 procedure TfrmMain.ListMenuTagsClick(Sender: TObject);
 var
   Files: TStringList;
+begin
+  Files := SelectedOutFiles;
+  try
+    if Files.Count > 0 then
+      OpenInTagger(Files);
+  finally
+    Files.Free;
+  end;
+end;
+
+{ fertige Stem-Dateien aller markierten Zeilen (Aufrufer gibt die Liste frei) }
+function TfrmMain.SelectedOutFiles: TStringList;
+var
   I: Integer;
   F: string;
 begin
-  Files := TStringList.Create;
+  Result := TStringList.Create;
+  for I := 0 to lvFiles.Items.Count - 1 do
+    if lvFiles.Items[I].Selected then
+    begin
+      F := ItemOutFile(I);
+      if FileExists(F) then
+        Result.Add(F);
+    end;
+end;
+
+{ Seitenleiste rechts neben der Liste: ein Knopf pro AddOn mit dem Symbol
+  aus seiner Exe (Wunsch Speedy, 27.10.2026). Ersetzt den Knopf "Anhören";
+  Doppelklick und Rechtsklick in der Liste bleiben. Fehlt ein AddOn, fehlt
+  nur sein Knopf; gibt es gar keins, bleibt die Leiste weg. }
+procedure TfrmMain.SetupAddOnBar;
+var
+  Dir: string;
+  N: Integer;
+begin
+  btnListen.Visible := False;
+  FAddOnBar := TAddOnBar.Create(Self);
+  FAddOnBar.Parent := Self;
+  FAddOnBar.Align := alRight;
+  Dir := AppBaseDir + 'AddOns' + PathDelim;
+  N := 0;
+  if FAddOnBar.AddTile(Dir + ExeName('StemPlayer'), 'StemPlayer',
+       _('Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen'),
+       @btnListenClick) <> nil then
+    Inc(N);
+  if FAddOnBar.AddTile(Dir + ExeName('StemTagger'), 'StemTagger',
+       _('Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten'),
+       @AddOnTaggerClick) <> nil then
+    Inc(N);
+  FAddOnBar.Visible := N > 0;
+end;
+
+{ StemTagger aus der Seitenleiste: markierte fertige Dateien, sonst die
+  zuletzt umgewandelte, sonst leer starten (Dateien dann dort hineinziehen) }
+procedure TfrmMain.AddOnTaggerClick(Sender: TObject);
+var
+  Files: TStringList;
+begin
+  Files := SelectedOutFiles;
   try
-    for I := 0 to lvFiles.Items.Count - 1 do
-      if lvFiles.Items[I].Selected then
-      begin
-        F := ItemOutFile(I);
-        if FileExists(F) then
-          Files.Add(F);
-      end;
-    if Files.Count > 0 then
-      OpenInTagger(Files);
+    if (Files.Count = 0) and FileExists(FLastOutFile) then
+      Files.Add(FLastOutFile);
+    OpenInTagger(Files);
   finally
     Files.Free;
   end;

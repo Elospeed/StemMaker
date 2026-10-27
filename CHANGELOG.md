@@ -14,6 +14,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Kein Explorer-Fenster mehr nach der Umwandlung:** Das Häkchen „Ordner nach der Umwandlung öffnen“ ist jetzt aus. Wer die Datei gleich in Traktor ziehen will, setzt es wieder oder klickt „Ordner öffnen“.
 - **Rechtsklick-Menü in der Dateiliste:** Rechtsklick auf eine Zeile bietet „Anhören“ (spielt eine fertige Datei im StemPlayer ab, wie der Doppelklick) und „Aus Liste entfernen“. Die Entf-Taste entfernt die markierten Zeilen ebenfalls. Erstellte Stem-Dateien bleiben dabei erhalten.
 - **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
+- **AddOn-Leiste statt Knopf „Anhören“:** Rechts neben der Dateiliste steht jetzt eine schmale Leiste mit einem Knopf pro AddOn, mit Symbol und Namen. „StemPlayer“ spielt wie bisher „Anhören“ die markierte oder zuletzt umgewandelte Datei ab, „StemTagger“ öffnet die markierten fertigen Dateien im StemTagger. Doppelklick und Rechtsklick in der Liste funktionieren weiter.
 - **„Tags bearbeiten...“ im Rechtsklick-Menü:** öffnet die markierten fertigen Stem-Dateien im neuen StemTagger.
 
 ### StemTagger (neues AddOn, 0.1)
