@@ -29,7 +29,7 @@ msgstr "        [--no-normalize] [--no-bassfix]  (turn sound options off)"
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr "        [-t parts] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 
-#: playerform.pas:408
+#: playerform.pas:478
 msgid "  -  von Elospeed"
 msgstr "  -  by Elospeed"
 
@@ -165,11 +165,11 @@ msgstr "%d minutes"
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d folder(s) could not be read because their path is longer than %d characters. Music in them is missing from the list."
 
-#: playerform.pas:1851
+#: playerform.pas:2424
 msgid "%d Spuren  ·  Länge %s"
 msgstr "%d tracks  ·  length %s"
 
-#: playerform.pas:1859
+#: playerform.pas:2432
 msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
 msgstr "%d tracks loaded  ·  length %s  ·  ffmpeg: %s"
 
@@ -188,6 +188,14 @@ msgstr "%d s"
 #: uturbotest.pas:151
 msgid "%d:%.2d min"
 msgstr "%d:%.2d min"
+
+#: playerform.pas:2709
+msgid "%s  bis  %s     %.1f s"
+msgstr "%s  to  %s     %.1f s"
+
+#: playerform.pas:2715
+msgid "%s  bis  ..."
+msgstr "%s  to  ..."
 
 #: umain.pas:550
 msgid "%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien"
@@ -253,7 +261,7 @@ msgstr "(no log found)"
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(preliminary, gets more precise with every measurement)"
 
-#: playerform.pas:1758
+#: playerform.pas:2331
 msgid "(z.B. die von Elospeed StemMaker)."
 msgstr "(e.g. the one from Elospeed StemMaker)."
 
@@ -297,6 +305,18 @@ msgstr "- demucs.cpp by Sevag Hanssian (MIT) - the separation programs in tools\
 msgid "--- letzte Ausgabe ---"
 msgstr "--- last output ---"
 
+#: playerform.pas:1382
+msgid "4 STEMS"
+msgstr "4 STEMS"
+
+#: playerform.pas:1329
+msgid "5 Sekunden vor (Pfeil rechts)"
+msgstr "5 seconds forward (right arrow)"
+
+#: playerform.pas:1328
+msgid "5 Sekunden zurück (Pfeil links)"
+msgstr "5 seconds back (left arrow)"
+
 #: umain.pas:1349
 msgid "== Prüfung: %s"
 msgstr "== Check: %s"
@@ -329,19 +349,19 @@ msgstr "ALAC (lossless)"
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr "ALAC lossless (large files)"
 
-#: playerform.pas:740
+#: playerform.pas:813
 msgid "AN  L"
 msgstr "ON  L"
 
-#: playerform.pas:1051
+#: playerform.pas:1124
 msgid "ANSICHT"
 msgstr "VIEW"
 
-#: playerform.pas:1939
+#: playerform.pas:2512
 msgid "AUS (SOLO)"
 msgstr "OFF (SOLO)"
 
-#: playerform.pas:773
+#: playerform.pas:846
 msgid "AUSGANG L / R"
 msgstr "OUTPUT L / R"
 
@@ -417,7 +437,7 @@ msgstr "All details: Info -> Licenses, and LICENSE and THIRD-PARTY-NOTICES.md in
 msgid "Alles bereit"
 msgstr "All set"
 
-#: playerform.pas:761
+#: playerform.pas:834
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr "Reset everything: mute/solo off, faders to 100 %, mode stems (key 0)"
 
@@ -428,6 +448,10 @@ msgstr "As GitHub issue"
 #: ureport.pas:255
 msgid "Als GitHub-Issue (öffentlich)"
 msgstr "As GitHub issue (public)"
+
+#: playerform.pas:1345
+msgid "An den Anfang (Pos1)"
+msgstr "Back to the start (Home)"
 
 #: umain.lfm:325
 msgid "Anhören"
@@ -441,9 +465,9 @@ msgstr "Guide"
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr "Guide, version, donations, logs"
 
-#: playerform.pas:623
-msgid "Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)"
-msgstr "Choose view: compact, waveform or CD player (key W: compact/waveform)"
+#: playerform.pas:696
+msgid "Ansicht wählen: Kompakt, Wellenform, CD-Player, Traktor-Stil oder Mixxx-Stil (Taste W: Kompakt/Wellenform)"
+msgstr "Choose view: compact, waveform, CD player, Traktor style or Mixxx style (key W: compact/waveform)"
 
 #: udownload.pas:354
 msgid "Antwort zu gross"
@@ -557,7 +581,7 @@ msgstr "Accepted - StemCLI is enabled on this PC."
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr "Please drag the file from the Explorer window in here:"
 
-#: playerform.pas:1735
+#: playerform.pas:2308
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr "Please drop a stem file (.stem.mp4), not a folder."
 
@@ -565,7 +589,7 @@ msgstr "Please drop a stem file (.stem.mp4), not a folder."
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "Please choose an output folder or enable \"next to the original file\"."
 
-#: playerform.pas:1757
+#: playerform.pas:2330
 msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr "Please select ffmpeg.exe in the next dialog"
 
@@ -577,7 +601,7 @@ msgstr "Please read before first use"
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr "Needs a GitHub account. Anyone can read issues."
 
-#: playerform.pas:2650
+#: playerform.pas:3266
 msgid "Breche Dekodieren ab ..."
 msgstr "Cancelling decoding ..."
 
@@ -585,11 +609,11 @@ msgstr "Cancelling decoding ..."
 msgid "Breche ab ..."
 msgstr "Cancelling ..."
 
-#: playerform.pas:1264
+#: playerform.pas:1814
 msgid "CD-PLAYER"
 msgstr "CD PLAYER"
 
-#: playerform.pas:792
+#: playerform.pas:865
 msgid "CLIP"
 msgstr "CLIP"
 
@@ -605,7 +629,7 @@ msgstr "Measuring CPU (pass %d of %d)"
 msgid "CPU vorbereiten"
 msgstr "Preparing CPU"
 
-#: playerform.pas:1124
+#: playerform.pas:1197 playerform.pas:1463 playerform.pas:1509
 msgid "CUE"
 msgstr "CUE"
 
@@ -669,11 +693,11 @@ msgstr "Add files..."
 msgid "Dateigröße: %.1f MB"
 msgstr "File size: %.1f MB"
 
-#: playerform.pas:1695
+#: playerform.pas:2268
 msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
 msgstr "Decoding %d tracks with ffmpeg ... %.1f s"
 
-#: playerform.pas:1801
+#: playerform.pas:2374
 msgid "Dekodiere ..."
 msgstr "Decoding ..."
 
@@ -681,7 +705,7 @@ msgstr "Decoding ..."
 msgid "Dekodieren"
 msgstr "Decoding"
 
-#: playerform.pas:747
+#: playerform.pas:820
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr "The section from A to B then repeats endlessly."
 
@@ -705,11 +729,11 @@ msgstr "The low bass below 80 Hz that the separation leaves in the \"Other\" ste
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "The pre-test did not work (code %s). StemMaker still tries Turbo and otherwise uses demucs.cpp (Classic). The details are in the log."
 
-#: playerform.pas:1021
+#: playerform.pas:1094
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "The blue ring shows the remaining time."
 
-#: playerform.pas:724
+#: playerform.pas:797
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "The 4 stems mixed - with mute / solo / volume (key S)"
 
@@ -893,11 +917,11 @@ msgstr "Error"
 msgid "Fehler %s"
 msgstr "error %s"
 
-#: playerform.pas:1814
+#: playerform.pas:2387
 msgid "Fehler beim Dekodieren"
 msgstr "Decoding error"
 
-#: playerform.pas:1815
+#: playerform.pas:2388
 msgid "Fehler beim Dekodieren: "
 msgstr "Decoding error: "
 
@@ -933,6 +957,10 @@ msgstr "Done: %d successful, %d skipped, %d failed"
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr "Done: %d successful, %d skipped, %d failed  -  total time %s"
 
+#: playerform.pas:1326
+msgid "Fortschritt im Loop: der Balken läuft von A nach B"
+msgstr "Loop progress: the bar runs from A to B"
+
 #: usettings.pas:375
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "Hover over the icon to see the progress."
@@ -945,7 +973,15 @@ msgstr "Some files for \"%s\" are still missing."
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "The test needs the htdemucs or htdemucs_ft model. It is downloaded when StemMaker starts."
 
-#: playerform.pas:824
+#: playerform.pas:1360
+msgid "Ganzen Loop nach links verschieben (Pfeil links bei aktivem Loop)"
+msgstr "Move the whole loop to the left (left arrow while the loop is on)"
+
+#: playerform.pas:1361
+msgid "Ganzen Loop nach rechts verschieben (Pfeil rechts bei aktivem Loop)"
+msgstr "Move the whole loop to the right (right arrow while the loop is on)"
+
+#: playerform.pas:897
 msgid "Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed"
 msgstr "Like the tool? Support Elospeed on ko-fi.com/elospeed"
 
@@ -1037,15 +1073,15 @@ msgstr "Note: The last run ended unexpectedly - details in the log with \"_ABSTU
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr "Note: true peak above 0 dBFS - the master track may clip slightly during playback"
 
-#: playerform.pas:1794
+#: playerform.pas:2367
 msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
 msgstr "Note: no Traktor \"stem\" block found (default names are used)."
 
-#: playerform.pas:1941
+#: playerform.pas:2514
 msgid "HÖRBAR"
 msgstr "AUDIBLE"
 
-#: playerform.pas:716 playerform.pas:998 playerform.pas:1053
+#: playerform.pas:789 playerform.pas:1071 playerform.pas:1126
 msgid "HÖREN"
 msgstr "LISTEN"
 
@@ -1101,11 +1137,11 @@ msgstr "Check now and download the missing files?"
 msgid "Jetzt spenden"
 msgstr "Donate now"
 
-#: playerform.pas:1020
+#: playerform.pas:1093
 msgid "Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand."
 msgstr "Jog wheel: turn it with the mouse button held down to hear the sound like a record under your hand."
 
-#: playerform.pas:1261
+#: playerform.pas:1809
 msgid "KOMPAKT"
 msgstr "COMPACT"
 
@@ -1129,7 +1165,7 @@ msgstr "Cannot write target file: %s"
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "No graphics card found. StemMaker separates with the CPU: about %s of computing time per minute of music."
 
-#: playerform.pas:1746
+#: playerform.pas:2319
 msgid "Keine Stem-Datei: "
 msgstr "Not a stem file: "
 
@@ -1141,7 +1177,7 @@ msgstr "If Turbo fails for a file, StemMaker automatically uses Classic for that
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr "Classic (demucs.cpp, as up to 1.9)"
 
-#: playerform.pas:896
+#: playerform.pas:969
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Click or drag to jump to this position."
 
@@ -1165,7 +1201,7 @@ msgstr "Copied ✓"
 msgid "LIZENZEN"
 msgstr "LICENSES"
 
-#: playerform.pas:736 playerform.pas:1011
+#: playerform.pas:809 playerform.pas:1084 playerform.pas:1383
 msgid "LOOP"
 msgstr "LOOP"
 
@@ -1177,7 +1213,7 @@ msgstr "Downloading %s  (%d of %d)"
 msgid "Lade StemMaker %s ..."
 msgstr "Downloading StemMaker %s ..."
 
-#: playerform.pas:1809
+#: playerform.pas:2382
 msgid "Laden abgebrochen."
 msgstr "Loading cancelled."
 
@@ -1209,7 +1245,7 @@ msgstr "Normalize loudness: %s dB (highest peak before %.1f dBFS)"
 msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
 msgstr "Normalize loudness: level could not be measured, left unchanged"
 
-#: playerform.pas:809
+#: playerform.pas:882
 msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
 msgstr "Space play/pause  ·  1-4 mute  ·  Shift+1-4 solo  ·  0 reset  ·  S/O/R mode  ·  arrows -/+5 s  ·  W waveform  ·  A/B/L loop  ·  Shift/Ctrl+arrow width"
 
@@ -1221,7 +1257,7 @@ msgstr "Quiet files are raised until the loudest point is just below 0 dB (about
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr "Read error during download (error %d)"
 
-#: playerform.pas:797
+#: playerform.pas:870
 msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr "Lights up red when the sum clips (then turn the master down)"
 
@@ -1253,79 +1289,91 @@ msgstr "Log:"
 msgid "Logs-Ordner öffnen"
 msgstr "Open logs folder"
 
-#: playerform.pas:749
+#: playerform.pas:822
 msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
 msgstr "Loop on/off (key L). Turning it on jumps to A"
 
-#: playerform.pas:2138
+#: playerform.pas:2738
 msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
 msgstr "Loop on:  %s to %s  (%.1f s)  ·  L = off, Backspace = clear"
 
-#: playerform.pas:2141
+#: playerform.pas:2741
 msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
 msgstr "Loop off:  %s to %s remembered  ·  L = on again"
 
-#: playerform.pas:751
+#: playerform.pas:824
 msgid "Loop löschen (Rücktaste)"
 msgstr "Clear loop (Backspace)"
 
-#: playerform.pas:745
+#: playerform.pas:818
 msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
 msgstr "Set loop point A at the current position (key A)"
 
-#: playerform.pas:746
+#: playerform.pas:819
 msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
 msgstr "Set loop point B at the current position (key B)."
 
-#: playerform.pas:2145
+#: playerform.pas:2745
 msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
 msgstr "Loop: point A at %s  ·  now press B at the end point"
 
-#: playerform.pas:2059
+#: playerform.pas:2632
 msgid "Loop: Punkt B muss hinter Punkt A liegen."
 msgstr "Loop: point B must be after point A."
 
-#: playerform.pas:2169
+#: playerform.pas:2769
 msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
 msgstr "Loop: too short (at least 0.1 seconds)."
 
-#: playerform.pas:2053
+#: playerform.pas:2626
 msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
 msgstr "Loop: set point A first (key A), then B."
 
-#: playerform.pas:2073
+#: playerform.pas:2646
 msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
 msgstr "Loop: set points A and B first (keys A and B, or drag with the right mouse button in the waveform)."
 
-#: playerform.pas:695
+#: playerform.pas:768
 msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
 msgstr "Magnifier: a few seconds around the red line, for setting the loop precisely."
 
-#: playerform.pas:997
+#: playerform.pas:1070
 msgid "LÄNGE"
 msgstr "LENGTH"
+
+#: playerform.pas:1648
+msgid "Länge"
+msgstr "Length"
 
 #: ustemjob.pas:1873
 msgid "Länge: %d:%.2d min"
 msgstr "Length: %d:%.2d min"
 
-#: playerform.pas:772 playerform.pas:1055
+#: playerform.pas:845 playerform.pas:1128 playerform.pas:1355
 msgid "MASTER"
 msgstr "MASTER"
 
-#: playerform.pas:1925
+#: playerform.pas:1812
+msgid "MIXXX-STIL"
+msgstr "MIXXX STYLE"
+
+#: playerform.pas:2498
 msgid "MODUS: ORIGINAL"
 msgstr "MODE: ORIGINAL"
 
-#: playerform.pas:1925
+#: playerform.pas:2498
 msgid "MODUS: REST"
 msgstr "MODE: REST"
 
-#: playerform.pas:697
+#: playerform.pas:770
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "Move markers A and B with the mouse. Drag the waveform with the left mouse button to move to a position, you hear the audio while dragging."
 
-#: playerform.pas:698
+#: playerform.pas:1287
+msgid "Marken A und B verschieben. Mausrad: alle Wellen gemeinsam zoomen."
+msgstr "Drag markers A and B. Mouse wheel: zoom all waveforms together."
+
+#: playerform.pas:771
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "Mouse wheel: zoom. Click: jump."
 
@@ -1333,7 +1381,7 @@ msgstr "Mouse wheel: zoom. Click: jump."
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "Notification next to the clock when the conversion is done"
 
-#: playerform.pas:1818
+#: playerform.pas:2391
 msgid "Meldung von ffmpeg:"
 msgstr "Message from ffmpeg:"
 
@@ -1373,7 +1421,7 @@ msgstr "Model not installed"
 msgid "Modelle:"
 msgstr "Models:"
 
-#: playerform.pas:855 playerform.pas:1035
+#: playerform.pas:928 playerform.pas:1108
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "Mute: silence this stem (key %d)"
 
@@ -1429,11 +1477,11 @@ msgstr "OK"
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
-#: playerform.pas:1291
+#: playerform.pas:1852 playerform.pas:1856
 msgid "ORIGINAL"
 msgstr "ORIGINAL"
 
-#: playerform.pas:721
+#: playerform.pas:794
 msgid "ORIGINAL  O"
 msgstr "ORIGINAL  O"
 
@@ -1461,11 +1509,11 @@ msgstr "Folder skipped, path too long: %s"
 msgid "Ordner..."
 msgstr "Folder..."
 
-#: playerform.pas:682
+#: playerform.pas:755
 msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Original - click or drag to jump to this position."
 
-#: playerform.pas:725
+#: playerform.pas:798
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr "Original mix from the file (track 0) for A/B comparison (key O)"
 
@@ -1497,7 +1545,7 @@ msgstr "Path"
 msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
 msgstr "Path too long (%d characters, Windows allows at most %d). Please move the file to a folder with a shorter path."
 
-#: playerform.pas:649
+#: playerform.pas:722
 msgid "Play / Pause (Leertaste)"
 msgstr "Play / pause (Space)"
 
@@ -1521,7 +1569,7 @@ msgstr "Processor"
 msgid "Prüfsumme (SHA-256) stimmt nicht - die Datei wurde verworfen. Bitte später nochmals versuchen."
 msgstr "Checksum (SHA-256) does not match - the file was discarded. Please try again later."
 
-#: playerform.pas:1050
+#: playerform.pas:1123
 msgid "QUELLE"
 msgstr "SOURCE"
 
@@ -1541,51 +1589,51 @@ msgstr "low RAM!"
 msgid "RECHTE AN DER MUSIK"
 msgstr "RIGHTS TO THE MUSIC"
 
-#: playerform.pas:759
+#: playerform.pas:832
 msgid "RESET  0"
 msgstr "RESET  0"
 
-#: playerform.pas:1292
+#: playerform.pas:1853 playerform.pas:1857
 msgid "REST"
 msgstr "REST"
 
-#: playerform.pas:722
+#: playerform.pas:795
 msgid "REST  R"
 msgstr "REST  R"
 
-#: playerform.pas:996 playerform.pas:1017
+#: playerform.pas:1069 playerform.pas:1090 playerform.pas:1775
 msgid "RESTZEIT"
 msgstr "REMAIN"
 
-#: playerform.pas:696
+#: playerform.pas:769 playerform.pas:1286
 msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
 msgstr "Drag with the right mouse button: set the loop (snaps to the grid, free with Shift)."
 
-#: playerform.pas:683 playerform.pas:897
+#: playerform.pas:756 playerform.pas:970
 msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
 msgstr "Drag with the right mouse button: draw a loop range"
 
-#: playerform.pas:726
+#: playerform.pas:799
 msgid "Rest = Original minus Summe aller Stems (Taste R):"
 msgstr "Rest = original minus the sum of all stems (key R):"
 
-#: playerform.pas:1041 playerform.pas:1929
+#: playerform.pas:1114 playerform.pas:2502
 msgid "SOLO"
 msgstr "SOLO"
 
-#: playerform.pas:1025
+#: playerform.pas:1098
 msgid "STEM-PADS"
 msgstr "STEM PADS"
 
-#: playerform.pas:1293
+#: playerform.pas:1854 playerform.pas:1858
 msgid "STEMS"
 msgstr "STEMS"
 
-#: playerform.pas:720
+#: playerform.pas:793
 msgid "STEMS  S"
 msgstr "STEMS  S"
 
-#: playerform.pas:1936
+#: playerform.pas:2509
 msgid "STUMM"
 msgstr "MUTED"
 
@@ -1617,7 +1665,7 @@ msgstr "Resets the values in this window to the defaults (language stays)."
 msgid "Sitzung vorbereiten"
 msgstr "preparing session"
 
-#: playerform.pas:863 playerform.pas:1042
+#: playerform.pas:936 playerform.pas:1115
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr "Solo: hear only this stem (Shift+%d)."
 
@@ -1673,15 +1721,15 @@ msgstr "Encoding stem file"
 msgid "Stem-Datei prüfen"
 msgstr "Check stem file"
 
-#: playerform.pas:470
+#: playerform.pas:543
 msgid "Stem-Datei öffnen"
 msgstr "Open stem file"
 
-#: playerform.pas:607
+#: playerform.pas:680
 msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
 msgstr "Open stem file (Ctrl+O) - or simply drag it onto the window"
 
-#: playerform.pas:611
+#: playerform.pas:684
 msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr "Open a stem file or drag it here (drag & drop)"
 
@@ -1801,17 +1849,21 @@ msgstr "Separating stems (Turbo)"
 msgid "Stems trennen (demucs)"
 msgstr "Separating stems (demucs)"
 
-#: playerform.pas:656
+#: playerform.pas:729
 msgid "Stop und zurück an den Anfang"
 msgstr "Stop and back to the start"
 
-#: playerform.pas:864 playerform.pas:1043
+#: playerform.pas:937 playerform.pas:1116
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+click: add another stem (several solos)"
 
 #: uinfo.pas:450
 msgid "Suche ..."
 msgstr "Searching ..."
+
+#: playerform.pas:1811
+msgid "TRAKTOR-STIL"
+msgstr "TRAKTOR STYLE"
 
 #: ustemjob.pas:1895
 msgid "Tags der Quelle: BPM %s, Tonart %s"
@@ -1845,7 +1897,7 @@ msgstr "speed comparison"
 msgid "Testsignal erzeugen"
 msgstr "Creating test signal"
 
-#: playerform.pas:748
+#: playerform.pas:821
 msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
 msgstr "Tip: drag with the right mouse button in a waveform"
 
@@ -1861,7 +1913,7 @@ msgstr "Tools: ffmpeg, Turbo, demucs.cpp and model found"
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr "Tools: ffmpeg, demucs.cpp and model found"
 
-#: playerform.pas:471
+#: playerform.pas:544
 msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr "Traktor stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|All files (*.*)|*.*"
 
@@ -1985,7 +2037,7 @@ msgstr "Pre-test ..."
 msgid "Vortest fehlgeschlagen"
 msgstr "Pre-test failed"
 
-#: playerform.pas:1262
+#: playerform.pas:1810
 msgid "WELLENFORM"
 msgstr "WAVEFORM"
 
@@ -2013,6 +2065,10 @@ msgstr "More settings..."
 msgid "Weitere Modelle"
 msgstr "Other models"
 
+#: playerform.pas:1285
+msgid "Welle ziehen: Stelle anfahren, dabei hört man den Ton. Klick: springen."
+msgstr "Drag the waveform to move to a spot while you hear the sound. Click: jump."
+
 #: umain.lfm:252
 msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
 msgstr "When all files are done, the PC shuts down after 60 seconds (can be cancelled)."
@@ -2025,7 +2081,7 @@ msgstr "Tools"
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "How many parts of the song demucs processes at the same time. Each part also uses several cores and needs a good 2 GB of RAM."
 
-#: playerform.pas:995
+#: playerform.pas:1068
 msgid "ZEIT"
 msgstr "TIME"
 
@@ -2048,6 +2104,10 @@ msgstr "Shows a log and helps you send it to Elospeed by e-mail or GitHub. Nothi
 #: ustemjob.pas:1818
 msgid "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen."
 msgstr "Target path too long (%d characters, Windows allows at most %d). Please choose a shorter output folder or shorten the file name."
+
+#: playerform.pas:1346
+msgid "Zoom der Stem-Wellen: 2, 4, 8 oder 16 Sekunden (oder Mausrad in einer Welle)"
+msgstr "Zoom of the stem waveforms: 2, 4, 8 or 16 seconds (or mouse wheel in a waveform)"
 
 #: umain.pas:1033 umain.pas:2120 ustemjob.pas:2145
 msgid "abgebrochen"
@@ -2113,7 +2173,7 @@ msgstr "ffmpeg (new)"
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg could not decode the file (code %d)"
 
-#: playerform.pas:1817
+#: playerform.pas:2390
 msgid "ffmpeg konnte die Datei nicht dekodieren:"
 msgstr "ffmpeg could not decode the file:"
 
@@ -2125,23 +2185,23 @@ msgstr "ffmpeg could not create the stem file (code %d)"
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg not found: %s"
 
-#: playerform.pas:1705
+#: playerform.pas:2278
 msgid "ffmpeg wurde mit Code %d beendet."
 msgstr "ffmpeg exited with code %d."
 
-#: playerform.pas:1761
+#: playerform.pas:2334
 msgid "ffmpeg.exe auswählen"
 msgstr "Select ffmpeg.exe"
 
-#: playerform.pas:492
+#: playerform.pas:565
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
 msgstr "ffmpeg.exe not found - you will be asked when opening the first file."
 
-#: playerform.pas:1756
+#: playerform.pas:2329
 msgid "ffmpeg.exe wurde nicht gefunden."
 msgstr "ffmpeg.exe was not found."
 
-#: playerform.pas:1762
+#: playerform.pas:2335
 msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr "ffmpeg.exe|ffmpeg.exe|Programs (*.exe)|*.exe"
 
@@ -2157,7 +2217,7 @@ msgstr "htdemucs (default, Demucs v4)"
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (best quality, approx. 4x slower)"
 
-#: playerform.pas:727
+#: playerform.pas:800
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr "you hear what was lost in the separation or sounds"
 
@@ -2189,6 +2249,10 @@ msgstr "1 core each (%d of %d)"
 msgid "kein AVX (kompatible Version)"
 msgstr "no AVX (compatible version)"
 
+#: playerform.pas:2720
+msgid "kein Loop"
+msgstr "no loop"
+
 #: uturbotest.pas:589
 msgid "keine Grafikkarte gefunden"
 msgstr "no graphics card found"
@@ -2197,7 +2261,7 @@ msgstr "no graphics card found"
 msgid "keine gültige Modelldatei"
 msgstr "not a valid model file"
 
-#: playerform.pas:728
+#: playerform.pas:801
 msgid "klingt (ideal: fast Stille)."
 msgstr "different (ideally: almost silence)."
 
@@ -2277,7 +2341,7 @@ msgstr "waiting"
 msgid "wartet (unterbrochen)"
 msgstr "waiting (interrupted)"
 
-#: playerform.pas:750
+#: playerform.pas:823
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "if playback is currently outside the loop."
 
@@ -2293,7 +2357,7 @@ msgstr "e.g. those created by Elospeed StemMaker."
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "Change only if needed: StemMaker.ini, section [Tools] (with StemMaker closed)."
 
-#: playerform.pas:606
+#: playerform.pas:679
 msgid "ÖFFNEN"
 msgstr "OPEN"
 

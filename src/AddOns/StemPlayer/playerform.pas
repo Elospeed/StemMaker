@@ -130,6 +130,18 @@
                        (Branch elospeed/stemplayer-plattenspieler). Die vorhandenen Bedienelemente werden dafür nur
                        umgesetzt (PlaceCtl), neu sind die Teile in designviews.pas.
                        Wahl in StemPlayer.ini [Ansicht] Design.
+    1.9  (27.10.2026)  Testversion: zwei weitere Skins im Stil bekannter
+                       DJ-Programme, ohne deren Logos oder Grafiken:
+                       TRAKTOR-STIL  Deck mit Kopfzeile, jeder Stem als eigene
+                                     gezoomte Welle mit Fader und M/S links,
+                                     Übersicht, Master-Fader senkrecht,
+                                     Transport- und Loop-Leiste unten.
+                       MIXXX-STIL    grosse laufende Welle mit den 4 Stems
+                                     übereinander, darunter das Deck mit
+                                     Übersicht, Loop und Stem-Zeilen,
+                                     rechts Master-Fader mit Pegel.
+                       Alle Lupen zoomen gemeinsam (Mausrad in einer Welle).
+                       Wahl in StemPlayer.ini [Ansicht] Design=Traktor/Mixxx.
   ============================================================================ }
 unit playerform;
 
@@ -145,7 +157,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8';
+  APP_VER   = '1.9';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -168,7 +180,7 @@ type
 
   { Ansicht: die beiden klassischen (mit/ohne Wellenformen) und das
     Design CD-Player (gleiche Funktionen, anderer Look) }
-  TViewMode = (vmCompact, vmWave, vmCD);
+  TViewMode = (vmCompact, vmWave, vmCD, vmTraktor, vmMixxx);
 
   { Ursprünglicher Platz eines Bedienelements, das für ein Design an eine
     andere Stelle gesetzt wurde (siehe PlaceCtl / RestorePlacements) }
@@ -233,11 +245,37 @@ type
     Pads        : array[1..STEM_COUNT, 0..1] of TStemPad;  // [Stem, 0 = Mute / 1 = Solo]
     CDBars      : array[1..STEM_COUNT] of TShape;          // Farbstreifen vor den Wellen
     LblCDTime, LblCDRemain, LblCDLength, LblCDMode: TLabel;  // Zeiten im Display
+    { --- gezoomte Welle pro Stem (Skins Traktor-Stil und Mixxx-Stil) --- }
+    StemZoom    : array[1..STEM_COUNT] of TZoomView;
+    { --- Skin Traktor-Stil --- }
+    PnlTK       : TDJPanel;    // ganze Fläche des Skins
+    TKFrame     : TDJPanel;    // grauer Rahmen des Decks
+    TKHead      : TDJPanel;    // Kopfzeile: Bild, Titel, Zeiten
+    TKCover     : TPaintBox;   // kleines Bild mit 4 Farbbalken
+    TKDeck      : TDJPanel;    // Deck-Buchstabe rechts oben
+    TKPhase     : TPaintBox;   // Streifen: Fortschritt im Loop
+    TKMaster    : TDJPanel;    // Master-Fader rechts
+    TKLoopBox   : TDJPanel;    // Loop-Anzeige unten
+    TKRows      : array[1..STEM_COUNT] of TDJPanel;  // eine Zeile pro Stem
+    TKBars      : array[1..STEM_COUNT] of TShape;    // Farbstreifen rechts
+    BtnTKBack, BtnTKFwd, BtnTKStart, BtnTKSpan,      // -5 s / +5 s / Anfang / Zoom
+    BtnTKLoopL, BtnTKLoopR: TDJButton;               // Loop verschieben
+    LblTKTime, LblTKRemain, LblTKLength, LblTKMode, LblTKLoop: TLabel;
+    { --- Skin Mixxx-Stil --- }
+    PnlMX       : TDJPanel;    // ganze Fläche des Skins
+    MXWave      : TDJPanel;    // grosse Welle oben (4 Stems übereinander)
+    MXDeck      : TDJPanel;    // Deck: Titel, Übersicht, Knöpfe, Stems
+    MXMaster    : TDJPanel;    // Master-Fader + Pegel rechts
+    MXLenBox    : TDJPanel;    // Kästchen mit der Loop-Länge
+    MXRows      : array[1..STEM_COUNT] of TDJPanel;
+    MXSwatch    : array[1..STEM_COUNT] of TShape;    // Farbkästchen vor dem Namen
+    LblMXClock, LblMXTime, LblMXRemain, LblMXLength, LblMXStems, LblMXLoopLen: TLabel;
     { --- Ansicht --- }
     FView       : TViewMode;   // aktuelle Ansicht
     FPlaced     : array of TPlacement;  // für das Design versetzte Elemente
     FClassicW   : Integer;     // Fenstergrösse der klassischen Ansicht,
     FClassicH   : Integer;     // wird beim Zurückschalten wiederhergestellt
+    FWaveBack   : TColor;      // Standard-Hintergrund der Original-Welle (für LeaveDesign)
     { --- Sonstiges --- }
     Timer       : TTimer;
     Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
@@ -310,10 +348,21 @@ type
     procedure RestorePlacements;
     procedure PlaceLoopButtons(AParent: TWinControl; X, Y: Integer);
     procedure LayoutCD;
+    procedure BuildSkinUI;
+    procedure LayoutTraktor;
+    procedure LayoutMixxx;
+    procedure SkinClick(Sender: TObject);
+    procedure TKCoverPaint(Sender: TObject);
+    procedure TKPhasePaint(Sender: TObject);
+    procedure ZoomSpanChange(Sender: TObject);
+    procedure SetAllSpans(ASpan: Double);
+    procedure UpdateSkinTimes;
+    function  IsDesign(V: TViewMode): Boolean;
+    function  DesignHeight(V: TViewMode): Integer;
     procedure SetView(V: TViewMode);
     procedure EnterDesign(V: TViewMode);
     procedure LeaveDesign;
-    procedure FitDesignWindow;
+    procedure FitDesignWindow(V: TViewMode);
     procedure UpdateViewButtons;
     procedure UpdateDesignLook;
     procedure UpdateDesignNames;
@@ -391,6 +440,26 @@ const
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
   DESIGN_W    = 1000;  // Innenbreite des Fensters im Design CD-Player
   DESIGN_H    = 634;   // Innenhöhe ohne die Fusszeile
+  TK_H        = 658;   // Innenhöhe Skin Traktor-Stil (ohne Fusszeile)
+  MX_H        = 614;   // Innenhöhe Skin Mixxx-Stil (ohne Fusszeile)
+  { Farben der Skins (TColor = $00BBGGRR) }
+  TK_FRAME    = $0072726C;   // Rahmen des Decks       #6C7272
+  TK_HEAD     = $00141513;   // Kopfzeile              #131514
+  TK_ORANGE   = $00288DFA;   // Akzent orange          #FA8D28
+  TK_ROW      = $002E2E2E;   // Bedienspalte der Stems #2E2E2E
+  TK_WAVE     = $00141414;   // Hintergrund der Wellen #141414
+  TK_OVER     = $00442C1A;   // Übersicht              #1A2C44
+  TK_SIDE     = $00595854;   // Master-Spalte          #545859
+  TK_HEADLINE = $000055FF;   // Abspielkopf            #FF5500
+  MX_TEXT     = $00B6C1C9;   // warmes Hellgrau        #C9C1B6
+  MX_DIM      = $007F888F;   // gedimmter Text         #8F887F
+  MX_BLUE     = $008C5D3B;   // Loop / Knöpfe blau     #3B5D8C
+  MX_LOOP     = $00E8A060;   // Loop-Bereich hell      #60A0E8
+  MX_ORANGE   = $001C5AC4;   // CUE                    #C45A1C
+  MX_DECK     = $00262626;   // Deck-Fläche            #262626
+  MX_ROW      = $001E1E1E;   // Stem-Zeile             #1E1E1E
+  MX_WAVEBG   = $000A0A0A;   // grosse Welle           #0A0A0A
+  SPAN_STEPS  : array[0..3] of Double = (2, 4, 8, 16);  // Zoom-Knopf im Traktor-Stil
 
 { ============================================================================
   Aufbau des Fensters
@@ -401,6 +470,7 @@ var
   Ini: TIniFile;
   ShowWaves: Boolean;
   Design: string;
+  V: TViewMode;     // gespeichertes Design
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
@@ -430,6 +500,7 @@ begin
   FLoopOn := False;
   BuildUI;
   BuildDesignUI;
+  BuildSkinUI;
   UpdateGains;
   ApplyLoop;
 
@@ -460,11 +531,13 @@ begin
     SetView(vmWave)
   else
     SetView(vmCompact);
-  if (Screen.WorkAreaWidth >= DESIGN_W + 20) and
-     (Screen.WorkAreaHeight >= DESIGN_H + PnlBottom.Height + 40) then
-  begin
-    if SameText(Design, 'CD') then SetView(vmCD);
-  end;
+  if SameText(Design, 'CD') then V := vmCD
+  else if SameText(Design, 'Traktor') then V := vmTraktor
+  else if SameText(Design, 'Mixxx') then V := vmMixxx
+  else V := vmCompact;
+  if IsDesign(V) and (Screen.WorkAreaWidth >= DESIGN_W + 20) and
+     (Screen.WorkAreaHeight >= DesignHeight(V) + PnlBottom.Height + 40) then
+    SetView(V);
 
   OpenDlg := TOpenDialog.Create(Self);
   OpenDlg.Title := _('Stem-Datei öffnen');
@@ -620,7 +693,7 @@ begin
   BtnView := MakeButton(PnlTop, '', W - 200, 14, 200, 28);
   BtnView.Anchors := [akTop, akRight];
   BtnView.DropDown := True;
-  BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)');
+  BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform, CD-Player, Traktor-Stil oder Mixxx-Stil (Taste W: Kompakt/Wellenform)');
   BtnView.ShowHint := True;
   BtnView.OnClick := @ViewClick;
   MnuView := TPopupMenu.Create(Self);
@@ -1154,11 +1227,457 @@ begin
   PlaceCtl(BtnClip, CDMaster, 136, 56, 44, 26);
 end;
 
+{ ============================================================================
+  Skins Traktor-Stil und Mixxx-Stil (Testversion StemPlayer 1.9)
+
+  Nur "im Stil von": Anordnung und Farbstimmung erinnern an die bekannten
+  DJ-Programme, Logos, Schriftzüge und Grafiken von dort werden nicht
+  verwendet. Wie beim CD-Player werden die vorhandenen Bedienelemente nur
+  versetzt (PlaceCtl). Neu sind die gezoomten Wellen pro Stem (StemZoom),
+  ein paar Knöpfe (±5 s, Anfang, Zoom, Loop verschieben) und Anzeigen.
+  Keine Drehknöpfe (Wunsch Speedy): überall Schieberegler.
+  ============================================================================ }
+
+procedure TMainForm.BuildSkinUI;
+var
+  i: Integer;
+
+  { Text-Anzeige in einer Skin-Fläche (feste Grösse, ohne AutoSize) }
+  function SkinLabel(AParent: TWinControl; const ACaption: string;
+    ALeft, ATop, AWidth, AHeight, ASize: Integer; ABold, Mono: Boolean;
+    AColor: TColor; AAlign: TAlignment): TLabel;
+  begin
+    Result := MakeLabel(AParent, ACaption, ALeft, ATop, ASize, ABold);
+    if Mono then Result.Font.Name := MONO_FONT;
+    Result.Font.Color := AColor;
+    Result.AutoSize := False;
+    Result.Alignment := AAlign;
+    Result.Layout := tlCenter;
+    Result.SetBounds(ALeft, ATop, AWidth, AHeight);
+  end;
+
+  { Knopf der Skins, Tag sagt SkinClick, was er tut }
+  function SkinButton(AParent: TWinControl; const ACaption, AHint: string;
+    ALeft, ATop, AWidth, AHeight, ATag: Integer): TDJButton;
+  begin
+    Result := MakeButton(AParent, ACaption, ALeft, ATop, AWidth, AHeight);
+    Result.Tag := ATag;
+    Result.Hint := AHint;
+    Result.ShowHint := True;
+    Result.OnClick := @SkinClick;
+  end;
+
+begin
+  FWaveBack := WaveMaster.BackColor;
+
+  { ---------- gezoomte Wellen pro Stem (für beide Skins) ----------
+    Ohne Parent angelegt: PlaceCtl setzt sie in den jeweiligen Skin,
+    RestorePlacements nimmt sie wieder heraus (Parent = nil). }
+  for i := 1 to STEM_COUNT do
+  begin
+    StemZoom[i] := TZoomView.Create(Self);
+    StemZoom[i].WaveColor := Rows[i].Color;
+    StemZoom[i].OnSeek := @ZoomSeek;
+    StemZoom[i].OnScrub := @ZoomScrub;
+    StemZoom[i].OnLoopSelect := @ZoomLoopSelect;
+    StemZoom[i].OnMarkerMove := @ZoomMarkerMove;
+    StemZoom[i].OnSpanChange := @ZoomSpanChange;
+    StemZoom[i].Hint := _('Welle ziehen: Stelle anfahren, dabei hört man den Ton. Klick: springen.') + LineEnding +
+                        _('Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei).') + LineEnding +
+                        _('Marken A und B verschieben. Mausrad: alle Wellen gemeinsam zoomen.');
+    StemZoom[i].ShowHint := True;
+  end;
+  Zoom.OnSpanChange := @ZoomSpanChange;
+
+  { ---------- Traktor-Stil ---------- }
+  PnlTK := TDJPanel.Create(Self);
+  PnlTK.Visible := False;
+  PnlTK.Parent := Self;
+  PnlTK.Align := alClient;
+  PnlTK.Color := DJ_BG;
+  PnlTK.BorderColor := clNone;
+  SkinLabel(PnlTK, 'STEMPLAYER', 104, 6, 140, 28, 8, True, False, DJ_DIM, taLeftJustify);
+
+  TKFrame := MakeBox(PnlTK, 8, 44, 984, 606);
+  TKFrame.Color := TK_FRAME;
+  TKFrame.BorderColor := clNone;
+
+  TKHead := MakeBox(TKFrame, 6, 6, 892, 76);
+  TKHead.Color := TK_HEAD;
+  TKHead.BorderColor := clNone;
+  TKCover := TPaintBox.Create(Self);
+  TKCover.Parent := TKHead;
+  TKCover.SetBounds(8, 8, 60, 60);
+  TKCover.OnPaint := @TKCoverPaint;
+  LblTKRemain := SkinLabel(TKHead, '-00:00', 560, 6, 150, 32, 16, True, True, DJ_TEXT, taRightJustify);
+  LblTKLength := SkinLabel(TKHead, '', 560, 42, 150, 20, 8, False, False, DJ_DIM, taRightJustify);
+  LblTKTime   := SkinLabel(TKHead, '00:00', 726, 6, 152, 32, 16, True, True, DJ_TEXT, taRightJustify);
+  LblTKMode   := SkinLabel(TKHead, '', 726, 42, 152, 20, 8, False, False, TK_ORANGE, taRightJustify);
+
+  TKDeck := MakeBox(TKFrame, 904, 6, 74, 76);
+  TKDeck.Color := TK_ORANGE;
+  TKDeck.BorderColor := clNone;
+  SkinLabel(TKDeck, 'A', 0, 0, 74, 76, 28, True, False, $00111111, taCenter);
+
+  TKPhase := TPaintBox.Create(Self);
+  TKPhase.Parent := TKFrame;
+  TKPhase.SetBounds(352, 86, 404, 32);
+  TKPhase.OnPaint := @TKPhasePaint;
+  TKPhase.Hint := _('Fortschritt im Loop: der Balken läuft von A nach B');
+  TKPhase.ShowHint := True;
+  BtnTKBack := SkinButton(TKFrame, '«  5 s', _('5 Sekunden zurück (Pfeil links)'), 760, 86, 68, 32, 1);
+  BtnTKFwd  := SkinButton(TKFrame, '5 s  »', _('5 Sekunden vor (Pfeil rechts)'), 830, 86, 68, 32, 2);
+
+  for i := 1 to STEM_COUNT do
+  begin
+    TKRows[i] := MakeBox(TKFrame, 6, 122 + (i - 1) * 88, 892, 86);
+    TKRows[i].Color := TK_ROW;
+    TKRows[i].BorderColor := clNone;
+    TKRows[i].AccentWidth := 4;
+    TKRows[i].AccentColor := Rows[i].Color;
+    TKBars[i] := TShape.Create(Self);
+    TKBars[i].Parent := TKRows[i];
+    TKBars[i].SetBounds(888, 0, 4, 86);
+    TKBars[i].Pen.Style := psClear;
+    TKBars[i].Brush.Color := Rows[i].Color;
+  end;
+
+  BtnTKStart := SkinButton(TKFrame, '|«', _('An den Anfang (Pos1)'), 6, 476, 36, 58, 3);
+  BtnTKSpan  := SkinButton(TKFrame, '8 s', _('Zoom der Stem-Wellen: 2, 4, 8 oder 16 Sekunden (oder Mausrad in einer Welle)'),
+                           828, 476, 70, 58, 4);
+  BtnTKSpan.LitColor := TK_ORANGE;
+  BtnTKSpan.Down := True;
+  BtnTKSpan.Indicator := False;
+
+  TKMaster := MakeBox(TKFrame, 904, 86, 74, 448);
+  TKMaster.Color := TK_SIDE;
+  TKMaster.BorderColor := clNone;
+  SkinLabel(TKMaster, _('MASTER'), 0, 4, 74, 18, 7, True, False, DJ_TEXT, taCenter);
+
+  TKLoopBox := MakeBox(TKFrame, 174, 538, 500, 62);
+  TKLoopBox.Color := TK_ROW;
+  TKLoopBox.BorderColor := clNone;
+  BtnTKLoopL := SkinButton(TKLoopBox, '«', _('Ganzen Loop nach links verschieben (Pfeil links bei aktivem Loop)'), 6, 8, 40, 46, 5);
+  BtnTKLoopR := SkinButton(TKLoopBox, '»', _('Ganzen Loop nach rechts verschieben (Pfeil rechts bei aktivem Loop)'), 454, 8, 40, 46, 6);
+  LblTKLoop := SkinLabel(TKLoopBox, '', 50, 8, 400, 46, 12, True, True, DJ_TEXT, taCenter);
+
+  { ---------- Mixxx-Stil ---------- }
+  PnlMX := TDJPanel.Create(Self);
+  PnlMX.Visible := False;
+  PnlMX.Parent := Self;
+  PnlMX.Align := alClient;
+  PnlMX.Color := DJ_BG;
+  PnlMX.BorderColor := clNone;
+  LblMXClock := SkinLabel(PnlMX, '00:00', 680, 6, 146, 28, 15, True, True, MX_TEXT, taRightJustify);
+
+  MXWave := MakeBox(PnlMX, 8, 42, 984, 236);
+  MXWave.Color := $00202020;
+  MXWave.BorderColor := $00333333;
+
+  MXDeck := MakeBox(PnlMX, 8, 284, 860, 322);
+  MXDeck.Color := MX_DECK;
+  LblMXTime   := SkinLabel(MXDeck, '0:00.00', 440, 10, 110, 26, 13, True, True, MX_DIM, taLeftJustify);
+  LblMXRemain := SkinLabel(MXDeck, '-0:00.00', 552, 10, 120, 26, 13, True, True, MX_DIM, taLeftJustify);
+  LblMXLength := SkinLabel(MXDeck, '0:00', 700, 6, 148, 26, 14, True, True, MX_TEXT, taRightJustify);
+  LblMXStems  := SkinLabel(MXDeck, _('4 STEMS'), 700, 32, 148, 16, 7, True, False, MX_DIM, taRightJustify);
+  MakeLabel(MXDeck, _('LOOP'), 144, 134, 7, True).Font.Color := MX_DIM;
+  MXLenBox := MakeBox(MXDeck, 330, 126, 62, 30);
+  MXLenBox.Color := $00303030;
+  LblMXLoopLen := SkinLabel(MXLenBox, '-', 0, 0, 62, 30, 9, True, False, MX_TEXT, taCenter);
+  for i := 1 to STEM_COUNT do
+  begin
+    MXRows[i] := MakeBox(MXDeck, 12, 166 + (i - 1) * 36, 836, 32);
+    MXRows[i].Color := MX_ROW;
+    MXRows[i].BorderColor := clNone;
+    MXSwatch[i] := TShape.Create(Self);
+    MXSwatch[i].Parent := MXRows[i];
+    MXSwatch[i].SetBounds(8, 9, 14, 14);
+    MXSwatch[i].Pen.Style := psClear;
+    MXSwatch[i].Brush.Color := Rows[i].Color;
+  end;
+
+  MXMaster := MakeBox(PnlMX, 874, 284, 118, 322);
+  MXMaster.Color := MX_DECK;
+  SkinLabel(MXMaster, _('MASTER'), 0, 6, 118, 18, 8, True, False, MX_TEXT, taCenter);
+end;
+
+{ Traktor-Stil: Deck mit Kopfzeile, 4 Stem-Zeilen (links Bedienung,
+  rechts gezoomte Welle), Übersicht, rechts Master, unten Transport + Loop }
+procedure TMainForm.LayoutTraktor;
+var
+  i: Integer;
+begin
+  { Leiste oben }
+  PlaceCtl(BtnOpen, PnlTK, 10, 6, 80, 28);
+  PlaceCtl(MeterOut, PnlTK, 660, 12, 110, 16);
+  PlaceCtl(BtnClip, PnlTK, 782, 6, 48, 28);
+  PlaceCtl(BtnView, PnlTK, 840, 6, 150, 28);
+
+  { Kopfzeile }
+  PlaceCtl(LblFile, TKHead, 80, 6, 470, 30);
+  LblFile.Font.Size := 14;
+  PlaceCtl(LblFileInfo, TKHead, 80, 42, 470, 20);
+
+  { Hören }
+  PlaceCtl(BtnModeStems, TKFrame, 6, 86, 80, 32);
+  PlaceCtl(BtnModeOrig, TKFrame, 88, 86, 100, 32);
+  PlaceCtl(BtnModeRest, TKFrame, 190, 86, 72, 32);
+  PlaceCtl(BtnReset, TKFrame, 264, 86, 84, 32);
+  BtnModeStems.LitColor := TK_ORANGE;
+  BtnModeOrig.LitColor := TK_ORANGE;
+  BtnModeRest.LitColor := TK_ORANGE;
+
+  { Stem-Zeilen }
+  for i := 1 to STEM_COUNT do
+  begin
+    PlaceCtl(Rows[i].LblName, TKRows[i], 14, 14, 220, 20);
+    PlaceCtl(Rows[i].TrkVol, TKRows[i], 10, 44, 124, 26);
+    PlaceCtl(Rows[i].LblVol, TKRows[i], 130, 48, 44, 20);
+    PlaceCtl(Rows[i].BtnMute, TKRows[i], 182, 44, 28, 26);
+    PlaceCtl(Rows[i].BtnSolo, TKRows[i], 214, 44, 28, 26);
+    PlaceCtl(StemZoom[i], TKRows[i], 248, 0, 640, 86);
+    StemZoom[i].BackColor := TK_WAVE;
+    StemZoom[i].LoopColor := DJ_GREEN;
+    StemZoom[i].HeadColor := TK_HEADLINE;
+    StemZoom[i].ShowGrid := True;
+    StemZoom[i].ShowFrame := False;
+    StemZoom[i].ShowFlags := i = 1;    // Fähnchen A/B nur oben, die Striche überall
+  end;
+
+  { Übersicht }
+  PlaceCtl(TrkPos, TKFrame, 44, 476, 782, 58);
+  PlaceCtl(WaveMaster, TKFrame, 44, 476, 782, 58);
+  WaveMaster.WaveColor := $00F0D890;
+  WaveMaster.BackColor := TK_OVER;
+  WaveMaster.HeadColor := TK_HEADLINE;
+
+  { Master senkrecht }
+  TrkMaster.Vertical := True;
+  PlaceCtl(TrkMaster, TKMaster, 20, 26, 34, 392);
+  PlaceCtl(LblMasterVol, TKMaster, 14, 422, 46, 20);
+
+  { Transport + Loop }
+  PlaceCtl(BtnPlay, TKFrame, 6, 538, 90, 62);
+  PlaceCtl(BtnStop, TKFrame, 100, 538, 70, 62);
+  BtnStop.Glyph := dgNone;
+  BtnStop.Caption := _('CUE');
+  PlaceCtl(BtnLoopA, TKFrame, 678, 538, 76, 62);
+  PlaceCtl(BtnLoopB, TKFrame, 758, 538, 76, 62);
+  PlaceCtl(BtnLoopOn, TKFrame, 838, 538, 140, 30);
+  PlaceCtl(BtnLoopClear, TKFrame, 838, 570, 140, 30);
+  ApplyLoop(False);
+end;
+
+{ Mixxx-Stil: oben die grosse laufende Welle (4 Stems übereinander),
+  darunter das Deck, rechts Master mit senkrechtem Pegel }
+procedure TMainForm.LayoutMixxx;
+var
+  i: Integer;
+begin
+  { Leiste oben }
+  PlaceCtl(BtnOpen, PnlMX, 10, 6, 80, 28);
+  PlaceCtl(BtnView, PnlMX, 840, 6, 150, 28);
+
+  { grosse Welle: 4 Spuren, dazwischen eine feine Linie }
+  for i := 1 to STEM_COUNT do
+  begin
+    PlaceCtl(StemZoom[i], MXWave, 1, 1 + (i - 1) * 58, 982, 57);
+    StemZoom[i].BackColor := MX_WAVEBG;
+    StemZoom[i].LoopColor := MX_LOOP;
+    StemZoom[i].HeadColor := clWhite;
+    StemZoom[i].ShowGrid := False;
+    StemZoom[i].ShowFrame := False;
+    StemZoom[i].ShowFlags := i = 1;
+  end;
+
+  { Deck: Titel, Zeiten, Teller, Übersicht }
+  PlaceCtl(LblFile, MXDeck, 12, 8, 420, 30);
+  LblFile.Font.Size := 16;
+  PlaceCtl(Jog, MXDeck, 12, 52, 64, 64);
+  Jog.CenterCaption := '';
+  Jog.CenterText := '';
+  PlaceCtl(TrkPos, MXDeck, 84, 52, 764, 64);
+  PlaceCtl(WaveMaster, MXDeck, 84, 52, 764, 64);
+  WaveMaster.WaveColor := $00F0D0C0;
+  WaveMaster.BackColor := MX_WAVEBG;
+  WaveMaster.LoopColor := MX_LOOP;
+  WaveMaster.HeadColor := clWhite;
+
+  { Knopfzeile }
+  PlaceCtl(BtnStop, MXDeck, 12, 126, 60, 30);
+  BtnStop.Glyph := dgNone;
+  BtnStop.Caption := _('CUE');
+  PlaceCtl(BtnPlay, MXDeck, 76, 126, 56, 30);
+  PlaceCtl(BtnLoopA, MXDeck, 184, 126, 32, 30);
+  PlaceCtl(BtnLoopB, MXDeck, 218, 126, 32, 30);
+  PlaceCtl(BtnLoopOn, MXDeck, 252, 126, 44, 30);
+  PlaceCtl(BtnLoopClear, MXDeck, 298, 126, 28, 30);
+  BtnLoopA.LitColor := MX_LOOP;
+  BtnLoopB.LitColor := MX_LOOP;
+  BtnLoopOn.LitColor := MX_LOOP;
+  PlaceCtl(BtnModeStems, MXDeck, 404, 126, 90, 30);
+  PlaceCtl(BtnModeOrig, MXDeck, 496, 126, 110, 30);
+  PlaceCtl(BtnModeRest, MXDeck, 608, 126, 80, 30);
+  PlaceCtl(BtnReset, MXDeck, 690, 126, 90, 30);
+  BtnModeStems.LitColor := MX_LOOP;
+  BtnModeOrig.LitColor := MX_LOOP;
+  BtnModeRest.LitColor := MX_LOOP;
+
+  { Stem-Zeilen: Name, Regler, %, M, S, Pegel }
+  for i := 1 to STEM_COUNT do
+  begin
+    PlaceCtl(Rows[i].LblName, MXRows[i], 30, 6, 100, 20);
+    PlaceCtl(Rows[i].TrkVol, MXRows[i], 130, 3, 240, 26);
+    PlaceCtl(Rows[i].LblVol, MXRows[i], 372, 6, 46, 20);
+    PlaceCtl(Rows[i].BtnMute, MXRows[i], 426, 3, 28, 26);
+    PlaceCtl(Rows[i].BtnSolo, MXRows[i], 458, 3, 28, 26);
+    PlaceCtl(Rows[i].Meter, MXRows[i], 496, 7, 330, 18);
+  end;
+
+  { Master }
+  TrkMaster.Vertical := True;
+  PlaceCtl(TrkMaster, MXMaster, 14, 30, 34, 240);
+  PlaceCtl(MeterOut, MXMaster, 62, 32, 38, 236);
+  PlaceCtl(LblMasterVol, MXMaster, 36, 274, 46, 18);
+  PlaceCtl(BtnClip, MXMaster, 20, 294, 78, 22);
+  ApplyLoop(False);
+end;
+
+{ Zusätzliche Knöpfe der Skins (Tag siehe BuildSkinUI) }
+procedure TMainForm.SkinClick(Sender: TObject);
+var
+  i: Integer;
+  S: Double;
+begin
+  case TDJButton(Sender).Tag of
+    1: SeekRelative(-5);
+    2: SeekRelative(5);
+    3: if Engine <> nil then Engine.SeekTo := 0;
+    4: begin
+         { nächste Stufe 2 / 4 / 8 / 16 s, danach wieder 2 s }
+         S := SPAN_STEPS[0];
+         for i := High(SPAN_STEPS) downto 0 do
+           if SPAN_STEPS[i] > StemZoom[1].Span + 0.01 then S := SPAN_STEPS[i];
+         SetAllSpans(S);
+       end;
+    5: MoveLoop(-NudgeStep);
+    6: MoveLoop(NudgeStep);
+  end;
+end;
+
+{ Kleines Bild in der Kopfzeile: 4 Balken in den Stemfarben }
+procedure TMainForm.TKCoverPaint(Sender: TObject);
+const
+  BAR_H: array[1..STEM_COUNT] of Integer = (30, 20, 38, 26);
+var
+  i, X: Integer;
+begin
+  with TKCover.Canvas do
+  begin
+    Brush.Color := $00232323;
+    FillRect(0, 0, TKCover.Width, TKCover.Height);
+    for i := 1 to STEM_COUNT do
+    begin
+      X := 8 + (i - 1) * 12;
+      Brush.Color := Rows[i].Color;
+      FillRect(X, TKCover.Height - 10 - BAR_H[i], X + 9, TKCover.Height - 10);
+    end;
+  end;
+end;
+
+{ Streifen neben den Modus-Knöpfen: bei gesetztem Loop füllt sich ein
+  Balken von A nach B, Teilstriche bei 1/4, 1/2 und 3/4 }
+procedure TMainForm.TKPhasePaint(Sender: TObject);
+var
+  W, H, i, X: Integer;
+  F: Double;
+begin
+  W := TKPhase.Width;
+  H := TKPhase.Height;
+  with TKPhase.Canvas do
+  begin
+    Brush.Color := $00262626;
+    FillRect(0, 0, W, H);
+    if (Engine <> nil) and (FLoopA >= 0) and (FLoopB > FLoopA) then
+    begin
+      F := EnsureRange((FHeadPos - FLoopA) / (FLoopB - FLoopA), 0, 1);
+      if FLoopOn then Brush.Color := BlendColor($00262626, DJ_GREEN, 0.55)
+      else Brush.Color := $00404040;
+      FillRect(2, 6, 2 + Round(F * (W - 4)), H - 6);
+    end;
+    Brush.Color := $00D0D0D0;
+    for i := 1 to 3 do
+    begin
+      X := Round(i * W / 4);
+      FillRect(X, 8, X + 2, H - 8);
+    end;
+  end;
+end;
+
+{ Mausrad in einer Lupe: alle anderen Lupen auf denselben Zoom }
+procedure TMainForm.ZoomSpanChange(Sender: TObject);
+begin
+  SetAllSpans(TZoomView(Sender).Span);
+end;
+
+procedure TMainForm.SetAllSpans(ASpan: Double);
+var i: Integer;
+begin
+  Zoom.Span := ASpan;
+  for i := 1 to STEM_COUNT do StemZoom[i].Span := ASpan;
+  BtnTKSpan.Caption := FormatFloat('0.##', StemZoom[1].Span) + ' s';
+end;
+
+{ Zeiten der Skins (nur bei Änderung setzen, siehe TimerTick) }
+procedure TMainForm.UpdateSkinTimes;
+
+  procedure SetCap(L: TLabel; const S: string);
+  begin
+    if L.Caption <> S then L.Caption := S;
+  end;
+
+var
+  P, Rest: Int64;
+begin
+  P := Engine.PlayPos;
+  Rest := Max(0, Engine.TotalFrames - P);
+  if FView = vmTraktor then
+  begin
+    SetCap(LblTKTime, FormatTime(P));
+    SetCap(LblTKRemain, '-' + FormatTime(Rest));
+    SetCap(LblTKLength, _('Länge') + ' ' + FormatTime(Engine.TotalFrames));
+    TKPhase.Invalidate;
+  end
+  else
+  begin
+    SetCap(LblMXClock, FormatTime(P));
+    SetCap(LblMXTime, FormatTimeFine(P));
+    SetCap(LblMXRemain, '-' + FormatTimeFine(Rest));
+    SetCap(LblMXLength, FormatTime(Engine.TotalFrames));
+  end;
+end;
+
+function TMainForm.IsDesign(V: TViewMode): Boolean;
+begin
+  Result := V in [vmCD, vmTraktor, vmMixxx];
+end;
+
+{ Innenhöhe eines Designs ohne die Fusszeile }
+function TMainForm.DesignHeight(V: TViewMode): Integer;
+begin
+  case V of
+    vmTraktor: Result := TK_H;
+    vmMixxx:   Result := MX_H;
+  else
+    Result := DESIGN_H;
+  end;
+end;
+
 procedure TMainForm.SetView(V: TViewMode);
 begin
   if V <> FView then
   begin
-    if FView = vmCD then LeaveDesign;
+    if IsDesign(FView) then LeaveDesign;
     case V of
       vmCompact: SetWavesVisible(False);
       vmWave:    SetWavesVisible(True);
@@ -1173,13 +1692,13 @@ end;
 
 { Innengrösse des Fensters auf das Design einstellen und es auf dem
   Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
-procedure TMainForm.FitDesignWindow;
+procedure TMainForm.FitDesignWindow(V: TViewMode);
 var R: TRect;
 begin
   Constraints.MinWidth := 0;
   Constraints.MinHeight := 0;
   ClientWidth := DESIGN_W;
-  ClientHeight := DESIGN_H + PnlBottom.Height;
+  ClientHeight := DesignHeight(V) + PnlBottom.Height;
   Constraints.MinWidth := Width;
   Constraints.MinHeight := Height;
   if HandleAllocated then
@@ -1202,9 +1721,22 @@ begin
     PnlDeck.Visible := False;
     for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := False;
     PnlMaster.Visible := False;
-    FitDesignWindow;
-    LayoutCD;
-    PnlCD.Visible := True;
+    FitDesignWindow(V);
+    case V of
+      vmTraktor:
+        begin
+          LayoutTraktor;
+          PnlTK.Visible := True;
+        end;
+      vmMixxx:
+        begin
+          LayoutMixxx;
+          PnlMX.Visible := True;
+        end;
+    else
+      LayoutCD;
+      PnlCD.Visible := True;
+    end;
   finally
     EnableAlign;
   end;
@@ -1216,6 +1748,8 @@ begin
   DisableAlign;
   try
     PnlCD.Visible := False;
+    PnlTK.Visible := False;
+    PnlMX.Visible := False;
     { Fenster zuerst auf die alte Grösse, dann passen die rechts
       verankerten Elemente wieder genau an ihren Platz }
     Constraints.MinWidth := 0;
@@ -1226,6 +1760,20 @@ begin
     BtnStop.Caption := '';
     BtnStop.RoundShape := False;
     BtnPlay.RoundShape := False;
+    { Farben und Formen, die ein Skin geändert hat, zurücksetzen }
+    BtnModeStems.LitColor := clNone;
+    BtnModeOrig.LitColor := clNone;
+    BtnModeRest.LitColor := clNone;
+    BtnLoopA.LitColor := DJ_GREEN;
+    BtnLoopB.LitColor := DJ_GREEN;
+    BtnLoopOn.LitColor := DJ_GREEN;
+    TrkMaster.Vertical := False;
+    WaveMaster.WaveColor := $00D0D0D0;
+    WaveMaster.BackColor := FWaveBack;
+    WaveMaster.LoopColor := DJ_GREEN;
+    WaveMaster.HeadColor := DJ_PLAYHEAD;
+    Jog.CenterCaption := _('RESTZEIT');
+    LblFile.Font.Size := 12;
     for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := FShowWaves;
     Constraints.MinWidth := 720;
     if FShowWaves then Constraints.MinHeight := BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA
@@ -1260,6 +1808,8 @@ begin
   case V of
     vmCompact: Result := _('KOMPAKT');
     vmWave:    Result := _('WELLENFORM');
+    vmTraktor: Result := _('TRAKTOR-STIL');
+    vmMixxx:   Result := _('MIXXX-STIL');
   else
     Result := _('CD-PLAYER');
   end;
@@ -1287,6 +1837,21 @@ begin
     Pads[i, 1].Dim := not StemMode;
     if IsOn then C := Rows[i].Color else C := $00444444;
     CDBars[i].Brush.Color := C;
+    { Skins: Farbstreifen, Kästchen und gezoomte Wellen }
+    if StemZoom[i] <> nil then
+    begin
+      TKRows[i].AccentColor := C;
+      TKBars[i].Brush.Color := C;
+      MXSwatch[i].Brush.Color := C;
+      StemZoom[i].WaveColor := Rows[i].Color;
+      StemZoom[i].Active := IsOn;
+    end;
+  end;
+  if LblTKMode <> nil then
+  begin
+    if BtnModeOrig.Down then LblTKMode.Caption := _('ORIGINAL')
+    else if BtnModeRest.Down then LblTKMode.Caption := _('REST')
+    else LblTKMode.Caption := _('STEMS');
   end;
   if BtnModeOrig.Down then LblCDMode.Caption := _('ORIGINAL')
   else if BtnModeRest.Down then LblCDMode.Caption := _('REST')
@@ -1327,7 +1892,7 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
   { Erst jetzt kennt Windows die Rahmenbreite -> Innengrösse des Designs
     nochmals genau setzen (im Konstruktor gab es noch kein Fenster) }
-  if FView = vmCD then FitDesignWindow;
+  if IsDesign(FView) then FitDesignWindow(FView);
   { Datei als Kommandozeilen-Parameter? (z.B. aus StemMaker oder "Öffnen mit") }
   if (ParamCount >= 1) and FileExists(ParamStr(1)) and (FFileName = '') then
     LoadFile(ParamStr(1))
@@ -1427,6 +1992,8 @@ begin
       Ini.WriteBool('Ansicht', 'Wellenform', FShowWaves);
       case FView of
         vmCD:      Ini.WriteString('Ansicht', 'Design', 'CD');
+        vmTraktor: Ini.WriteString('Ansicht', 'Design', 'Traktor');
+        vmMixxx:   Ini.WriteString('Ansicht', 'Design', 'Mixxx');
         vmWave:    Ini.WriteString('Ansicht', 'Design', 'Wellenform');
       else
         Ini.WriteString('Ansicht', 'Design', 'Kompakt');
@@ -1521,16 +2088,21 @@ begin
     M := Max(M, PeakMax(FPeakThread.Peaks[i]));
   if M < 0.05 then M := 0.05;   // fast stille Datei nicht riesig aufblasen
   for i := 1 to STEM_COUNT do
+  begin
     if FPeakThread.Peaks[i].Valid then
       Rows[i].Wave.SetPeaks(FPeakThread.Peaks[i], 1 / M);
+    if FPeakThread.Fines[i].Valid and (Engine <> nil) then
+      StemZoom[i].SetPeaks(FPeakThread.Fines[i], 1 / M, Engine.TotalFrames,
+        FTempDir + 'track' + IntToStr(i) + '.raw');
+  end;
   if FPeakThread.Peaks[0].Valid then
   begin
     M := Max(0.05, PeakMax(FPeakThread.Peaks[0]));
     WaveMaster.SetPeaks(FPeakThread.Peaks[0], 1 / M);
     WaveMaster.Visible := True;
     TrkPos.Visible := False;
-    if FPeakThread.Fine.Valid and (Engine <> nil) then
-      Zoom.SetPeaks(FPeakThread.Fine, 1 / M, Engine.TotalFrames,
+    if FPeakThread.Fines[0].Valid and (Engine <> nil) then
+      Zoom.SetPeaks(FPeakThread.Fines[0], 1 / M, Engine.TotalFrames,
         FTempDir + 'track0.raw');
   end;
   FreeAndNil(FPeakThread);
@@ -1543,6 +2115,7 @@ begin
   for i := 1 to STEM_COUNT do Rows[i].Wave.ClearPeaks;
   WaveMaster.ClearPeaks;
   Zoom.ClearPeaks;
+  for i := 1 to STEM_COUNT do StemZoom[i].ClearPeaks;
   WaveMaster.Visible := False;
   TrkPos.Visible := True;
   if Engine <> nil then
@@ -2123,7 +2696,34 @@ begin
   end;
   WaveMaster.SetLoop(FA, FB, FLoopOn);
   Zoom.SetLoop(FLoopA, FLoopB, FLoopOn);
-  for i := 1 to STEM_COUNT do Rows[i].Wave.SetLoop(FA, FB, FLoopOn);
+  for i := 1 to STEM_COUNT do
+  begin
+    Rows[i].Wave.SetLoop(FA, FB, FLoopOn);
+    if StemZoom[i] <> nil then StemZoom[i].SetLoop(FLoopA, FLoopB, FLoopOn);
+  end;
+  { Loop-Anzeigen der Skins }
+  if LblTKLoop <> nil then
+  begin
+    if (FLoopA >= 0) and (FLoopB > FLoopA) then
+    begin
+      LblTKLoop.Caption := Format(_('%s  bis  %s     %.1f s'),
+        [FormatTimeFine(FLoopA), FormatTimeFine(FLoopB), (FLoopB - FLoopA) / SAMPLE_RATE]);
+      LblMXLoopLen.Caption := Format('%.1f s', [(FLoopB - FLoopA) / SAMPLE_RATE]);
+    end
+    else if FLoopA >= 0 then
+    begin
+      LblTKLoop.Caption := Format(_('%s  bis  ...'), [FormatTimeFine(FLoopA)]);
+      LblMXLoopLen.Caption := '-';
+    end
+    else
+    begin
+      LblTKLoop.Caption := _('kein Loop');
+      LblMXLoopLen.Caption := '-';
+    end;
+    BtnTKLoopL.Enabled := FLoopB > FLoopA;
+    BtnTKLoopR.Enabled := FLoopB > FLoopA;
+    TKPhase.Invalidate;
+  end;
 
   BtnLoopA.Down := FLoopA >= 0;
   BtnLoopB.Down := FLoopB >= 0;
@@ -2395,7 +2995,7 @@ begin
   i := PB.Tag;
   IsOn := (Rows[i].Panel.Tag = 1) and BtnModeStems.Down;
   { Hintergrund wie die Zeile, damit die Lücken zwischen den LEDs passen }
-  PB.Canvas.Brush.Color := DJ_PANEL;
+  PB.Canvas.Brush.Color := PB.Parent.Color;
   PB.Canvas.FillRect(0, 0, PB.Width, PB.Height);
   { Aktive Stems in ihrer Farbe, stumme grau (Pegel wird trotzdem angezeigt,
     damit man sieht, ob in dieser Spur überhaupt etwas los ist) }
@@ -2406,10 +3006,22 @@ end;
 
 procedure TMainForm.OutMeterPaint(Sender: TObject);
 var
-  ch, H, Y: Integer;
+  ch, H, Y, W, X: Integer;
 begin
-  MeterOut.Canvas.Brush.Color := DJ_PANEL;
+  MeterOut.Canvas.Brush.Color := MeterOut.Parent.Color;
   MeterOut.Canvas.FillRect(0, 0, MeterOut.Width, MeterOut.Height);
+  { Hochkant (Mixxx-Stil): zwei senkrechte Ketten nebeneinander }
+  if MeterOut.Height > MeterOut.Width then
+  begin
+    W := (MeterOut.Width - 4) div 2;
+    for ch := 0 to 1 do
+    begin
+      X := ch * (W + 4);
+      DrawLedBarV(MeterOut.Canvas, Rect(X, 0, X + W, MeterOut.Height),
+                  LevelToFrac(FOutLevel[ch]), DJ_GREEN, True);
+    end;
+    Exit;
+  end;
   { Zwei LED-Ketten (L oben, R unten): grün bis -6 dB, gelb bis -1 dB, rot darüber }
   H := (MeterOut.Height - 4) div 2;
   for ch := 0 to 1 do
@@ -2461,7 +3073,9 @@ begin
     if LblCDTime.Caption <> LblTime.Caption then LblCDTime.Caption := LblTime.Caption;
     if LblCDRemain.Caption <> S then LblCDRemain.Caption := S;
     Jog.CenterText := S;
-  end;
+  end
+  else if FView in [vmTraktor, vmMixxx] then
+    UpdateSkinTimes;
 
   { Pegel: schnell hoch, langsam runter (klassisches Peak-Meter-Verhalten) }
   for i := 1 to STEM_COUNT do
@@ -2542,7 +3156,9 @@ begin
   WaveMaster.Position := F;
   for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
   Zoom.Position := FHeadPos;
-  if FView = vmCD then Jog.Position := FHeadPos;
+  if FView in [vmTraktor, vmMixxx] then
+    for i := 1 to STEM_COUNT do StemZoom[i].Position := FHeadPos;
+  if FView in [vmCD, vmMixxx] then Jog.Position := FHeadPos;
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);

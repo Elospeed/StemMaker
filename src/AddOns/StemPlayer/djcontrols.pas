@@ -21,8 +21,11 @@
     TDJSlider  Schieberegler in zwei Varianten:
                dssFader    dünne Spur mit farbiger Füllung + Fader-Kappe
                dssPosition breite dunkle Leiste mit rotem Abspielkopf
+               Mit Vertical = True steht der Fader senkrecht (unten = 0,
+               Master-Fader in den Skins Traktor-Stil und Mixxx-Stil).
     LED-Meter  werden weiter in TPaintBox im Hauptfenster gezeichnet
-               (DrawLedBar unten erledigt das eigentliche Zeichnen).
+               (DrawLedBar unten erledigt das eigentliche Zeichnen,
+               DrawLedBarV senkrecht von unten nach oben).
 
   Farben: TColor ist $00BBGGRR (Blau zuerst!), nicht RGB.
   ============================================================================ }
@@ -130,12 +133,14 @@ type
     FStyle: TDJSliderStyle;
     FFillColor: TColor;
     FDragging: Boolean;
+    FVertical: Boolean;   // senkrechter Fader (unten = Min)
     FOnChange: TNotifyEvent;
     procedure SetPosition(AValue: Integer);
     procedure SetMax(AValue: Integer);
     procedure SetMin(AValue: Integer);
     procedure SetFillColor(AValue: TColor);
-    function  PosFromX(X: Integer): Integer;
+    function  PosFromXY(X, Y: Integer): Integer;
+    function  Length1: Integer;
     function  TrackLeft: Integer;
     function  TrackRight: Integer;
   protected
@@ -151,6 +156,7 @@ type
     property Position: Integer read FPosition write SetPosition;
     property Style: TDJSliderStyle read FStyle write FStyle;
     property FillColor: TColor read FFillColor write SetFillColor;
+    property Vertical: Boolean read FVertical write FVertical;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property ShowHint;
     property OnMouseDown;
@@ -165,6 +171,10 @@ function BlendColor(A, B: TColor; T: Single): TColor;
   am Mischpult grün / gelb (ab -6 dB) / rot (ab -1 dB) gefärbt, sonst alle
   in LitColor. Unbeleuchtete Segmente bleiben dunkel. }
 procedure DrawLedBar(ACanvas: TCanvas; const R: TRect; Frac: Single;
+  LitColor: TColor; Zones: Boolean);
+
+{ Wie DrawLedBar, aber senkrecht: von unten nach oben }
+procedure DrawLedBarV(ACanvas: TCanvas; const R: TRect; Frac: Single;
   LitColor: TColor; Zones: Boolean);
 
 implementation
@@ -214,6 +224,40 @@ begin
     ACanvas.Brush.Color := C;
     ACanvas.FillRect(X, R.Top, X + SEG_W, R.Bottom);
     Inc(X, SEG_W + GAP);
+  end;
+end;
+
+procedure DrawLedBarV(ACanvas: TCanvas; const R: TRect; Frac: Single;
+  LitColor: TColor; Zones: Boolean);
+const
+  SEG_H = 6;    // Höhe eines Segments
+  GAP   = 3;    // Abstand dazwischen
+var
+  N, i, Y, Lit: Integer;
+  C, ZoneC: TColor;
+  P: Single;
+begin
+  N := (R.Bottom - R.Top + GAP) div (SEG_H + GAP);
+  if N < 1 then Exit;
+  Lit := Round(Frac * N);
+  Y := R.Bottom;
+  for i := 0 to N - 1 do
+  begin
+    P := (i + 0.5) / N;
+    if Zones then
+    begin
+      if P >= 47 / 48 then ZoneC := DJ_PLAYHEAD
+      else if P >= 42 / 48 then ZoneC := DJ_AMBER
+      else ZoneC := DJ_GREEN;
+    end
+    else
+      ZoneC := LitColor;
+    if i < Lit then C := ZoneC
+    else if Zones then C := BlendColor(DJ_METERBG, ZoneC, 0.15)
+    else C := DJ_METERBG;
+    ACanvas.Brush.Color := C;
+    ACanvas.FillRect(R.Left, Y - SEG_H, R.Right, Y);
+    Dec(Y, SEG_H + GAP);
   end;
 end;
 
@@ -535,17 +579,25 @@ end;
 
 function TDJSlider.TrackRight: Integer;
 begin
-  if FStyle = dssFader then Result := Width - CAP_W div 2 - 1 else Result := Width - 2;
+  if FStyle = dssFader then Result := Length1 - CAP_W div 2 - 1 else Result := Length1 - 2;
 end;
 
-function TDJSlider.PosFromX(X: Integer): Integer;
+{ Länge in Zugrichtung: senkrecht die Höhe, sonst die Breite }
+function TDJSlider.Length1: Integer;
+begin
+  if FVertical then Result := Height else Result := Width;
+end;
+
+{ Mausposition -> Wert. Senkrecht zählt Y von unten (oben = Max). }
+function TDJSlider.PosFromXY(X, Y: Integer): Integer;
 var
-  L, W: Integer;
+  L, W, P: Integer;
 begin
   L := TrackLeft;
   W := TrackRight - L;
   if W <= 0 then Exit(FMin);
-  Result := FMin + Round((X - L) / W * (FMax - FMin));
+  if FVertical then P := Height - 1 - Y else P := X;
+  Result := FMin + Round((P - L) / W * (FMax - FMin));
 end;
 
 procedure TDJSlider.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -554,14 +606,14 @@ begin
   if (Button = mbLeft) and IsEnabled then
   begin
     FDragging := True;
-    Position := PosFromX(X);
+    Position := PosFromXY(X, Y);
   end;
 end;
 
 procedure TDJSlider.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  if FDragging then Position := PosFromX(X);
+  if FDragging then Position := PosFromXY(X, Y);
 end;
 
 procedure TDJSlider.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -584,7 +636,28 @@ begin
 
   with Canvas do
   begin
-    if FStyle = dssFader then
+    if FVertical then
+    begin
+      { Senkrecht: Spur in der Mitte, Füllung von unten bis zur Kappe,
+        Kappe liegt quer (breiter als hoch) }
+      Brush.Color := Parent.Color;
+      FillRect(ClientRect);
+      CY := Self.Width div 2;            // hier: Mitte in X-Richtung
+      X := Self.Height - 1 - X;          // Wert -> Y von oben
+      Brush.Color := DJ_TRACK;
+      FillRect(CY - 2, Self.Height - 1 - Rt, CY + 2, Self.Height - 1 - L);
+      Brush.Color := Fill;
+      FillRect(CY - 2, X, CY + 2, Self.Height - 1 - L);
+      GradientFill(Rect(CY - CAP_H div 2, X - CAP_W div 2, CY + CAP_H div 2, X + CAP_W div 2),
+                   $00635D5A, $00403C3A, gdVertical);
+      Pen.Color := $00736D6A;
+      Brush.Style := bsClear;
+      Rectangle(CY - CAP_H div 2, X - CAP_W div 2, CY + CAP_H div 2, X + CAP_W div 2);
+      Brush.Style := bsSolid;
+      Pen.Color := $00DDDDDD;
+      Line(CY - CAP_H div 2 + 3, X, CY + CAP_H div 2 - 3, X);
+    end
+    else if FStyle = dssFader then
     begin
       { Hintergrund wie die Fläche dahinter }
       Brush.Color := Parent.Color;
