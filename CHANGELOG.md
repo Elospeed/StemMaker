@@ -15,6 +15,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Rechtsklick-Menü in der Dateiliste:** Rechtsklick auf eine Zeile bietet „Anhören“ (spielt eine fertige Datei im StemPlayer ab, wie der Doppelklick) und „Aus Liste entfernen“. Die Entf-Taste entfernt die markierten Zeilen ebenfalls. Erstellte Stem-Dateien bleiben dabei erhalten.
 - **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
 
+### StemMaker – Handbuch
+- **Bebildertes Benutzerhandbuch (PDF)** auf Deutsch, Englisch und Spanisch: von der Funktionsweise über die Bedienung bis zum StemPlayer, mit Bildern. Im Programm öffnet **Info → Handbuch (PDF)** das Handbuch in der eingestellten Sprache, auf der Projektseite liegt es zum Herunterladen.
+
 ## 2.0 – 26. Oktober 2026
 
 ### StemMaker – Turbo-Engine

@@ -67,8 +67,30 @@ jobs:
           path: engines/onnx/dist/StemOnnx
           retention-days: 3
 
+  handbuch:
+    # Benutzerhandbuch DE/EN/ES als PDF (docs/handbuch/build.py), kommt mit
+    # auf die Release-Seite. Dieselben PDFs baut pages.yml für die Projektseite.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+      - name: Handbuch bauen
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc poppler-utils fonts-crosextra-carlito fonts-dejavu-core
+          python3 docs/handbuch/build.py --out handbuch
+          ls -l handbuch
+      - name: Handbuch weitergeben
+        uses: actions/upload-artifact@v4
+        with:
+          name: Handbuch
+          path: handbuch/*.pdf
+          retention-days: 3
+
   release:
-    needs: stemonnx
+    needs: [stemonnx, handbuch]
     runs-on: windows-latest
     defaults:
       run:
@@ -133,6 +155,12 @@ jobs:
           name: StemOnnx-release
           path: stemonnx
 
+      - name: Handbuch (PDF) holen
+        uses: actions/download-artifact@v4
+        with:
+          name: Handbuch
+          path: handbuch
+
       - name: Release-ZIP zusammenstellen
         run: |
           set -e
@@ -170,11 +198,13 @@ jobs:
             echo
             echo "StemMaker ab 1.7 bietet dieses Update beim nächsten Start an. / StemMaker 1.7 and later offer this update on the next start."
             echo
+            echo "Handbuch / Manual / Manual (PDF): \`StemMaker-Handbuch-de.pdf\` · \`-en.pdf\` · \`-es.pdf\`"
+            echo
             echo "Alle Änderungen / All changes: [CHANGELOG](https://github.com/$REPO/blob/main/CHANGELOG.md)"
             echo
             echo "SHA-256 \`StemMaker-$VERSION.zip\`: \`$ZIPSHA\`"
           } >> notizen.md
-          gh release create "v$VERSION" "ausgabe/StemMaker-$VERSION.zip" --repo "$REPO" \
+          gh release create "v$VERSION" "ausgabe/StemMaker-$VERSION.zip" handbuch/*.pdf --repo "$REPO" \
             --target "$GITHUB_SHA" --title "StemMaker $VERSION" --notes-file notizen.md --latest
 
       - name: Setup zum Release starten

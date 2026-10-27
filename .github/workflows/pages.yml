@@ -7,7 +7,7 @@ name: Projektseite
 on:
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "docs/handbuch/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 env:
@@ -43,6 +43,15 @@ jobs:
           DATUM=$(git log -1 --format=%cs -- site)
           sed -i "s|<lastmod>[^<]*</lastmod>|<lastmod>$DATUM</lastmod>|g" site/sitemap.xml
           grep lastmod site/sitemap.xml
+      # Benutzerhandbuch (DE/EN/ES) aus docs/handbuch als PDF bauen und unter
+      # site/handbuch/ mitveröffentlichen. Der Knopf "Handbuch (PDF)" im
+      # Info-Fenster von StemMaker öffnet genau diese Dateien.
+      - name: Handbuch als PDF bauen
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc poppler-utils fonts-crosextra-carlito fonts-dejavu-core
+          python3 docs/handbuch/build.py --out site/handbuch
+          ls -l site/handbuch
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
