@@ -1028,7 +1028,9 @@ var
     Cv.ClipRect := Rect(X0, 0, X1, H);
     Cv.Clipping := True;
     Cv.Brush.Style := bsClear;
-    Cv.TextOut(XPos + 3, H - 13, Txt);
+    { Höhe aus der Schrift, nicht fest 13 Pixel: bei 150/200 % Anzeigeskalierung
+      wird die Schrift grösser und die Zeiten waren unten abgeschnitten }
+    Cv.TextOut(XPos + 3, H - Cv.TextHeight('0:') - 1, Txt);
     Cv.Brush.Style := bsSolid;
     Cv.Clipping := False;
   end;
@@ -1174,13 +1176,22 @@ var
   C: TCanvas;
 
   procedure Flag(XPos: Integer; const Letter: string);
+  var
+    Fw, Fh: Integer;
   begin
-    if (XPos < -12) or (XPos > W + 12) then Exit;
+    { Fähnchen so gross wie der Buchstabe (bei 150/200 % Skalierung grösser) }
+    C.Font.Style := [fsBold];
+    Fw := C.TextWidth(Letter) + 4;
+    Fh := C.TextHeight(Letter);
+    if (XPos < -Fw) or (XPos > W + Fw) then
+    begin
+      C.Font.Style := [];
+      Exit;
+    end;
     C.Brush.Color := LC;
     C.FillRect(XPos - 1, 0, XPos + 1, H);
-    C.FillRect(XPos - 1, 0, XPos + 12, 13);
+    C.FillRect(XPos - 1, 0, XPos + Fw, Fh);
     C.Font.Color := WAVE_BG;
-    C.Font.Style := [fsBold];
     C.Brush.Style := bsClear;
     C.TextOut(XPos + 2, 0, Letter);
     C.Brush.Style := bsSolid;
