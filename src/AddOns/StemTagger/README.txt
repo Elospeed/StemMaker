@@ -15,8 +15,10 @@ WHY A SEPARATE TOOL?
   data). If anything goes wrong, the original stays untouched.
 
 INSTALLATION
-  Copy StemTagger.exe into the AddOns\ folder of StemMaker. It also runs on
-  its own. The language (German, English, Spanish) is taken from the
+  StemMaker already includes the StemTagger (AddOns\StemTagger.exe, button
+  in the AddOns bar). Without StemMaker: unzip StemTagger-<version>.zip
+  from the release page and start StemTagger.exe; keep the lang\ folder
+  next to it. The language (German, English, Spanish) is taken from the
   StemMaker settings, otherwise from the Windows language.
 
 USAGE
@@ -42,7 +44,7 @@ USAGE
   - Save (Ctrl+S) writes all changed files.
     "Discard changes" resets everything to what is in the files.
     If several files were changed, StemTagger asks first.
-  - "Create backup copy" (on by default): before the first save,
+  - "Create backup copy" (off by default): before the first save,
     <file>.bak is created (only once, so the real original is kept).
 
   Keys: Ctrl+S save, Ctrl+V paste cover, Del remove from the list,

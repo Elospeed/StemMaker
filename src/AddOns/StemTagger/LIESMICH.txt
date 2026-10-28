@@ -15,9 +15,12 @@ WARUM EIN EIGENES PROGRAMM?
   Stem-Daten). Klappt etwas nicht, bleibt das Original unverändert.
 
 INSTALLATION
-  StemTagger.exe in den Ordner AddOns\ von StemMaker kopieren. Er läuft
-  aber auch allein. Die Sprache (Deutsch, Englisch, Spanisch) kommt aus
-  den Einstellungen von StemMaker, sonst aus der Sprache von Windows.
+  In StemMaker ist der StemTagger schon dabei (AddOns\StemTagger.exe,
+  Knopf in der AddOn-Leiste). Ohne StemMaker: StemTagger-<Version>.zip
+  von der Release-Seite entpacken und StemTagger.exe starten, der Ordner
+  lang\ muss daneben bleiben. Die Sprache (Deutsch, Englisch, Spanisch)
+  kommt aus den Einstellungen von StemMaker, sonst aus der Sprache von
+  Windows.
 
 BEDIENUNG
   - Stem-Dateien oder ganze Ordner auf das Fenster ziehen
@@ -42,7 +45,7 @@ BEDIENUNG
   - Speichern (Strg+S) schreibt alle geänderten Dateien.
     "Änderungen verwerfen" setzt alles auf den Stand der Dateien zurück.
     Sind mehrere Dateien geändert, fragt der StemTagger vorher nach.
-  - "Sicherungskopie anlegen" (standardmässig an): vor dem ersten
+  - "Sicherungskopie anlegen" (standardmässig aus): vor dem ersten
     Speichern wird <Datei>.bak angelegt (nur einmal, so bleibt das echte
     Original).
 

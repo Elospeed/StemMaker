@@ -16,7 +16,8 @@
 # 3. Release-ZIP zusammenstellen (installer/release-zip.sh). Die Teile, die nicht
 #    im Repository liegen (demucs.cpp in tools\), kommen aus dem letzten
 #    Release-ZIP laut update.json, mit Prüfsummen-Kontrolle.
-# 4. Release v<Version> anlegen, Text = CHANGELOG-Abschnitt + SHA-256, ZIP dran.
+#    Dazu das eigenständige StemTagger-ZIP (installer/stemtagger-zip.sh).
+# 4. Release v<Version> anlegen, Text = CHANGELOG-Abschnitt + SHA-256, beide ZIPs dran.
 # 5. Workflow "Setup zum Release" starten, der hängt die Setup-Exe an.
 #    (Ein Release, das ein Workflow anlegt, löst "release: published" nicht aus,
 #    deshalb wird er hier ausdrücklich gestartet.)
@@ -142,6 +143,11 @@ jobs:
           bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe stemonnx
           ZIPSHA=$(sha256sum "ausgabe/StemMaker-$VERSION.zip" | cut -d' ' -f1)
           echo "ZIPSHA=$ZIPSHA" >> "$GITHUB_ENV"
+          # StemTagger zusätzlich als eigenes kleines ZIP (für alle ohne StemMaker)
+          bash installer/stemtagger-zip.sh exes/StemTagger.exe ausgabe
+          TAGGERZIP=$(ls ausgabe/StemTagger-*.zip | head -n 1)
+          echo "TAGGERZIP=$TAGGERZIP" >> "$GITHUB_ENV"
+          echo "TAGGERSHA=$(sha256sum "$TAGGERZIP" | cut -d' ' -f1)" >> "$GITHUB_ENV"
 
       - name: Release anlegen und ZIP hochladen
         env:
@@ -173,8 +179,11 @@ jobs:
             echo "Alle Änderungen / All changes: [CHANGELOG](https://github.com/$REPO/blob/main/CHANGELOG.md)"
             echo
             echo "SHA-256 \`StemMaker-$VERSION.zip\`: \`$ZIPSHA\`"
+            echo
+            echo "StemTagger einzeln, ohne StemMaker / StemTagger on its own, without StemMaker: \`$(basename "$TAGGERZIP")\`"
+            echo "SHA-256 \`$(basename "$TAGGERZIP")\`: \`$TAGGERSHA\`"
           } >> notizen.md
-          gh release create "v$VERSION" "ausgabe/StemMaker-$VERSION.zip" --repo "$REPO" \
+          gh release create "v$VERSION" "ausgabe/StemMaker-$VERSION.zip" "$TAGGERZIP" --repo "$REPO" \
             --target "$GITHUB_SHA" --title "StemMaker $VERSION" --notes-file notizen.md --latest
 
       - name: Setup zum Release starten

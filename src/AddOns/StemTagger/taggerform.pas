@@ -30,6 +30,9 @@
                        Ordners, Rückfrage vor dem Speichern mehrerer Dateien,
                        Status "Ohne Tags"/"Ohne Cover", Sortieren per Klick
                        auf die Spaltenüberschrift
+         (28.10.2026)  Sicherungskopie standardmässig wieder aus (das
+                       Speichern geht über eine geprüfte Zwischendatei),
+                       Ko-fi-Knopf unten rechts wie in StemMaker
   ============================================================================ }
 unit taggerform;
 
@@ -40,11 +43,12 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, coverbild;
+  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, coverbild;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
   APP_VER   = '0.1';
+  KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type
   { Eine Datei in der Liste }
@@ -72,6 +76,8 @@ type
     FBtnFromName, FBtnSave, FBtnRevert: TButton;
     FChkBackup, FChkShrink: TCheckBox;
     FStatus    : TStatusBar;
+    FKofi      : TPaintBox;       // Ko-fi-Knopf unten rechts (wie in StemMaker)
+    FKofiHover : Boolean;
     FLoading   : Boolean;          // Felder werden gerade befüllt -> OnChange ignorieren
     FSelPending: Boolean;          // Anzeige der Auswahl ist schon bestellt
     FLastDir   : string;
@@ -87,6 +93,10 @@ type
     procedure ComboSelect(Sender: TObject);
     procedure ComboSelectAsync(Data: PtrInt);
     procedure ShowFolderHint(Data: PtrInt);
+    procedure KofiPaint(Sender: TObject);
+    procedure KofiClick(Sender: TObject);
+    procedure KofiEnter(Sender: TObject);
+    procedure KofiLeave(Sender: TObject);
 
     procedure LoadLanguage;
     procedure BuildUI;
@@ -414,7 +424,7 @@ var
   Shown: array of TMp4TagField;
   Half: Integer;
   Cb: TComboBox;
-  PnlTop, PnlEdit, Fields, CoverPanel, Frame, Btns: TPanel;
+  PnlTop, PnlEdit, Fields, CoverPanel, Frame, Btns, Foot: TPanel;
   Col: TListColumn;
   Lbl: TLabel;
   F: TMp4TagField;
@@ -480,8 +490,29 @@ begin
   Lbl.Font.Color := clGrayText;
 
   { --- Statuszeile und Knöpfe unten -------------------------------------- }
+  { Fusszeile: links die Statuszeile, rechts der Ko-fi-Knopf wie in StemMaker }
+  Foot := TPanel.Create(Self);
+  Foot.Parent := Self;
+  Foot.Align := alBottom;
+  Foot.Height := Scale96ToForm(24);
+  Foot.BevelOuter := bvNone;
+  FKofi := TPaintBox.Create(Self);
+  FKofi.Parent := Foot;
+  FKofi.Align := alRight;
+  FKofi.BorderSpacing.Right := Scale96ToForm(4);
+  FKofi.Canvas.Font.Style := [fsBold];
+  FKofi.Width := KofiButtonWidth(FKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
+  FKofi.Cursor := crHandPoint;
+  FKofi.Hint := 'ko-fi.com/elospeed';
+  FKofi.ShowHint := True;
+  FKofi.OnPaint := @KofiPaint;
+  FKofi.OnClick := @KofiClick;
+  FKofi.OnMouseEnter := @KofiEnter;
+  FKofi.OnMouseLeave := @KofiLeave;
   FStatus := TStatusBar.Create(Self);
-  FStatus.Parent := Self;
+  FStatus.Parent := Foot;
+  FStatus.Align := alClient;
+  FStatus.SizeGrip := False;
   FStatus.SimplePanel := True;
 
   Btns := TPanel.Create(Self);
@@ -496,7 +527,7 @@ begin
   FChkBackup.Parent := Btns;
   FChkBackup.SetBounds(Scale96ToForm(364), Scale96ToForm(12), Scale96ToForm(250), Scale96ToForm(22));
   FChkBackup.Caption := _('Sicherungskopie anlegen (.bak)');
-  FChkBackup.Checked := True;
+  FChkBackup.Checked := False;
   FChkBackup.Hint := _('Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak).') +
     LineEnding + _('Die Kopie wird nie überschrieben, sie bleibt also das echte Original.');
   FChkBackup.ShowHint := True;
@@ -611,7 +642,7 @@ begin
     Bearbeiten-Bereich, darunter Knöpfe, ganz unten die Statuszeile }
   PnlEdit.Top := 0;
   Btns.Top := PnlEdit.Top + PnlEdit.Height;
-  FStatus.Top := Btns.Top + Btns.Height;
+  Foot.Top := Btns.Top + Btns.Height;
 
   { --- Liste (füllt den Rest) --------------------------------------------- }
   FList := TListView.Create(Self);
@@ -660,7 +691,7 @@ begin
   try
     Ini := TIniFile.Create(IniFileName);
     try
-      FChkBackup.Checked := Ini.ReadBool('Optionen', 'SicherungAnlegen', True);
+      FChkBackup.Checked := Ini.ReadBool('Optionen', 'SicherungAnlegen', False);
       FFolderHint := Ini.ReadBool('Optionen', 'OrdnerHinweis', True);
       FChkShrink.Checked := Ini.ReadBool('Optionen', 'CoverVerkleinern', True);
       FLastDir := Ini.ReadString('Optionen', 'LetzterOrdner', '');
@@ -1009,6 +1040,31 @@ begin
 end;
 
 { Nach dem Laden eines Ordners einmal erklären, was passiert und was nicht }
+{ Ko-fi-Knopf unten rechts (gezeichnet in uStatusDraw, gleich wie in StemMaker) }
+procedure TMainForm.KofiPaint(Sender: TObject);
+begin
+  FKofi.Canvas.Font.Style := [fsBold];
+  DrawKofiButton(FKofi.Canvas, FKofi.ClientRect, _('Kaffee spendieren'),
+    FKofiHover, TPanel(FKofi.Parent).Color, Screen.PixelsPerInch);
+end;
+
+procedure TMainForm.KofiClick(Sender: TObject);
+begin
+  OpenURL(KOFI_URL);
+end;
+
+procedure TMainForm.KofiEnter(Sender: TObject);
+begin
+  FKofiHover := True;
+  FKofi.Invalidate;
+end;
+
+procedure TMainForm.KofiLeave(Sender: TObject);
+begin
+  FKofiHover := False;
+  FKofi.Invalidate;
+end;
+
 procedure TMainForm.ShowFolderHint(Data: PtrInt);
 begin
   FFolderHintPending := False;

@@ -25,7 +25,8 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Tooltip an jedem Feld**, der sagt, was hineingehört.
 - **Fehlendes auf einen Blick:** Die Spalte Status zeigt „Ohne Tags“ oder „Ohne Cover“. Klick auf eine Spaltenüberschrift sortiert die Liste.
 - **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
-- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Eine Sicherungskopie `.bak` ist standardmässig eingeschaltet. Nach dem Laden eines Ordners erklärt ein Hinweis, was sich ändert und was nicht, und vor dem Speichern mehrerer Dateien fragt der StemTagger nach. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
+- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Eine Sicherungskopie `.bak` lässt sich einschalten. Nach dem Laden eines Ordners erklärt ein Hinweis, was sich ändert und was nicht, und vor dem Speichern mehrerer Dateien fragt der StemTagger nach. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
+- **Auch einzeln:** Wer StemMaker nicht braucht, lädt den StemTagger als eigenes kleines ZIP von der Release-Seite.
 - Deutsch, Englisch und Spanisch.
 
 ## 2.0 – 26. Oktober 2026
