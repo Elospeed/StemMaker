@@ -554,6 +554,7 @@ var
   I: Integer;
 begin
   TranslateComponent(Self);   // Texte aus umain.lfm übersetzen (uLangUI)
+  memLog.Font.Name := MonoFontName;   // Consolas hat keine japanischen Zeichen
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');

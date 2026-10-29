@@ -65,6 +65,10 @@ function LangAvailable: TStringList;
 { Name einer Sprache in ihrer eigenen Sprache, z.B. 'en' -> 'English' }
 function LangDisplayName(const Code: string): string;
 
+{ Schrift mit fester Breite für Log-Felder: Consolas hat keine japanischen
+  Zeichen, deshalb bei Japanisch "MS Gothic" (auf jedem japanischen Windows) }
+function MonoFontName: string;
+
 implementation
 
 var
@@ -299,6 +303,14 @@ begin
   finally
     SysUtils.FindClose(SR);
   end;
+end;
+
+function MonoFontName: string;
+begin
+  if LangCode = 'ja' then
+    Result := 'MS Gothic'
+  else
+    Result := 'Consolas';
 end;
 
 function LangDisplayName(const Code: string): string;

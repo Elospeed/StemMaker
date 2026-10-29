@@ -275,7 +275,7 @@ begin
   memReport.ReadOnly := True;
   memReport.ScrollBars := ssBoth;
   memReport.WordWrap := False;
-  memReport.Font.Name := 'Consolas';
+  memReport.Font.Name := MonoFontName;   // Japanisch: MS Gothic (uLang)
 
   { --- Logs auflisten, neuestes zuerst --- }
   FLogs := TStringList.Create;
