@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, djcontrols, coverbild;
+  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, djcontrols, djextra, coverbild;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
@@ -66,7 +66,7 @@ type
   private
     FEntries   : TFPObjectList;   // gehört der Liste, gibt Einträge frei
     FList      : TListView;
-    FEdits     : array[TMp4TagField] of TWinControl; // TEdit oder TComboBox, tfCover = nil
+    FEdits     : array[TMp4TagField] of TWinControl; // TEdit oder TDJCombo, tfCover = nil
     FMixed     : array[TMp4TagField] of Boolean; // Feld zeigt "verschieden"
     FCoverImg  : TImage;
     FCoverInfo : TLabel;
@@ -75,7 +75,13 @@ type
     FBtnAdd, FBtnFolder, FBtnRemove, FBtnClear: TDJButton;
     FBtnCoverLoad, FBtnCoverPaste, FBtnCoverDel, FBtnCoverSave: TDJButton;
     FBtnFromName, FBtnSave, FBtnRevert: TDJButton;
-    FChkBackup, FChkShrink: TDJButton;   // Schalter: Down = eingeschaltet
+    FChkBackup, FChkShrink: TDJLedSwitch; // Schalter mit LED: Down = eingeschaltet
+    { eigene Kopfzeile der Liste (die Windows-Kopfzeile wäre hell) }
+    FHead      : TPaintBox;
+    FColW      : array[0..6] of Integer;  // Spaltenbreiten in Pixeln, die letzte füllt den Rest
+    FDragCol   : Integer;          // Spalte, deren rechter Rand gerade gezogen wird, -1 = keine
+    FDragX0, FDragW0: Integer;     // Maus und Breite beim Beginn des Ziehens
+    FDragged   : Boolean;          // wirklich gezogen (dann kein Sortieren)
     FStatus    : TLabel;            // Statuszeile unten links
     FKofi      : TPaintBox;       // Ko-fi-Knopf unten rechts (wie in StemMaker)
     FKofiHover : Boolean;
@@ -127,7 +133,13 @@ type
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure ListDrawSubItem(Sender: TCustomListView; Item: TListItem;
       SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure HeadClick(Sender: TObject);
+    procedure HeadPaint(Sender: TObject);
+    procedure HeadMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure HeadMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure HeadMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    function  HeadDivider(X: Integer): Integer;
+    procedure FitColumns;
+    procedure ListResize(Sender: TObject);
     procedure ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FieldChange(Sender: TObject);
     procedure BtnAddClick(Sender: TObject);
@@ -432,7 +444,7 @@ const
 var
   Shown: array of TMp4TagField;
   Half: Integer;
-  Cb: TComboBox;
+  Cb: TDJCombo;
   Box: TDJPanel;   // dunkler Rahmen um ein Eingabefeld
   PnlTop, Foot, SaveBox: TPanel;
   PnlEdit, Fields, CoverPanel, Frame, PnlHead, PnlList: TDJPanel;
@@ -452,9 +464,7 @@ var
     if AField in [tfGenre, tfKey] then
     begin
       { Auswahlliste, aber auch freie Eingabe }
-      Cb := TComboBox.Create(Self);
-      Cb.Style := csDropDown;
-      Cb.DropDownCount := 16;
+      Cb := TDJCombo.Create(Self);
       Cb.OnSelect := @ComboSelect;
       FEdits[AField] := Cb;
     end
@@ -471,7 +481,7 @@ var
       FEdits[AField] := TEdit.Create(Self);
       TEdit(FEdits[AField]).BorderStyle := bsNone;
     end;
-    if FEdits[AField] is TComboBox then
+    if FEdits[AField] is TDJCombo then
     begin
       FEdits[AField].Parent := Fields;
       FEdits[AField].SetBounds(Scale96ToForm(AX + 82), Scale96ToForm(AY),
@@ -486,22 +496,24 @@ var
     FEdits[AField].Tag := Ord(AField);
     FEdits[AField].Color := DJ_BG;
     FEdits[AField].Font.Color := DJ_TEXT;
-    if FEdits[AField] is TComboBox then
-      TComboBox(FEdits[AField]).OnChange := @FieldChange
+    if FEdits[AField] is TDJCombo then
+      TDJCombo(FEdits[AField]).OnChange := @FieldChange
     else
       TEdit(FEdits[AField]).OnChange := @FieldChange;
     FEdits[AField].ShowHint := True;
     Lbl.ShowHint := True;
-    Lbl.FocusControl := FEdits[AField];
+    if FEdits[AField] is TDJCombo then
+      Lbl.FocusControl := TDJCombo(FEdits[AField]).Edit
+    else
+      Lbl.FocusControl := FEdits[AField];
   end;
 
   { Schalter in der Fusszeile: Breite passend zum (übersetzten) Text, rechts angedockt }
-  procedure FitToggle(B: TDJButton);
+  procedure FitToggle(B: TDJLedSwitch);
   begin
-    B.Canvas.Font.Style := [fsBold];
-    B.Width := B.Canvas.TextWidth(B.Caption) + Scale96ToForm(24);
+    B.Width := B.NeededWidth;
     B.Align := alRight;
-    B.BorderSpacing.Right := Scale96ToForm(8);
+    B.BorderSpacing.Right := Scale96ToForm(14);
     B.BorderSpacing.Top := Scale96ToForm(5);
     B.BorderSpacing.Bottom := Scale96ToForm(5);
   end;
@@ -574,19 +586,16 @@ begin
   FKofi.OnMouseEnter := @KofiEnter;
   FKofi.OnMouseLeave := @KofiLeave;
 
-  { zwei Schalter (rasten ein, leuchten grün) statt Windows-Häkchen,
-    deren Text auf dunklem Grund nicht lesbar wäre }
-  FChkBackup := MakeButton(Foot, _('Sicherungskopie anlegen (.bak)'), 0, 5, 210, nil);
-  FChkBackup.Toggle := True;
-  FChkBackup.LitColor := DJ_GREEN;
-  FChkBackup.Height := Scale96ToForm(22);
+  { zwei Schalter mit LED davor: rot = aus, grün = an }
+  FChkBackup := TDJLedSwitch.Create(Self);
+  FChkBackup.Parent := Foot;
+  FChkBackup.Caption := _('Sicherungskopie anlegen (.bak)');
   FChkBackup.Hint := _('Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak).') +
     LineEnding + _('Die Kopie wird nie überschrieben, sie bleibt also das echte Original.');
   FChkBackup.ShowHint := True;
-  FChkShrink := MakeButton(Foot, Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]), 0, 5, 250, nil);
-  FChkShrink.Toggle := True;
-  FChkShrink.LitColor := DJ_GREEN;
-  FChkShrink.Height := Scale96ToForm(22);
+  FChkShrink := TDJLedSwitch.Create(Self);
+  FChkShrink.Parent := Foot;
+  FChkShrink.Caption := Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]);
   FChkShrink.Down := True;
   FitToggle(FChkBackup);
   FitToggle(FChkShrink);
@@ -659,13 +668,13 @@ begin
       AddField(Shown[I], 296, 7 + (I - Half) * ROW_H);
   if FEdits[tfGenre] <> nil then
   begin
-    TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
+    TDJCombo(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
     for I := Low(GENRES) to High(GENRES) do
-      TComboBox(FEdits[tfGenre]).Items.Add(GENRES[I]);
+      TDJCombo(FEdits[tfGenre]).Items.Add(GENRES[I]);
   end;
   if FEdits[tfKey] <> nil then
     for I := Low(KEYS) to High(KEYS) do
-      TComboBox(FEdits[tfKey]).Items.Add(KEYS[I]);
+      TDJCombo(FEdits[tfKey]).Items.Add(KEYS[I]);
   if FEdits[tfBpm] <> nil then
   begin
     TEdit(FEdits[tfBpm]).NumbersOnly := True;
@@ -722,25 +731,21 @@ begin
   PnlHead.Height := Scale96ToForm(24);
   PnlHead.BorderSpacing.Around := 1;
   PnlHead.Color := DJ_BTN;
-  X := Scale96ToForm(6);
   for I := 0 to High(COL_W) do
-  begin
-    Lbl := TLabel.Create(Self);
-    Lbl.Parent := PnlHead;
-    Lbl.SetBounds(X, Scale96ToForm(5), Scale96ToForm(COL_W[I]) - Scale96ToForm(6), Scale96ToForm(16));
-    Lbl.AutoSize := False;
-    Lbl.Caption := UTF8UpperCase(ColCaps[I]);
-    Lbl.Font.Color := DJ_DIM;
-    Lbl.Font.Style := [fsBold];
-    Lbl.Font.Size := 8;
-    Lbl.Cursor := crHandPoint;
-    Lbl.Hint := _('Klick sortiert, nochmal klicken sortiert umgekehrt');
-    Lbl.ShowHint := True;
-    Lbl.Tag := I;
-    Lbl.OnClick := @HeadClick;
-    X := X + Scale96ToForm(COL_W[I]);
-  end;
-
+    FColW[I] := Scale96ToForm(COL_W[I]);
+  FDragCol := -1;
+  FHead := TPaintBox.Create(Self);
+  FHead.Parent := PnlHead;
+  FHead.Align := alClient;
+  FHead.Font.Style := [fsBold];
+  FHead.Font.Size := 8;
+  FHead.Hint := _('Klick sortiert, nochmal klicken sortiert umgekehrt') + LineEnding +
+    _('Rand zwischen zwei Spalten ziehen ändert die Breite');
+  FHead.ShowHint := True;
+  FHead.OnPaint := @HeadPaint;
+  FHead.OnMouseDown := @HeadMouseDown;
+  FHead.OnMouseMove := @HeadMouseMove;
+  FHead.OnMouseUp := @HeadMouseUp;
   FList := TListView.Create(Self);
   FList.Parent := PnlList;
   FList.Align := alClient;
@@ -758,6 +763,7 @@ begin
   FList.OnKeyDown := @ListKeyDown;
   FList.OnColumnClick := @ListColumnClick;
   FList.OnCustomDrawSubItem := @ListDrawSubItem;
+  FList.OnResize := @ListResize;
   FSortCol := -1;
   for I := 0 to High(COL_W) do
   begin
@@ -767,10 +773,174 @@ begin
   end;
 end;
 
-{ Klick auf die eigene Kopfzeile: wie ein Klick auf die Spaltenüberschrift }
-procedure TMainForm.HeadClick(Sender: TObject);
+{ ---------- eigene Kopfzeile der Liste ----------------------------------- }
+
+{ Spaltenbreiten an die Liste anpassen: die letzte Spalte (Status) füllt
+  den Rest, so gibt es nie einen waagrechten Rollbalken und die Kopfzeile
+  passt immer genau über die Spalten }
+procedure TMainForm.FitColumns;
+var
+  I, Sum, Avail: Integer;
 begin
-  ListColumnClick(FList, FList.Columns[TLabel(Sender).Tag]);
+  if (FList = nil) or (FList.Columns.Count <= High(FColW)) then Exit;
+  Avail := FList.ClientWidth - 2;
+  Sum := 0;
+  for I := 0 to High(FColW) - 1 do
+    Inc(Sum, FColW[I]);
+  FColW[High(FColW)] := Avail - Sum;
+  if FColW[High(FColW)] < Scale96ToForm(60) then
+    FColW[High(FColW)] := Scale96ToForm(60);
+  FList.BeginUpdate;
+  try
+    for I := 0 to High(FColW) do
+      if FList.Columns[I].Width <> FColW[I] then
+        FList.Columns[I].Width := FColW[I];
+  finally
+    FList.EndUpdate;
+  end;
+  if FHead <> nil then FHead.Invalidate;
+end;
+
+procedure TMainForm.ListResize(Sender: TObject);
+begin
+  FitColumns;
+end;
+
+{ Index der Spalte, deren rechter Rand bei X liegt (±4 px), sonst -1.
+  Der Rand der letzten Spalte lässt sich nicht ziehen (sie füllt den Rest). }
+function TMainForm.HeadDivider(X: Integer): Integer;
+var
+  I, Edge: Integer;
+begin
+  Result := -1;
+  Edge := 0;
+  for I := 0 to High(FColW) - 1 do
+  begin
+    Inc(Edge, FColW[I]);
+    if Abs(X - Edge) <= Scale96ToForm(4) then Exit(I);
+  end;
+end;
+
+procedure TMainForm.HeadPaint(Sender: TObject);
+var
+  I, X, TH, TX, CX, CY, D: Integer;
+  S: string;
+begin
+  with FHead.Canvas do
+  begin
+    Brush.Color := DJ_BTN;
+    FillRect(FHead.ClientRect);
+    Font := FHead.Font;
+    TH := TextHeight('Ag');
+    X := 0;
+    for I := 0 to High(FColW) do
+    begin
+      S := UTF8UpperCase(FList.Columns[I].Caption);
+      if I = FSortCol then Font.Color := DJ_TEXT else Font.Color := DJ_DIM;
+      TX := X + Scale96ToForm(6);
+      { Text abschneiden, damit er nicht in die nächste Spalte ragt }
+      if I = FSortCol then
+        ClipRect := Rect(X, 0, X + FColW[I] - Scale96ToForm(14), FHead.Height)
+      else
+        ClipRect := Rect(X, 0, X + FColW[I] - Scale96ToForm(3), FHead.Height);
+      Clipping := True;
+      Brush.Style := bsClear;
+      TextOut(TX, (FHead.Height - TH) div 2, S);
+      Brush.Style := bsSolid;
+      Clipping := False;
+      { kleiner Pfeil für die Sortierrichtung }
+      if I = FSortCol then
+      begin
+        CX := TX + TextWidth(S) + Scale96ToForm(8);
+        if CX > X + FColW[I] - Scale96ToForm(8) then
+          CX := X + FColW[I] - Scale96ToForm(8);
+        CY := FHead.Height div 2;
+        D := Scale96ToForm(3);
+        Brush.Color := DJ_GREEN;
+        Pen.Color := DJ_GREEN;
+        if FSortDesc then
+          Polygon([Point(CX - D, CY - D div 2), Point(CX + D, CY - D div 2), Point(CX, CY + D)])
+        else
+          Polygon([Point(CX - D, CY + D div 2), Point(CX + D, CY + D div 2), Point(CX, CY - D)]);
+        Brush.Color := DJ_BTN;
+      end;
+      Inc(X, FColW[I]);
+      { Trennstrich zwischen den Spalten (dort kann man ziehen) }
+      if I < High(FColW) then
+      begin
+        if I = FDragCol then Pen.Color := DJ_GREEN else Pen.Color := DJ_BTNBORDER;
+        MoveTo(X - 1, Scale96ToForm(4));
+        LineTo(X - 1, FHead.Height - Scale96ToForm(4));
+      end;
+    end;
+  end;
+end;
+
+procedure TMainForm.HeadMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button <> mbLeft then Exit;
+  FDragged := False;
+  FDragCol := HeadDivider(X);
+  if FDragCol >= 0 then
+  begin
+    FDragX0 := X;
+    FDragW0 := FColW[FDragCol];
+    FHead.Invalidate;
+  end;
+end;
+
+procedure TMainForm.HeadMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  I, W, Others, MaxW: Integer;
+begin
+  if FDragCol < 0 then
+  begin
+    { Mauszeiger zeigt, wo man ziehen kann }
+    if HeadDivider(X) >= 0 then FHead.Cursor := crHSplit
+    else FHead.Cursor := crHandPoint;
+    Exit;
+  end;
+  { Breite ändern: mindestens 40 px, und die letzte Spalte behält 60 px }
+  Others := 0;
+  for I := 0 to High(FColW) - 1 do
+    if I <> FDragCol then Inc(Others, FColW[I]);
+  MaxW := FList.ClientWidth - 2 - Others - Scale96ToForm(60);
+  W := FDragW0 + X - FDragX0;
+  if W > MaxW then W := MaxW;
+  if W < Scale96ToForm(40) then W := Scale96ToForm(40);
+  if W <> FColW[FDragCol] then
+  begin
+    FColW[FDragCol] := W;
+    FDragged := True;
+    FitColumns;
+  end;
+end;
+
+procedure TMainForm.HeadMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  I, Edge: Integer;
+begin
+  if Button <> mbLeft then Exit;
+  if FDragCol >= 0 then
+  begin
+    FDragCol := -1;
+    FHead.Invalidate;
+    if FDragged then Exit;
+  end;
+  { einfacher Klick: nach dieser Spalte sortieren }
+  Edge := 0;
+  for I := 0 to High(FColW) do
+  begin
+    Inc(Edge, FColW[I]);
+    if (X < Edge) or (I = High(FColW)) then
+    begin
+      ListColumnClick(FList, FList.Columns[I]);
+      FHead.Invalidate;
+      Exit;
+    end;
+  end;
 end;
 
 { Status farbig: grün = fertig, gelb = geändert, orange = es fehlt etwas.
@@ -816,6 +986,8 @@ end;
 procedure TMainForm.LoadSettings;
 var
   Ini: TIniFile;
+  Parts: TStringList;   // Spaltenbreiten aus der INI
+  I, W: Integer;
 begin
   try
     Ini := TIniFile.Create(IniFileName);
@@ -824,17 +996,34 @@ begin
       FFolderHint := Ini.ReadBool('Optionen', 'OrdnerHinweis', True);
       FChkShrink.Down := Ini.ReadBool('Optionen', 'CoverVerkleinern', True);
       FLastDir := Ini.ReadString('Optionen', 'LetzterOrdner', '');
+      { Spaltenbreiten (bei 96 dpi), z.B. "190,130,115,95,85,50" }
+      Parts := TStringList.Create;
+      try
+        Parts.CommaText := Ini.ReadString('Ansicht', 'Spalten', '');
+        if Parts.Count = High(FColW) then
+          for I := 0 to High(FColW) - 1 do
+          begin
+            W := StrToIntDef(Parts[I], 0);
+            if (W >= 40) and (W <= 1000) then
+              FColW[I] := Scale96ToForm(W);
+          end;
+      finally
+        Parts.Free;
+      end;
     finally
       Ini.Free;
     end;
   except
     { INI nicht lesbar -> Standardwerte }
   end;
+  FitColumns;
 end;
 
 procedure TMainForm.SaveSettings;
 var
   Ini: TIniFile;
+  S: string;     // Spaltenbreiten bei 96 dpi, mit Komma getrennt
+  I: Integer;
 begin
   try
     Ini := TIniFile.Create(IniFileName);
@@ -843,6 +1032,13 @@ begin
       Ini.WriteBool('Optionen', 'OrdnerHinweis', FFolderHint);
       Ini.WriteBool('Optionen', 'CoverVerkleinern', FChkShrink.Down);
       Ini.WriteString('Optionen', 'LetzterOrdner', FLastDir);
+      S := '';
+      for I := 0 to High(FColW) - 1 do
+      begin
+        if S <> '' then S := S + ',';
+        S := S + IntToStr(MulDiv(FColW[I], 96, PixelsPerInch));
+      end;
+      Ini.WriteString('Ansicht', 'Spalten', S);
     finally
       Ini.Free;
     end;
@@ -1101,11 +1297,11 @@ begin
   end;
 end;
 
-{ Text eines Felds (TEdit oder TComboBox) }
+{ Text eines Felds (TEdit oder TDJCombo) }
 function TMainForm.FieldText(F: TMp4TagField): string;
 begin
-  if FEdits[F] is TComboBox then
-    Result := TComboBox(FEdits[F]).Text
+  if FEdits[F] is TDJCombo then
+    Result := TDJCombo(FEdits[F]).Text
   else
     Result := TEdit(FEdits[F]).Text;
 end;
@@ -1116,11 +1312,10 @@ var
   H: string;
 begin
   if Mixed then H := _('<verschieden>') else H := '';
-  if FEdits[F] is TComboBox then
+  if FEdits[F] is TDJCombo then
   begin
-    TComboBox(FEdits[F]).ItemIndex := -1;
-    TComboBox(FEdits[F]).Text := V;
-    TComboBox(FEdits[F]).TextHint := H;
+    TDJCombo(FEdits[F]).Text := V;
+    TDJCombo(FEdits[F]).TextHint := H;
   end
   else
   begin
@@ -1134,6 +1329,8 @@ procedure TMainForm.SetFieldHint(F: TMp4TagField; const H: string);
 begin
   if FEdits[F] <> nil then
     FEdits[F].Hint := H;
+  if FEdits[F] is TDJCombo then
+    TDJCombo(FEdits[F]).Edit.Hint := H;
 end;
 
 { BPM-Feld rot färben, solange die Eingabe ungültig ist }
@@ -1161,17 +1358,16 @@ end;
 
 procedure TMainForm.ComboSelectAsync(Data: PtrInt);
 var
-  Cb: TComboBox;
+  Cb: TDJCombo;
   V: string;
 begin
-  Cb := TComboBox(Data);
+  Cb := TDJCombo(Data);
   if Cb = FEdits[tfKey] then
   begin
     { "Am   (8A / 1m)" -> "Am" }
     V := CleanKey(Cb.Text);
     if V <> Cb.Text then
     begin
-      Cb.ItemIndex := -1;
       Cb.Text := V;      // löst FieldChange aus
     end;
   end;
