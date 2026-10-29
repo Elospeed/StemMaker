@@ -1642,7 +1642,7 @@ procedure TfrmMain.pbKofiPaint(Sender: TObject);
 begin
   pbKofi.Canvas.Font.Style := [fsBold];
   DrawKofiButton(pbKofi.Canvas, pbKofi.ClientRect, _('Kaffee spendieren'),
-    FKofiHover, pnlFoot.Color, Screen.PixelsPerInch);
+    FKofiHover, pnlFoot.Color, Screen.PixelsPerInch, Application.Icon);
 end;
 
 procedure TfrmMain.pbKofiClick(Sender: TObject);

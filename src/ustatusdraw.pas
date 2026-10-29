@@ -50,8 +50,12 @@ const
   CLR_BAR_FILL   = TColor($0025B006);   // Windows-Grün  #06B025
   CLR_OK_TEXT    = TColor($00377F1A);   // dunkles Grün  #1A7F37 (gut lesbar)
   CLR_FAIL_TEXT  = TColor($001C2BC4);   // Windows-Rot   #C42B1C
-  CLR_KOFI       = TColor($005E5AFF);   // Ko-fi-Rot     #FF5A5E (wie im Danke-Fenster)
-  CLR_KOFI_HOVER = TColor($004D48E5);   // etwas dunkler #E5484D (Maus darüber)
+  CLR_KOFI       = TColor($005E5AFF);   // Ko-fi-Rot     #FF5A5E (Herz, wie im Danke-Fenster)
+  { Ko-fi-Knopf "E" (Wahl Speedy 29.10.2026): dunkle Pille, vorne das Symbol
+    des jeweiligen Programms, rotes Herz, weisser Text - in allen Elospeed-Tools gleich }
+  CLR_KOFI_FACE      = TColor($00262220);   // auf hellem Grund     #202226
+  CLR_KOFI_FACE_DARK = TColor($00302C2A);   // auf dunklem Grund    #2A2C30
+  CLR_KOFI_HOVER     = TColor($00443F3C);   // Maus darüber         #3C3F44
 
 { Streifen in den vier Stem-Farben, gleich breite Teile von links nach rechts }
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
@@ -70,15 +74,16 @@ procedure DrawStatusCell(C: TCanvas; const R: TRect; Look: TStatusLook;
   Percent: Integer; const Text: string; const Colors: TStemColorArray;
   BackColor, TextColor: TColor; Highlighted: Boolean; PPI: Integer);
 
-{ Breite des Ko-fi-Knopfs für den Text (Herz + Text + Rand), in Pixel.
+{ Breite des Ko-fi-Knopfs für den Text (Symbol + Herz + Text + Rand), in Pixel.
   Die Schrift der Leinwand muss schon gesetzt sein (fett, siehe unten). }
 function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
 
-{ Ko-fi-Knopf zeichnen: Hintergrund BackColor, darauf der rote Knopf mit
-  weissem Herz und Text, senkrecht mittig im Rechteck R.
-  Hover = True -> Maus ist darüber, der Knopf wird etwas dunkler. }
+{ Ko-fi-Knopf zeichnen: Hintergrund BackColor, darauf die dunkle Pille mit
+  dem Programm-Symbol (AppIcon, meist Application.Icon; nil = ohne), rotem
+  Herz und weissem Text, senkrecht mittig im Rechteck R.
+  Hover = True -> Maus ist darüber, die Pille wird etwas heller. }
 procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
-  Hover: Boolean; BackColor: TColor; PPI: Integer);
+  Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon = nil);
 
 implementation
 
@@ -91,41 +96,67 @@ end;
 
 function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
 begin
-  { 10 Rand links, 9 Herz, 6 Abstand, Text, 10 Rand rechts }
-  Result := ScalePx(35, PPI) + C.TextWidth(Text);
+  { 6 Rand links, 16 Symbol, 6 Abstand, 10 Herz, 6 Abstand, Text, 12 Rand rechts }
+  Result := ScalePx(56, PPI) + C.TextWidth(Text);
+end;
+
+{ ist die Farbe dunkel? (für die Wahl der Pillenfarbe) }
+function IsDarkColor(Col: TColor): Boolean;
+var
+  RGB: LongInt;
+begin
+  RGB := ColorToRGB(Col);
+  Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000 < 100;
 end;
 
 procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
-  Hover: Boolean; BackColor: TColor; PPI: Integer);
+  Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon);
 var
-  B: TRect;        // der Knopf selbst
-  H, HX, HY, D: Integer;
+  B, IR: TRect;    // der Knopf selbst, das Symbol
+  H, HX, HY, D, X, S: Integer;
   Col: TColor;
 begin
   C.Brush.Style := bsSolid;
   C.Brush.Color := BackColor;
   C.FillRect(R);
 
-  { Knopf: so hoch wie die Schrift plus etwas Luft, rechts bündig }
-  H := Min(R.Bottom - R.Top - ScalePx(4, PPI), C.TextHeight('Ag') + ScalePx(6, PPI));
+  { Pille: so hoch wie die Schrift plus etwas Luft, ganz runde Enden }
+  H := Min(R.Bottom - R.Top - ScalePx(2, PPI),
+    Max(C.TextHeight('Ag') + ScalePx(8, PPI), ScalePx(22, PPI)));
   B := Rect(R.Left, (R.Top + R.Bottom - H) div 2, R.Right, 0);
   B.Bottom := B.Top + H;
-  if Hover then Col := CLR_KOFI_HOVER else Col := CLR_KOFI;
+  if Hover then
+    Col := CLR_KOFI_HOVER
+  else if IsDarkColor(BackColor) then
+    Col := CLR_KOFI_FACE_DARK
+  else
+    Col := CLR_KOFI_FACE;
   C.Brush.Color := Col;
   C.Pen.Color := Col;
-  C.RoundRect(B, H, H);   // ganz runde Enden
+  C.RoundRect(B, H, H);
+
+  { vorne das Symbol des Programms (16 px bei 100 %) }
+  X := B.Left + ScalePx(6, PPI);
+  S := ScalePx(16, PPI);
+  if (AppIcon <> nil) and not AppIcon.Empty then
+  begin
+    AppIcon.Current := AppIcon.GetBestIndexForSize(Size(S, S));
+    IR := Rect(X, (B.Top + B.Bottom - S) div 2, X + S, (B.Top + B.Bottom - S) div 2 + S);
+    C.StretchDraw(IR, AppIcon);
+  end;
+  X := X + S + ScalePx(6, PPI);
 
   { Herz aus zwei Kreisen und einem Dreieck (nicht jede Schrift hat ♥) }
   D := ScalePx(5, PPI);
-  HX := B.Left + ScalePx(14, PPI);
+  HX := X + D;
   HY := (B.Top + B.Bottom) div 2 - ScalePx(2, PPI);
-  C.Brush.Color := clWhite;
-  C.Pen.Color := clWhite;
+  C.Brush.Color := CLR_KOFI;
+  C.Pen.Color := CLR_KOFI;
   C.Ellipse(HX - D, HY - D div 2, HX + 1, HY + D div 2 + 1);
   C.Ellipse(HX, HY - D div 2, HX + D + 1, HY + D div 2 + 1);
   C.Polygon([Point(HX - D, HY + 1), Point(HX + D, HY + 1), Point(HX, HY + D + ScalePx(1, PPI))]);
 
-  { Text weiss auf Rot }
+  { Text weiss }
   C.Brush.Style := bsClear;
   C.Font.Color := clWhite;
   C.TextOut(HX + D + ScalePx(6, PPI), (B.Top + B.Bottom - C.TextHeight('Ag')) div 2, Text);
