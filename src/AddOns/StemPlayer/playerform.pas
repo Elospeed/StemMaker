@@ -217,6 +217,8 @@ type
     BtnClip     : TDJButton;   // reine Anzeige, leuchtet bei Übersteuerung
     { --- Unten --- }
     PnlBottom   : TDJPanel;
+    PbKofi      : TPaintBox;   // Ko-fi-Knopf unten rechts (wie in allen Elospeed-Tools)
+    FKofiHover  : Boolean;
     LblHelp     : TLabel;
     LblStatus   : TLabel;
     LblKofi     : TLabel;
@@ -362,6 +364,9 @@ type
     procedure TimerTick(Sender: TObject);
     procedure HeadTimerTick(Data: PtrInt);
     procedure KofiClick(Sender: TObject);
+    procedure KofiPaint(Sender: TObject);
+    procedure KofiEnter(Sender: TObject);
+    procedure KofiLeave(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -376,6 +381,9 @@ var
   MainForm: TMainForm;
 
 implementation
+
+uses
+  uStatusDraw;   // Ko-fi-Knopf, gleich wie in StemMaker
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
@@ -821,10 +829,22 @@ begin
   LblStatus.AutoSize := False;
   LblStatus.Width := PnlBottom.Width - 24;
 
-  LblKofi := MakeLabel(PnlBottom, _('Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed'), 12, 44, 0, False);
-  LblKofi.Font.Color := DJ_KOFI;
-  LblKofi.Cursor := crHandPoint;
-  LblKofi.OnClick := @KofiClick;
+  { Ko-fi-Knopf unten rechts: dunkle Pille mit dem StemPlayer-Symbol (uStatusDraw) }
+  PbKofi := TPaintBox.Create(Self);
+  PbKofi.Parent := PnlBottom;
+  PbKofi.Canvas.Font.Style := [fsBold];
+  PbKofi.Width := KofiButtonWidth(PbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
+  PbKofi.Height := 24;
+  PbKofi.Left := PnlBottom.Width - PbKofi.Width - 12;
+  PbKofi.Top := 40;
+  PbKofi.Anchors := [akTop, akRight];
+  PbKofi.Cursor := crHandPoint;
+  PbKofi.Hint := 'ko-fi.com/elospeed';
+  PbKofi.ShowHint := True;
+  PbKofi.OnPaint := @KofiPaint;
+  PbKofi.OnClick := @KofiClick;
+  PbKofi.OnMouseEnter := @KofiEnter;
+  PbKofi.OnMouseLeave := @KofiLeave;
 end;
 
 { Eine Stem-Zeile:  Name/Zustand | M S | Fader | % | LED-Meter }
@@ -2548,6 +2568,25 @@ end;
 procedure TMainForm.KofiClick(Sender: TObject);
 begin
   OpenURL(KOFI_URL);
+end;
+
+procedure TMainForm.KofiPaint(Sender: TObject);
+begin
+  PbKofi.Canvas.Font.Style := [fsBold];
+  DrawKofiButton(PbKofi.Canvas, PbKofi.ClientRect, _('Kaffee spendieren'),
+    FKofiHover, DJ_FOOTER, Screen.PixelsPerInch, Application.Icon);
+end;
+
+procedure TMainForm.KofiEnter(Sender: TObject);
+begin
+  FKofiHover := True;
+  PbKofi.Invalidate;
+end;
+
+procedure TMainForm.KofiLeave(Sender: TObject);
+begin
+  FKofiHover := False;
+  PbKofi.Invalidate;
 end;
 
 procedure TMainForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
