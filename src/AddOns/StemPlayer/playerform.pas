@@ -129,7 +129,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
   LazFileUtils, IniFiles, MMSystem, uLang, mp4stem, stemengine, djcontrols, wellenform,
-  bildtakt, uStatusDraw;
+  bildtakt;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
@@ -317,6 +317,9 @@ var
   MainForm: TMainForm;
 
 implementation
+
+uses
+  uStatusDraw;   // Ko-fi-Knopf, gleich wie in StemMaker
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
