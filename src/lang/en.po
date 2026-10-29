@@ -273,6 +273,42 @@ msgstr "Starting %s ..."
 msgid "%s wurde nicht gefunden."
 msgstr "%s was not found."
 
+#: ulangui.pas:195
+msgid "&Alle"
+msgstr "&All"
+
+#: ulangui.pas:197
+msgid "&Alle bejahen"
+msgstr "Yes to &all"
+
+#: ulangui.pas:198
+msgid "&Hilfe"
+msgstr "&Help"
+
+#: ulangui.pas:194
+msgid "&Ignorieren"
+msgstr "&Ignore"
+
+#: ulangui.pas:188
+msgid "&Ja"
+msgstr "&Yes"
+
+#: ulangui.pas:189
+msgid "&Nein"
+msgstr "&No"
+
+#: ulangui.pas:190
+msgid "&OK"
+msgstr "&OK"
+
+#: ulangui.pas:199
+msgid "&Schließen"
+msgstr "&Close"
+
+#: ulangui.pas:193
+msgid "&Wiederholen"
+msgstr "&Retry"
+
 #: umain.pas:2458
 msgid "(Tempo dieses PCs)"
 msgstr "(this PC's speed)"
@@ -401,7 +437,7 @@ msgstr "AVX (medium version)"
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (fast version)"
 
-#: uinit.pas:600 umain.pas:2729 usettings.pas:416
+#: uinit.pas:600 ulangui.pas:191 ulangui.pas:192
 msgid "Abbrechen"
 msgstr "Cancel"
 
@@ -480,6 +516,10 @@ msgstr "All details: Info -> Licenses, and LICENSE and THIRD-PARTY-NOTICES.md in
 #: uinfo.pas:511
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "All details are in the CHANGELOG on GitHub (in German)"
+
+#: ulangui.pas:196
+msgid "Alle verneinen"
+msgstr "No to all"
 
 #: uinit.pas:871
 msgid "Alles bereit"
@@ -644,6 +684,10 @@ msgstr "Best performance"
 #: stemcli.lpr:138
 msgid "Bestätigt - StemCLI ist auf diesem PC freigegeben."
 msgstr "Accepted - StemCLI is enabled on this PC."
+
+#: ulangui.pas:203
+msgid "Bestätigung"
+msgstr "Confirmation"
 
 #: taggerform.pas:651
 msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
@@ -1053,7 +1097,7 @@ msgstr "ERROR: "
 msgid "Farbe wählen"
 msgstr "Choose colour"
 
-#: umain.pas:1055 umain.pas:2307
+#: ulangui.pas:201 umain.pas:1055 umain.pas:2307
 msgid "Fehler"
 msgstr "Error"
 
@@ -1264,6 +1308,10 @@ msgstr "There is no picture in the clipboard."
 #: uinfo.pas:388 umain.lfm:80
 msgid "Info"
 msgstr "Info"
+
+#: ulangui.pas:202
+msgid "Information"
+msgstr "Information"
 
 #: uinit.pas:564 uinit.pas:711
 msgid "Installation wird geprüft ..."
@@ -2364,6 +2412,10 @@ msgstr "WAVEFORM"
 #: ulicense.pas:150
 msgid "Wandle nur Musik um, an der du die nötigen Rechte hast, z. B. selbst gekaufte Titel für den eigenen Gebrauch. Für das Einhalten von Urheberrecht und den Nutzungsbedingungen von Shops und Streaming-Diensten bist du selbst verantwortlich."
 msgstr "Only convert music you have the necessary rights to, e.g. tracks you bought for your own use. You are responsible for complying with copyright law and the terms of use of shops and streaming services."
+
+#: ulangui.pas:200
+msgid "Warnung"
+msgstr "Warning"
 
 #: ureport.pas:433
 msgid "Was habe ich gerade gemacht?"
