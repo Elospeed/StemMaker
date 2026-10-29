@@ -419,12 +419,12 @@ const
   FIELD_ORDER: array[0..10] of TMp4TagField =
     (tfTitle, tfArtist, tfAlbum, tfGenre, tfYear, tfLabel, tfComment,
      tfAlbumArtist, tfTrack, tfBpm, tfKey);
-  ROW_H = 32;
+  ROW_H = 28;
 var
   Shown: array of TMp4TagField;
   Half: Integer;
   Cb: TComboBox;
-  PnlTop, PnlEdit, Fields, CoverPanel, Frame, Btns, Foot: TPanel;
+  PnlTop, PnlEdit, Fields, CoverPanel, Frame, SaveBox, Foot: TPanel;
   Col: TListColumn;
   Lbl: TLabel;
   F: TMp4TagField;
@@ -434,7 +434,7 @@ var
   begin
     Lbl := TLabel.Create(Self);
     Lbl.Parent := Fields;
-    Lbl.SetBounds(Scale96ToForm(X), Scale96ToForm(Y + 5), Scale96ToForm(110), Scale96ToForm(20));
+    Lbl.SetBounds(Scale96ToForm(X), Scale96ToForm(Y + 4), Scale96ToForm(80), Scale96ToForm(20));
     Lbl.Caption := FieldCaption(AField);
     if AField in [tfGenre, tfKey] then
     begin
@@ -448,8 +448,8 @@ var
     else
       FEdits[AField] := TEdit.Create(Self);
     FEdits[AField].Parent := Fields;
-    FEdits[AField].SetBounds(Scale96ToForm(X + 115), Scale96ToForm(Y),
-      Scale96ToForm(235), Scale96ToForm(26));
+    FEdits[AField].SetBounds(Scale96ToForm(X + 82), Scale96ToForm(Y),
+      Scale96ToForm(196), Scale96ToForm(24));
     FEdits[AField].Tag := Ord(AField);
     if FEdits[AField] is TComboBox then
       TComboBox(FEdits[AField]).OnChange := @FieldChange
@@ -463,38 +463,40 @@ var
 begin
   Caption := APP_TITLE + ' ' + APP_VER;
   Position := poScreenCenter;
-  Width := Scale96ToForm(1000);
-  Height := Scale96ToForm(700);
-  Constraints.MinWidth := Scale96ToForm(880);
-  Constraints.MinHeight := Scale96ToForm(560);
+  Width := Scale96ToForm(840);
+  Height := Scale96ToForm(540);
+  Constraints.MinWidth := Scale96ToForm(800);
+  Constraints.MinHeight := Scale96ToForm(420);
   KeyPreview := True;
   AllowDropFiles := True;
   OnDropFiles := @FormDropFiles;
   OnKeyDown := @FormKeyDown;
   OnCloseQuery := @FormCloseQuery;
 
-  { --- oben: Dateien ------------------------------------------------------ }
+  { --- oben: Dateien links, Speichern rechts ------------------------------ }
   PnlTop := TPanel.Create(Self);
   PnlTop.Parent := Self;
   PnlTop.Align := alTop;
-  PnlTop.Height := Scale96ToForm(44);
+  PnlTop.Height := Scale96ToForm(40);
   PnlTop.BevelOuter := bvNone;
-  FBtnAdd    := MakeButton(PnlTop, _('Dateien...'), 8, 8, 120, @BtnAddClick);
-  FBtnFolder := MakeButton(PnlTop, _('Ordner...'), 134, 8, 120, @BtnFolderClick);
-  FBtnRemove := MakeButton(PnlTop, _('Entfernen'), 260, 8, 120, @BtnRemoveClick);
-  FBtnClear  := MakeButton(PnlTop, _('Liste leeren'), 386, 8, 120, @BtnClearClick);
-  Lbl := TLabel.Create(Self);
-  Lbl.Parent := PnlTop;
-  Lbl.SetBounds(Scale96ToForm(520), Scale96ToForm(14), Scale96ToForm(460), Scale96ToForm(20));
-  Lbl.Caption := _('Stem-Dateien oder Ordner hierher ziehen');
-  Lbl.Font.Color := clGrayText;
+  FBtnAdd    := MakeButton(PnlTop, _('Dateien...'), 8, 6, 100, @BtnAddClick);
+  FBtnFolder := MakeButton(PnlTop, _('Ordner...'), 112, 6, 100, @BtnFolderClick);
+  FBtnRemove := MakeButton(PnlTop, _('Entfernen'), 216, 6, 100, @BtnRemoveClick);
+  FBtnClear  := MakeButton(PnlTop, _('Liste leeren'), 320, 6, 100, @BtnClearClick);
+  SaveBox := TPanel.Create(Self);
+  SaveBox.Parent := PnlTop;
+  SaveBox.Align := alRight;
+  SaveBox.Width := Scale96ToForm(300);
+  SaveBox.BevelOuter := bvNone;
+  FBtnRevert := MakeButton(SaveBox, _('Änderungen verwerfen'), 0, 6, 170, @BtnRevertClick);
+  FBtnSave   := MakeButton(SaveBox, _('Speichern'), 174, 6, 118, @BtnSaveClick);
+  FBtnSave.Font.Style := [fsBold];
 
-  { --- Statuszeile und Knöpfe unten -------------------------------------- }
-  { Fusszeile: links die Statuszeile, rechts der Ko-fi-Knopf wie in StemMaker }
+  { --- Fusszeile: Statuszeile, die zwei Optionen, rechts der Ko-fi-Knopf --- }
   Foot := TPanel.Create(Self);
   Foot.Parent := Self;
   Foot.Align := alBottom;
-  Foot.Height := Scale96ToForm(24);
+  Foot.Height := Scale96ToForm(26);
   Foot.BevelOuter := bvNone;
   FKofi := TPaintBox.Create(Self);
   FKofi.Parent := Foot;
@@ -515,44 +517,43 @@ begin
   FStatus.SizeGrip := False;
   FStatus.SimplePanel := True;
 
-  Btns := TPanel.Create(Self);
-  Btns.Parent := Self;
-  Btns.Align := alBottom;
-  Btns.Height := Scale96ToForm(44);
-  Btns.BevelOuter := bvNone;
-  FBtnSave   := MakeButton(Btns, _('Speichern'), 8, 8, 150, @BtnSaveClick);
-  FBtnSave.Font.Style := [fsBold];
-  FBtnRevert := MakeButton(Btns, _('Änderungen verwerfen'), 164, 8, 180, @BtnRevertClick);
+  { rechts nach links: Ko-fi, Cover verkleinern, Sicherungskopie }
+  FChkShrink := TCheckBox.Create(Self);
+  FChkShrink.Parent := Foot;
+  FChkShrink.Align := alRight;
+  FChkShrink.BorderSpacing.Right := Scale96ToForm(12);
+  FChkShrink.Caption := Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]);
+  FChkShrink.Checked := True;
   FChkBackup := TCheckBox.Create(Self);
-  FChkBackup.Parent := Btns;
-  FChkBackup.SetBounds(Scale96ToForm(364), Scale96ToForm(12), Scale96ToForm(250), Scale96ToForm(22));
+  FChkBackup.Parent := Foot;
+  FChkBackup.Align := alRight;
+  FChkBackup.BorderSpacing.Right := Scale96ToForm(12);
   FChkBackup.Caption := _('Sicherungskopie anlegen (.bak)');
   FChkBackup.Checked := False;
   FChkBackup.Hint := _('Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak).') +
     LineEnding + _('Die Kopie wird nie überschrieben, sie bleibt also das echte Original.');
   FChkBackup.ShowHint := True;
-  FChkShrink := TCheckBox.Create(Self);
-  FChkShrink.Parent := Btns;
-  FChkShrink.SetBounds(Scale96ToForm(620), Scale96ToForm(12), Scale96ToForm(360), Scale96ToForm(22));
-  FChkShrink.Caption := Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]);
-  FChkShrink.Checked := True;
+  { Reihenfolge bei alRight: wer weiter links stehen soll, bekommt das kleinere Left }
+  FKofi.Left := Foot.Width;
+  FChkShrink.Left := FKofi.Left - 1;
+  FChkBackup.Left := FChkShrink.Left - 1;
 
   { --- Bearbeiten-Bereich ------------------------------------------------- }
   PnlEdit := TPanel.Create(Self);
   PnlEdit.Parent := Self;
   PnlEdit.Align := alBottom;
-  PnlEdit.Height := Scale96ToForm(270);
+  PnlEdit.Height := Scale96ToForm(140);
   PnlEdit.BevelOuter := bvNone;
 
   CoverPanel := TPanel.Create(Self);
   CoverPanel.Parent := PnlEdit;
   CoverPanel.Align := alLeft;
-  CoverPanel.Width := Scale96ToForm(230);
+  CoverPanel.Width := Scale96ToForm(236);
   CoverPanel.BevelOuter := bvNone;
 
   Frame := TPanel.Create(Self);
   Frame.Parent := CoverPanel;
-  Frame.SetBounds(Scale96ToForm(8), Scale96ToForm(8), Scale96ToForm(176), Scale96ToForm(176));
+  Frame.SetBounds(Scale96ToForm(8), Scale96ToForm(6), Scale96ToForm(108), Scale96ToForm(108));
   Frame.BevelOuter := bvLowered;
   Frame.Color := clBtnFace;
   FCoverImg := TImage.Create(Self);
@@ -564,13 +565,17 @@ begin
 
   FCoverInfo := TLabel.Create(Self);
   FCoverInfo.Parent := CoverPanel;
-  FCoverInfo.SetBounds(Scale96ToForm(8), Scale96ToForm(188), Scale96ToForm(215), Scale96ToForm(18));
+  FCoverInfo.SetBounds(Scale96ToForm(8), Scale96ToForm(117), Scale96ToForm(224), Scale96ToForm(18));
   FCoverInfo.Font.Color := clGrayText;
 
-  FBtnCoverLoad  := MakeButton(CoverPanel, _('Bild...'), 8, 208, 106, @BtnCoverLoadClick);
-  FBtnCoverPaste := MakeButton(CoverPanel, _('Einfügen'), 118, 208, 106, @BtnCoverPasteClick);
-  FBtnCoverDel   := MakeButton(CoverPanel, _('Entfernen'), 8, 238, 106, @BtnCoverDelClick);
-  FBtnCoverSave  := MakeButton(CoverPanel, _('Speichern...'), 118, 238, 106, @BtnCoverSaveClick);
+  { die vier Cover-Knöpfe senkrecht neben dem Bild }
+  FBtnCoverLoad  := MakeButton(CoverPanel, _('Bild...'), 122, 6, 106, @BtnCoverLoadClick);
+  FBtnCoverPaste := MakeButton(CoverPanel, _('Einfügen'), 122, 33, 106, @BtnCoverPasteClick);
+  FBtnCoverDel   := MakeButton(CoverPanel, _('Entfernen'), 122, 60, 106, @BtnCoverDelClick);
+  FBtnCoverSave  := MakeButton(CoverPanel, _('Speichern...'), 122, 87, 106, @BtnCoverSaveClick);
+  for I := 0 to CoverPanel.ControlCount - 1 do
+    if CoverPanel.Controls[I] is TButton then
+      CoverPanel.Controls[I].Height := Scale96ToForm(26);
   FBtnCoverPaste.Hint := _('Bild aus der Zwischenablage einfügen (Strg+V)');
   FBtnCoverPaste.ShowHint := True;
 
@@ -590,9 +595,9 @@ begin
   Half := (Length(Shown) + 1) div 2;
   for I := 0 to High(Shown) do
     if I < Half then
-      AddField(Shown[I], 8, 8 + I * ROW_H)
+      AddField(Shown[I], 4, 6 + I * ROW_H)
     else
-      AddField(Shown[I], 375, 8 + (I - Half) * ROW_H);
+      AddField(Shown[I], 296, 6 + (I - Half) * ROW_H);
   if FEdits[tfGenre] <> nil then
   begin
     TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
@@ -634,15 +639,15 @@ begin
   SetFieldHint(tfLabel, _('Plattenfirma, die den Track veröffentlicht hat'));
   SetFieldHint(tfComment, _('Freier Text, z.B. Notizen fürs Auflegen'));
   FBtnFromName := MakeButton(Fields, _('Interpret/Titel aus Dateiname'),
-    490, 8 + (Length(Shown) - Half) * ROW_H, 235, @BtnFromNameClick);
+    378, 6 + (Length(Shown) - Half) * ROW_H, 196, @BtnFromNameClick);
+  FBtnFromName.Height := Scale96ToForm(24);
   FBtnFromName.Hint := _('"Interpret - Titel.stem.mp4" füllt Interpret und Titel');
   FBtnFromName.ShowHint := True;
 
   { Reihenfolge unten festlegen (bei gleicher Ausrichtung entscheidet Top):
-    Bearbeiten-Bereich, darunter Knöpfe, ganz unten die Statuszeile }
+    Bearbeiten-Bereich, ganz unten die Fusszeile }
   PnlEdit.Top := 0;
-  Btns.Top := PnlEdit.Top + PnlEdit.Height;
-  Foot.Top := Btns.Top + Btns.Height;
+  Foot.Top := PnlEdit.Top + PnlEdit.Height;
 
   { --- Liste (füllt den Rest) --------------------------------------------- }
   FList := TListView.Create(Self);
@@ -657,12 +662,12 @@ begin
   FList.OnKeyDown := @ListKeyDown;
   FList.OnColumnClick := @ListColumnClick;
   FSortCol := -1;
-  Col := FList.Columns.Add; Col.Caption := _('Datei');     Col.Width := Scale96ToForm(240);
-  Col := FList.Columns.Add; Col.Caption := _('Titel');     Col.Width := Scale96ToForm(170);
-  Col := FList.Columns.Add; Col.Caption := _('Interpret'); Col.Width := Scale96ToForm(150);
-  Col := FList.Columns.Add; Col.Caption := _('Album');     Col.Width := Scale96ToForm(110);
-  Col := FList.Columns.Add; Col.Caption := _('Genre');     Col.Width := Scale96ToForm(115);
-  Col := FList.Columns.Add; Col.Caption := _('Cover');     Col.Width := Scale96ToForm(65);
+  Col := FList.Columns.Add; Col.Caption := _('Datei');     Col.Width := Scale96ToForm(190);
+  Col := FList.Columns.Add; Col.Caption := _('Titel');     Col.Width := Scale96ToForm(130);
+  Col := FList.Columns.Add; Col.Caption := _('Interpret'); Col.Width := Scale96ToForm(115);
+  Col := FList.Columns.Add; Col.Caption := _('Album');     Col.Width := Scale96ToForm(95);
+  Col := FList.Columns.Add; Col.Caption := _('Genre');     Col.Width := Scale96ToForm(85);
+  Col := FList.Columns.Add; Col.Caption := _('Cover');     Col.Width := Scale96ToForm(50);
   Col := FList.Columns.Add; Col.Caption := _('Status');    Col.Width := Scale96ToForm(140);
 end;
 
@@ -882,7 +887,10 @@ var
   N: Integer;
 begin
   N := DirtyCount;
-  FStatus.SimpleText := Format(_('%d Dateien, %d geändert'), [FEntries.Count, N]);
+  if FEntries.Count = 0 then
+    FStatus.SimpleText := _('Stem-Dateien oder Ordner hierher ziehen')
+  else
+    FStatus.SimpleText := Format(_('%d Dateien, %d geändert'), [FEntries.Count, N]);
   FBtnSave.Enabled := N > 0;
   FBtnRevert.Enabled := N > 0;
 end;
