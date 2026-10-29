@@ -34,7 +34,7 @@ unit uStatusDraw;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Types, Math;
+  Classes, SysUtils, Graphics, Types, Math, IntfGraphics, FPImage;
 
 type
   { Wie eine Zeile aussieht. Absichtlich ein eigener Typ (nicht die ST_...
@@ -109,6 +109,83 @@ begin
   Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000 < 100;
 end;
 
+{ Pille und Herz geglättet zeichnen: GDI zeichnet Rundungen ohne
+  Kantenglättung (treppig). Darum vierfach so gross zeichnen und dann
+  je 4 x 4 Punkte zu einem mitteln.
+    B      Rechteck der Pille auf C
+    HeartX Mitte des Herzens (x, auf C), HeartY Oberkante der Herzkreise }
+procedure DrawSmoothPill(C: TCanvas; const B: TRect; PillColor, BackColor: TColor;
+  HeartX, HeartY, D: Integer);
+const
+  SS = 4;   // Vergrösserung beim Zeichnen
+var
+  Big, Small: TBitmap;
+  BigImg, SmallImg: TLazIntfImage;
+  W, H, X, Y, I, J, HX, HY, DD: Integer;
+  R, G, Bl: Cardinal;
+  Px: TFPColor;
+begin
+  W := B.Right - B.Left;
+  H := B.Bottom - B.Top;
+  if (W <= 0) or (H <= 0) then Exit;
+  Big := TBitmap.Create;
+  Small := TBitmap.Create;
+  BigImg := nil;
+  SmallImg := nil;
+  try
+    Big.PixelFormat := pf24bit;
+    Big.SetSize(W * SS, H * SS);
+    with Big.Canvas do
+    begin
+      { Systemfarben wie clBtnFace in echte Farben umrechnen, sonst bleibt
+        der Hintergrund im Speicherbild schwarz }
+      Brush.Color := ColorToRGB(BackColor);
+      FillRect(0, 0, W * SS, H * SS);
+      Brush.Color := PillColor;
+      Pen.Color := PillColor;
+      RoundRect(0, 0, W * SS, H * SS, H * SS, H * SS);
+      { Herz aus zwei Kreisen und einem Dreieck (nicht jede Schrift hat ♥) }
+      HX := (HeartX - B.Left) * SS;
+      HY := (HeartY - B.Top) * SS;
+      DD := D * SS;
+      Brush.Color := CLR_KOFI;
+      Pen.Color := CLR_KOFI;
+      Ellipse(HX - DD, HY - DD div 2, HX + SS, HY + DD div 2 + SS);
+      Ellipse(HX, HY - DD div 2, HX + DD + SS, HY + DD div 2 + SS);
+      Polygon([Point(HX - DD + SS div 2, HY + SS), Point(HX + DD + SS div 2, HY + SS),
+        Point(HX + SS div 2, HY + DD + SS)]);
+    end;
+
+    BigImg := Big.CreateIntfImage;
+    Small.PixelFormat := pf24bit;
+    Small.SetSize(W, H);
+    SmallImg := Small.CreateIntfImage;
+    for Y := 0 to H - 1 do
+      for X := 0 to W - 1 do
+      begin
+        R := 0; G := 0; Bl := 0;
+        for J := 0 to SS - 1 do
+          for I := 0 to SS - 1 do
+          begin
+            Px := BigImg.Colors[X * SS + I, Y * SS + J];
+            Inc(R, Px.Red); Inc(G, Px.Green); Inc(Bl, Px.Blue);
+          end;
+        Px.Red := R div (SS * SS);
+        Px.Green := G div (SS * SS);
+        Px.Blue := Bl div (SS * SS);
+        Px.Alpha := alphaOpaque;
+        SmallImg.Colors[X, Y] := Px;
+      end;
+    Small.LoadFromIntfImage(SmallImg);
+    C.Draw(B.Left, B.Top, Small);
+  finally
+    SmallImg.Free;
+    BigImg.Free;
+    Small.Free;
+    Big.Free;
+  end;
+end;
+
 procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
   Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon);
 var
@@ -116,6 +193,10 @@ var
   H, HX, HY, D, X, S: Integer;
   Col: TColor;
 begin
+  { clDefault (Panel ohne eigene Farbe) wäre in der Bitmap schwarz }
+  if (BackColor = clDefault) or (BackColor = clNone) then
+    BackColor := clBtnFace;
+  BackColor := ColorToRGB(BackColor);
   C.Brush.Style := bsSolid;
   C.Brush.Color := BackColor;
   C.FillRect(R);
@@ -131,30 +212,22 @@ begin
     Col := CLR_KOFI_FACE_DARK
   else
     Col := CLR_KOFI_FACE;
-  C.Brush.Color := Col;
-  C.Pen.Color := Col;
-  C.RoundRect(B, H, H);
+
+  { Lage von Symbol und Herz }
+  X := B.Left + ScalePx(7, PPI);
+  S := ScalePx(16, PPI);
+  D := ScalePx(5, PPI);
+  HX := X + S + ScalePx(6, PPI) + D;
+  HY := (B.Top + B.Bottom) div 2 - ScalePx(2, PPI);
+  DrawSmoothPill(C, B, Col, BackColor, HX, HY, D);
 
   { vorne das Symbol des Programms (16 px bei 100 %) }
-  X := B.Left + ScalePx(6, PPI);
-  S := ScalePx(16, PPI);
   if (AppIcon <> nil) and not AppIcon.Empty then
   begin
     AppIcon.Current := AppIcon.GetBestIndexForSize(Size(S, S));
     IR := Rect(X, (B.Top + B.Bottom - S) div 2, X + S, (B.Top + B.Bottom - S) div 2 + S);
     C.StretchDraw(IR, AppIcon);
   end;
-  X := X + S + ScalePx(6, PPI);
-
-  { Herz aus zwei Kreisen und einem Dreieck (nicht jede Schrift hat ♥) }
-  D := ScalePx(5, PPI);
-  HX := X + D;
-  HY := (B.Top + B.Bottom) div 2 - ScalePx(2, PPI);
-  C.Brush.Color := CLR_KOFI;
-  C.Pen.Color := CLR_KOFI;
-  C.Ellipse(HX - D, HY - D div 2, HX + 1, HY + D div 2 + 1);
-  C.Ellipse(HX, HY - D div 2, HX + D + 1, HY + D div 2 + 1);
-  C.Polygon([Point(HX - D, HY + 1), Point(HX + D, HY + 1), Point(HX, HY + D + ScalePx(1, PPI))]);
 
   { Text weiss }
   C.Brush.Style := bsClear;

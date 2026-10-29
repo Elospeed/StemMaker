@@ -29,6 +29,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Auch einzeln:** Wer StemMaker nicht braucht, lädt den StemTagger als eigenes kleines ZIP von der Release-Seite.
 - Deutsch, Englisch und Spanisch.
 
+### StemPlayer
+- **Lupe bei grosser Anzeigeskalierung:** Bei 150 % oder 200 % Skalierung in Windows waren die Zeiten unter der Lupe unten abgeschnitten und die Loop-Fähnchen A und B zu klein für ihren Buchstaben. Beides richtet sich jetzt nach der Schriftgrösse.
+
 ## 2.0 – 26. Oktober 2026
 
 ### StemMaker – Turbo-Engine
