@@ -145,7 +145,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8';
+  APP_VER   = '1.8.1';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -238,8 +238,10 @@ type
     { --- Ansicht --- }
     FView       : TViewMode;   // aktuelle Ansicht
     FPlaced     : array of TPlacement;  // für das Design versetzte Elemente
-    FClassicW   : Integer;     // Fenstergrösse der klassischen Ansicht,
+    FClassicW   : Integer;     // Fenstergrösse der klassischen Ansicht in 96-dpi-Pixeln,
     FClassicH   : Integer;     // wird beim Zurückschalten wiederhergestellt
+    FShown      : Boolean;     // Fenster wurde schon einmal angezeigt (FormShow)
+    FFitting    : Boolean;     // Fenstergrösse wird gerade im Code angepasst
     { --- Sonstiges --- }
     Timer       : TTimer;
     Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
@@ -297,6 +299,17 @@ type
     procedure ApplySolo(Idx: Integer; Additive: Boolean);
     procedure UpdateRowLook;
     procedure SetWavesVisible(AShow: Boolean);
+    function  ContentHeight: Integer;
+    function  FrameW: Integer;
+    function  FrameH: Integer;
+    function  WaveSize: Integer;
+    function  ClassicMinHeight(AWaves: Boolean): Integer;
+    procedure SetWaveSize(H: Integer);
+    procedure FitWaves;
+    procedure UpdateClassicSize;
+    procedure KeepOnScreen;
+    function  DesignFits: Boolean;
+    procedure FormResize(Sender: TObject);
     procedure SaveViewSetting;
     procedure ViewClick(Sender: TObject);
     procedure ViewMenuClick(Sender: TObject);
@@ -393,7 +406,10 @@ const
   ZOOM_TOP    = 52;   // Lupe: Abstand oben im Deck (unter der Original-Wellenform)
   ZOOM_HEIGHT = 56;   // Höhe der Lupe
   ROW2        = ZOOM_TOP + ZOOM_HEIGHT - 52 + 8;  // so weit rutscht die Knopfzeile nach unten
-  BASE_HEIGHT = 590 + ROW2;  // Fensterhöhe ohne Wellenformen
+  BASE_HEIGHT = 590 + ROW2;  // Fensterhöhe ohne Wellenformen (nur Startwert)
+  WAVE_MIN    = 16;   // so niedrig dürfen die Stem-Wellenformen beim Verkleinern werden
+  WAVE_PAD    = 10;   // Abstand unter der Wellenform bis zum Rand der Stem-Zeile
+  BOTTOM_GAP  = 8;    // Abstand unter MASTER bis zur Fusszeile
   MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
@@ -430,6 +446,7 @@ begin
   OnClose := @FormClose;
   OnCloseQuery := @FormCloseQuery;
   OnShow := @FormShow;
+  OnResize := @FormResize;
 
   { Standardnamen/-farben vorbelegen (leerer Dateiname -> nur Defaults) }
   ReadStemInfo('', FInfo);
@@ -463,16 +480,12 @@ begin
   except
     { INI nicht lesbar -> Standard }
   end;
-  if ShowWaves and
-     (Screen.WorkAreaHeight >= BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA + 40) then
-    SetView(vmWave)
-  else
-    SetView(vmCompact);
-  if (Screen.WorkAreaWidth >= DESIGN_W + 20) and
-     (Screen.WorkAreaHeight >= DESIGN_H + PnlBottom.Height + 40) then
-  begin
-    if SameText(Design, 'CD') then SetView(vmCD);
-  end;
+  { Ob die Ansicht auf den Bildschirm passt, prüft erst FormShow: Lazarus
+    vergrössert das Fenster nach dem Konstruktor noch auf die Windows-
+    Skalierung (125/150/200 %), erst danach stimmen die echten Grössen. }
+  if ShowWaves then SetView(vmWave)
+  else SetView(vmCompact);
+  if SameText(Design, 'CD') then SetView(vmCD);
 
   OpenDlg := TOpenDialog.Create(Self);
   OpenDlg.Title := _('Stem-Datei öffnen');
@@ -918,36 +931,183 @@ begin
   R^.Wave.ShowHint := True;
 end;
 
-{ Wellenformen ein- oder ausblenden. Jede Stem-Zeile wird um WAVE_EXTRA
-  höher bzw. niedriger, das Fenster wächst bzw. schrumpft entsprechend. }
+{ Wellenformen ein- oder ausblenden. Jede Stem-Zeile wird um ihre
+  Wellenform höher bzw. niedriger, das Fenster wächst bzw. schrumpft
+  entsprechend (und bleibt auf dem Bildschirm). }
 procedure TMainForm.SetWavesVisible(AShow: Boolean);
 var
-  i, Delta: Integer;
+  i: Integer;
 begin
   if AShow = FShowWaves then Exit;
   FShowWaves := AShow;
-  Delta := STEM_COUNT * WAVE_EXTRA;
+  FFitting := True;
   DisableAlign;
   try
-    for i := 1 to STEM_COUNT do
-    begin
-      if AShow then Rows[i].Panel.Height := ROW_HEIGHT + WAVE_EXTRA
-      else Rows[i].Panel.Height := ROW_HEIGHT;
-      Rows[i].Wave.Visible := AShow;
-    end;
-    if AShow then
-    begin
-      Constraints.MinHeight := BASE_HEIGHT + Delta;
-      Height := Height + Delta;
-    end
+    for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := AShow;
+    if AShow then SetWaveSize(Scale96ToForm(WAVE_HEIGHT))
     else
-    begin
-      Constraints.MinHeight := BASE_HEIGHT;
-      Height := Max(BASE_HEIGHT, Height - Delta);
-    end;
+      for i := 1 to STEM_COUNT do Rows[i].Panel.Height := Scale96ToForm(ROW_HEIGHT);
+    Constraints.MinHeight := 0;
+    Constraints.MaxHeight := 0;
+    Height := Height - ClientHeight + ContentHeight;
   finally
     EnableAlign;
+    FFitting := False;
   end;
+  UpdateClassicSize;
+  KeepOnScreen;
+end;
+
+{ ----------------------------------------------------------------------------
+  Fenstergrösse und Windows-Skalierung
+
+  Lazarus baut das Fenster in 96-dpi-Pixeln auf und vergrössert danach
+  alles auf die Windows-Skalierung (bei 150 % z. B. 820 -> 1230 Pixel).
+  Alle Grössen, die später im Code gesetzt werden, müssen deshalb mit
+  Scale96ToForm umgerechnet werden. Mit festen Pixelwerten war das Fenster
+  bei 150 % höher als der Bildschirm und der CD-Player zerfiel.
+  ---------------------------------------------------------------------------- }
+
+{ Benötigte Innenhöhe der klassischen Ansicht: alle Flächen untereinander,
+  Abstand unter MASTER und Fusszeile }
+function TMainForm.ContentHeight: Integer;
+
+  function Need(C: TControl): Integer;
+  begin
+    Result := C.Height + C.BorderSpacing.Top + C.BorderSpacing.Bottom +
+              2 * C.BorderSpacing.Around;
+  end;
+
+var i: Integer;
+begin
+  Result := Need(PnlTop) + Need(PnlDeck) + Need(PnlMaster);
+  for i := 1 to STEM_COUNT do Inc(Result, Need(Rows[i].Panel));
+  Inc(Result, Scale96ToForm(BOTTOM_GAP) + PnlBottom.Height);
+end;
+
+{ Rahmen und Titelleiste von Windows (Aussenmass minus Height/Width).
+  Vor dem ersten Anzeigen geschätzt. }
+function TMainForm.FrameW: Integer;
+var R: TRect;
+begin
+  if HandleAllocated and (GetWindowRect(Handle, R) <> 0) and (R.Right > R.Left) then
+    Result := Max(0, (R.Right - R.Left) - Width)
+  else
+    Result := Scale96ToForm(16);
+end;
+
+function TMainForm.FrameH: Integer;
+var R: TRect;
+begin
+  if HandleAllocated and (GetWindowRect(Handle, R) <> 0) and (R.Bottom > R.Top) then
+    Result := Max(0, (R.Bottom - R.Top) - Height)
+  else
+    Result := Scale96ToForm(40);
+end;
+
+{ Aktuelle Höhe der Stem-Wellenformen }
+function TMainForm.WaveSize: Integer;
+begin
+  Result := Rows[1].Wave.Height;
+end;
+
+{ Kleinste Fensterhöhe (Height) der klassischen Ansicht: Kompakt bzw.
+  Wellenform mit ganz flachen Wellen (WAVE_MIN) }
+function TMainForm.ClassicMinHeight(AWaves: Boolean): Integer;
+var i: Integer;
+begin
+  Result := Height - ClientHeight + ContentHeight;
+  for i := 1 to STEM_COUNT do
+    Dec(Result, Rows[i].Panel.Height - Scale96ToForm(ROW_HEIGHT));
+  if AWaves then
+    Inc(Result, STEM_COUNT * (Scale96ToForm(ROW_HEIGHT - 2) + Scale96ToForm(WAVE_MIN) +
+      Scale96ToForm(WAVE_PAD) - Scale96ToForm(ROW_HEIGHT)));
+end;
+
+{ Stem-Wellenformen auf Höhe H setzen, die Zeilen wachsen mit }
+procedure TMainForm.SetWaveSize(H: Integer);
+var i: Integer;
+begin
+  for i := 1 to STEM_COUNT do
+  begin
+    Rows[i].Wave.Height := H;
+    Rows[i].Panel.Height := Rows[i].Wave.Top + H + Scale96ToForm(WAVE_PAD);
+  end;
+end;
+
+{ Wellenform-Ansicht: freie oder fehlende Höhe auf die vier Stem-Wellen
+  verteilen, damit die Bedienelemente der Fenstergrösse folgen }
+procedure TMainForm.FitWaves;
+var
+  Slack, NewH: Integer;
+begin
+  if (FView <> vmWave) or FFitting then Exit;
+  Slack := ClientHeight - ContentHeight;
+  NewH := Max(Scale96ToForm(WAVE_MIN), WaveSize + Slack div STEM_COUNT);
+  if NewH = WaveSize then Exit;
+  FFitting := True;
+  DisableAlign;
+  try
+    SetWaveSize(NewH);
+  finally
+    EnableAlign;
+    FFitting := False;
+  end;
+end;
+
+{ Mindestgrösse der klassischen Ansicht. Kompakt hat eine feste Höhe,
+  die Wellenform-Ansicht lässt sich bis auf WAVE_MIN-hohe Wellen
+  verkleinern und beliebig vergrössern. Nie grösser als der Bildschirm. }
+procedure TMainForm.UpdateClassicSize;
+var
+  MinH, MaxAvail: Integer;
+begin
+  if FView = vmCD then Exit;
+  MinH := ClassicMinHeight(FView = vmWave);
+  MaxAvail := Screen.WorkAreaHeight - FrameH;
+  MinH := Min(MinH, MaxAvail);
+  FFitting := True;
+  try
+    Constraints.MaxHeight := 0;
+    Constraints.MinWidth := Min(Scale96ToForm(720), Screen.WorkAreaWidth - FrameW);
+    Constraints.MinHeight := MinH;
+    if FView = vmCompact then
+    begin
+      Constraints.MaxHeight := MinH;
+      Height := MinH;
+    end;
+  finally
+    FFitting := False;
+  end;
+  FitWaves;
+end;
+
+{ Fenster ganz auf dem Bildschirm halten: zu hoch/breit -> kleiner,
+  ragt es unten/rechts hinaus -> verschieben }
+procedure TMainForm.KeepOnScreen;
+var R: TRect;
+begin
+  R := Screen.WorkAreaRect;
+  if Height + FrameH > R.Bottom - R.Top then Height := R.Bottom - R.Top - FrameH;
+  if Width + FrameW > R.Right - R.Left then Width := R.Right - R.Left - FrameW;
+  if not HandleAllocated then Exit;
+  if Left + Width + FrameW > R.Right then Left := Max(R.Left, R.Right - Width - FrameW);
+  if Top + Height + FrameH > R.Bottom then Top := Max(R.Top, R.Bottom - Height - FrameH);
+  if Left < R.Left then Left := R.Left;
+  if Top < R.Top then Top := R.Top;
+end;
+
+{ Passt der CD-Player bei der aktuellen Skalierung auf den Bildschirm?
+  (bei 150 % braucht er 1500 x 1050 Pixel plus Rahmen) }
+function TMainForm.DesignFits: Boolean;
+begin
+  Result := (Scale96ToForm(DESIGN_W) + FrameW <= Screen.WorkAreaWidth) and
+            (Scale96ToForm(DESIGN_H) + PnlBottom.Height + FrameH <= Screen.WorkAreaHeight);
+end;
+
+procedure TMainForm.FormResize(Sender: TObject);
+begin
+  FitWaves;
 end;
 
 { ============================================================================
@@ -1086,11 +1246,17 @@ begin
   SetLength(FPlaced, n + 1);
   FPlaced[n].Ctl := Ctl;
   FPlaced[n].Parent := Ctl.Parent;
-  FPlaced[n].Bounds := Ctl.BoundsRect;
+  { Alter Platz in 96-dpi-Pixeln, damit er auch nach dem Hochskalieren
+    beim Start (Design schon im Konstruktor gewählt) wieder stimmt }
+  with Ctl.BoundsRect do
+    FPlaced[n].Bounds := Rect(ScaleFormTo96(Left), ScaleFormTo96(Top),
+      ScaleFormTo96(Right), ScaleFormTo96(Bottom));
   FPlaced[n].Anchors := Ctl.Anchors;
   Ctl.Anchors := [akLeft, akTop];
   Ctl.Parent := NewParent;
-  Ctl.SetBounds(ALeft, ATop, AWidth, AHeight);
+  { Positionen im Design sind in 96-dpi-Pixeln angegeben }
+  Ctl.SetBounds(Scale96ToForm(ALeft), Scale96ToForm(ATop),
+    Scale96ToForm(AWidth), Scale96ToForm(AHeight));
 end;
 
 { Alle versetzten Elemente zurück an ihren alten Platz (rückwärts, falls
@@ -1103,7 +1269,8 @@ begin
     begin
       Ctl.Anchors := [akLeft, akTop];
       Ctl.Parent := Parent;
-      Ctl.BoundsRect := Bounds;
+      Ctl.BoundsRect := Rect(Scale96ToForm(Bounds.Left), Scale96ToForm(Bounds.Top),
+        Scale96ToForm(Bounds.Right), Scale96ToForm(Bounds.Bottom));
       Ctl.Anchors := Anchors;
     end;
   SetLength(FPlaced, 0);
@@ -1176,16 +1343,36 @@ end;
 
 procedure TMainForm.SetView(V: TViewMode);
 begin
+  { CD-Player braucht bei grosser Windows-Skalierung mehr Platz, als der
+    Bildschirm hat -> klassische Ansicht bleiben, statt abgeschnitten
+    (vor dem ersten Anzeigen prüft das FormShow) }
+  if (V = vmCD) and (V <> FView) and FShown and not DesignFits then
+  begin
+    LblStatus.Caption := _('Der CD-Player passt bei dieser Windows-Skalierung nicht auf den Bildschirm.');
+    V := FView;
+  end;
+  { Wellenformen brauchen mehr Höhe als Kompakt }
+  if (V = vmWave) and (V <> FView) and FShown and
+     (ClassicMinHeight(True) + FrameH > Screen.WorkAreaHeight) then
+  begin
+    LblStatus.Caption := _('Die Wellenformen passen bei dieser Windows-Skalierung nicht auf den Bildschirm.');
+    V := FView;
+  end;
   if V <> FView then
   begin
     if FView = vmCD then LeaveDesign;
+    FView := V;
     case V of
       vmCompact: SetWavesVisible(False);
       vmWave:    SetWavesVisible(True);
     else
       EnterDesign(V);
     end;
-    FView := V;
+    if V <> vmCD then
+    begin
+      UpdateClassicSize;
+      KeepOnScreen;
+    end;
     UpdateDesignLook;
   end;
   UpdateViewButtons;
@@ -1194,28 +1381,29 @@ end;
 { Innengrösse des Fensters auf das Design einstellen und es auf dem
   Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
 procedure TMainForm.FitDesignWindow;
-var R: TRect;
 begin
-  Constraints.MinWidth := 0;
-  Constraints.MinHeight := 0;
-  ClientWidth := DESIGN_W;
-  ClientHeight := DESIGN_H + PnlBottom.Height;
-  Constraints.MinWidth := Width;
-  Constraints.MinHeight := Height;
-  if HandleAllocated then
-  begin
-    R := Screen.WorkAreaRect;
-    if Left + Width > R.Right then Left := Max(R.Left, R.Right - Width);
-    if Top + Height > R.Bottom then Top := Max(R.Top, R.Bottom - Height);
+  FFitting := True;
+  try
+    Constraints.MinWidth := 0;
+    Constraints.MinHeight := 0;
+    Constraints.MaxHeight := 0;
+    { DESIGN_W/H sind 96-dpi-Pixel, die Fusszeile ist schon skaliert }
+    ClientWidth := Scale96ToForm(DESIGN_W);
+    ClientHeight := Scale96ToForm(DESIGN_H) + PnlBottom.Height;
+    Constraints.MinWidth := Width;
+    Constraints.MinHeight := Height;
+  finally
+    FFitting := False;
   end;
+  KeepOnScreen;
 end;
 
 procedure TMainForm.EnterDesign(V: TViewMode);
 var i: Integer;
 begin
   { Grösse der klassischen Ansicht merken (für LeaveDesign) }
-  FClassicW := Width;
-  FClassicH := Height;
+  FClassicW := ScaleFormTo96(Width);
+  FClassicH := ScaleFormTo96(Height);
   DisableAlign;
   try
     PnlTop.Visible := False;
@@ -1240,16 +1428,21 @@ begin
       verankerten Elemente wieder genau an ihren Platz }
     Constraints.MinWidth := 0;
     Constraints.MinHeight := 0;
-    SetBounds(Left, Top, FClassicW, FClassicH);
+    Constraints.MaxHeight := 0;
+    SetBounds(Left, Top, Scale96ToForm(FClassicW), Scale96ToForm(FClassicH));
+    { Versteckte Flächen werden nicht ausgerichtet und behalten sonst ihre
+      alte Breite (z. B. die von vor dem Hochskalieren beim Start) -> die
+      rechts verankerten Elemente landeten neben dem Fenster }
+    PnlTop.Width := ClientWidth - PnlTop.BorderSpacing.Left - PnlTop.BorderSpacing.Right;
+    PnlDeck.Width := PnlTop.Width;
+    for i := 1 to STEM_COUNT do Rows[i].Panel.Width := PnlTop.Width;
+    PnlMaster.Width := PnlTop.Width;
     RestorePlacements;
     BtnStop.Glyph := dgStop;
     BtnStop.Caption := '';
     BtnStop.RoundShape := False;
     BtnPlay.RoundShape := False;
     for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := FShowWaves;
-    Constraints.MinWidth := 720;
-    if FShowWaves then Constraints.MinHeight := BASE_HEIGHT + STEM_COUNT * WAVE_EXTRA
-    else Constraints.MinHeight := BASE_HEIGHT;
     { Flächen in der alten Reihenfolge wieder einblenden }
     PnlTop.Top := 0;
     PnlDeck.Top := 100;
@@ -1345,9 +1538,30 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  { Erst jetzt kennt Windows die Rahmenbreite -> Innengrösse des Designs
-    nochmals genau setzen (im Konstruktor gab es noch kein Fenster) }
-  if FView = vmCD then FitDesignWindow;
+  { Erst jetzt kennt Windows die Rahmenbreite und das Fenster ist auf die
+    Windows-Skalierung vergrössert -> Ansicht an den Bildschirm anpassen.
+    Passt die gespeicherte Ansicht nicht, startet eine kleinere
+    (gespeichert wird das nicht). }
+  if not FShown then
+  begin
+    FShown := True;
+    if (FView = vmCD) and not DesignFits then
+    begin
+      if FShowWaves and (ClassicMinHeight(True) + FrameH <= Screen.WorkAreaHeight) then
+        SetView(vmWave)
+      else
+        SetView(vmCompact);
+    end;
+    if FView = vmCD then FitDesignWindow
+    else
+    begin
+      { Wellenform-Ansicht passt nicht einmal mit ganz flachen Wellen -> Kompakt }
+      if (FView = vmWave) and (ClassicMinHeight(True) + FrameH > Screen.WorkAreaHeight) then
+        SetView(vmCompact);
+      UpdateClassicSize;
+      KeepOnScreen;
+    end;
+  end;
   { Datei als Kommandozeilen-Parameter? (z.B. aus StemMaker oder "Öffnen mit") }
   if (ParamCount >= 1) and FileExists(ParamStr(1)) and (FFileName = '') then
     LoadFile(ParamStr(1))
@@ -1481,8 +1695,8 @@ procedure TMainForm.ViewMenuMeasure(Sender: TObject; ACanvas: TCanvas;
 begin
   ACanvas.Font.Assign(Font);
   ACanvas.Font.Style := [fsBold];
-  AWidth := Math.Max(BtnView.Width - 20, ACanvas.TextWidth((Sender as TMenuItem).Caption) + 40);
-  AHeight := 30;
+  AWidth := Math.Max(BtnView.Width - 20, ACanvas.TextWidth((Sender as TMenuItem).Caption) + Scale96ToForm(40));
+  AHeight := Scale96ToForm(30);
 end;
 
 { Menüeintrag im Player-Stil: dunkel, unter der Maus heller,
