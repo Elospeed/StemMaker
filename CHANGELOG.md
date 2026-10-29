@@ -29,7 +29,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Auch einzeln:** Wer StemMaker nicht braucht, lädt den StemTagger als eigenes kleines ZIP von der Release-Seite.
 - Deutsch, Englisch und Spanisch.
 
-### StemPlayer
+### StemPlayer 1.8
+- **Neues Design CD-Player im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt den **CD-Player**. Die Ansicht wählst du oben in einem Ausklapp-Menü, so bleibt die Fläche übersichtlich. Er kann dasselbe wie die normale Ansicht, sieht nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.
+- **CD-Player:** Display mit Zeit, Restzeit und den Wellenformen aller Stems, ein Jogwheel (der blaue Ring zeigt die Restzeit, mit der Maus gedreht hört man den Ton wie bei einer Platte unter der Hand), runde Knöpfe CUE und Play/Pause und grosse Stem-Pads zum Stummschalten und für Solo.
+- **Loop-Spur:** Lupe und Loop-Knöpfe A, B, AN und × wie in der normalen Ansicht.
 - **Lupe bei grosser Anzeigeskalierung:** Bei 150 % oder 200 % Skalierung in Windows waren die Zeiten unter der Lupe unten abgeschnitten und die Loop-Fähnchen A und B zu klein für ihren Buchstaben. Beides richtet sich jetzt nach der Schriftgrösse.
 
 ## 2.0 – 26. Oktober 2026

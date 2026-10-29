@@ -84,6 +84,9 @@ type
     FHover: Boolean;
     FIndicator: Boolean;
     FPressed: Boolean;
+    FRound: Boolean;
+    FRingColor: TColor;
+    FDropDown: Boolean;
     procedure SetDown(AValue: Boolean);
     procedure SetLitColor(AValue: TColor);
     procedure SetGlyph(AValue: TDJGlyph);
@@ -106,6 +109,12 @@ type
     property Indicator: Boolean read FIndicator write FIndicator;
     property LitColor: TColor read FLitColor write SetLitColor;
     property Glyph: TDJGlyph read FGlyph write SetGlyph;
+    { Runder Knopf mit farbigem Ring (CUE / Play im CD-Player-Design).
+      Der Ring leuchtet immer in RingColor, nicht nur im gedrückten Zustand. }
+    property RoundShape: Boolean read FRound write FRound;
+    property RingColor: TColor read FRingColor write FRingColor;
+    { Auswahlknopf: kleines Dreieck rechts zeigt, dass ein Menü aufklappt }
+    property DropDown: Boolean read FDropDown write FDropDown;
     property Caption;
     property Font;
     property ShowHint;
@@ -264,6 +273,7 @@ begin
   ControlStyle := ControlStyle - [csDoubleClicks];
   FLitColor := clNone;
   FGlyph := dgNone;
+  FRingColor := clNone;
   SetInitialBounds(0, 0, 80, 30);
 end;
 
@@ -385,17 +395,37 @@ begin
     Fg := $00B0B0B0;
     if FHover then Fg := DJ_TEXT;
   end;
+  { Runder Knopf: Ring und Schrift immer in der Ringfarbe, gedrückt leicht gefüllt }
+  if FRound and (FRingColor <> clNone) and IsEnabled then
+  begin
+    Bd := FRingColor;
+    if FDown then Bg := BlendColor(DJ_BTN, FRingColor, 0.30)
+    else Bg := BlendColor(DJ_BTN, FRingColor, 0.08);
+    Fg := BlendColor(FRingColor, clWhite, 0.15);
+  end;
   if FPressed and IsEnabled then Bg := BlendColor(Bg, clBlack, 0.2);
 
   with Canvas do
   begin
-    Brush.Color := Bg;
-    FillRect(R);
-    Pen.Color := Bd;
-    Brush.Style := bsClear;
-    Rectangle(R);
+    if FRound then
+    begin
+      { Hintergrund nicht füllen: die Ecken zeigen die Fläche dahinter }
+      Brush.Color := Bg;
+      Pen.Color := Bd;
+      Pen.Width := 3;
+      Ellipse(R.Left + 2, R.Top + 2, R.Right - 1, R.Bottom - 1);
+      Pen.Width := 1;
+    end
+    else
+    begin
+      Brush.Color := Bg;
+      FillRect(R);
+      Pen.Color := Bd;
+      Brush.Style := bsClear;
+      Rectangle(R);
+    end;
     { "Glühen": zweiter, halbtransparent wirkender Rahmen innen }
-    if FDown and (FLitColor <> clNone) and IsEnabled then
+    if FDown and (FLitColor <> clNone) and IsEnabled and not FRound then
     begin
       Pen.Color := BlendColor(Bg, FLitColor, 0.45);
       Rectangle(R.Left + 1, R.Top + 1, R.Right - 1, R.Bottom - 1);
@@ -427,6 +457,15 @@ begin
         TS.Layout := tlCenter;
         TS.SingleLine := True;
         TS.Clipping := True;
+        if FDropDown then
+        begin
+          { Dreieck nach unten am rechten Rand, Text links davon zentriert }
+          S := 4;
+          CX := R.Right - 14;
+          Polygon([Point(CX - S, CY - 2), Point(CX + S, CY - 2), Point(CX, CY + 3)]);
+          R.Right := R.Right - 24;
+          R.Left := R.Left + 4;
+        end;
         Brush.Style := bsClear;
         TextRect(R, 0, 0, Caption, TS);
         Brush.Style := bsSolid;

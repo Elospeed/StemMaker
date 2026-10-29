@@ -6,6 +6,19 @@ Neueste Einträge oben.
 
 ---
 
+## StemPlayer 1.8: Design CD-Player (Oktober 2026)
+
+| Problem | Lösung |
+|---|---|
+| Ein neuer Look, aber die Funktion soll genau gleich bleiben. Alles doppelt anlegen hiesse doppelte Logik und Zustände, die auseinanderlaufen. | Die vorhandenen Bedienelemente werden beim Umschalten nur in die Flächen des Designs versetzt (`PlaceCtl` merkt Parent, Position und Anker) und beim Zurückschalten wieder hingesetzt (`RestorePlacements`, rückwärts). Neu sind nur Jogwheel und Pads (`designviews.pas`). Wichtig: zuerst das Fenster auf die alte Grösse, dann zurücksetzen, sonst sitzen die rechts verankerten Knöpfe falsch. |
+| Kreise und schräge Linien zeichnet Windows (GDI) treppig. | Unveränderliche Teile in doppelter Grösse vorzeichnen und mit `StretchBlt` im Modus `HALFTONE` verkleinern (danach `SetBrushOrgEx`). Pro Bild wird nur dieses fertige Bild kopiert, bewegliche Teile (Strich, Zeit) kommen darüber. |
+| Programm hing beim Umschalten auf ein Design (Fenster blieb schwarz). | Endlosschleife beim Kürzen des Titels: `Copy(S, 1, Length(S) - 2) + '…'` – das `…` ist in UTF-8 drei Bytes, der Text wurde also jedes Mal länger. Jetzt zeichenweise mit `UTF8Copy`/`UTF8Length` kürzen und das `…` erst am Schluss anhängen. |
+| Compilerfehler „Illegal expression“ bei einer Hilfsprozedur `CenterText`. | Innerhalb einer Methode verdeckt eine gleichnamige Eigenschaft der Klasse (`TJogWheel.CenterText`) die globale Prozedur. Hilfsfunktionen anders nennen (`DrawCentered`). Ebenso eine Eigenschaft nie `Round` nennen (verdeckt `Math.Round`). |
+| Vier Ansichts-Knöpfe nahmen auf den Designs Platz weg (Speedy: auf der Fläche soll nur das Arbeitswerkzeug sein). | Ein Auswahlknopf mit der aktuellen Ansicht und kleinem Dreieck (`TDJButton.DropDown`), Klick öffnet ein `TPopupMenu` direkt darunter. Das Menü ist selbst gezeichnet (`OwnerDraw`, `OnMeasureItem`/`OnDrawItem`), damit es dunkel wie der Player aussieht; die gewählte Ansicht steckt im `Tag` des Eintrags, nie im übersetzten Text. |
+| `uses Windows` zusammen mit `Graphics`. | `Windows` muss vor `Graphics` stehen, sonst ist `TBitmap` das Windows-Record statt der LCL-Klasse. Innerhalb von `with Canvas do` bedeuten `Width`/`Height` die Grösse des Canvas, darum `Self.Width`. |
+
+---
+
 ## Lange Pfade über 260 Zeichen (Oktober 2026)
 
 | Problem | Lösung |
