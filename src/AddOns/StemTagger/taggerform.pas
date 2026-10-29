@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, djcontrols, djextra, coverbild;
+  IniFiles, IntfGraphics, Contnrs, ImgList, Math, uLang, uStemMP4, uStatusDraw, djcontrols, djextra, coverbild;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
@@ -82,6 +82,7 @@ type
     FDragCol   : Integer;          // Spalte, deren rechter Rand gerade gezogen wird, -1 = keine
     FDragX0, FDragW0: Integer;     // Maus und Breite beim Beginn des Ziehens
     FDragged   : Boolean;          // wirklich gezogen (dann kein Sortieren)
+    FLastAvail : Integer;          // Breite der Liste beim letzten Anpassen, 0 = noch nie
     FStatus    : TLabel;            // Statuszeile unten links
     FKofi      : TPaintBox;       // Ko-fi-Knopf unten rechts (wie in StemMaker)
     FKofiHover : Boolean;
@@ -131,14 +132,15 @@ type
 
     { Ereignisse }
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
-    procedure ListDrawSubItem(Sender: TCustomListView; Item: TListItem;
-      SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure ListDrawItem(Sender: TCustomListView; Item: TListItem;
+      State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure HeadPaint(Sender: TObject);
     procedure HeadMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure HeadMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HeadMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function  HeadDivider(X: Integer): Integer;
     procedure FitColumns;
+    procedure AutoFitColumn(Col: Integer);
     procedure ListResize(Sender: TObject);
     procedure ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FieldChange(Sender: TObject);
@@ -445,7 +447,8 @@ var
   Shown: array of TMp4TagField;
   Half: Integer;
   Cb: TDJCombo;
-  Box: TDJPanel;   // dunkler Rahmen um ein Eingabefeld
+  Box: TDJPanel;
+  RowImg: TImageList;   // leere Bildliste, nur für die Zeilenhöhe   // dunkler Rahmen um ein Eingabefeld
   PnlTop, Foot, SaveBox: TPanel;
   PnlEdit, Fields, CoverPanel, Frame, PnlHead, PnlList: TDJPanel;
   Col: TListColumn;
@@ -740,7 +743,8 @@ begin
   FHead.Font.Style := [fsBold];
   FHead.Font.Size := 8;
   FHead.Hint := _('Klick sortiert, nochmal klicken sortiert umgekehrt') + LineEnding +
-    _('Rand zwischen zwei Spalten ziehen ändert die Breite');
+    _('Rand zwischen zwei Spalten ziehen ändert die Breite') + LineEnding +
+    _('Doppelklick auf den Rand passt die Spalte an den Text an');
   FHead.ShowHint := True;
   FHead.OnPaint := @HeadPaint;
   FHead.OnMouseDown := @HeadMouseDown;
@@ -762,7 +766,12 @@ begin
   FList.OnSelectItem := @ListSelectItem;
   FList.OnKeyDown := @ListKeyDown;
   FList.OnColumnClick := @ListColumnClick;
-  FList.OnCustomDrawSubItem := @ListDrawSubItem;
+  FList.OnCustomDrawItem := @ListDrawItem;
+  { höhere Zeilen: Windows richtet die Zeilenhöhe nach der Bildliste }
+  RowImg := TImageList.Create(Self);
+  RowImg.Width := 1;
+  RowImg.Height := Scale96ToForm(22);
+  FList.SmallImages := RowImg;
   FList.OnResize := @ListResize;
   FSortCol := -1;
   for I := 0 to High(COL_W) do
@@ -784,9 +793,33 @@ var
 begin
   if (FList = nil) or (FList.Columns.Count <= High(FColW)) then Exit;
   Avail := FList.ClientWidth - 2;
+  { Liste breiter oder schmaler geworden: alle Spalten anteilig mitziehen }
+  { (erst wenn das Fenster sichtbar ist: beim Aufbau ist die Liste kurz winzig) }
+  if not Showing then
+    FLastAvail := 0
+  else
+  begin
+    if (FLastAvail > 0) and (Avail <> FLastAvail) and (FDragCol < 0) then
+      for I := 0 to High(FColW) - 1 do
+      begin
+        FColW[I] := MulDiv(FColW[I], Avail, FLastAvail);
+        if FColW[I] < Scale96ToForm(40) then FColW[I] := Scale96ToForm(40);
+      end;
+    FLastAvail := Avail;
+  end;
   Sum := 0;
   for I := 0 to High(FColW) - 1 do
     Inc(Sum, FColW[I]);
+  { passt nicht (sehr schmales Fenster): alle Spalten verkleinern, damit
+    Status sichtbar bleibt und kein waagrechter Rollbalken entsteht }
+  if (Sum > Avail - Scale96ToForm(60)) and (Sum > 0) and (Avail > Scale96ToForm(300)) then
+  begin
+    for I := 0 to High(FColW) - 1 do
+      FColW[I] := Max(Scale96ToForm(30), MulDiv(FColW[I], Avail - Scale96ToForm(60), Sum));
+    Sum := 0;
+    for I := 0 to High(FColW) - 1 do
+      Inc(Sum, FColW[I]);
+  end;
   FColW[High(FColW)] := Avail - Sum;
   if FColW[High(FColW)] < Scale96ToForm(60) then
     FColW[High(FColW)] := Scale96ToForm(60);
@@ -803,6 +836,35 @@ end;
 
 procedure TMainForm.ListResize(Sender: TObject);
 begin
+  FitColumns;
+end;
+
+{ Spalte so breit machen, dass der längste Text ganz sichtbar ist
+  (Doppelklick auf den Trennstrich, wie im Windows-Explorer) }
+procedure TMainForm.AutoFitColumn(Col: Integer);
+var
+  I, W, Others, MaxW: Integer;
+  S: string;
+begin
+  FHead.Canvas.Font := FHead.Font;
+  W := FHead.Canvas.TextWidth(UTF8UpperCase(FList.Columns[Col].Caption)) + Scale96ToForm(20);
+  FList.Canvas.Font := FList.Font;
+  for I := 0 to FList.Items.Count - 1 do
+  begin
+    if Col = 0 then S := FList.Items[I].Caption
+    else if Col - 1 < FList.Items[I].SubItems.Count then S := FList.Items[I].SubItems[Col - 1]
+    else S := '';
+    if FList.Canvas.TextWidth(S) + Scale96ToForm(14) > W then
+      W := FList.Canvas.TextWidth(S) + Scale96ToForm(14);
+  end;
+  { die letzte Spalte (Status) behält mindestens 60 px }
+  Others := 0;
+  for I := 0 to High(FColW) - 1 do
+    if I <> Col then Inc(Others, FColW[I]);
+  MaxW := FList.ClientWidth - 2 - Others - Scale96ToForm(60);
+  if W > MaxW then W := MaxW;
+  if W < Scale96ToForm(40) then W := Scale96ToForm(40);
+  FColW[Col] := W;
   FitColumns;
 end;
 
@@ -882,6 +944,13 @@ begin
   if Button <> mbLeft then Exit;
   FDragged := False;
   FDragCol := HeadDivider(X);
+  { Doppelklick auf den Trennstrich: Spalte an den Text anpassen }
+  if (ssDouble in Shift) and (FDragCol >= 0) then
+  begin
+    AutoFitColumn(FDragCol);
+    FDragged := True;   // beim Loslassen nicht sortieren
+    Exit;
+  end;
   if FDragCol >= 0 then
   begin
     FDragX0 := X;
@@ -925,9 +994,10 @@ begin
   if Button <> mbLeft then Exit;
   if FDragCol >= 0 then
   begin
+    { Klick auf einen Trennstrich sortiert nie (er gehört zum Ziehen) }
     FDragCol := -1;
     FHead.Invalidate;
-    if FDragged then Exit;
+    Exit;
   end;
   { einfacher Klick: nach dieser Spalte sortieren }
   Edge := 0;
@@ -943,26 +1013,78 @@ begin
   end;
 end;
 
-{ Status farbig: grün = fertig, gelb = geändert, orange = es fehlt etwas.
-  Markierte Zeilen zeichnet Windows selbst (sonst wird die Markierung unlesbar). }
-procedure TMainForm.ListDrawSubItem(Sender: TCustomListView; Item: TListItem;
-  SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+{ Zeilen ganz selbst zeichnen: Windows würde markierte Zeilen hell bzw.
+  blau hinterlegen, das passt nicht zum dunklen Fenster.
+  Markiert = etwas hellere Fläche mit grünem Streifen links (wie die Genre-
+  Liste). Status farbig: grün = fertig, gelb = geändert, orange = es fehlt etwas. }
+procedure TMainForm.ListDrawItem(Sender: TCustomListView; Item: TListItem;
+  State: TCustomDrawState; var DefaultDraw: Boolean);
 var
   E: TTagEntry;
+  R, CR: TRect;
+  I, X: Integer;
+  S: string;
+  TS: TTextStyle;
+  StatusCol: TColor;
 begin
-  DefaultDraw := True;
-  Sender.Canvas.Font.Color := DJ_TEXT;
-  if (cdsSelected in State) or (SubItem <> 6) or (Item.Data = nil) then Exit;
-  E := TTagEntry(Item.Data);
-  if E.Dirty <> [] then
-    Sender.Canvas.Font.Color := DJ_YELLOW
-  else if E.Status <> '' then
-    Sender.Canvas.Font.Color := DJ_TEXT
-  else if (Length(E.Cur.Cover) = 0) or
-          ((E.Cur.Text[tfTitle] = '') and (E.Cur.Text[tfArtist] = '')) then
-    Sender.Canvas.Font.Color := DJ_KOFI   // orange
-  else
-    Sender.Canvas.Font.Color := DJ_GREEN;
+  DefaultDraw := False;
+  R := Item.DisplayRect(drBounds);
+  R.Left := 0;
+  R.Right := Sender.ClientWidth;
+  with Sender.Canvas do
+  begin
+    if Item.Selected then Brush.Color := DJ_BTNBORDER else Brush.Color := DJ_PANEL;
+    FillRect(R);
+    if Item.Selected then
+    begin
+      Brush.Color := DJ_GREEN;
+      FillRect(Rect(R.Left, R.Top, R.Left + Scale96ToForm(3), R.Bottom));
+    end;
+
+    { Farbe der Spalte Status }
+    StatusCol := DJ_TEXT;
+    E := TTagEntry(Item.Data);
+    if E <> nil then
+    begin
+      if E.Dirty <> [] then
+        StatusCol := DJ_YELLOW
+      else if E.Status <> '' then
+        StatusCol := DJ_TEXT
+      else if (Length(E.Cur.Cover) = 0) or
+              ((E.Cur.Text[tfTitle] = '') and (E.Cur.Text[tfArtist] = '')) then
+        StatusCol := DJ_KOFI   // orange
+      else
+        StatusCol := DJ_GREEN;
+    end;
+
+    TS := TextStyle;
+    TS.SingleLine := True;
+    TS.Layout := tlCenter;
+    TS.Opaque := False;
+    TS.Clipping := True;
+    Brush.Style := bsClear;
+    X := 0;
+    for I := 0 to FList.Columns.Count - 1 do
+    begin
+      if I = 0 then S := Item.Caption
+      else if I - 1 < Item.SubItems.Count then S := Item.SubItems[I - 1]
+      else S := '';
+      if I = FList.Columns.Count - 1 then Font.Color := StatusCol
+      else if Item.Selected then Font.Color := clWhite
+      else Font.Color := DJ_TEXT;
+      CR := Rect(X + Scale96ToForm(6), R.Top, X + FList.Columns[I].Width - Scale96ToForm(4), R.Bottom);
+      { zu langen Text kürzen und mit "…" enden lassen }
+      if TextWidth(S) > CR.Right - CR.Left then
+      begin
+        while (S <> '') and (TextWidth(S + '…') > CR.Right - CR.Left) do
+          UTF8Delete(S, UTF8Length(S), 1);
+        S := S + '…';
+      end;
+      TextRect(CR, CR.Left, CR.Top, S, TS);
+      Inc(X, FList.Columns[I].Width);
+    end;
+    Brush.Style := bsSolid;
+  end;
 end;
 
 { ============================================================================
