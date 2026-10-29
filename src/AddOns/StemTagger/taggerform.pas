@@ -43,7 +43,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, coverbild;
+  IniFiles, IntfGraphics, Contnrs, uLang, uStemMP4, uStatusDraw, djcontrols, coverbild;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
@@ -71,11 +71,12 @@ type
     FCoverImg  : TImage;
     FCoverInfo : TLabel;
     FCoverMixed: Boolean;
-    FBtnAdd, FBtnFolder, FBtnRemove, FBtnClear: TButton;
-    FBtnCoverLoad, FBtnCoverPaste, FBtnCoverDel, FBtnCoverSave: TButton;
-    FBtnFromName, FBtnSave, FBtnRevert: TButton;
-    FChkBackup, FChkShrink: TCheckBox;
-    FStatus    : TStatusBar;
+    { Knöpfe und Schalter im dunklen Stil des StemPlayers (djcontrols.pas) }
+    FBtnAdd, FBtnFolder, FBtnRemove, FBtnClear: TDJButton;
+    FBtnCoverLoad, FBtnCoverPaste, FBtnCoverDel, FBtnCoverSave: TDJButton;
+    FBtnFromName, FBtnSave, FBtnRevert: TDJButton;
+    FChkBackup, FChkShrink: TDJButton;   // Schalter: Down = eingeschaltet
+    FStatus    : TLabel;            // Statuszeile unten links
     FKofi      : TPaintBox;       // Ko-fi-Knopf unten rechts (wie in StemMaker)
     FKofiHover : Boolean;
     FLoading   : Boolean;          // Felder werden gerade befüllt -> OnChange ignorieren
@@ -101,7 +102,7 @@ type
     procedure LoadLanguage;
     procedure BuildUI;
     function  MakeButton(AParent: TWinControl; const ACaption: string;
-                         ALeft, ATop, AWidth: Integer; AClick: TNotifyEvent): TButton;
+                         ALeft, ATop, AWidth: Integer; AClick: TNotifyEvent): TDJButton;
     function  FieldCaption(F: TMp4TagField): string;
     function  IniFileName: string;
     procedure LoadSettings;
@@ -124,6 +125,9 @@ type
 
     { Ereignisse }
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure ListDrawSubItem(Sender: TCustomListView; Item: TListItem;
+      SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure HeadClick(Sender: TObject);
     procedure ListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FieldChange(Sender: TObject);
     procedure BtnAddClick(Sender: TObject);
@@ -402,16 +406,19 @@ begin
 end;
 
 function TMainForm.MakeButton(AParent: TWinControl; const ACaption: string;
-  ALeft, ATop, AWidth: Integer; AClick: TNotifyEvent): TButton;
+  ALeft, ATop, AWidth: Integer; AClick: TNotifyEvent): TDJButton;
 begin
-  Result := TButton.Create(Self);
+  Result := TDJButton.Create(Self);
   Result.Parent := AParent;
   Result.SetBounds(Scale96ToForm(ALeft), Scale96ToForm(ATop),
-    Scale96ToForm(AWidth), Scale96ToForm(28));
+    Scale96ToForm(AWidth), Scale96ToForm(26));
   Result.Caption := ACaption;
   Result.OnClick := AClick;
 end;
 
+{ Fenster im dunklen Stil des StemPlayers (Farben und Knöpfe aus djcontrols.pas),
+  damit alle AddOns zusammenpassen. Die Listen-Überschrift ist selbst gebaut,
+  weil Windows die echte Kopfzeile immer hell zeichnet. }
 procedure TMainForm.BuildUI;
 const
   { Reihenfolge der Felder: erste Hälfte links, Rest rechts.
@@ -420,22 +427,28 @@ const
     (tfTitle, tfArtist, tfAlbum, tfGenre, tfYear, tfLabel, tfComment,
      tfAlbumArtist, tfTrack, tfBpm, tfKey);
   ROW_H = 28;
+  { Spalten der Liste: Überschrift und Breite (96 dpi) }
+  COL_W: array[0..6] of Integer = (190, 130, 115, 95, 85, 50, 140);
 var
   Shown: array of TMp4TagField;
   Half: Integer;
   Cb: TComboBox;
-  PnlTop, PnlEdit, Fields, CoverPanel, Frame, SaveBox, Foot: TPanel;
+  Box: TDJPanel;   // dunkler Rahmen um ein Eingabefeld
+  PnlTop, Foot, SaveBox: TPanel;
+  PnlEdit, Fields, CoverPanel, Frame, PnlHead, PnlList: TDJPanel;
   Col: TListColumn;
   Lbl: TLabel;
   F: TMp4TagField;
-  I: Integer;
+  I, X: Integer;
+  ColCaps: array[0..6] of string;
 
-  procedure AddField(AField: TMp4TagField; X, Y: Integer);
+  procedure AddField(AField: TMp4TagField; AX, AY: Integer);
   begin
     Lbl := TLabel.Create(Self);
     Lbl.Parent := Fields;
-    Lbl.SetBounds(Scale96ToForm(X), Scale96ToForm(Y + 4), Scale96ToForm(80), Scale96ToForm(20));
+    Lbl.SetBounds(Scale96ToForm(AX), Scale96ToForm(AY + 5), Scale96ToForm(80), Scale96ToForm(20));
     Lbl.Caption := FieldCaption(AField);
+    Lbl.Font.Color := DJ_DIM;
     if AField in [tfGenre, tfKey] then
     begin
       { Auswahlliste, aber auch freie Eingabe }
@@ -446,11 +459,33 @@ var
       FEdits[AField] := Cb;
     end
     else
+    begin
+      { Eingabefeld ohne eigenen Rahmen in einem dunklen Rahmen: der
+        Windows-Rahmen wäre auf dunklem Grund hell und grell }
+      Box := TDJPanel.Create(Self);
+      Box.Parent := Fields;
+      Box.SetBounds(Scale96ToForm(AX + 82), Scale96ToForm(AY),
+        Scale96ToForm(196), Scale96ToForm(24));
+      Box.Color := DJ_BG;
+      Box.BorderColor := DJ_BORDER;
       FEdits[AField] := TEdit.Create(Self);
-    FEdits[AField].Parent := Fields;
-    FEdits[AField].SetBounds(Scale96ToForm(X + 82), Scale96ToForm(Y),
-      Scale96ToForm(196), Scale96ToForm(24));
+      TEdit(FEdits[AField]).BorderStyle := bsNone;
+    end;
+    if FEdits[AField] is TComboBox then
+    begin
+      FEdits[AField].Parent := Fields;
+      FEdits[AField].SetBounds(Scale96ToForm(AX + 82), Scale96ToForm(AY),
+        Scale96ToForm(196), Scale96ToForm(24));
+    end
+    else
+    begin
+      FEdits[AField].Parent := Box;
+      FEdits[AField].SetBounds(Scale96ToForm(6), Scale96ToForm(4),
+        Box.Width - Scale96ToForm(12), Box.Height - Scale96ToForm(8));
+    end;
     FEdits[AField].Tag := Ord(AField);
+    FEdits[AField].Color := DJ_BG;
+    FEdits[AField].Font.Color := DJ_TEXT;
     if FEdits[AField] is TComboBox then
       TComboBox(FEdits[AField]).OnChange := @FieldChange
     else
@@ -460,6 +495,24 @@ var
     Lbl.FocusControl := FEdits[AField];
   end;
 
+  { Schalter in der Fusszeile: Breite passend zum (übersetzten) Text, rechts angedockt }
+  procedure FitToggle(B: TDJButton);
+  begin
+    B.Canvas.Font.Style := [fsBold];
+    B.Width := B.Canvas.TextWidth(B.Caption) + Scale96ToForm(24);
+    B.Align := alRight;
+    B.BorderSpacing.Right := Scale96ToForm(8);
+    B.BorderSpacing.Top := Scale96ToForm(5);
+    B.BorderSpacing.Bottom := Scale96ToForm(5);
+  end;
+
+  function MakeArea(AParent: TWinControl): TDJPanel;
+  begin
+    Result := TDJPanel.Create(Self);
+    Result.Parent := AParent;
+    Result.BorderColor := clNone;
+  end;
+
 begin
   Caption := APP_TITLE + ' ' + APP_VER;
   Position := poScreenCenter;
@@ -467,6 +520,8 @@ begin
   Height := Scale96ToForm(540);
   Constraints.MinWidth := Scale96ToForm(800);
   Constraints.MinHeight := Scale96ToForm(420);
+  Color := DJ_BG;
+  Font.Color := DJ_TEXT;
   KeyPreview := True;
   AllowDropFiles := True;
   OnDropFiles := @FormDropFiles;
@@ -479,29 +534,36 @@ begin
   PnlTop.Align := alTop;
   PnlTop.Height := Scale96ToForm(40);
   PnlTop.BevelOuter := bvNone;
-  FBtnAdd    := MakeButton(PnlTop, _('Dateien...'), 8, 6, 100, @BtnAddClick);
-  FBtnFolder := MakeButton(PnlTop, _('Ordner...'), 112, 6, 100, @BtnFolderClick);
-  FBtnRemove := MakeButton(PnlTop, _('Entfernen'), 216, 6, 100, @BtnRemoveClick);
-  FBtnClear  := MakeButton(PnlTop, _('Liste leeren'), 320, 6, 100, @BtnClearClick);
+  PnlTop.Color := DJ_BG;
+  PnlTop.ParentBackground := False;
+  FBtnAdd    := MakeButton(PnlTop, _('Dateien...'), 8, 7, 100, @BtnAddClick);
+  FBtnFolder := MakeButton(PnlTop, _('Ordner...'), 112, 7, 100, @BtnFolderClick);
+  FBtnRemove := MakeButton(PnlTop, _('Entfernen'), 216, 7, 100, @BtnRemoveClick);
+  FBtnClear  := MakeButton(PnlTop, _('Liste leeren'), 320, 7, 100, @BtnClearClick);
   SaveBox := TPanel.Create(Self);
   SaveBox.Parent := PnlTop;
   SaveBox.Align := alRight;
   SaveBox.Width := Scale96ToForm(300);
   SaveBox.BevelOuter := bvNone;
-  FBtnRevert := MakeButton(SaveBox, _('Änderungen verwerfen'), 0, 6, 170, @BtnRevertClick);
-  FBtnSave   := MakeButton(SaveBox, _('Speichern'), 174, 6, 118, @BtnSaveClick);
-  FBtnSave.Font.Style := [fsBold];
+  SaveBox.Color := DJ_BG;
+  SaveBox.ParentBackground := False;
+  FBtnRevert := MakeButton(SaveBox, _('Änderungen verwerfen'), 0, 7, 170, @BtnRevertClick);
+  FBtnSave   := MakeButton(SaveBox, _('Speichern'), 174, 7, 118, @BtnSaveClick);
+  { leuchtet grün, sobald es etwas zu speichern gibt (siehe UpdateStatusBar) }
+  FBtnSave.LitColor := DJ_GREEN;
 
-  { --- Fusszeile: Statuszeile, die zwei Optionen, rechts der Ko-fi-Knopf --- }
+  { --- Fusszeile: Statuszeile, die zwei Schalter, rechts der Ko-fi-Knopf --- }
   Foot := TPanel.Create(Self);
   Foot.Parent := Self;
   Foot.Align := alBottom;
-  Foot.Height := Scale96ToForm(26);
+  Foot.Height := Scale96ToForm(32);
   Foot.BevelOuter := bvNone;
+  Foot.Color := DJ_FOOTER;
+  Foot.ParentBackground := False;
   FKofi := TPaintBox.Create(Self);
   FKofi.Parent := Foot;
   FKofi.Align := alRight;
-  FKofi.BorderSpacing.Right := Scale96ToForm(4);
+  FKofi.BorderSpacing.Right := Scale96ToForm(8);
   FKofi.Canvas.Font.Style := [fsBold];
   FKofi.Width := KofiButtonWidth(FKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
   FKofi.Cursor := crHandPoint;
@@ -511,78 +573,75 @@ begin
   FKofi.OnClick := @KofiClick;
   FKofi.OnMouseEnter := @KofiEnter;
   FKofi.OnMouseLeave := @KofiLeave;
-  FStatus := TStatusBar.Create(Self);
-  FStatus.Parent := Foot;
-  FStatus.Align := alClient;
-  FStatus.SizeGrip := False;
-  FStatus.SimplePanel := True;
 
-  { rechts nach links: Ko-fi, Cover verkleinern, Sicherungskopie }
-  FChkShrink := TCheckBox.Create(Self);
-  FChkShrink.Parent := Foot;
-  FChkShrink.Align := alRight;
-  FChkShrink.BorderSpacing.Right := Scale96ToForm(12);
-  FChkShrink.Caption := Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]);
-  FChkShrink.Checked := True;
-  FChkBackup := TCheckBox.Create(Self);
-  FChkBackup.Parent := Foot;
-  FChkBackup.Align := alRight;
-  FChkBackup.BorderSpacing.Right := Scale96ToForm(12);
-  FChkBackup.Caption := _('Sicherungskopie anlegen (.bak)');
-  FChkBackup.Checked := False;
+  { zwei Schalter (rasten ein, leuchten grün) statt Windows-Häkchen,
+    deren Text auf dunklem Grund nicht lesbar wäre }
+  FChkBackup := MakeButton(Foot, _('Sicherungskopie anlegen (.bak)'), 0, 5, 210, nil);
+  FChkBackup.Toggle := True;
+  FChkBackup.LitColor := DJ_GREEN;
+  FChkBackup.Height := Scale96ToForm(22);
   FChkBackup.Hint := _('Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak).') +
     LineEnding + _('Die Kopie wird nie überschrieben, sie bleibt also das echte Original.');
   FChkBackup.ShowHint := True;
-  { Reihenfolge bei alRight: wer weiter links stehen soll, bekommt das kleinere Left }
-  FKofi.Left := Foot.Width;
-  FChkShrink.Left := FKofi.Left - 1;
-  FChkBackup.Left := FChkShrink.Left - 1;
+  FChkShrink := MakeButton(Foot, Format(_('Grosse Cover auf %d px verkleinern'), [COVER_MAX_SIDE]), 0, 5, 250, nil);
+  FChkShrink.Toggle := True;
+  FChkShrink.LitColor := DJ_GREEN;
+  FChkShrink.Height := Scale96ToForm(22);
+  FChkShrink.Down := True;
+  FitToggle(FChkBackup);
+  FitToggle(FChkShrink);
+  { Reihenfolge bei alRight: wer weiter links stehen soll, bekommt das kleinere
+    Left (Ko-fi ganz rechts, davor die Schalter) }
+  FChkBackup.Left := 1000;
+  FChkShrink.Left := 2000;
+  FKofi.Left := 3000;
+
+  FStatus := TLabel.Create(Self);
+  FStatus.Parent := Foot;
+  FStatus.Align := alClient;
+  FStatus.Layout := tlCenter;
+  FStatus.BorderSpacing.Left := Scale96ToForm(10);
+  FStatus.Font.Color := DJ_DIM;
 
   { --- Bearbeiten-Bereich ------------------------------------------------- }
-  PnlEdit := TPanel.Create(Self);
-  PnlEdit.Parent := Self;
+  PnlEdit := MakeArea(Self);
   PnlEdit.Align := alBottom;
   PnlEdit.Height := Scale96ToForm(140);
-  PnlEdit.BevelOuter := bvNone;
+  PnlEdit.BorderColor := DJ_BORDER;
 
-  CoverPanel := TPanel.Create(Self);
-  CoverPanel.Parent := PnlEdit;
+  CoverPanel := MakeArea(PnlEdit);
   CoverPanel.Align := alLeft;
   CoverPanel.Width := Scale96ToForm(236);
-  CoverPanel.BevelOuter := bvNone;
+  CoverPanel.BorderSpacing.Around := 1;
 
-  Frame := TPanel.Create(Self);
-  Frame.Parent := CoverPanel;
-  Frame.SetBounds(Scale96ToForm(8), Scale96ToForm(6), Scale96ToForm(108), Scale96ToForm(108));
-  Frame.BevelOuter := bvLowered;
-  Frame.Color := clBtnFace;
+  Frame := MakeArea(CoverPanel);
+  Frame.SetBounds(Scale96ToForm(8), Scale96ToForm(7), Scale96ToForm(108), Scale96ToForm(108));
+  Frame.Color := DJ_BG;
+  Frame.BorderColor := DJ_BORDER;
   FCoverImg := TImage.Create(Self);
   FCoverImg.Parent := Frame;
   FCoverImg.Align := alClient;
+  FCoverImg.BorderSpacing.Around := 1;
   FCoverImg.Stretch := True;
   FCoverImg.Proportional := True;
   FCoverImg.Center := True;
 
   FCoverInfo := TLabel.Create(Self);
   FCoverInfo.Parent := CoverPanel;
-  FCoverInfo.SetBounds(Scale96ToForm(8), Scale96ToForm(117), Scale96ToForm(224), Scale96ToForm(18));
-  FCoverInfo.Font.Color := clGrayText;
+  FCoverInfo.SetBounds(Scale96ToForm(8), Scale96ToForm(118), Scale96ToForm(224), Scale96ToForm(18));
+  FCoverInfo.Font.Color := DJ_DIM;
 
   { die vier Cover-Knöpfe senkrecht neben dem Bild }
-  FBtnCoverLoad  := MakeButton(CoverPanel, _('Bild...'), 122, 6, 106, @BtnCoverLoadClick);
-  FBtnCoverPaste := MakeButton(CoverPanel, _('Einfügen'), 122, 33, 106, @BtnCoverPasteClick);
-  FBtnCoverDel   := MakeButton(CoverPanel, _('Entfernen'), 122, 60, 106, @BtnCoverDelClick);
-  FBtnCoverSave  := MakeButton(CoverPanel, _('Speichern...'), 122, 87, 106, @BtnCoverSaveClick);
-  for I := 0 to CoverPanel.ControlCount - 1 do
-    if CoverPanel.Controls[I] is TButton then
-      CoverPanel.Controls[I].Height := Scale96ToForm(26);
+  FBtnCoverLoad  := MakeButton(CoverPanel, _('Bild...'), 122, 7, 106, @BtnCoverLoadClick);
+  FBtnCoverPaste := MakeButton(CoverPanel, _('Einfügen'), 122, 34, 106, @BtnCoverPasteClick);
+  FBtnCoverDel   := MakeButton(CoverPanel, _('Entfernen'), 122, 61, 106, @BtnCoverDelClick);
+  FBtnCoverSave  := MakeButton(CoverPanel, _('Speichern...'), 122, 88, 106, @BtnCoverSaveClick);
   FBtnCoverPaste.Hint := _('Bild aus der Zwischenablage einfügen (Strg+V)');
   FBtnCoverPaste.ShowHint := True;
 
-  Fields := TPanel.Create(Self);
-  Fields.Parent := PnlEdit;
+  Fields := MakeArea(PnlEdit);
   Fields.Align := alClient;
-  Fields.BevelOuter := bvNone;
+  Fields.BorderSpacing.Around := 1;
   for F := Low(TMp4TagField) to High(TMp4TagField) do
     FEdits[F] := nil;
   Shown := nil;
@@ -595,9 +654,9 @@ begin
   Half := (Length(Shown) + 1) div 2;
   for I := 0 to High(Shown) do
     if I < Half then
-      AddField(Shown[I], 4, 6 + I * ROW_H)
+      AddField(Shown[I], 4, 7 + I * ROW_H)
     else
-      AddField(Shown[I], 296, 6 + (I - Half) * ROW_H);
+      AddField(Shown[I], 296, 7 + (I - Half) * ROW_H);
   if FEdits[tfGenre] <> nil then
   begin
     TComboBox(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
@@ -639,7 +698,7 @@ begin
   SetFieldHint(tfLabel, _('Plattenfirma, die den Track veröffentlicht hat'));
   SetFieldHint(tfComment, _('Freier Text, z.B. Notizen fürs Auflegen'));
   FBtnFromName := MakeButton(Fields, _('Interpret/Titel aus Dateiname'),
-    378, 6 + (Length(Shown) - Half) * ROW_H, 196, @BtnFromNameClick);
+    378, 7 + (Length(Shown) - Half) * ROW_H, 196, @BtnFromNameClick);
   FBtnFromName.Height := Scale96ToForm(24);
   FBtnFromName.Hint := _('"Interpret - Titel.stem.mp4" füllt Interpret und Titel');
   FBtnFromName.ShowHint := True;
@@ -649,11 +708,48 @@ begin
   PnlEdit.Top := 0;
   Foot.Top := PnlEdit.Top + PnlEdit.Height;
 
-  { --- Liste (füllt den Rest) --------------------------------------------- }
+  { --- Liste mit eigener Kopfzeile (füllt den Rest) ----------------------- }
+  PnlList := MakeArea(Self);
+  PnlList.Align := alClient;
+  PnlList.BorderColor := DJ_BORDER;
+  PnlList.BorderSpacing.Bottom := Scale96ToForm(6);
+
+  ColCaps[0] := _('Datei');  ColCaps[1] := _('Titel'); ColCaps[2] := _('Interpret');
+  ColCaps[3] := _('Album');  ColCaps[4] := _('Genre'); ColCaps[5] := _('Cover');
+  ColCaps[6] := _('Status');
+  PnlHead := MakeArea(PnlList);
+  PnlHead.Align := alTop;
+  PnlHead.Height := Scale96ToForm(24);
+  PnlHead.BorderSpacing.Around := 1;
+  PnlHead.Color := DJ_BTN;
+  X := Scale96ToForm(6);
+  for I := 0 to High(COL_W) do
+  begin
+    Lbl := TLabel.Create(Self);
+    Lbl.Parent := PnlHead;
+    Lbl.SetBounds(X, Scale96ToForm(5), Scale96ToForm(COL_W[I]) - Scale96ToForm(6), Scale96ToForm(16));
+    Lbl.AutoSize := False;
+    Lbl.Caption := UTF8UpperCase(ColCaps[I]);
+    Lbl.Font.Color := DJ_DIM;
+    Lbl.Font.Style := [fsBold];
+    Lbl.Font.Size := 8;
+    Lbl.Cursor := crHandPoint;
+    Lbl.Hint := _('Klick sortiert, nochmal klicken sortiert umgekehrt');
+    Lbl.ShowHint := True;
+    Lbl.Tag := I;
+    Lbl.OnClick := @HeadClick;
+    X := X + Scale96ToForm(COL_W[I]);
+  end;
+
   FList := TListView.Create(Self);
-  FList.Parent := Self;
+  FList.Parent := PnlList;
   FList.Align := alClient;
+  FList.BorderSpacing.Around := 1;
+  FList.BorderStyle := bsNone;
   FList.ViewStyle := vsReport;
+  FList.ShowColumnHeaders := False;
+  FList.Color := DJ_PANEL;
+  FList.Font.Color := DJ_TEXT;
   FList.MultiSelect := True;
   FList.RowSelect := True;
   FList.ReadOnly := True;
@@ -661,14 +757,42 @@ begin
   FList.OnSelectItem := @ListSelectItem;
   FList.OnKeyDown := @ListKeyDown;
   FList.OnColumnClick := @ListColumnClick;
+  FList.OnCustomDrawSubItem := @ListDrawSubItem;
   FSortCol := -1;
-  Col := FList.Columns.Add; Col.Caption := _('Datei');     Col.Width := Scale96ToForm(190);
-  Col := FList.Columns.Add; Col.Caption := _('Titel');     Col.Width := Scale96ToForm(130);
-  Col := FList.Columns.Add; Col.Caption := _('Interpret'); Col.Width := Scale96ToForm(115);
-  Col := FList.Columns.Add; Col.Caption := _('Album');     Col.Width := Scale96ToForm(95);
-  Col := FList.Columns.Add; Col.Caption := _('Genre');     Col.Width := Scale96ToForm(85);
-  Col := FList.Columns.Add; Col.Caption := _('Cover');     Col.Width := Scale96ToForm(50);
-  Col := FList.Columns.Add; Col.Caption := _('Status');    Col.Width := Scale96ToForm(140);
+  for I := 0 to High(COL_W) do
+  begin
+    Col := FList.Columns.Add;
+    Col.Caption := ColCaps[I];
+    Col.Width := Scale96ToForm(COL_W[I]);
+  end;
+end;
+
+{ Klick auf die eigene Kopfzeile: wie ein Klick auf die Spaltenüberschrift }
+procedure TMainForm.HeadClick(Sender: TObject);
+begin
+  ListColumnClick(FList, FList.Columns[TLabel(Sender).Tag]);
+end;
+
+{ Status farbig: grün = fertig, gelb = geändert, orange = es fehlt etwas.
+  Markierte Zeilen zeichnet Windows selbst (sonst wird die Markierung unlesbar). }
+procedure TMainForm.ListDrawSubItem(Sender: TCustomListView; Item: TListItem;
+  SubItem: Integer; State: TCustomDrawState; var DefaultDraw: Boolean);
+var
+  E: TTagEntry;
+begin
+  DefaultDraw := True;
+  Sender.Canvas.Font.Color := DJ_TEXT;
+  if (cdsSelected in State) or (SubItem <> 6) or (Item.Data = nil) then Exit;
+  E := TTagEntry(Item.Data);
+  if E.Dirty <> [] then
+    Sender.Canvas.Font.Color := DJ_YELLOW
+  else if E.Status <> '' then
+    Sender.Canvas.Font.Color := DJ_TEXT
+  else if (Length(E.Cur.Cover) = 0) or
+          ((E.Cur.Text[tfTitle] = '') and (E.Cur.Text[tfArtist] = '')) then
+    Sender.Canvas.Font.Color := DJ_KOFI   // orange
+  else
+    Sender.Canvas.Font.Color := DJ_GREEN;
 end;
 
 { ============================================================================
@@ -696,9 +820,9 @@ begin
   try
     Ini := TIniFile.Create(IniFileName);
     try
-      FChkBackup.Checked := Ini.ReadBool('Optionen', 'SicherungAnlegen', False);
+      FChkBackup.Down := Ini.ReadBool('Optionen', 'SicherungAnlegen', False);
       FFolderHint := Ini.ReadBool('Optionen', 'OrdnerHinweis', True);
-      FChkShrink.Checked := Ini.ReadBool('Optionen', 'CoverVerkleinern', True);
+      FChkShrink.Down := Ini.ReadBool('Optionen', 'CoverVerkleinern', True);
       FLastDir := Ini.ReadString('Optionen', 'LetzterOrdner', '');
     finally
       Ini.Free;
@@ -715,9 +839,9 @@ begin
   try
     Ini := TIniFile.Create(IniFileName);
     try
-      Ini.WriteBool('Optionen', 'SicherungAnlegen', FChkBackup.Checked);
+      Ini.WriteBool('Optionen', 'SicherungAnlegen', FChkBackup.Down);
       Ini.WriteBool('Optionen', 'OrdnerHinweis', FFolderHint);
-      Ini.WriteBool('Optionen', 'CoverVerkleinern', FChkShrink.Checked);
+      Ini.WriteBool('Optionen', 'CoverVerkleinern', FChkShrink.Down);
       Ini.WriteString('Optionen', 'LetzterOrdner', FLastDir);
     finally
       Ini.Free;
@@ -888,10 +1012,11 @@ var
 begin
   N := DirtyCount;
   if FEntries.Count = 0 then
-    FStatus.SimpleText := _('Stem-Dateien oder Ordner hierher ziehen')
+    FStatus.Caption := _('Stem-Dateien oder Ordner hierher ziehen')
   else
-    FStatus.SimpleText := Format(_('%d Dateien, %d geändert'), [FEntries.Count, N]);
+    FStatus.Caption := Format(_('%d Dateien, %d geändert'), [FEntries.Count, N]);
   FBtnSave.Enabled := N > 0;
+  FBtnSave.Down := N > 0;   // leuchtet grün, solange etwas zu speichern ist
   FBtnRevert.Enabled := N > 0;
 end;
 
@@ -1016,9 +1141,15 @@ procedure TMainForm.CheckBpmField;
 begin
   if FEdits[tfBpm] = nil then Exit;
   if BpmValid(Trim(FieldText(tfBpm))) then
-    FEdits[tfBpm].Color := clWindow
+    FEdits[tfBpm].Color := DJ_BG
   else
-    FEdits[tfBpm].Color := RGBToColor(255, 205, 205);
+    FEdits[tfBpm].Color := $00303078;   // dunkles Rot: Wert wird nicht gespeichert
+  { den dunklen Rahmen um das Feld gleich mitfärben }
+  if FEdits[tfBpm].Parent is TDJPanel then
+  begin
+    FEdits[tfBpm].Parent.Color := FEdits[tfBpm].Color;
+    FEdits[tfBpm].Parent.Invalidate;
+  end;
 end;
 
 { Eintrag aus der Liste gewählt: Der Text steht erst nach dem Ereignis
@@ -1168,7 +1299,7 @@ begin
       Exit;
     end;
   end;
-  if FChkShrink.Checked then Max := COVER_MAX_SIDE else Max := 0;
+  if FChkShrink.Down then Max := COVER_MAX_SIDE else Max := 0;
   if not PrepareCover(Data, Max, Res, Info) then
   begin
     MessageDlg(_('Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden.'),
@@ -1220,10 +1351,10 @@ begin
     begin
       E := TTagEntry(FList.Items[I].Data);
       if (E.Dirty = []) or not E.IsStem then Continue;
-      FStatus.SimpleText := Format(_('Speichere %s ...'), [ExtractFileName(E.FileName)]);
+      FStatus.Caption := Format(_('Speichere %s ...'), [ExtractFileName(E.FileName)]);
       Application.ProcessMessages;
       { Sicherungskopie nur einmal anlegen - so bleibt das echte Original }
-      if FChkBackup.Checked then
+      if FChkBackup.Down then
       begin
         Bak := E.FileName + '.bak';
         if not FileExists(Bak) and not CopyFile(E.FileName, Bak) then
@@ -1265,7 +1396,7 @@ begin
     MessageDlg(Format(_('%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status.'),
       [Ok, Bad]), mtWarning, [mbOK], 0)
   else if Ok > 0 then
-    FStatus.SimpleText := Format(_('%d Dateien gespeichert'), [Ok]);
+    FStatus.Caption := Format(_('%d Dateien gespeichert'), [Ok]);
   Result := Bad = 0;
 end;
 
@@ -1533,7 +1664,7 @@ var
   Raw, Res: TBytes;
   Info: string;
 begin
-  if FChkShrink.Checked then Max := COVER_MAX_SIDE else Max := 0;
+  if FChkShrink.Down then Max := COVER_MAX_SIDE else Max := 0;
   { 1. Versuch: PNG/JPEG direkt }
   try
     if ClipboardImageBytes(Raw) and PrepareCover(Raw, Max, Res, Info) then
@@ -1639,7 +1770,7 @@ begin
   ShowSelection;
   UpdateStatusBar;
   if N > 0 then
-    FStatus.SimpleText := Format(_('%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert'), [N]);
+    FStatus.Caption := Format(_('%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert'), [N]);
 end;
 
 procedure TMainForm.BtnSaveClick(Sender: TObject);

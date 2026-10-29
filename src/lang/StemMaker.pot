@@ -29,7 +29,7 @@ msgstr ""
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr ""
 
-#: playerform.pas:341
+#: playerform.pas:349
 msgid "  -  von Elospeed"
 msgstr ""
 
@@ -45,7 +45,7 @@ msgstr ""
 msgid "  Audiospuren: %d (Stem = 5)"
 msgstr ""
 
-#: taggerform.pas:634
+#: taggerform.pas:675
 msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
 msgstr ""
 
@@ -89,7 +89,7 @@ msgstr ""
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr ""
 
-#: taggerform.pas:633
+#: taggerform.pas:674
 msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
 msgstr ""
 
@@ -97,7 +97,7 @@ msgstr ""
 msgid "  Modell         : %s"
 msgstr ""
 
-#: taggerform.pas:635
+#: taggerform.pas:676
 msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
 msgstr ""
 
@@ -137,7 +137,7 @@ msgstr ""
 msgid " [Zeitlimit]"
 msgstr ""
 
-#: taggerform.pas:644
+#: taggerform.pas:685
 msgid "\"Interpret - Titel.stem.mp4\" füllt Interpret und Titel"
 msgstr ""
 
@@ -157,7 +157,7 @@ msgstr ""
 msgid "%d Dateien OK"
 msgstr ""
 
-#: taggerform.pas:1642
+#: taggerform.pas:1749
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr ""
 
@@ -165,11 +165,11 @@ msgstr ""
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr ""
 
-#: taggerform.pas:1268
+#: taggerform.pas:1375
 msgid "%d Dateien gespeichert"
 msgstr ""
 
-#: taggerform.pas:1265
+#: taggerform.pas:1372
 msgid "%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status."
 msgstr ""
 
@@ -181,11 +181,11 @@ msgstr ""
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr ""
 
-#: taggerform.pas:1213
+#: taggerform.pas:1320
 msgid "%d Dateien werden geändert."
 msgstr ""
 
-#: taggerform.pas:893
+#: taggerform.pas:999
 msgid "%d Dateien, %d geändert"
 msgstr ""
 
@@ -201,15 +201,15 @@ msgstr ""
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr ""
 
-#: playerform.pas:1306
+#: playerform.pas:1326
 msgid "%d Spuren  ·  Länge %s"
 msgstr ""
 
-#: playerform.pas:1310
+#: playerform.pas:1330
 msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
 msgstr ""
 
-#: taggerform.pas:1080
+#: taggerform.pas:1187
 msgid "%d Stem-Dateien in der Liste."
 msgstr ""
 
@@ -221,7 +221,7 @@ msgstr ""
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr ""
 
-#: taggerform.pas:1452
+#: taggerform.pas:1559
 msgid "%d markierte Dateien haben ungespeicherte Änderungen. Trotzdem aus der Liste nehmen?"
 msgstr ""
 
@@ -297,7 +297,7 @@ msgstr ""
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr ""
 
-#: playerform.pas:1213
+#: playerform.pas:1233
 msgid "(z.B. die von Elospeed StemMaker)."
 msgstr ""
 
@@ -341,7 +341,7 @@ msgstr ""
 msgid "--- letzte Ausgabe ---"
 msgstr ""
 
-#: taggerform.pas:964 taggerform.pas:993
+#: taggerform.pas:1071 taggerform.pas:1100
 msgid "<verschieden>"
 msgstr ""
 
@@ -377,15 +377,15 @@ msgstr ""
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr ""
 
-#: playerform.pas:648
+#: playerform.pas:656
 msgid "AN  L"
 msgstr ""
 
-#: playerform.pas:1390
+#: playerform.pas:1410
 msgid "AUS (SOLO)"
 msgstr ""
 
-#: playerform.pas:681
+#: playerform.pas:689
 msgid "AUSGANG L / R"
 msgstr ""
 
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
 msgstr ""
 
-#: taggerform.pas:1083
+#: taggerform.pas:1190
 msgid "Achtung bei Mehrfachauswahl: Sind mehrere Zeilen markiert, bekommen alle markierten Dateien den neuen Wert (z.B. alle dasselbe Album oder Cover). Felder mit „<verschieden>“ bleiben pro Datei erhalten, solange du sie nicht änderst."
 msgstr ""
 
@@ -433,15 +433,15 @@ msgstr ""
 msgid "Aktuelles Log: %s"
 msgstr ""
 
-#: taggerform.pas:390 taggerform.pas:668
+#: taggerform.pas:394 taggerform.pas:700
 msgid "Album"
 msgstr ""
 
-#: taggerform.pas:621
+#: taggerform.pas:662
 msgid "Album, EP oder Single, auf der der Track erschienen ist"
 msgstr ""
 
-#: taggerform.pas:391
+#: taggerform.pas:395
 msgid "Album-Interpret"
 msgstr ""
 
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Alles bereit"
 msgstr ""
 
-#: playerform.pas:669
+#: playerform.pas:677
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr ""
 
@@ -505,7 +505,7 @@ msgstr ""
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr ""
 
-#: playerform.pas:541
+#: playerform.pas:549
 msgid "Ansicht mit Wellenform unter jedem Stem (Taste W)"
 msgstr ""
 
@@ -513,7 +513,7 @@ msgstr ""
 msgid "Antwort zu gross"
 msgstr ""
 
-#: taggerform.pas:1085
+#: taggerform.pas:1192
 msgid "Audio, Stems und Traktors eigene Daten bleiben immer unverändert, neu geschrieben werden nur die Tags."
 msgstr ""
 
@@ -569,11 +569,11 @@ msgstr ""
 msgid "Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).\nGrösser bringt nichts - besser als die Quelle wird es nie.\nSehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht."
 msgstr ""
 
-#: taggerform.pas:395
+#: taggerform.pas:399
 msgid "BPM"
 msgstr ""
 
-#: taggerform.pas:1203
+#: taggerform.pas:1310
 msgid "BPM „%s“ bei %s ist ungültig. Bitte eine ganze Zahl von %d bis %d eingeben oder das Feld leeren."
 msgstr ""
 
@@ -601,7 +601,7 @@ msgstr ""
 msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
 msgstr ""
 
-#: taggerform.pas:1081
+#: taggerform.pas:1188
 msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
 msgstr ""
 
@@ -613,7 +613,7 @@ msgstr ""
 msgid "Beim Start nach Updates suchen"
 msgstr ""
 
-#: taggerform.pas:638
+#: taggerform.pas:679
 msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
 msgstr ""
 
@@ -641,19 +641,19 @@ msgstr ""
 msgid "Bestätigt - StemCLI ist auf diesem PC freigegeben."
 msgstr ""
 
-#: taggerform.pas:579
+#: taggerform.pas:621
 msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
 msgstr ""
 
-#: taggerform.pas:1166
+#: taggerform.pas:1273
 msgid "Bild kann nicht gelesen werden:%s%s"
 msgstr ""
 
-#: taggerform.pas:572
+#: taggerform.pas:617
 msgid "Bild..."
 msgstr ""
 
-#: taggerform.pas:1488
+#: taggerform.pas:1595
 msgid "Bilder"
 msgstr ""
 
@@ -661,7 +661,7 @@ msgstr ""
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr ""
 
-#: playerform.pas:1190
+#: playerform.pas:1210
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr ""
 
@@ -669,7 +669,7 @@ msgstr ""
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr ""
 
-#: playerform.pas:1212
+#: playerform.pas:1232
 msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr ""
 
@@ -681,7 +681,7 @@ msgstr ""
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr ""
 
-#: playerform.pas:2082
+#: playerform.pas:2121
 msgid "Breche Dekodieren ab ..."
 msgstr ""
 
@@ -689,7 +689,7 @@ msgstr ""
 msgid "Breche ab ..."
 msgstr ""
 
-#: playerform.pas:700
+#: playerform.pas:708
 msgid "CLIP"
 msgstr ""
 
@@ -705,15 +705,15 @@ msgstr ""
 msgid "CPU vorbereiten"
 msgstr ""
 
-#: taggerform.pas:400 taggerform.pas:670
+#: taggerform.pas:404 taggerform.pas:700
 msgid "Cover"
 msgstr ""
 
-#: taggerform.pas:1594
+#: taggerform.pas:1701
 msgid "Cover speichern"
 msgstr ""
 
-#: taggerform.pas:1487
+#: taggerform.pas:1594
 msgid "Cover-Bild wählen"
 msgstr ""
 
@@ -729,7 +729,7 @@ msgstr ""
 msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
 msgstr ""
 
-#: taggerform.pas:1567
+#: taggerform.pas:1674
 msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
 msgstr ""
 
@@ -757,7 +757,7 @@ msgstr ""
 msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
 msgstr ""
 
-#: taggerform.pas:665 umain.lfm:122
+#: taggerform.pas:699 umain.lfm:122
 msgid "Datei"
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 msgid "Dateien hinzufügen..."
 msgstr ""
 
-#: taggerform.pas:482
+#: taggerform.pas:521
 msgid "Dateien..."
 msgstr ""
 
@@ -785,11 +785,11 @@ msgstr ""
 msgid "Dateigröße: %.1f MB"
 msgstr ""
 
-#: playerform.pas:1150
+#: playerform.pas:1170
 msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
 msgstr ""
 
-#: playerform.pas:1256
+#: playerform.pas:1276
 msgid "Dekodiere ..."
 msgstr ""
 
@@ -797,7 +797,7 @@ msgstr ""
 msgid "Dekodieren"
 msgstr ""
 
-#: playerform.pas:655
+#: playerform.pas:663
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr ""
 
@@ -825,7 +825,7 @@ msgstr ""
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr ""
 
-#: playerform.pas:632
+#: playerform.pas:640
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr ""
 
@@ -849,7 +849,7 @@ msgstr ""
 msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
 msgstr ""
 
-#: taggerform.pas:534
+#: taggerform.pas:566
 msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
 msgstr ""
 
@@ -857,7 +857,7 @@ msgstr ""
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr ""
 
-#: taggerform.pas:637
+#: taggerform.pas:678
 msgid "Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am)."
 msgstr ""
 
@@ -897,7 +897,7 @@ msgstr ""
 msgid "Diese Version überspringen"
 msgstr ""
 
-#: taggerform.pas:1174
+#: taggerform.pas:1281
 msgid "Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden."
 msgstr ""
 
@@ -933,7 +933,7 @@ msgstr ""
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr ""
 
-#: taggerform.pas:573
+#: taggerform.pas:618
 msgid "Einfügen"
 msgstr ""
 
@@ -969,7 +969,7 @@ msgstr ""
 msgid "Engine:"
 msgstr ""
 
-#: taggerform.pas:484 taggerform.pas:574 umain.lfm:52
+#: taggerform.pas:523 taggerform.pas:619 umain.lfm:52
 msgid "Entfernen"
 msgstr ""
 
@@ -993,7 +993,7 @@ msgstr ""
 msgid "Erneut testen"
 msgstr ""
 
-#: taggerform.pas:625
+#: taggerform.pas:666
 msgid "Erscheinungsjahr, z.B. 2016"
 msgstr ""
 
@@ -1005,15 +1005,15 @@ msgstr ""
 msgid "Es fehlen noch Dateien"
 msgstr ""
 
-#: taggerform.pas:632
+#: taggerform.pas:673
 msgid "Es gibt drei übliche Schreibweisen für dieselbe Tonart:"
 msgstr ""
 
-#: taggerform.pas:1725
+#: taggerform.pas:1832
 msgid "Es gibt ungespeicherte Änderungen. Jetzt speichern?"
 msgstr ""
 
-#: taggerform.pas:1472
+#: taggerform.pas:1579
 msgid "Es gibt ungespeicherte Änderungen. Liste trotzdem leeren?"
 msgstr ""
 
@@ -1041,19 +1041,19 @@ msgstr ""
 msgid "Fehler %s"
 msgstr ""
 
-#: playerform.pas:1269
+#: playerform.pas:1289
 msgid "Fehler beim Dekodieren"
 msgstr ""
 
-#: playerform.pas:1270
+#: playerform.pas:1290
 msgid "Fehler beim Dekodieren: "
 msgstr ""
 
-#: taggerform.pas:1253
+#: taggerform.pas:1360
 msgid "Fehler: "
 msgstr ""
 
-#: taggerform.pas:1231
+#: taggerform.pas:1338
 msgid "Fehler: Sicherungskopie nicht möglich"
 msgstr ""
 
@@ -1089,7 +1089,7 @@ msgstr ""
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr ""
 
-#: taggerform.pas:640
+#: taggerform.pas:681
 msgid "Freier Text, z.B. Notizen fürs Auflegen"
 msgstr ""
 
@@ -1105,11 +1105,7 @@ msgstr ""
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr ""
 
-#: playerform.pas:732
-msgid "Gefällt dir das Tool? Unterstütze Elospeed auf ko-fi.com/elospeed"
-msgstr ""
-
-#: taggerform.pas:392 taggerform.pas:669
+#: taggerform.pas:396 taggerform.pas:700
 msgid "Genre"
 msgstr ""
 
@@ -1125,7 +1121,7 @@ msgstr ""
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr ""
 
-#: taggerform.pas:1248
+#: taggerform.pas:1355
 msgid "Gespeichert"
 msgstr ""
 
@@ -1153,7 +1149,7 @@ msgstr ""
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr ""
 
-#: taggerform.pas:525
+#: taggerform.pas:568
 msgid "Grosse Cover auf %d px verkleinern"
 msgstr ""
 
@@ -1209,15 +1205,15 @@ msgstr ""
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr ""
 
-#: playerform.pas:1249
+#: playerform.pas:1269
 msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
 msgstr ""
 
-#: playerform.pas:1392
+#: playerform.pas:1412
 msgid "HÖRBAR"
 msgstr ""
 
-#: playerform.pas:624
+#: playerform.pas:632
 msgid "HÖREN"
 msgstr ""
 
@@ -1233,7 +1229,7 @@ msgstr ""
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr ""
 
-#: taggerform.pas:785
+#: taggerform.pas:891
 msgid "Im Ordner wurden keine Stem-Dateien gefunden:%s%s"
 msgstr ""
 
@@ -1241,7 +1237,7 @@ msgstr ""
 msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
 msgstr ""
 
-#: taggerform.pas:1551
+#: taggerform.pas:1658
 msgid "In der Zwischenablage ist kein Bild."
 msgstr ""
 
@@ -1265,19 +1261,19 @@ msgstr ""
 msgid "Internetverbindung prüfen und \"Herunterladen\" erneut klicken."
 msgstr ""
 
-#: taggerform.pas:389 taggerform.pas:667
+#: taggerform.pas:393 taggerform.pas:699
 msgid "Interpret"
 msgstr ""
 
-#: taggerform.pas:622
+#: taggerform.pas:663
 msgid "Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations."
 msgstr ""
 
-#: taggerform.pas:641
+#: taggerform.pas:682
 msgid "Interpret/Titel aus Dateiname"
 msgstr ""
 
-#: taggerform.pas:393
+#: taggerform.pas:397
 msgid "Jahr"
 msgstr ""
 
@@ -1293,7 +1289,7 @@ msgstr ""
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr ""
 
-#: taggerform.pas:1215
+#: taggerform.pas:1322
 msgid "Jetzt speichern?"
 msgstr ""
 
@@ -1301,11 +1297,11 @@ msgstr ""
 msgid "Jetzt spenden"
 msgstr ""
 
-#: playerform.pas:536
+#: playerform.pas:544
 msgid "KOMPAKT"
 msgstr ""
 
-#: taggerform.pas:506 taggerform.pas:1055 udonate.pas:243
+#: playerform.pas:744 playerform.pas:2015 taggerform.pas:550
 msgid "Kaffee spendieren"
 msgstr ""
 
@@ -1325,11 +1321,11 @@ msgstr ""
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr ""
 
-#: taggerform.pas:823
+#: taggerform.pas:929
 msgid "Keine Stem-Datei"
 msgstr ""
 
-#: playerform.pas:1201
+#: playerform.pas:1221
 msgid "Keine Stem-Datei: "
 msgstr ""
 
@@ -1341,7 +1337,11 @@ msgstr ""
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr ""
 
-#: playerform.pas:804
+#: taggerform.pas:719
+msgid "Klick sortiert, nochmal klicken sortiert umgekehrt"
+msgstr ""
+
+#: playerform.pas:824
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr ""
 
@@ -1349,11 +1349,11 @@ msgstr ""
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr ""
 
-#: taggerform.pas:398
+#: taggerform.pas:402
 msgid "Kommentar"
 msgstr ""
 
-#: playerform.pas:540
+#: playerform.pas:548
 msgid "Kompakte Ansicht ohne Wellenformen (Taste W)"
 msgstr ""
 
@@ -1369,7 +1369,7 @@ msgstr ""
 msgid "Kopiert ✓"
 msgstr ""
 
-#: taggerform.pas:620
+#: taggerform.pas:661
 msgid "Künstler oder Band, z.B. „Kungs“"
 msgstr ""
 
@@ -1377,11 +1377,11 @@ msgstr ""
 msgid "LIZENZEN"
 msgstr ""
 
-#: playerform.pas:644
+#: playerform.pas:652
 msgid "LOOP"
 msgstr ""
 
-#: taggerform.pas:397
+#: taggerform.pas:401
 msgid "Label"
 msgstr ""
 
@@ -1393,7 +1393,7 @@ msgstr ""
 msgid "Lade StemMaker %s ..."
 msgstr ""
 
-#: playerform.pas:1264
+#: playerform.pas:1284
 msgid "Laden abgebrochen."
 msgstr ""
 
@@ -1425,15 +1425,15 @@ msgstr ""
 msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
 msgstr ""
 
-#: taggerform.pas:623
+#: taggerform.pas:664
 msgid "Leer lassen, wenn er gleich ist wie der Interpret."
 msgstr ""
 
-#: playerform.pas:717
+#: playerform.pas:725
 msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
 msgstr ""
 
-#: taggerform.pas:533
+#: taggerform.pas:565
 msgid "Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak)."
 msgstr ""
 
@@ -1445,11 +1445,11 @@ msgstr ""
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr ""
 
-#: playerform.pas:705
+#: playerform.pas:713
 msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr ""
 
-#: taggerform.pas:485 umain.lfm:61
+#: taggerform.pas:524 umain.lfm:61
 msgid "Liste leeren"
 msgstr ""
 
@@ -1477,51 +1477,51 @@ msgstr ""
 msgid "Logs-Ordner öffnen"
 msgstr ""
 
-#: playerform.pas:657
+#: playerform.pas:665
 msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
 msgstr ""
 
-#: playerform.pas:1588
+#: playerform.pas:1608
 msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
 msgstr ""
 
-#: playerform.pas:1591
+#: playerform.pas:1611
 msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
 msgstr ""
 
-#: playerform.pas:659
+#: playerform.pas:667
 msgid "Loop löschen (Rücktaste)"
 msgstr ""
 
-#: playerform.pas:653
+#: playerform.pas:661
 msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
 msgstr ""
 
-#: playerform.pas:654
+#: playerform.pas:662
 msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
 msgstr ""
 
-#: playerform.pas:1595
+#: playerform.pas:1615
 msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
 msgstr ""
 
-#: playerform.pas:1509
+#: playerform.pas:1529
 msgid "Loop: Punkt B muss hinter Punkt A liegen."
 msgstr ""
 
-#: playerform.pas:1619
+#: playerform.pas:1639
 msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
 msgstr ""
 
-#: playerform.pas:1503
+#: playerform.pas:1523
 msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
 msgstr ""
 
-#: playerform.pas:1523
+#: playerform.pas:1543
 msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
 msgstr ""
 
-#: playerform.pas:603
+#: playerform.pas:611
 msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
 msgstr ""
 
@@ -1529,23 +1529,23 @@ msgstr ""
 msgid "Länge: %d:%.2d min"
 msgstr ""
 
-#: playerform.pas:680
+#: playerform.pas:688
 msgid "MASTER"
 msgstr ""
 
-#: playerform.pas:1376
+#: playerform.pas:1396
 msgid "MODUS: ORIGINAL"
 msgstr ""
 
-#: playerform.pas:1376
+#: playerform.pas:1396
 msgid "MODUS: REST"
 msgstr ""
 
-#: taggerform.pas:1404
+#: taggerform.pas:1511
 msgid "MP4-Dateien"
 msgstr ""
 
-#: playerform.pas:605
+#: playerform.pas:613
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr ""
 
@@ -1553,7 +1553,7 @@ msgstr ""
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr ""
 
-#: playerform.pas:606
+#: playerform.pas:614
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr ""
 
-#: playerform.pas:1273
+#: playerform.pas:1293
 msgid "Meldung von ffmpeg:"
 msgstr ""
 
@@ -1601,11 +1601,11 @@ msgstr ""
 msgid "Modelle:"
 msgstr ""
 
-#: taggerform.pas:624
+#: taggerform.pas:665
 msgid "Musikstil: aus der Liste wählen oder selbst eintippen"
 msgstr ""
 
-#: playerform.pas:763
+#: playerform.pas:783
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr ""
 
@@ -1617,7 +1617,7 @@ msgstr ""
 msgid "Nach Updates suchen"
 msgstr ""
 
-#: taggerform.pas:619
+#: taggerform.pas:660
 msgid "Name des Tracks, z.B. „Clap Your Hands“"
 msgstr ""
 
@@ -1629,15 +1629,15 @@ msgstr ""
 msgid "Netzbetrieb"
 msgstr ""
 
-#: taggerform.pas:1214
+#: taggerform.pas:1321
 msgid "Neu geschrieben werden nur die geänderten Tags, Audio und Stems bleiben unverändert."
 msgstr ""
 
-#: taggerform.pas:819 taggerform.pas:828
+#: taggerform.pas:925 taggerform.pas:934
 msgid "Nicht lesbar"
 msgstr ""
 
-#: taggerform.pas:1086
+#: taggerform.pas:1193
 msgid "Nicht mehr anzeigen"
 msgstr ""
 
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr ""
 
-#: taggerform.pas:626
+#: taggerform.pas:667
 msgid "Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)"
 msgstr ""
 
@@ -1681,23 +1681,23 @@ msgstr ""
 msgid "OK (%s)"
 msgstr ""
 
-#: playerform.pas:629
+#: playerform.pas:637
 msgid "ORIGINAL  O"
 msgstr ""
 
-#: taggerform.pas:869
+#: taggerform.pas:975
 msgid "Ohne Cover"
 msgstr ""
 
-#: taggerform.pas:866
+#: taggerform.pas:972
 msgid "Ohne Tags"
 msgstr ""
 
-#: taggerform.pas:864
+#: taggerform.pas:970
 msgid "Ohne Tags und Cover"
 msgstr ""
 
-#: taggerform.pas:1079
+#: taggerform.pas:1186
 msgid "Ordner geladen"
 msgstr ""
 
@@ -1705,7 +1705,7 @@ msgstr ""
 msgid "Ordner mit Audiodateien wählen"
 msgstr ""
 
-#: taggerform.pas:1428
+#: taggerform.pas:1535
 msgid "Ordner mit Stem-Dateien wählen (mit Unterordnern)"
 msgstr ""
 
@@ -1725,15 +1725,15 @@ msgstr ""
 msgid "Ordner übersprungen, Pfad zu lang: %s"
 msgstr ""
 
-#: taggerform.pas:483 umain.lfm:42
+#: taggerform.pas:522 umain.lfm:42
 msgid "Ordner..."
 msgstr ""
 
-#: playerform.pas:590
+#: playerform.pas:598
 msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
 msgstr ""
 
-#: playerform.pas:633
+#: playerform.pas:641
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr ""
 
@@ -1765,11 +1765,11 @@ msgstr ""
 msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
 msgstr ""
 
-#: taggerform.pas:639
+#: taggerform.pas:680
 msgid "Plattenfirma, die den Track veröffentlicht hat"
 msgstr ""
 
-#: playerform.pas:557
+#: playerform.pas:565
 msgid "Play / Pause (Leertaste)"
 msgstr ""
 
@@ -1809,35 +1809,35 @@ msgstr ""
 msgid "RECHTE AN DER MUSIK"
 msgstr ""
 
-#: playerform.pas:667
+#: playerform.pas:675
 msgid "RESET  0"
 msgstr ""
 
-#: playerform.pas:630
+#: playerform.pas:638
 msgid "REST  R"
 msgstr ""
 
-#: playerform.pas:604
+#: playerform.pas:612
 msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
 msgstr ""
 
-#: playerform.pas:591 playerform.pas:805
+#: playerform.pas:599 playerform.pas:825
 msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
 msgstr ""
 
-#: playerform.pas:634
+#: playerform.pas:642
 msgid "Rest = Original minus Summe aller Stems (Taste R):"
 msgstr ""
 
-#: playerform.pas:1380
+#: playerform.pas:1400
 msgid "SOLO"
 msgstr ""
 
-#: playerform.pas:628
+#: playerform.pas:636
 msgid "STEMS  S"
 msgstr ""
 
-#: playerform.pas:1387
+#: playerform.pas:1407
 msgid "STUMM"
 msgstr ""
 
@@ -1865,7 +1865,7 @@ msgstr ""
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr ""
 
-#: taggerform.pas:531
+#: taggerform.pas:561
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr ""
 
@@ -1873,19 +1873,19 @@ msgstr ""
 msgid "Sitzung vorbereiten"
 msgstr ""
 
-#: playerform.pas:771
+#: playerform.pas:791
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr ""
 
-#: taggerform.pas:1223
+#: taggerform.pas:1330
 msgid "Speichere %s ..."
 msgstr ""
 
-#: taggerform.pas:492
+#: taggerform.pas:533
 msgid "Speichern"
 msgstr ""
 
-#: taggerform.pas:575
+#: taggerform.pas:620
 msgid "Speichern..."
 msgstr ""
 
@@ -1917,7 +1917,7 @@ msgstr ""
 msgid "Starten"
 msgstr ""
 
-#: taggerform.pas:671 umain.lfm:126
+#: taggerform.pas:701 umain.lfm:126
 msgid "Status"
 msgstr ""
 
@@ -1925,7 +1925,7 @@ msgstr ""
 msgid "Stem   : "
 msgstr ""
 
-#: taggerform.pas:871
+#: taggerform.pas:977
 msgid "Stem OK (%d Spuren)"
 msgstr ""
 
@@ -1945,15 +1945,15 @@ msgstr ""
 msgid "Stem-Datei prüfen"
 msgstr ""
 
-#: playerform.pas:390
+#: playerform.pas:398
 msgid "Stem-Datei öffnen"
 msgstr ""
 
-#: playerform.pas:525
+#: playerform.pas:533
 msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
 msgstr ""
 
-#: playerform.pas:529
+#: playerform.pas:537
 msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr ""
 
@@ -1965,15 +1965,15 @@ msgstr ""
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr ""
 
-#: taggerform.pas:1403 umain.pas:1364
+#: taggerform.pas:1510 umain.pas:1364
 msgid "Stem-Dateien"
 msgstr ""
 
-#: taggerform.pas:891
+#: taggerform.pas:997
 msgid "Stem-Dateien oder Ordner hierher ziehen"
 msgstr ""
 
-#: taggerform.pas:1402
+#: taggerform.pas:1509
 msgid "Stem-Dateien öffnen"
 msgstr ""
 
@@ -2085,11 +2085,11 @@ msgstr ""
 msgid "Stems trennen (demucs)"
 msgstr ""
 
-#: playerform.pas:564
+#: playerform.pas:572
 msgid "Stop und zurück an den Anfang"
 msgstr ""
 
-#: playerform.pas:772
+#: playerform.pas:792
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr ""
 
@@ -2125,7 +2125,7 @@ msgstr ""
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr ""
 
-#: taggerform.pas:627
+#: taggerform.pas:668
 msgid "Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128."
 msgstr ""
 
@@ -2137,11 +2137,11 @@ msgstr ""
 msgid "Testsignal erzeugen"
 msgstr ""
 
-#: playerform.pas:656
+#: playerform.pas:664
 msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
 msgstr ""
 
-#: taggerform.pas:388 taggerform.pas:666
+#: taggerform.pas:392 taggerform.pas:699
 msgid "Titel"
 msgstr ""
 
@@ -2149,11 +2149,11 @@ msgstr ""
 msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
 msgstr ""
 
-#: taggerform.pas:396
+#: taggerform.pas:400
 msgid "Tonart"
 msgstr ""
 
-#: taggerform.pas:630
+#: taggerform.pas:671
 msgid "Tonart des Tracks: aus der Liste wählen oder selbst eintippen."
 msgstr ""
 
@@ -2169,15 +2169,15 @@ msgstr ""
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr ""
 
-#: taggerform.pas:394
+#: taggerform.pas:398
 msgid "Track-Nr."
 msgstr ""
 
-#: playerform.pas:391
+#: playerform.pas:399
 msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr ""
 
-#: taggerform.pas:629
+#: taggerform.pas:670
 msgid "Traktor misst das Tempo beim Analysieren ohnehin selbst."
 msgstr ""
 
@@ -2305,7 +2305,7 @@ msgstr ""
 msgid "Vortest fehlgeschlagen"
 msgstr ""
 
-#: playerform.pas:537
+#: playerform.pas:545
 msgid "WELLENFORM"
 msgstr ""
 
@@ -2365,7 +2365,7 @@ msgstr ""
 msgid "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen."
 msgstr ""
 
-#: taggerform.pas:1689
+#: taggerform.pas:1796
 msgid "Zuerst die Stem-Dateien markieren, die dieses Cover bekommen sollen."
 msgstr ""
 
@@ -2433,7 +2433,7 @@ msgstr ""
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr ""
 
-#: playerform.pas:1272
+#: playerform.pas:1292
 msgid "ffmpeg konnte die Datei nicht dekodieren:"
 msgstr ""
 
@@ -2445,27 +2445,27 @@ msgstr ""
 msgid "ffmpeg nicht gefunden: %s"
 msgstr ""
 
-#: playerform.pas:1160
+#: playerform.pas:1180
 msgid "ffmpeg wurde mit Code %d beendet."
 msgstr ""
 
-#: playerform.pas:1216
+#: playerform.pas:1236
 msgid "ffmpeg.exe auswählen"
 msgstr ""
 
-#: playerform.pas:412
+#: playerform.pas:420
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
 msgstr ""
 
-#: playerform.pas:1211
+#: playerform.pas:1231
 msgid "ffmpeg.exe wurde nicht gefunden."
 msgstr ""
 
-#: playerform.pas:1217
+#: playerform.pas:1237
 msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr ""
 
-#: taggerform.pas:857
+#: taggerform.pas:963
 msgid "geändert"
 msgstr ""
 
@@ -2481,7 +2481,7 @@ msgstr ""
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr ""
 
-#: playerform.pas:635
+#: playerform.pas:643
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr ""
 
@@ -2501,7 +2501,7 @@ msgstr ""
 msgid "ist nicht schneller als die CPU"
 msgstr ""
 
-#: taggerform.pas:853
+#: taggerform.pas:959
 msgid "ja"
 msgstr ""
 
@@ -2517,7 +2517,7 @@ msgstr ""
 msgid "kein AVX (kompatible Version)"
 msgstr ""
 
-#: taggerform.pas:1105
+#: taggerform.pas:1212
 msgid "kein Cover"
 msgstr ""
 
@@ -2529,7 +2529,7 @@ msgstr ""
 msgid "keine gültige Modelldatei"
 msgstr ""
 
-#: playerform.pas:636
+#: playerform.pas:644
 msgid "klingt (ideal: fast Stille)."
 msgstr ""
 
@@ -2609,7 +2609,7 @@ msgstr ""
 msgid "wartet (unterbrochen)"
 msgstr ""
 
-#: playerform.pas:658
+#: playerform.pas:666
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr ""
 
@@ -2625,11 +2625,11 @@ msgstr ""
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr ""
 
-#: taggerform.pas:491
+#: taggerform.pas:532
 msgid "Änderungen verwerfen"
 msgstr ""
 
-#: playerform.pas:524
+#: playerform.pas:532
 msgid "ÖFFNEN"
 msgstr ""
 
