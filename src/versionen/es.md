@@ -6,6 +6,13 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.1.1 – aún no publicada
+### Corregido
+- Con escalado de pantalla del 150 % y 200 % las ventanas eran más altas que la pantalla (ventana principal, ajustes, StemDecks)
+- Selección de idioma, ventana de actualización y pregunta antes de apagar demasiado pequeñas con escalado
+- Botón Ko-fi demasiado ancho al 150 %
+- StemTagger 1.0.1: columnas de la lista demasiado estrechas con escalado
+
 ## 2.1 – 29 de octubre de 2026
 ### Nuevo
 - StemTagger 1.0: título, artista, álbum, género y portada en archivos stem, también para muchos archivos a la vez

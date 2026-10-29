@@ -54,7 +54,7 @@ procedure ShowLogWindow;
 implementation
 
 uses
-  Windows, LazFileUtils, uLang;
+  Windows, LazFileUtils, uLang, uSkalierung;
 
 { Fehlt in der Windows-Unit von Free Pascal: Sprache der Windows-Oberfläche }
 function GetUserDefaultUILanguage: Word; stdcall; external 'kernel32.dll';
@@ -247,6 +247,7 @@ begin
       if FileExists(FLogFile) then FLogMemo.Lines.LoadFromFile(FLogFile);
     except
     end;
+    SkaliereDialog(FLogForm);      // Masse oben sind 96-dpi-Pixel
   end;
   FLogForm.Show;
   FLogForm.BringToFront;

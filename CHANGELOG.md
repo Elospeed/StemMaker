@@ -7,6 +7,18 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.1.1 – noch nicht veröffentlicht
+
+### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen
+- **Kein Fenster mehr grösser als der Bildschirm:** Bei 150 % war das Hauptfenster höher als ein Full-HD-Bildschirm (unten abgeschnitten, Ko-fi-Knopf halb weg), bei 200 % liess es sich nicht einmal kleiner ziehen. Alle Fenster von StemMaker und den AddOns öffnen jetzt höchstens so gross wie der freie Bildschirm, die Mindestgrösse ist immer kleiner als die Startgrösse.
+- **Einstellungen:** passen sie nicht auf den Bildschirm, rollen die Gruppen, die Knöpfe OK und Abbrechen bleiben unten sichtbar.
+- **Sprachwahl beim ersten Start, Update-Fenster und Frage vor dem Herunterfahren:** wurden nicht mitvergrössert (grosse Schrift in zu kleinen Kästen, Text abgeschnitten). Jetzt richtig skaliert.
+- **Ko-fi-Knopf** war bei 150 % anderthalbmal zu breit.
+- **Dateiliste bei 200 %:** Wird das Fenster auf die Bildschirmhöhe gekürzt, macht das Log beim Start Platz, damit die Liste nicht fast verschwindet.
+- **StemTagger 1.0.1:** Spaltenbreiten und Zeilenhöhe der Liste blieben bei 100 %, Spalten wie „Cover“ waren abgeschnitten. Etwas breiteres Startfenster, damit die Fusszeile bei 150 % ganz zu sehen ist.
+- **StemDecks 0.4 (Test):** Bei 150 % und 200 % war das Fenster höher als der Bildschirm und die unteren Decks abgeschnitten. Jetzt passt es, die Decks rollen bei Bedarf. Auswahl- und Protokollfenster werden mitskaliert.
+- **5.1 -> Stem 0.2 (Test) und Turbo-Test 1.0.1:** Fenster bleiben auf dem Bildschirm, Auswahlfenster werden mitskaliert.
+
 ## 2.1 – 29. Oktober 2026
 
 ### StemMaker

@@ -1,4 +1,4 @@
-Elospeed StemDecks 0.3 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
+Elospeed StemDecks 0.4 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
 =========================================================================
 
 Turns a 5.1 recording (e.g. a concert DVD) into Traktor stems.

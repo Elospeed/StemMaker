@@ -6,6 +6,21 @@ Neueste Einträge oben.
 
 ---
 
+## Anzeigeskalierung (DPI) in allen Programmen (Oktober 2026)
+
+**Regel:** Jedes Fenster in jedem Programm muss bei 100 %, 125 %, 150 % und 200 % Windows-Skalierung richtig aussehen. Keine festen Pixel in eigenem Code, der *nach* dem Aufbau läuft (immer `Scale96ToForm`), kein Fenster grösser als der freie Bildschirm, Mindestgrösse immer kleiner als die Startgrösse. Vor jedem PR mit GUI-Änderung und vor jedem Release unter Wine mit 100 % und 150 % testen (`wine reg add 'HKCU\Control Panel\Desktop' /v LogPixels /t REG_DWORD /d 144 /f`).
+
+| Problem | Lösung |
+|---|---|
+| Bei 150 % war das Hauptfenster höher als ein Full-HD-Bildschirm, bei 200 % auch die Mindestgrösse; Einstellungen und StemDecks ebenso. | Neue Unit `uskalierung.pas`: meldet sich bei `Screen.AddHandlerFormVisibleChanged` an und begrenzt **jedes** Fenster beim Sichtbarwerden auf den freien Bildschirm (Mindestgrösse wird mit verkleinert). Reicht, die Unit irgendwo im Programm unter `uses` zu haben. Fenster mit viel Inhalt (Einstellungen, StemDecks) legen den Inhalt in eine `TScrollBox`. |
+| Wann rechnet Lazarus um? | Jedes Fenster, auch aus `CreateNew`, steht bis zum Ende des Konstruktors auf 96 dpi und wird erst in `AfterConstruction` umgerechnet (auch `OnCreate` läuft noch bei 96 dpi). Feste Pixel im Konstruktor sind darum in Ordnung, `Scale96ToForm` ist dort wirkungslos. |
+| Sprachwahl, Update-Fenster, Herunterfahren-Frage, Auswahlfenster in StemDecks: grosse Schrift in Kästen für 100 %. | Diese Fenster werden mit `F := TForm.CreateNew(nil)` erzeugt und erst **danach** aufgebaut: das leere Fenster ist dann schon umgerechnet, alles danach bleibt bei 100 %. Vor `ShowModal` jetzt `SkaliereDialog(F)` aufrufen. |
+| Ko-fi-Knopf bei 150 % anderthalbmal zu breit. | Breite in `FormCreate` mit `Screen.PixelsPerInch` gerechnet, danach hat Lazarus nochmals umgerechnet. Werte, die beim Aufbau mit Bildschirm-Pixeln entstehen (Textbreiten, `Screen.PixelsPerInch`), auf 96 dpi zurückrechnen. |
+| StemTagger: Spaltenbreiten und Zeilenhöhe blieben bei 100 %. | Der Konstruktor rechnet alles mit `Scale96ToForm`, das bei 96 dpi nichts tut; Werte in eigenen Variablen (Spaltenbreiten) und Bildlisten rechnet Lazarus danach nicht um. Lösung: gleich nach `inherited CreateNew` `StelleAufBildschirmDPI(Self)`, dann stimmt `Scale96ToForm` von Anfang an. |
+| Rechts verankerte Elemente (`akRight`) in Gruppen, die im Konstruktor angelegt werden, wurden riesig breit. | Während des Konstruktors ist die Anordnung gesperrt, die Gruppen haben noch nicht ihre echte Breite. Keine `akRight`-Anker im Konstruktor setzen, wenn der Parent noch per `Align` wächst. |
+
+---
+
 ## StemPlayer 1.8: Design CD-Player (Oktober 2026)
 
 | Problem | Lösung |

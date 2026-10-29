@@ -6,6 +6,13 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.1.1 – not released yet
+### Fixed
+- At 150 % and 200 % display scaling windows were taller than the screen (main window, settings, StemDecks)
+- Language choice, update window and shutdown question too small with display scaling
+- Ko-fi button too wide at 150 %
+- StemTagger 1.0.1: list columns too narrow with display scaling
+
 ## 2.1 – 29 October 2026
 ### New
 - StemTagger 1.0: set title, artist, album, genre and cover in stem files, also for many files at once

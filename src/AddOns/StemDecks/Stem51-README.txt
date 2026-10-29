@@ -1,4 +1,4 @@
-Elospeed 5.1 -> Stem  0.1 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
+Elospeed 5.1 -> Stem  0.2 (test build)  -  by Elospeed  (ko-fi.com/elospeed)
 ============================================================================
 
 Turns the 5.1 sound of a DVD (or any 5.1 file) into ONE Traktor stem file.

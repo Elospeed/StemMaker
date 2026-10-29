@@ -6,6 +6,13 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.1.1 – noch nicht veröffentlicht
+### Behoben
+- Bei 150 % und 200 % Anzeigeskalierung waren Fenster höher als der Bildschirm (Hauptfenster, Einstellungen, StemDecks)
+- Sprachwahl, Update-Fenster und Frage vor dem Herunterfahren bei Anzeigeskalierung zu klein
+- Ko-fi-Knopf bei 150 % zu breit
+- StemTagger 1.0.1: Spalten der Liste bei Anzeigeskalierung zu schmal
+
 ## 2.1 – 29. Oktober 2026
 ### Neu
 - StemTagger 1.0: Titel, Interpret, Album, Genre und Cover in Stem-Dateien setzen, auch für viele Dateien auf einmal

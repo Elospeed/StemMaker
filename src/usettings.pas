@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls, Spin,
-  Buttons, Dialogs, LCLIntf, uStemJob;
+  Buttons, Dialogs, LCLIntf, LCLType, uStemJob;
 
 type
   { Die Einstellungen, die dieses Fenster bearbeitet }
@@ -83,6 +83,7 @@ type
   private
     FLangCodes: TStringList;      // Sprach-Codes in der Reihenfolge von cbLang
     FNextTop: Integer;            // Top für die nächste Gruppe (NewGroup)
+    FInhalt: TScrollBox;          // alle Gruppen; rollt, wenn das Fenster nicht auf den Bildschirm passt
     seThreads: TSpinEdit;
     chkAutoThreads: TCheckBox;
     lblCores: TLabel;
@@ -94,6 +95,7 @@ type
     chkTrayMinimize, chkTrayNotify: TCheckBox;
     cbEngine, cbDevice: TComboBox;
     lblTurbo: TLabel;
+    procedure FormShowSettings(Sender: TObject);
     procedure chkAutoThreadsChange(Sender: TObject);
     procedure cbEngineChange(Sender: TObject);
     procedure btnVortestClick(Sender: TObject);
@@ -173,7 +175,7 @@ end;
 function TfrmSettings.NewGroup(const ACaption: string; AHeight: Integer): TGroupBox;
 begin
   Result := TGroupBox.Create(Self);
-  Result.Parent := Self;
+  Result.Parent := FInhalt;
   Result.Align := alTop;
   { alTop ordnet nach Top: jede neue Gruppe kommt unter die bisherigen }
   Result.Top := FNextTop;
@@ -243,6 +245,17 @@ begin
   Width := 600;
   Height := 716;
   ShowHint := True;
+
+  { Bei 150-200 % Anzeigeskalierung ist das Fenster höher als der
+    Bildschirm und wird gekürzt (uSkalierung): dann rollen die Gruppen,
+    die Knöpfe unten bleiben sichtbar }
+  FInhalt := TScrollBox.Create(Self);
+  FInhalt.Parent := Self;
+  FInhalt.Align := alClient;
+  FInhalt.BorderStyle := bsNone;
+  FInhalt.HorzScrollBar.Visible := False;
+  FInhalt.VertScrollBar.Tracking := True;
+  OnShow := @FormShowSettings;
 
   { --- Umwandlung --- }
   gb := NewGroup(_('Umwandlung'), 132);
@@ -429,6 +442,15 @@ begin
   chkAutoThreads.OnChange := @chkAutoThreadsChange;
   seThreads.OnChange := @seThreadsChange;
   cbEngine.OnChange := @cbEngineChange;
+end;
+
+{ Wurde das Fenster auf die Bildschirmhöhe gekürzt, braucht die
+  Rollleiste Platz: Fenster um ihre Breite verbreitern, damit rechts
+  nichts abgeschnitten wird }
+procedure TfrmSettings.FormShowSettings(Sender: TObject);
+begin
+  if Height < Scale96ToForm(716) then
+    Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 
 destructor TfrmSettings.Destroy;

@@ -33,11 +33,11 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, LCLType, LCLIntf, Process, FileUtil, LazFileUtils, IniFiles,
-  uStemMP4, surround51, decklog;
+  uStemMP4, surround51, decklog, uSkalierung;
 
 const
   APP_TITLE = 'Elospeed 5.1 -> Stem';
-  APP_VER   = '0.1';
+  APP_VER   = '0.2';
 
 type
   { TPackForm }
@@ -372,6 +372,7 @@ begin
     FSetLfe := ChkLfe;
     FSetMaster := CbMaster;
     F.OnCloseQuery := @SettingsCloseQuery;
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     if F.ShowModal <> mrOK then Exit;
 
     for d := 0 to 3 do FParts[d] := Cb[d].ItemIndex;
@@ -632,6 +633,7 @@ begin
     B.ModalResult := mrCancel;
     B.Cancel := True;
 
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     if (F.ShowModal = mrOK) and (LB.ItemIndex >= 0) then
     begin
       Idx := LB.ItemIndex;

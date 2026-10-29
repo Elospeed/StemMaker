@@ -104,7 +104,7 @@ function GetUserDefaultUILanguage: Word; stdcall; external 'kernel32.dll';
 {$ENDIF}
 
 const
-  TOOL_VERSION = '1.0';
+  TOOL_VERSION = '1.0.1';
   MAIL_TO = 'elospeed.dev@gmail.com';
   MODEL_NAME = 'ggml-model-htdemucs-4s-f16.bin';
   MODEL_URL = 'https://huggingface.co/datasets/Retrobear/demucs.cpp/resolve/main/' + MODEL_NAME;

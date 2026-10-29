@@ -38,7 +38,8 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar;
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar,
+  uSkalierung;
 
 {$I version.inc}   // APP_VERSION
 
@@ -165,6 +166,8 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShowPlatz(Sender: TObject);
+    procedure LogKleinerBeiPlatzmangel(Data: PtrInt);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
@@ -572,10 +575,15 @@ begin
   cbModel.ItemIndex := 0;
   cbFormat.ItemIndex := 0;
   LoadGearGlyph(btnSettings);      // Zahnrad-Symbol (uSettings)
-  { Ko-fi-Knopf unten rechts: Breite passend zum (übersetzten) Text }
+  { Ko-fi-Knopf unten rechts: Breite passend zum (übersetzten) Text.
+    Gemessen wird in Bildschirm-Pixeln, das Fenster steht hier aber noch
+    auf 96 dpi und wird danach umgerechnet: deshalb zurückrechnen, sonst
+    ist der Knopf bei 150 % anderthalbmal zu breit. }
   pbKofi.Canvas.Font.Style := [fsBold];
-  pbKofi.Width := KofiButtonWidth(pbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
+  pbKofi.Width := MulDiv(KofiButtonWidth(pbKofi.Canvas, _('Kaffee spendieren'),
+    Screen.PixelsPerInch), PixelsPerInch, Screen.PixelsPerInch);
 
+  OnShow := @FormShowPlatz;
   FIniName := StemIniFileName;
   LoadSettings;
   SetupTray;
@@ -2738,10 +2746,33 @@ begin
     T.Interval := 1000;
     T.OnTimer := @F.Tick;
     T.Enabled := True;
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     Result := F.ShowModal = mrOK;
   finally
     F.Free;
   end;
+end;
+
+{ Bei 200 % auf einem Full-HD-Bildschirm wird das Fenster auf die
+  Bildschirmhöhe gekürzt (uSkalierung) und die Dateiliste fast ganz vom
+  Log verdrängt. Dann das Log beim Start kleiner machen (Trenner bleibt
+  verschiebbar). Erst nach dem Anordnen prüfen, deshalb QueueAsyncCall. }
+procedure TfrmMain.FormShowPlatz(Sender: TObject);
+begin
+  OnShow := nil;
+  Application.QueueAsyncCall(@LogKleinerBeiPlatzmangel, 0);
+end;
+
+procedure TfrmMain.LogKleinerBeiPlatzmangel(Data: PtrInt);
+var
+  Fehlt: Integer;
+begin
+  Fehlt := Scale96ToForm(150) - lvFiles.Height;
+  if Fehlt <= 0 then Exit;
+  if memLog.Height - Fehlt > Scale96ToForm(40) then
+    memLog.Height := memLog.Height - Fehlt
+  else
+    memLog.Height := Scale96ToForm(40);
 end;
 
 procedure TfrmMain.FreeWorker(Data: PtrInt);
