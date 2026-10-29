@@ -1048,12 +1048,12 @@ begin
 end;
 
 { Nach dem Laden eines Ordners einmal erklären, was passiert und was nicht }
-{ Ko-fi-Knopf unten rechts (gezeichnet in uStatusDraw, gleich wie in StemMaker) }
+{ Ko-fi-Knopf unten rechts: dunkle Pille mit dem StemTagger-Symbol (uStatusDraw, gleich wie in StemMaker) }
 procedure TMainForm.KofiPaint(Sender: TObject);
 begin
   FKofi.Canvas.Font.Style := [fsBold];
   DrawKofiButton(FKofi.Canvas, FKofi.ClientRect, _('Kaffee spendieren'),
-    FKofiHover, TPanel(FKofi.Parent).Color, Screen.PixelsPerInch);
+    FKofiHover, TPanel(FKofi.Parent).Color, Screen.PixelsPerInch, Application.Icon);
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
