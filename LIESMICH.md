@@ -4,6 +4,8 @@
 
 🇬🇧 **English version:** [README.md](README.md)
 
+▶ **Video:** [StemMaker 2.0 in 73 Sekunden auf YouTube](https://youtu.be/B0LE8mc-MEM)
+
 Macht aus MP3s (auch WAV, FLAC, AIFF, M4A, AAC, OGG, Opus) **Traktor-Stem-Dateien (`*.stem.mp4`)** mit 4 Spuren: Drums, Bass, Other (Melodie) und Vox.
 Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stemgen), nur **ohne Python** und ohne Python-Umgebung: ein Lazarus-Programm, das alles Nötige beim ersten Start selbst holt. Es gibt einen Installer und eine portable ZIP-Version.
 
