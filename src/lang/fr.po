@@ -1,0 +1,2755 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+"X-Source-Language: de\n"
+"Project-Id-Version: Elospeed StemMaker\n"
+
+#: umain.pas:2169
+msgid "                   vorhanden: %s"
+msgstr "                      installé : %s"
+
+#: stemcli.lpr:225
+msgid "        StemCLI --accept  (Haftungsausschluss/Lizenz bestätigen, einmal pro PC)"
+msgstr "        StemCLI --accept  (accepter l'avertissement/la licence, une fois par PC)"
+
+#: stemcli.lpr:224
+msgid "        StemCLI --check datei.stem.mp4"
+msgstr "        StemCLI --check fichier.stem.mp4"
+
+#: stemcli.lpr:222
+msgid "        [--no-awake]  (PC darf während der Arbeit in den Ruhezustand)"
+msgstr "        [--no-awake]  (le PC peut se mettre en veille pendant le travail)"
+
+#: stemcli.lpr:223
+msgid "        [--no-normalize] [--no-bassfix]  (Klang-Optionen ausschalten)"
+msgstr "        [--no-normalize] [--no-bassfix]  (désactiver les options de son)"
+
+#: stemcli.lpr:221
+msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
+msgstr "        [-t parties] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
+
+#: playerform.pas:416
+msgid "  -  von Elospeed"
+msgstr "  -  par Elospeed"
+
+#: umain.pas:2173
+msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
+msgstr "  ATTENTION         : le PC a été en veille env. %s - les durées ci-dessus sont trop longues d'autant."
+
+#: umain.pas:2143
+msgid "  Abgebrochen    : %d"
+msgstr "  Annulés          : %d"
+
+#: umain.pas:1370
+msgid "  Audiospuren: %d (Stem = 5)"
+msgstr "  Pistes audio : %d (stem = 5)"
+
+#: taggerform.pas:705
+msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
+msgstr "  Camelot (Mixed In Key) :  8A = la mineur, 8B = do majeur (A = mineur, B = majeur)"
+
+#: umain.pas:2140
+msgid "  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)"
+msgstr "  Fichiers          : %d  (OK %d, ignorés %d, erreurs %d)"
+
+#: umain.pas:1048
+msgid "  Dauer: %s"
+msgstr "  Durée : %s"
+
+#: umain.pas:2170
+msgid "  Energie        : %s"
+msgstr "  Énergie           : %s"
+
+#: umain.pas:2159
+msgid "  Engine         : Klassisch (demucs.cpp) für %d Datei(en)"
+msgstr "  Moteur            : Classique (demucs.cpp) pour %d fichier(s)"
+
+#: umain.pas:2155
+msgid "  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s"
+msgstr "  Moteur            : Turbo (StemOnnx) pour %d fichier(s), dernier sur : %s"
+
+#: umain.pas:1377
+msgid "  Fehler: %s"
+msgstr "  Erreur : %s"
+
+#: umain.pas:2152
+msgid "  Format         : %s"
+msgstr "  Format            : %s"
+
+#: umain.pas:2144
+msgid "  Gesamtzeit     : %s"
+msgstr "  Durée totale      : %s"
+
+#: umain.pas:2168
+msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
+msgstr "  Carte graphique   : non utilisée (demucs.cpp calcule uniquement avec le CPU)"
+
+#: umain.pas:1372
+msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
+msgstr "  AUCUN bloc de métadonnées stem trouvé - fichier stem non valide"
+
+#: taggerform.pas:704
+msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
+msgstr "  Classique :  Am = la mineur, C = do majeur (m = mineur, sans m = majeur)"
+
+#: umain.pas:2151
+msgid "  Modell         : %s"
+msgstr "  Modèle            : %s"
+
+#: taggerform.pas:706
+msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
+msgstr "  Open Key (Traktor) :  1m = la mineur, 1d = do majeur (m = mineur, d = majeur)"
+
+#: umain.pas:2165
+msgid "  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)"
+msgstr "  RAM séparation    : max. %d Mo  (RAM totale %.1f Go)"
+
+#: umain.pas:2160
+msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
+msgstr "  Puissance de calcul : %d parties x %d cœurs = %d sur %d cœurs physiques (%d logiques), version demucs %s"
+
+#: umain.pas:2176
+msgid "  Ruhezustand    : keiner während der Konvertierung"
+msgstr "  Veille            : aucune pendant la conversion"
+
+#: umain.pas:2145
+msgid "  Schnitt/Track  : %s  (nur erfolgreiche Tracks)"
+msgstr "  Moyenne par piste : %s  (pistes réussies uniquement)"
+
+#: umain.pas:1374
+msgid "  Stem-Metadaten: %s"
+msgstr "  Métadonnées stem : %s"
+
+#: umain.pas:2149
+msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
+msgstr "  Vitesse           : %.1f s par minute de musique (statistiques : logs\\statistik.csv)"
+
+#: umain.pas:2467
+msgid " - %d Längen noch unbekannt"
+msgstr " - %d durées encore inconnues"
+
+#: udonate.pas:174
+msgid " - kostenlos & quelloffen"
+msgstr " - gratuit & open source"
+
+#: uinit.pas:297
+msgid " [Zeitlimit]"
+msgstr " [délai dépassé]"
+
+#: taggerform.pas:715
+msgid "\"Interpret - Titel.stem.mp4\" füllt Interpret und Titel"
+msgstr "« Artiste - Titre.stem.mp4 » remplit l'artiste et le titre"
+
+#: ureport.pas:215
+msgid "\"Per E-Mail senden\" speichert den Bericht als Datei, zeigt sie im Explorer und öffnet eine fertige Mail. Bitte die markierte Datei in die Mail ziehen. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an %s. Der ganze Bericht liegt zusätzlich in der Zwischenablage (Strg+V)."
+msgstr "« Envoyer par e-mail » enregistre le rapport dans un fichier, l'affiche dans l'Explorateur et ouvre un e-mail prêt à envoyer. Veuillez glisser le fichier sélectionné dans l'e-mail. Si aucun e-mail ne s'ouvre (p. ex. avec un webmail), envoyez simplement le fichier à %s. Le rapport complet est aussi dans le presse-papiers (Ctrl+V)."
+
+#: uupdateui.pas:352
+msgid "%.1f MB"
+msgstr "%.1f Mo"
+
+#: uupdateui.pas:347
+msgid "%.1f von %.1f MB"
+msgstr "%.1f sur %.1f Mo"
+
+#: uinit.pas:809
+msgid "%d Dateien OK"
+msgstr "%d fichiers OK"
+
+#: taggerform.pas:2095
+msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
+msgstr "%d fichiers remplis à partir du nom de fichier - pas encore enregistrés"
+
+#: umain.pas:2337
+msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
+msgstr "%d fichiers de la liste enregistrée n'existent plus - ignorés."
+
+#: taggerform.pas:1721
+msgid "%d Dateien gespeichert"
+msgstr "%d fichiers enregistrés"
+
+#: taggerform.pas:1718
+msgid "%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status."
+msgstr "%d fichiers enregistrés, %d avec erreur. Les fichiers en erreur sont inchangés, détails dans la colonne Statut."
+
+#: umain.pas:2446
+msgid "%d Dateien offen - Länge wird ermittelt ..."
+msgstr "%d fichiers en attente - lecture des durées ..."
+
+#: umain.pas:2453
+msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
+msgstr "%d fichiers en attente, %s de musique - durée env. %s"
+
+#: taggerform.pas:1666
+msgid "%d Dateien werden geändert."
+msgstr "%d fichiers vont être modifiés."
+
+#: taggerform.pas:1339
+msgid "%d Dateien, %d geändert"
+msgstr "%d fichiers, %d modifiés"
+
+#: uinit.pas:719
+msgid "%d Kerne (%d logisch), %s"
+msgstr "%d cœurs (%d logiques), %s"
+
+#: udonate.pas:117
+msgid "%d Minuten"
+msgstr "%d minutes"
+
+#: umain.pas:1279
+msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
+msgstr "%d dossier(s) n'ont pas pu être lus car leur chemin dépasse %d caractères. La musique qu'ils contiennent manque dans la liste."
+
+#: playerform.pas:1871
+msgid "%d Spuren  ·  Länge %s"
+msgstr "%d pistes  ·  durée %s"
+
+#: playerform.pas:1879
+msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
+msgstr "%d pistes chargées  ·  durée %s  ·  ffmpeg : %s"
+
+#: taggerform.pas:1533
+msgid "%d Stem-Dateien in der Liste."
+msgstr "%d fichiers stem dans la liste."
+
+#: udonate.pas:121
+msgid "%d Stunden"
+msgstr "%d heures"
+
+#: umain.pas:2638
+msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
+msgstr "%d réussis, %d ignorés, %d échoués - durée totale %s"
+
+#: taggerform.pas:1905
+msgid "%d markierte Dateien haben ungespeicherte Änderungen. Trotzdem aus der Liste nehmen?"
+msgstr "%d fichiers sélectionnés ont des modifications non enregistrées. Les retirer quand même de la liste ?"
+
+#: uturbotest.pas:149
+msgid "%d s"
+msgstr "%d s"
+
+#: uturbotest.pas:151
+msgid "%d:%.2d min"
+msgstr "%d:%.2d min"
+
+#: umain.pas:565
+msgid "%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien"
+msgstr "%s %s  -  Stems Traktor (*.stem.mp4) à partir de fichiers audio"
+
+#: umain.pas:586
+msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
+msgstr "%s %s - prêt. Ajoutez des fichiers ou faites-les glisser dans la fenêtre."
+
+#: umain.pas:2554
+msgid "%s - %d %% (Datei %d von %d)"
+msgstr "%s - %d %% (fichier %d sur %d)"
+
+#: uinit.pas:552
+msgid "%s - Start"
+msgstr "%s - Démarrage"
+
+#: uinit.pas:803
+msgid "%s - wird heruntergeladen (ca. %d MB)"
+msgstr "%s - sera téléchargé (env. %d Mo)"
+
+#: udownload.pas:648
+msgid "%s nicht im ZIP gefunden"
+msgstr "%s introuvable dans le ZIP"
+
+#: uinit.pas:775
+msgid "%s startet (%s-Version)"
+msgstr "%s démarre (version %s)"
+
+#: uinit.pas:780
+msgid "%s startet nicht (Code %d) %s"
+msgstr "%s ne démarre pas (code %d) %s"
+
+#: uinit.pas:872
+msgid "%s wird gestartet ..."
+msgstr "Démarrage de %s ..."
+
+#: uinfo.pas:159 uinfo.pas:192
+msgid "%s wurde nicht gefunden."
+msgstr "%s est introuvable."
+
+#: ulangui.pas:195
+msgid "&Alle"
+msgstr "&Tout"
+
+#: ulangui.pas:197
+msgid "&Alle bejahen"
+msgstr "Oui à &tout"
+
+#: ulangui.pas:198
+msgid "&Hilfe"
+msgstr "&Aide"
+
+#: ulangui.pas:194
+msgid "&Ignorieren"
+msgstr "&Ignorer"
+
+#: ulangui.pas:188
+msgid "&Ja"
+msgstr "&Oui"
+
+#: ulangui.pas:189
+msgid "&Nein"
+msgstr "&Non"
+
+#: ulangui.pas:190
+msgid "&OK"
+msgstr "&OK"
+
+#: ulangui.pas:199
+msgid "&Schließen"
+msgstr "&Fermer"
+
+#: ulangui.pas:193
+msgid "&Wiederholen"
+msgstr "&Réessayer"
+
+#: umain.pas:2458
+msgid "(Tempo dieses PCs)"
+msgstr "(vitesse de ce PC)"
+
+#: ureport.pas:297
+msgid "(aktueller Lauf)"
+msgstr "(exécution en cours)"
+
+#: usettings.pas:368
+msgid "(gilt ab dem nächsten Start)"
+msgstr "(pris en compte au prochain démarrage)"
+
+#: umain.pas:2463
+msgid "(grob geschätzt)"
+msgstr "(estimation grossière)"
+
+#: ureport.pas:335
+msgid "(kein Log gefunden)"
+msgstr "(aucun journal trouvé)"
+
+#: uturbotest.pas:689
+msgid "(vorläufig, wird mit jedem Messwert genauer)"
+msgstr "(provisoire, de plus en plus précis à chaque mesure)"
+
+#: playerform.pas:1778
+msgid "(z.B. die von Elospeed StemMaker)."
+msgstr "(p. ex. celui d'Elospeed StemMaker)."
+
+#: upower.pas:324
+msgid ", Energiemodus %s"
+msgstr ", mode d'alimentation %s"
+
+#: upower.pas:537
+msgid ", PC wurde wach gehalten"
+msgstr ", le PC a été maintenu éveillé"
+
+#: upower.pas:535
+msgid ", Plan %s"
+msgstr ", mode %s"
+
+#: upower.pas:532
+msgid ", Plan %s -> %s (zurückgestellt)"
+msgstr ", mode %s -> %s (rétabli)"
+
+#: upower.pas:539
+msgid ", ohne Schlafsperre"
+msgstr ", sans blocage de la veille"
+
+#: ulicense.pas:162
+msgid "- Demucs-Modelle von Meta AI Research - werden von der Originalquelle heruntergeladen, nicht mit StemMaker verteilt. Die Lizenz der trainierten Modelle ist nicht abschliessend geklärt (ursprünglich für Forschungszwecke), deshalb nur für nicht-kommerzielle Nutzung gedacht."
+msgstr "- Modèles Demucs de Meta AI Research - téléchargés depuis leur source d'origine, non distribués avec StemMaker. La licence des modèles entraînés n'est pas définitivement clarifiée (à l'origine pour la recherche), ils sont donc destinés uniquement à un usage non commercial."
+
+#: ulicense.pas:161
+msgid "- FFmpeg (LGPL) - wird beim ersten Start heruntergeladen"
+msgstr "- FFmpeg (LGPL) - téléchargé au premier démarrage"
+
+#: ulicense.pas:159
+msgid "- ONNX Runtime (MIT) und DirectML (Microsoft-Lizenz) von Microsoft - für Turbo in tools\\onnx\\"
+msgstr "- ONNX Runtime (MIT) et DirectML (licence Microsoft) de Microsoft - pour Turbo dans tools\\onnx\\"
+
+#: ulicense.pas:158
+msgid "- demucs.cpp von Sevag Hanssian (MIT) - die Trenn-Programme in tools\\"
+msgstr "- demucs.cpp de Sevag Hanssian (MIT) - les programmes de séparation dans tools\\"
+
+#: ustemjob.pas:1754
+msgid "--- letzte Ausgabe ---"
+msgstr "--- dernière sortie ---"
+
+#: taggerform.pas:1411 taggerform.pas:1440
+msgid "<verschieden>"
+msgstr "<différent>"
+
+#: umain.pas:1369
+msgid "== Prüfung: %s"
+msgstr "== Vérification : %s"
+
+#: umain.pas:2139
+msgid "=== Zusammenfassung ==="
+msgstr "=== Résumé ==="
+
+#: umain.lfm:214
+msgid "AAC 256 kbit/s (NI-Standard)"
+msgstr "AAC 256 kbit/s (standard NI)"
+
+#: umain.lfm:215
+msgid "AAC 320 kbit/s"
+msgstr "AAC 320 kbit/s"
+
+#: umain.pas:2133
+msgid "AAC automatisch (wie die Quelle, max. %d kbit/s) - Bitrate pro Datei siehe \"Quelle:\" oben"
+msgstr "AAC automatique (comme la source, max. %d kbit/s) - débit par fichier, voir « Source : » ci-dessus"
+
+#: umain.lfm:213
+msgid "AAC automatisch (wie die Quelle, max. 320 kbit/s)"
+msgstr "AAC automatique (comme la source, max. 320 kbit/s)"
+
+#: umain.pas:2130
+msgid "ALAC (verlustfrei)"
+msgstr "ALAC (sans perte)"
+
+#: umain.lfm:216
+msgid "ALAC verlustfrei (große Dateien)"
+msgstr "ALAC sans perte (fichiers volumineux)"
+
+#: playerform.pas:748
+msgid "AN  L"
+msgstr "ON  L"
+
+#: playerform.pas:1071
+msgid "ANSICHT"
+msgstr "VUE"
+
+#: playerform.pas:1959
+msgid "AUS (SOLO)"
+msgstr "OFF (SOLO)"
+
+#: playerform.pas:781
+msgid "AUSGANG L / R"
+msgstr "SORTIE L / R"
+
+#: uinit.pas:717
+msgid "AVX (mittlere Version)"
+msgstr "AVX (version moyenne)"
+
+#: uinit.pas:716
+msgid "AVX2 (schnelle Version)"
+msgstr "AVX2 (version rapide)"
+
+#: uinit.pas:600 ulangui.pas:191 ulangui.pas:192
+msgid "Abbrechen"
+msgstr "Annuler"
+
+#: umain.pas:1988
+msgid "Abbruch angefordert..."
+msgstr "Annulation demandée..."
+
+#: udownload.pas:242 udownload.pas:413 uinit.pas:452
+msgid "Abgebrochen"
+msgstr "Annulé"
+
+#: umain.pas:2004
+msgid "Abgebrochen: %d Datei(en)"
+msgstr "Annulé : %d fichier(s)"
+
+#: umain.pas:1281
+msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
+msgstr "Solution : placer le dossier plus haut (p. ex. directement sous D:\\Musique) ou raccourcir les noms de dossiers. Les dossiers figurent dans le journal."
+
+#: taggerform.pas:1536
+msgid "Achtung bei Mehrfachauswahl: Sind mehrere Zeilen markiert, bekommen alle markierten Dateien den neuen Wert (z.B. alle dasselbe Album oder Cover). Felder mit „<verschieden>“ bleiben pro Datei erhalten, solange du sie nicht änderst."
+msgstr "Attention à la sélection multiple : si plusieurs lignes sont sélectionnées, tous les fichiers sélectionnés reçoivent la nouvelle valeur (p. ex. tous le même album ou la même pochette). Les champs affichant « <différent> » gardent la valeur propre à chaque fichier tant que vous ne les modifiez pas."
+
+#: upower.pas:307
+msgid "Akku"
+msgstr "Batterie"
+
+#: upower.pas:305
+msgid "Akku (%d %%)"
+msgstr "Batterie (%d %%)"
+
+#: uinfo.pas:415
+msgid "Aktuelles Log: %s"
+msgstr "Journal actuel : %s"
+
+#: taggerform.pas:408 taggerform.pas:730
+msgid "Album"
+msgstr "Album"
+
+#: taggerform.pas:692
+msgid "Album, EP oder Single, auf der der Track erschienen ist"
+msgstr "Album, EP ou single sur lequel le morceau est paru"
+
+#: taggerform.pas:409
+msgid "Album-Interpret"
+msgstr "Artiste de l'album"
+
+#: umain.pas:1346
+msgid "Alle %d Dateien aus der Liste entfernen?"
+msgstr "Retirer les %d fichiers de la liste ?"
+
+#: umain.lfm:43
+msgid "Alle Audiodateien eines Ordners (inkl. Unterordner) hinzufügen"
+msgstr "Ajouter tous les fichiers audio d'un dossier (sous-dossiers compris)"
+
+#: umain.pas:562 umain.pas:1365
+msgid "Alle Dateien"
+msgstr "Tous les fichiers"
+
+#: umain.pas:1914
+msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
+msgstr "Tous les fichiers de la liste sont déjà terminés. Les convertir à nouveau ?"
+
+#: umain.pas:2441
+msgid "Alle Dateien in der Liste sind fertig."
+msgstr "Tous les fichiers de la liste sont terminés."
+
+#: umain.pas:2698 umain.pas:2724
+msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
+msgstr "Tous les fichiers sont terminés. Le PC s'éteindra dans %d secondes."
+
+#: ulicense.pas:166
+msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
+msgstr "Tous les détails : Info -> Licences ainsi que LICENSE et THIRD-PARTY-NOTICES.md dans le dossier StemMaker."
+
+#: uinfo.pas:511
+msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
+msgstr "Tous les détails figurent dans le CHANGELOG sur GitHub (en allemand)"
+
+#: ulangui.pas:196
+msgid "Alle verneinen"
+msgstr "Non à tout"
+
+#: uinit.pas:871
+msgid "Alles bereit"
+msgstr "Tout est prêt"
+
+#: playerform.pas:769
+msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
+msgstr "Tout réinitialiser : mute/solo off, faders à 100 %, mode stems (touche 0)"
+
+#: ureport.pas:444
+msgid "Als GitHub-Issue"
+msgstr "Comme issue GitHub"
+
+#: ureport.pas:255
+msgid "Als GitHub-Issue (öffentlich)"
+msgstr "Comme issue GitHub (publique)"
+
+#: umain.pas:1731 umain.lfm:325
+msgid "Anhören"
+msgstr "Écouter"
+
+#: uinfo.pas:484
+msgid "Anleitung"
+msgstr "Guide"
+
+#: umain.lfm:81
+msgid "Anleitung, Version, Spenden, Logs"
+msgstr "Guide, version, dons, journaux"
+
+#: playerform.pas:631
+msgid "Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)"
+msgstr "Choisir la vue : compacte, forme d'onde ou lecteur CD (touche W : compacte/forme d'onde)"
+
+#: udownload.pas:354
+msgid "Antwort zu gross"
+msgstr "Réponse trop volumineuse"
+
+#: taggerform.pas:1538
+msgid "Audio, Stems und Traktors eigene Daten bleiben immer unverändert, neu geschrieben werden nur die Tags."
+msgstr "L'audio, les stems et les données propres à Traktor restent toujours inchangés, seuls les tags sont réécrits."
+
+#: umain.lfm:203
+msgid "Audio-Format:"
+msgstr "Format audio :"
+
+#: umain.pas:559
+msgid "Audiodateien wählen"
+msgstr "Choisir des fichiers audio"
+
+#: stemengine.pas:299
+msgid "Audiogerät konnte nicht geöffnet werden (waveOutOpen Fehler %d)."
+msgstr "Impossible d'ouvrir le périphérique audio (erreur waveOutOpen %d)."
+
+#: stemcli.lpr:220
+msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
+msgstr "Utilisation : StemCLI <fichier|dossier> [...] [-o dossier_sortie] [-m ht|ft|v3]"
+
+#: umain.pas:1740
+msgid "Aus Liste entfernen"
+msgstr "Retirer de la liste"
+
+#: upower.pas:244 upower.pas:255
+msgid "Ausbalanciert"
+msgstr "Équilibré"
+
+#: ustemjob.pas:1838
+msgid "Ausgabeordner kann nicht erstellt werden"
+msgstr "Impossible de créer le dossier de sortie"
+
+#: umain.lfm:157
+msgid "Ausgabeordner:"
+msgstr "Dossier de sortie :"
+
+#: usettings.pas:262
+msgid "Auto"
+msgstr "Auto"
+
+#: usettings.pas:263
+msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
+msgstr "Auto : autant de parties que le processeur a de cœurs physiques (4 au maximum) et que la RAM le permet"
+
+#: usettings.pas:304
+msgid "Automatisch (Grafikkarte, wenn sie mitmacht)"
+msgstr "Automatique (carte graphique si elle convient)"
+
+#: usettings.pas:306
+msgid "Automatisch: Die Grafikkarte wird nur genommen, wenn sie im Test gleiche Stems liefert und schneller ist als die CPU (Beta)."
+msgstr "Automatique : la carte graphique n'est utilisée que si elle fournit les mêmes stems lors du test et qu'elle est plus rapide que le CPU (bêta)."
+
+#: umain.lfm:220
+msgid "Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).\nGrösser bringt nichts - besser als die Quelle wird es nie.\nSehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht."
+msgstr "Automatique : le fichier stem reçoit le débit de la source (p. ex. MP3 256 -> AAC 256).\nPlus haut n'apporte rien - le résultat n'est jamais meilleur que la source.\nLes sources très faibles (moins de 192) reçoivent 192, pour que le réencodage ne fasse rien perdre de plus."
+
+#: taggerform.pas:413
+msgid "BPM"
+msgstr "BPM"
+
+#: taggerform.pas:1656
+msgid "BPM „%s“ bei %s ist ungültig. Bitte eine ganze Zahl von %d bis %d eingeben oder das Feld leeren."
+msgstr "BPM « %s » pour %s non valide. Veuillez saisir un nombre entier de %d à %d ou vider le champ."
+
+#: ustemjob.pas:1949
+msgid "Bass-Fix ausgelassen: Datei zu lang (über 20 min) oder Länge unbekannt"
+msgstr "Correction des basses ignorée : fichier trop long (plus de 20 min) ou durée inconnue"
+
+#: ustemjob.pas:1947
+msgid "Bass-Fix: Tiefbass unter %s Hz von Other nach Bass"
+msgstr "Correction des basses : basses profondes sous %s Hz déplacées de Other vers Bass"
+
+#: umain.lfm:271
+msgid "Bass-Fix: Tiefbass von Other nach Bass"
+msgstr "Correction des basses : déplacer les basses profondes de Other vers Bass"
+
+#: uinit.pas:604 ulicenseui.pas:89 umain.pas:2518
+msgid "Beenden"
+msgstr "Quitter"
+
+#: usettings.pas:270
+msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
+msgstr "Pour des dossiers entiers : Musique\\House\\2024\\track.mp3 devient <dossier de sortie>\\House\\2024\\track.stem.mp4"
+
+#: usettings.pas:294
+msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
+msgstr "Les deux calculent le même modèle, les stems sont identiques. Turbo est environ 5 à 8x plus rapide sur le CPU et peut utiliser la carte graphique."
+
+#: taggerform.pas:1534
+msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
+msgstr "Le chargement ne modifie rien. Les fichiers ne sont écrits qu'avec « Enregistrer », et seulement ceux qui ont des modifications."
+
+#: usettings.pas:373
+msgid "Beim Minimieren nur das Symbol neben der Uhr zeigen"
+msgstr "Une fois réduit, afficher seulement l'icône à côté de l'horloge"
+
+#: usettings.pas:370 uupdateui.pas:445
+msgid "Beim Start nach Updates suchen"
+msgstr "Rechercher les mises à jour au démarrage"
+
+#: taggerform.pas:709
+msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
+msgstr "Les nombres voisins se mixent bien ensemble (p. ex. 8A avec 7A, 9A et 8B)."
+
+#: umain.pas:1347
+msgid "Bereits erstellte Stem-Dateien bleiben erhalten."
+msgstr "Les fichiers stem déjà créés sont conservés."
+
+#: umain.pas:710
+msgid "Bericht ansehen..."
+msgstr "Voir le rapport..."
+
+#: upower.pas:253
+msgid "Bessere Akkuleistung"
+msgstr "Meilleure autonomie"
+
+#: upower.pas:252
+msgid "Beste Energieeffizienz"
+msgstr "Meilleure efficacité énergétique"
+
+#: upower.pas:254
+msgid "Beste Leistung"
+msgstr "Performances optimales"
+
+#: stemcli.lpr:138
+msgid "Bestätigt - StemCLI ist auf diesem PC freigegeben."
+msgstr "Accepté - StemCLI est activé sur ce PC."
+
+#: ulangui.pas:203
+msgid "Bestätigung"
+msgstr "Confirmation"
+
+#: taggerform.pas:651
+msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
+msgstr "Coller l'image du presse-papiers (Ctrl+V)"
+
+#: taggerform.pas:1619
+msgid "Bild kann nicht gelesen werden:%s%s"
+msgstr "Impossible de lire l'image :%s%s"
+
+#: taggerform.pas:647
+msgid "Bild..."
+msgstr "Image..."
+
+#: taggerform.pas:1941
+msgid "Bilder"
+msgstr "Images"
+
+#: ureport.pas:457
+msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
+msgstr "Veuillez glisser ici le fichier depuis la fenêtre de l'Explorateur :"
+
+#: playerform.pas:1755
+msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
+msgstr "Veuillez déposer un fichier stem (.stem.mp4), pas un dossier."
+
+#: umain.pas:1875
+msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
+msgstr "Veuillez choisir un dossier de sortie ou activer « à côté du fichier d'origine »."
+
+#: playerform.pas:1777
+msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
+msgstr "Veuillez sélectionner ffmpeg.exe dans la boîte de dialogue suivante"
+
+#: ulicense.pas:135
+msgid "Bitte vor der ersten Benutzung lesen"
+msgstr "À lire avant la première utilisation"
+
+#: ureport.pas:256
+msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
+msgstr "Nécessite un compte GitHub. Tout le monde peut lire les issues."
+
+#: playerform.pas:2689
+msgid "Breche Dekodieren ab ..."
+msgstr "Annulation du décodage ..."
+
+#: uinit.pas:1087
+msgid "Breche ab ..."
+msgstr "Annulation ..."
+
+#: playerform.pas:1284
+msgid "CD-PLAYER"
+msgstr "LECTEUR CD"
+
+#: playerform.pas:800
+msgid "CLIP"
+msgstr "CLIP"
+
+#: uturbotest.pas:542
+msgid "CPU einrichten (Durchgang %d von %d)"
+msgstr "Préparation du CPU (passe %d sur %d)"
+
+#: uturbotest.pas:544
+msgid "CPU messen (Durchgang %d von %d)"
+msgstr "Mesure du CPU (passe %d sur %d)"
+
+#: uturbotest.pas:540
+msgid "CPU vorbereiten"
+msgstr "Préparer le CPU"
+
+#: playerform.pas:1144
+msgid "CUE"
+msgstr "CUE"
+
+#: taggerform.pas:418 taggerform.pas:730
+msgid "Cover"
+msgstr "Pochette"
+
+#: taggerform.pas:2047
+msgid "Cover speichern"
+msgstr "Enregistrer la pochette"
+
+#: taggerform.pas:1940
+msgid "Cover-Bild wählen"
+msgstr "Choisir l'image de pochette"
+
+#: usettings.pas:282
+msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
+msgstr "Ensuite, tout est remis comme avant. L'écran peut s'éteindre."
+
+#: uinfo.pas:517
+msgid "Danke"
+msgstr "Merci"
+
+#: uinfo.pas:282
+msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
+msgstr "Merci à toutes celles et ceux qui soutiennent StemMaker par des traductions, des tests, des idées, des rapports de bugs ou des dons !"
+
+#: taggerform.pas:2020
+msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
+msgstr "Impossible de lire l'image du presse-papiers."
+
+#: usettings.pas:374
+msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
+msgstr "La fenêtre disparaît de la barre des tâches. Un clic sur l'icône à côté de l'horloge la fait revenir."
+
+#: uupdate.pas:398
+msgid "Das Update-ZIP enthält keine StemMaker.exe"
+msgstr "Le ZIP de mise à jour ne contient pas de StemMaker.exe"
+
+#: mp4stem.pas:277
+msgid "Das ist keine Stem-Datei (kein MP4-Format)."
+msgstr "Ce n'est pas un fichier stem (pas au format MP4)."
+
+#: mp4stem.pas:283
+msgid "Das ist keine Stem-Datei: Sie hat %d Audiospur(en), eine Stem-Datei hat %d (Master + %d Stems)."
+msgstr "Ce n'est pas un fichier stem : il a %d piste(s) audio, un fichier stem en a %d (master + %d stems)."
+
+#: usingleinstance.pas:271
+msgid "Das offene Fenster wird jetzt nach vorne geholt. Weitere Dateien einfach dort zur Liste hinzufügen."
+msgstr "La fenêtre ouverte va maintenant passer au premier plan. Ajoutez-y simplement d'autres fichiers à la liste."
+
+#: udonate.pas:206
+msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
+msgstr "Cela fait environ %s de musique, séparée sur votre propre PC - sans abonnement, sans upload, sans publicité."
+
+#: taggerform.pas:729 umain.lfm:122
+msgid "Datei"
+msgstr "Fichier"
+
+#: udownload.pas:272 udownload.pas:298 udownload.pas:433
+msgid "Datei kann nicht gespeichert werden: %s"
+msgstr "Impossible d'enregistrer le fichier : %s"
+
+#: ustemjob.pas:1822
+msgid "Datei nicht gefunden: %s"
+msgstr "Fichier introuvable : %s"
+
+#: umain.pas:1152
+msgid "Datei:  vergangen %s   |   verbleibend %s"
+msgstr "Fichier :  écoulé %s   |   restant %s"
+
+#: umain.lfm:33
+msgid "Dateien hinzufügen..."
+msgstr "Ajouter des fichiers..."
+
+#: taggerform.pas:554
+msgid "Dateien..."
+msgstr "Fichiers..."
+
+#: ustemjob.pas:1835
+msgid "Dateigröße: %.1f MB"
+msgstr "Taille du fichier : %.1f Mo"
+
+#: playerform.pas:1715
+msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
+msgstr "Décodage de %d pistes avec ffmpeg ... %.1f s"
+
+#: playerform.pas:1821
+msgid "Dekodiere ..."
+msgstr "Décodage ..."
+
+#: ustemjob.pas:1859
+msgid "Dekodieren"
+msgstr "Décodage"
+
+#: playerform.pas:755
+msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
+msgstr "La section de A à B est alors répétée en boucle."
+
+#: ureport.pas:363
+msgid "Der Bericht konnte nicht gespeichert werden: %s"
+msgstr "Impossible d'enregistrer le rapport : %s"
+
+#: uupdateui.pas:199
+msgid "Der Server antwortet nicht."
+msgstr "Le serveur ne répond pas."
+
+#: mp4stem.pas:272
+msgid "Der StemPlayer spielt nur Traktor-Stem-Dateien (.stem.mp4) ab,"
+msgstr "StemPlayer ne lit que les fichiers stem Traktor (.stem.mp4),"
+
+#: umain.lfm:274
+msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
+msgstr "Les basses profondes sous 80 Hz que la séparation laisse dans le stem « Other » sont déplacées vers le stem Bass.\nLe stem Bass sonne ainsi plus plein (comme les stems de Traktor) ; tous les stems ensemble sonnent pareil."
+
+#: uinfo.pas:344
+msgid "Der Versionsverlauf fehlt in dieser Version."
+msgstr "L'historique des versions manque dans cette version."
+
+#: uturbotest.pas:709
+msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
+msgstr "Le test préalable n'a pas fonctionné (code %s). StemMaker essaie quand même Turbo et utilise sinon demucs.cpp (Classique). Les détails sont dans le journal."
+
+#: playerform.pas:1041
+msgid "Der blaue Ring zeigt die Restzeit."
+msgstr "L'anneau bleu indique le temps restant."
+
+#: playerform.pas:732
+msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
+msgstr "Les 4 stems mixés - avec mute / solo / volume (touche S)"
+
+#: uinfo.pas:161
+msgid "Die Anleitung liegt normalerweise im StemMaker-Ordner neben StemMaker.exe. Bitte das ZIP komplett entpacken."
+msgstr "Le guide se trouve normalement dans le dossier StemMaker, à côté de StemMaker.exe. Veuillez extraire le ZIP en entier."
+
+#: ulogui.pas:56
+msgid "Die Details stehen im Log:"
+msgstr "Les détails figurent dans le journal :"
+
+#: uturbotest.pas:731
+msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
+msgstr "La carte graphique (%s) %s. StemMaker sépare avec le CPU : environ %s de calcul par minute de musique."
+
+#: uturbotest.pas:724
+msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
+msgstr "La carte graphique (%s) fonctionnerait, mais « CPU uniquement » est sélectionné. StemMaker sépare avec le CPU : environ %s par minute de musique."
+
+#: umain.pas:735
+msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
+msgstr "La conversion est en cours. Annuler et quitter ?"
+
+#: taggerform.pas:597
+msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
+msgstr "La copie n'est jamais écrasée, elle reste donc le véritable original."
+
+#: umain.pas:1936
+msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
+msgstr "La liste est vide - ajoutez d'abord des fichiers."
+
+#: taggerform.pas:708
+msgid "Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am)."
+msgstr "La liste affiche les trois, c'est la notation classique qui est enregistrée (p. ex. Am)."
+
+#: uupdateui.pas:560
+msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
+msgstr "La somme de contrôle (SHA-256) de la mise à jour ne correspond pas. Le fichier a été supprimé, rien n'a été modifié dans StemMaker."
+
+#: usettings.pas:499
+msgid "Die Sprache wird beim nächsten Start übernommen."
+msgstr "La langue sera appliquée au prochain démarrage."
+
+#: uinfo.pas:579
+msgid "Die Suche nach Updates hat nicht geklappt: %s"
+msgstr "La recherche de mises à jour a échoué : %s"
+
+#: usettings.pas:352
+msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
+msgstr "Traktor affiche les icônes de façon fixe selon l'emplacement 1-4, elles ne peuvent pas être modifiées."
+
+#: uupdate.pas:410
+msgid "Die alte Version wurde wiederhergestellt."
+msgstr "L'ancienne version a été restaurée."
+
+#: umain.pas:2335
+msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
+msgstr "Le dernier fichier traité a été interrompu - il sera refait avec « Démarrer »."
+
+#: ulicense.pas:172
+msgid "Diese Bestätigung gilt für diesen PC. Wird der StemMaker-Ordner auf einen anderen PC kopiert, kommt diese Frage dort noch einmal."
+msgstr "Cette confirmation vaut pour ce PC. Si le dossier StemMaker est copié sur un autre PC, la question sera reposée là-bas."
+
+#: uinit.pas:889
+msgid "Diese Dateien werden einmalig aus dem Internet geladen: %s. Danach startet StemMaker automatisch."
+msgstr "Ces fichiers seront téléchargés une seule fois depuis Internet : %s. StemMaker démarrera ensuite automatiquement."
+
+#: uupdateui.pas:473
+msgid "Diese Version überspringen"
+msgstr "Ignorer cette version"
+
+#: taggerform.pas:1627
+msgid "Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden."
+msgstr "Ce format d'image n'est pas pris en charge. Veuillez utiliser JPEG, PNG, BMP ou GIF."
+
+#: uupdateui.pas:526
+msgid "Dieses Update kann nicht automatisch installiert werden. Die Download-Seite wird im Browser geöffnet."
+msgstr "Cette mise à jour ne peut pas être installée automatiquement. La page de téléchargement va s'ouvrir dans le navigateur."
+
+#: taggerform.pas:747
+msgid "Doppelklick auf den Rand passt die Spalte an den Text an"
+msgstr "Double-cliquez sur le bord pour ajuster la colonne au texte"
+
+#: uinit.pas:1046
+msgid "Download fehlgeschlagen"
+msgstr "Échec du téléchargement"
+
+#: udownload.pas:421
+msgid "Download fehlgeschlagen (curl %d)"
+msgstr "Échec du téléchargement (curl %d)"
+
+#: uinit.pas:962
+msgid "Download läuft ..."
+msgstr "Téléchargement en cours ..."
+
+#: uinit.pas:1008
+msgid "Download läuft ...  %s"
+msgstr "Téléchargement en cours ...  %s"
+
+#: udownload.pas:280
+msgid "Download unvollständig"
+msgstr "Téléchargement incomplet"
+
+#: uinfo.pas:576
+msgid "Du hast die neueste Version (%s)."
+msgstr "Vous avez la dernière version (%s)."
+
+#: uturbotest.pas:686
+msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
+msgstr "Ici, un morceau de 3 minutes prend environ %s avec htdemucs (standard) et %s avec htdemucs_ft (meilleure qualité)."
+
+#: taggerform.pas:648
+msgid "Einfügen"
+msgstr "Coller"
+
+#: usettings.pas:240 umain.lfm:148
+msgid "Einstellungen"
+msgstr "Paramètres"
+
+#: ulicenseui.pas:97
+msgid "Einverstanden - StemMaker starten"
+msgstr "J'accepte - démarrer StemMaker"
+
+#: stemcli.lpr:132
+msgid "Einverstanden? Dann StemCLI einmal mit --accept aufrufen (oder StemMaker.exe starten und dort bestätigen)."
+msgstr "Vous êtes d'accord ? Lancez alors StemCLI une fois avec --accept (ou démarrez StemMaker.exe et confirmez-y)."
+
+#: upower.pas:243
+msgid "Energiesparmodus"
+msgstr "Économiseur d'énergie"
+
+#: umain.pas:1956
+msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
+msgstr "Mode d'alimentation « %s » réglé temporairement sur « %s » - il sera rétabli après la conversion."
+
+#: stemcli.lpr:235
+msgid "Energiesparplan vorübergehend: %s -> %s"
+msgstr "Mode d'alimentation temporaire : %s -> %s"
+
+#: usettings.pas:286
+msgid "Engine (trennt die Stems)"
+msgstr "Moteur (sépare les stems)"
+
+#: usettings.pas:287
+msgid "Engine:"
+msgstr "Moteur :"
+
+#: taggerform.pas:556 taggerform.pas:649 umain.lfm:52
+msgid "Entfernen"
+msgstr "Retirer"
+
+#: udownload.pas:664
+msgid "Entpacken fehlgeschlagen"
+msgstr "Échec de l'extraction"
+
+#: ureport.pas:364
+msgid "Er liegt aber in der Zwischenablage (Strg+V)."
+msgstr "Il se trouve toutefois dans le presse-papiers (Ctrl+V)."
+
+#: ustemjob.pas:2085
+msgid "Ergebnis hat nicht 5 Audiospuren"
+msgstr "Le résultat n'a pas 5 pistes audio"
+
+#: uinit.pas:602
+msgid "Erneut prüfen"
+msgstr "Vérifier à nouveau"
+
+#: uturbotest.pas:403
+msgid "Erneut testen"
+msgstr "Tester à nouveau"
+
+#: taggerform.pas:696
+msgid "Erscheinungsjahr, z.B. 2016"
+msgstr "Année de sortie, p. ex. 2016"
+
+#: umain.pas:1885
+msgid "Es fehlen Programmteile:"
+msgstr "Des composants du programme manquent :"
+
+#: uinit.pas:882
+msgid "Es fehlen noch Dateien"
+msgstr "Des fichiers manquent encore"
+
+#: taggerform.pas:703
+msgid "Es gibt drei übliche Schreibweisen für dieselbe Tonart:"
+msgstr "Il existe trois notations courantes pour la même tonalité :"
+
+#: taggerform.pas:2178
+msgid "Es gibt ungespeicherte Änderungen. Jetzt speichern?"
+msgstr "Il y a des modifications non enregistrées. Enregistrer maintenant ?"
+
+#: taggerform.pas:1925
+msgid "Es gibt ungespeicherte Änderungen. Liste trotzdem leeren?"
+msgstr "Il y a des modifications non enregistrées. Vider quand même la liste ?"
+
+#: ulogui.pas:54
+msgid "Es ist ein unerwarteter Fehler aufgetreten:"
+msgstr "Une erreur inattendue s'est produite :"
+
+#: umain.pas:542
+msgid "FEHLER im Hintergrund: %s (Details im Log)"
+msgstr "ERREUR en arrière-plan : %s (détails dans le journal)"
+
+#: ustemjob.pas:2151
+msgid "FEHLER: "
+msgstr "ERREUR : "
+
+#: usettings.pas:340
+msgid "Farbe wählen"
+msgstr "Choisir une couleur"
+
+#: ulangui.pas:201 umain.pas:1055 umain.pas:2307
+msgid "Fehler"
+msgstr "Erreur"
+
+#: uturbotest.pas:618
+msgid "Fehler %s"
+msgstr "erreur %s"
+
+#: playerform.pas:1834
+msgid "Fehler beim Dekodieren"
+msgstr "Erreur de décodage"
+
+#: playerform.pas:1835
+msgid "Fehler beim Dekodieren: "
+msgstr "Erreur de décodage : "
+
+#: taggerform.pas:1706
+msgid "Fehler: "
+msgstr "Erreur : "
+
+#: taggerform.pas:1684
+msgid "Fehler: Sicherungskopie nicht möglich"
+msgstr "Erreur : copie de sauvegarde impossible"
+
+#: ureport.pas:363
+msgid "Fehlerbericht"
+msgstr "Rapport d'erreur"
+
+#: ureport.pas:191
+msgid "Fehlerbericht senden"
+msgstr "Envoyer un rapport d'erreur"
+
+#: uinfo.pas:470 ulogui.pas:60
+msgid "Fehlerbericht senden..."
+msgstr "Envoyer un rapport d'erreur..."
+
+#: umain.pas:918
+msgid "Fehlt: %s"
+msgstr "Manquant : %s"
+
+#: ustemjob.pas:2124 uturbotest.pas:717 uturbotest.pas:718
+msgid "Fertig"
+msgstr "Terminé"
+
+#: umain.pas:2011
+msgid "Fertig - Gesamtzeit %s"
+msgstr "Terminé - durée totale %s"
+
+#: stemcli.lpr:268
+msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
+msgstr "Terminé : %d réussis, %d ignorés, %d échoués"
+
+#: umain.pas:2001 umain.pas:2015
+msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
+msgstr "Terminé : %d réussis, %d ignorés, %d échoués  -  durée totale %s"
+
+#: taggerform.pas:711
+msgid "Freier Text, z.B. Notizen fürs Auflegen"
+msgstr "Texte libre, p. ex. des notes pour mixer"
+
+#: usettings.pas:375
+msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
+msgstr "Survolez l'icône pour voir la progression."
+
+#: umain.pas:943
+msgid "Für \"%s\" fehlen noch Dateien."
+msgstr "Des fichiers manquent encore pour « %s »."
+
+#: uturbotest.pas:465
+msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
+msgstr "Le test nécessite le modèle htdemucs ou htdemucs_ft. Il est téléchargé au démarrage de StemMaker."
+
+#: taggerform.pas:410 taggerform.pas:730
+msgid "Genre"
+msgstr "Genre"
+
+#: usettings.pas:299
+msgid "Gerät:"
+msgstr "Périphérique :"
+
+#: umain.pas:1189
+msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
+msgstr "Total (fichier %d sur %d) :  écoulé %s   |   restant %s"
+
+#: umain.pas:2459
+msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
+msgstr "Estimation basée sur la vitesse mesurée sur ce PC."
+
+#: taggerform.pas:1701
+msgid "Gespeichert"
+msgstr "Enregistré"
+
+#: ureport.pas:445
+msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
+msgstr "Les issues GitHub sont publiques, tout le monde peut les lire. Vérifiez d'abord que le rapport ne contient rien que vous ne voulez pas montrer (p. ex. des noms de morceaux). Il vous faut un compte GitHub."
+
+#: uturbotest.pas:614
+msgid "Grafikkarte einschalten"
+msgstr "activation de la carte graphique"
+
+#: uturbotest.pas:547
+msgid "Grafikkarte messen"
+msgstr "Mesure de la carte graphique"
+
+#: uturbotest.pas:546
+msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
+msgstr "Vérification de la carte graphique (jusqu'à 30 s)"
+
+#: uturbotest.pas:545
+msgid "Grafikkarte suchen"
+msgstr "Recherche de la carte graphique"
+
+#: umain.pas:2464
+msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
+msgstr "Estimation grossière - après la première piste terminée, StemMaker connaît la vitesse de ce PC."
+
+#: taggerform.pas:601
+msgid "Grosse Cover auf %d px verkleinern"
+msgstr "Réduire les grandes pochettes à %d px"
+
+#: ulicense.pas:143
+msgid "HAFTUNGSAUSSCHLUSS"
+msgstr "AVERTISSEMENT"
+
+#: ureport.pas:429
+msgid "Hallo Elospeed,"
+msgstr "Bonjour Elospeed,"
+
+#: uinfo.pas:289
+msgid "Helfende"
+msgstr "Contributeurs"
+
+#: umain.pas:2106
+msgid "Herunterfahren abgebrochen."
+msgstr "Arrêt annulé."
+
+#: uinit.pas:601
+msgid "Herunterladen"
+msgstr "Télécharger"
+
+#: uinit.pas:865
+msgid "Herunterladen (ca. %d MB)"
+msgstr "Télécharger (env. %d Mo)"
+
+#: uinfo.pas:533
+msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
+msgstr "Ne figurent ici que les personnes qui ont donné leur accord. Vous avez aidé et souhaitez être cité ici ? Écrivez à elospeed.dev@gmail.com."
+
+#: umain.pas:604
+msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
+msgstr "Remarque : %d exécutions précédentes se sont terminées de façon inattendue - détails dans les journaux contenant « _ABSTURZ » dans leur nom (Info -> Ouvrir le dossier des journaux)."
+
+#: umain.pas:1950
+msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
+msgstr "Remarque : le PC fonctionne sur batterie (%s). Windows ralentit alors le CPU - sur secteur, c'est nettement plus rapide."
+
+#: stemcli.lpr:232
+msgid "Hinweis: Der PC läuft auf Akku - am Netzteil geht es schneller."
+msgstr "Remarque : le PC fonctionne sur batterie - c'est plus rapide sur secteur."
+
+#: stemcli.lpr:266
+msgid "Hinweis: Der PC war ca. %d min im Ruhezustand."
+msgstr "Remarque : le PC a été en veille pendant env. %d min."
+
+#: umain.pas:601
+msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
+msgstr "Remarque : la dernière exécution s'est terminée de façon inattendue - détails dans le journal contenant « _ABSTURZ » dans son nom (Info -> Ouvrir le dossier des journaux)."
+
+#: ustemjob.pas:2113
+msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
+msgstr "Remarque : true peak au-dessus de 0 dBFS - la piste master peut légèrement saturer à la lecture"
+
+#: playerform.pas:1814
+msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
+msgstr "Remarque : aucun bloc « stem » Traktor trouvé (les noms par défaut sont utilisés)."
+
+#: playerform.pas:1961
+msgid "HÖRBAR"
+msgstr "AUDIBLE"
+
+#: playerform.pas:724 playerform.pas:1018 playerform.pas:1073
+msgid "HÖREN"
+msgstr "ÉCOUTE"
+
+#: upower.pas:245
+msgid "Höchstleistung"
+msgstr "Performances élevées"
+
+#: usettings.pas:408
+msgid "INI-Ordner öffnen"
+msgstr "Ouvrir le dossier INI"
+
+#: ulicenseui.pas:81
+msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
+msgstr "J'ai lu l'avertissement et les mentions de licence et je les accepte."
+
+#: taggerform.pas:1231
+msgid "Im Ordner wurden keine Stem-Dateien gefunden:%s%s"
+msgstr "Aucun fichier stem trouvé dans le dossier :%s%s"
+
+#: uupdateui.pas:571
+msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
+msgstr "En cas de doute, extrayez à la main le ZIP de la page des versions."
+
+#: taggerform.pas:2004
+msgid "In der Zwischenablage ist kein Bild."
+msgstr "Le presse-papiers ne contient pas d'image."
+
+#: uinfo.pas:388 umain.lfm:80
+msgid "Info"
+msgstr "Info"
+
+#: ulangui.pas:202
+msgid "Information"
+msgstr "Information"
+
+#: uinit.pas:564 uinit.pas:711
+msgid "Installation wird geprüft ..."
+msgstr "Vérification de l'installation ..."
+
+#: uupdateui.pas:429
+msgid "Installiert ist %s. Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten."
+msgstr "Version installée : %s. Paramètres, liste, journaux, modèles et ffmpeg sont conservés."
+
+#: udownload.pas:201 udownload.pas:320
+msgid "Internet-Zugriff nicht möglich (WinINet)"
+msgstr "Accès à Internet impossible (WinINet)"
+
+#: uinit.pas:1048
+msgid "Internetverbindung prüfen und \"Herunterladen\" erneut klicken."
+msgstr "Vérifiez la connexion Internet et cliquez à nouveau sur « Télécharger »."
+
+#: taggerform.pas:407 taggerform.pas:729
+msgid "Interpret"
+msgstr "Artiste"
+
+#: taggerform.pas:693
+msgid "Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations."
+msgstr "Artiste de tout l'album, p. ex. « Various Artists » pour les compilations."
+
+#: taggerform.pas:712
+msgid "Interpret/Titel aus Dateiname"
+msgstr "Artiste/titre depuis le nom de fichier"
+
+#: taggerform.pas:411
+msgid "Jahr"
+msgstr "Année"
+
+#: uupdateui.pas:458
+msgid "Jetzt aktualisieren"
+msgstr "Mettre à jour maintenant"
+
+#: umain.pas:944
+msgid "Jetzt herunterladen?"
+msgstr "Télécharger maintenant ?"
+
+#: umain.pas:1886
+msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
+msgstr "Vérifier maintenant et télécharger les fichiers manquants ?"
+
+#: taggerform.pas:1668
+msgid "Jetzt speichern?"
+msgstr "Enregistrer maintenant ?"
+
+#: uinfo.pas:443
+msgid "Jetzt spenden"
+msgstr "Faire un don"
+
+#: playerform.pas:1040
+msgid "Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand."
+msgstr "Jog wheel : tournez-le en maintenant le bouton de la souris pour entendre le son comme un disque sous la main."
+
+#: playerform.pas:1281
+msgid "KOMPAKT"
+msgstr "COMPACT"
+
+#: playerform.pas:836 playerform.pas:2576 taggerform.pas:583
+msgid "Kaffee spendieren"
+msgstr "Offrir un café"
+
+#: uupdate.pas:331
+msgid "Kann %s nicht ersetzen"
+msgstr "Impossible de remplacer %s"
+
+#: udownload.pas:673 uupdate.pas:341
+msgid "Kann %s nicht schreiben"
+msgstr "Impossible d'écrire %s"
+
+#: ustemjob.pas:2122
+msgid "Kann Zieldatei nicht schreiben: %s"
+msgstr "Impossible d'écrire le fichier cible : %s"
+
+#: uturbotest.pas:728
+msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
+msgstr "Aucune carte graphique trouvée. StemMaker sépare avec le CPU : environ %s de calcul par minute de musique."
+
+#: taggerform.pas:1269
+msgid "Keine Stem-Datei"
+msgstr "Pas un fichier stem"
+
+#: playerform.pas:1766
+msgid "Keine Stem-Datei: "
+msgstr "Pas un fichier stem : "
+
+#: usettings.pas:296
+msgid "Klappt Turbo bei einer Datei nicht, nimmt StemMaker für diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch."
+msgstr "Si Turbo échoue pour un fichier, StemMaker passe automatiquement en Classique pour ce fichier. htdemucs v3 calcule toujours en Classique."
+
+#: usettings.pas:293
+msgid "Klassisch (demucs.cpp, wie bis 1.9)"
+msgstr "Classique (demucs.cpp, comme jusqu'à 1.9)"
+
+#: taggerform.pas:745
+msgid "Klick sortiert, nochmal klicken sortiert umgekehrt"
+msgstr "Clic pour trier, nouveau clic pour inverser"
+
+#: playerform.pas:916
+msgid "Klicken oder ziehen, um an diese Stelle zu springen."
+msgstr "Cliquez ou faites glisser pour aller à cette position."
+
+#: uturbotest.pas:318
+msgid "Kodieren messen (ffmpeg, 5 Spuren)"
+msgstr "Mesure de l'encodage (ffmpeg, 5 pistes)"
+
+#: taggerform.pas:416
+msgid "Kommentar"
+msgstr "Commentaire"
+
+#: umain.pas:734
+msgid "Konvertierung läuft"
+msgstr "Conversion en cours"
+
+#: umain.lfm:91
+msgid "Kopiert das Protokoll unten in die Zwischenablage"
+msgstr "Copie le journal ci-dessous dans le presse-papiers"
+
+#: umain.pas:723
+msgid "Kopiert ✓"
+msgstr "Copié ✓"
+
+#: taggerform.pas:691
+msgid "Künstler oder Band, z.B. „Kungs“"
+msgstr "Artiste ou groupe, p. ex. « Kungs »"
+
+#: ulicense.pas:155
+msgid "LIZENZEN"
+msgstr "LICENCES"
+
+#: playerform.pas:744 playerform.pas:1031
+msgid "LOOP"
+msgstr "BOUCLE"
+
+#: taggerform.pas:415
+msgid "Label"
+msgstr "Label"
+
+#: uinit.pas:972
+msgid "Lade %s  (%d von %d)"
+msgstr "Téléchargement de %s  (%d sur %d)"
+
+#: uupdateui.pas:319
+msgid "Lade StemMaker %s ..."
+msgstr "Téléchargement de StemMaker %s ..."
+
+#: playerform.pas:1829
+msgid "Laden abgebrochen."
+msgstr "Chargement annulé."
+
+#: ustemjob.pas:2111
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU"
+msgstr "Loudness master : %.1f LUFS, plage %.1f LU"
+
+#: ustemjob.pas:2108
+msgid "Lautheit Master: %.1f LUFS, Umfang %.1f LU, True Peak %.1f dBFS"
+msgstr "Loudness master : %.1f LUFS, plage %.1f LU, true peak %.1f dBFS"
+
+#: ustemjob.pas:2102
+msgid "Lautheit konnte nicht gemessen werden: %s"
+msgstr "Impossible de mesurer la loudness : %s"
+
+#: ustemjob.pas:2092
+msgid "Lautheit messen"
+msgstr "Mesure de la loudness"
+
+#: umain.lfm:260
+msgid "Lautstärke angleichen (Club-Pegel)"
+msgstr "Normaliser le volume (niveau club)"
+
+#: ustemjob.pas:1989
+msgid "Lautstärke angleichen: %s dB (höchste Spitze vorher %.1f dBFS)"
+msgstr "Normaliser le volume : %s dB (crête maximale avant %.1f dBFS)"
+
+#: ustemjob.pas:1993
+msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
+msgstr "Normaliser le volume : niveau impossible à mesurer, inchangé"
+
+#: taggerform.pas:694
+msgid "Leer lassen, wenn er gleich ist wie der Interpret."
+msgstr "Laisser vide s'il est identique à l'artiste."
+
+#: playerform.pas:817
+msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
+msgstr "Espace lecture/pause  ·  1-4 mute  ·  Maj+1-4 solo  ·  0 reset  ·  S/O/R mode  ·  flèches -/+5 s  ·  W forme d'onde  ·  A/B/L boucle  ·  Maj/Ctrl+flèche largeur"
+
+#: taggerform.pas:596
+msgid "Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak)."
+msgstr "Crée une copie du fichier d'origine avant le premier enregistrement (nom.stem.mp4.bak)."
+
+#: umain.lfm:263
+msgid "Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).\nAlle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.\nLaute Club-Tracks ändern sich kaum. Vorteil in Traktor: größere, besser lesbare Wellenformen."
+msgstr "Les fichiers trop faibles sont remontés jusqu'à ce que le point le plus fort soit juste sous 0 dB (env. -1 dB).\nLes 5 pistes reçoivent la même valeur, sans limiteur - la dynamique reste celle de l'original.\nLes morceaux club déjà forts changent à peine. Avantage dans Traktor : des formes d'onde plus grandes et plus lisibles."
+
+#: udownload.pas:248 udownload.pas:347
+msgid "Lesefehler beim Download (Fehler %d)"
+msgstr "Erreur de lecture pendant le téléchargement (erreur %d)"
+
+#: playerform.pas:805
+msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
+msgstr "S'allume en rouge quand la somme sature (baissez alors le master)"
+
+#: taggerform.pas:557 umain.lfm:61
+msgid "Liste leeren"
+msgstr "Vider la liste"
+
+#: umain.pas:2332
+msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
+msgstr "Liste de la dernière fois restaurée : %d fichiers, dont %d encore en attente."
+
+#: uinfo.pas:538
+msgid "Lizenzen"
+msgstr "Licences"
+
+#: ureport.pas:171
+msgid "Log konnte nicht gelesen werden: %s"
+msgstr "Impossible de lire le journal : %s"
+
+#: umain.pas:726 umain.lfm:90
+msgid "Log kopieren"
+msgstr "Copier le journal"
+
+#: ureport.pas:226
+msgid "Log:"
+msgstr "Journal :"
+
+#: uinfo.pas:437
+msgid "Logs-Ordner öffnen"
+msgstr "Ouvrir le dossier des journaux"
+
+#: playerform.pas:757
+msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
+msgstr "Boucle on/off (touche L). L'activation saute à A"
+
+#: playerform.pas:2158
+msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
+msgstr "Boucle active :  %s à %s  (%.1f s)  ·  L = désactiver, Retour arrière = effacer"
+
+#: playerform.pas:2161
+msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
+msgstr "Boucle inactive :  %s à %s mémorisée  ·  L = réactiver"
+
+#: playerform.pas:759
+msgid "Loop löschen (Rücktaste)"
+msgstr "Effacer la boucle (Retour arrière)"
+
+#: playerform.pas:753
+msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
+msgstr "Placer le point de boucle A à la position actuelle (touche A)"
+
+#: playerform.pas:754
+msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
+msgstr "Placer le point de boucle B à la position actuelle (touche B)."
+
+#: playerform.pas:2165
+msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
+msgstr "Boucle : point A à %s  ·  appuyez maintenant sur B à la position de fin"
+
+#: playerform.pas:2079
+msgid "Loop: Punkt B muss hinter Punkt A liegen."
+msgstr "Boucle : le point B doit se trouver après le point A."
+
+#: playerform.pas:2189
+msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
+msgstr "Boucle : trop courte (au moins 0,1 seconde)."
+
+#: playerform.pas:2073
+msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
+msgstr "Boucle : placez d'abord le point A (touche A), puis B."
+
+#: playerform.pas:2093
+msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
+msgstr "Boucle : placez d'abord les points A et B (touches A et B, ou glisser avec le bouton droit dans la forme d'onde)."
+
+#: playerform.pas:703
+msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
+msgstr "Loupe : quelques secondes autour du trait rouge, pour placer la boucle avec précision."
+
+#: playerform.pas:1017
+msgid "LÄNGE"
+msgstr "DURÉE"
+
+#: ustemjob.pas:1873
+msgid "Länge: %d:%.2d min"
+msgstr "Durée : %d:%.2d min"
+
+#: playerform.pas:780 playerform.pas:1075
+msgid "MASTER"
+msgstr "MASTER"
+
+#: playerform.pas:1945
+msgid "MODUS: ORIGINAL"
+msgstr "MODE : ORIGINAL"
+
+#: playerform.pas:1945
+msgid "MODUS: REST"
+msgstr "MODE : RESTE"
+
+#: taggerform.pas:1857
+msgid "MP4-Dateien"
+msgstr "Fichiers MP4"
+
+#: playerform.pas:705
+msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
+msgstr "Déplacez les repères A et B avec la souris. Faites glisser l'onde avec le bouton gauche pour aller à une position, le son est audible pendant le déplacement."
+
+#: umain.pas:1807 umain.lfm:326
+msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
+msgstr "Lire dans StemPlayer le fichier stem sélectionné ou le dernier converti"
+
+#: playerform.pas:706
+msgid "Mausrad: zoomen. Klick: springen."
+msgstr "Molette : zoom. Clic : aller à la position."
+
+#: usettings.pas:378
+msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
+msgstr "Notification à côté de l'horloge quand la conversion est terminée"
+
+#: playerform.pas:1838
+msgid "Meldung von ffmpeg:"
+msgstr "Message de ffmpeg :"
+
+#: uinit.pas:897
+msgid "Mindestens eine Prüfung ist fehlgeschlagen (rot). Details erscheinen beim Überfahren der Zeile mit der Maus."
+msgstr "Au moins une vérification a échoué (rouge). Les détails s'affichent en survolant la ligne avec la souris."
+
+#: usettings.pas:313
+msgid "Misst CPU und Grafikkarte und sagt, wie lange ein Track auf diesem PC etwa dauert"
+msgstr "Mesure le CPU et la carte graphique et indique combien de temps prend environ un morceau sur ce PC"
+
+#: ureport.pas:211
+msgid "Mit diesem Bericht kann Elospeed den Fehler finden. Es wird NICHTS automatisch gesendet: Unten steht genau der Text, der den PC verlässt. Dein Benutzername ist bereits entfernt, Dateinamen deiner Songs bleiben drin."
+msgstr "Ce rapport aide Elospeed à trouver l'erreur. RIEN n'est envoyé automatiquement : ci-dessous figure exactement le texte qui quitte votre PC. Votre nom d'utilisateur a déjà été retiré, les noms de fichiers de vos morceaux restent."
+
+#: uinit.pas:572
+msgid "Modell %s"
+msgstr "Modèle %s"
+
+#: uturbotest.pas:464
+msgid "Modell fehlt"
+msgstr "Modèle manquant"
+
+#: ustemjob.pas:1257
+msgid "Modell fehlt: %s"
+msgstr "Modèle manquant : %s"
+
+#: uturbotest.pas:539
+msgid "Modell lesen"
+msgstr "Lecture du modèle"
+
+#: umain.pas:942
+msgid "Modell nicht installiert"
+msgstr "Modèle non installé"
+
+#: usettings.pas:385
+msgid "Modelle:"
+msgstr "Modèles :"
+
+#: taggerform.pas:695
+msgid "Musikstil: aus der Liste wählen oder selbst eintippen"
+msgstr "Style musical : choisir dans la liste ou saisir le vôtre"
+
+#: playerform.pas:875 playerform.pas:1055
+msgid "Mute: Stem stumm schalten (Taste %d)"
+msgstr "Mute : couper ce stem (touche %d)"
+
+#: umain.pas:708
+msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
+msgstr "Voulez-vous envoyer un rapport d'erreur à Elospeed ? Vous verrez le rapport avant, rien n'est envoyé automatiquement."
+
+#: uinfo.pas:463 uinfo.pas:565
+msgid "Nach Updates suchen"
+msgstr "Rechercher des mises à jour"
+
+#: taggerform.pas:690
+msgid "Name des Tracks, z.B. „Clap Your Hands“"
+msgstr "Nom du morceau, p. ex. « Clap Your Hands »"
+
+#: umain.pas:710
+msgid "Nein, danke"
+msgstr "Non, merci"
+
+#: upower.pas:303
+msgid "Netzbetrieb"
+msgstr "Sur secteur"
+
+#: taggerform.pas:1667
+msgid "Neu geschrieben werden nur die geänderten Tags, Audio und Stems bleiben unverändert."
+msgstr "Seuls les tags modifiés sont réécrits, l'audio et les stems restent inchangés."
+
+#: taggerform.pas:1265 taggerform.pas:1274
+msgid "Nicht lesbar"
+msgstr "Illisible"
+
+#: taggerform.pas:1539
+msgid "Nicht mehr anzeigen"
+msgstr "Ne plus afficher"
+
+#: udonate.pas:229
+msgid "Nicht mehr fragen"
+msgstr "Ne plus demander"
+
+#: ureport.pas:265
+msgid "Nicht senden"
+msgstr "Ne pas envoyer"
+
+#: usettings.pas:549
+msgid "Noch kein Vortest auf diesem PC."
+msgstr "Pas encore de test préalable sur ce PC."
+
+#: umain.pas:1717
+msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
+msgstr "Pas encore de fichier stem pour « %s » - convertissez-le d'abord."
+
+#: taggerform.pas:697
+msgid "Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)"
+msgstr "Numéro sur l'album, p. ex. 3 ou 3/12 (piste 3 sur 12)"
+
+#: usettings.pas:305
+msgid "Nur CPU"
+msgstr "CPU uniquement"
+
+#: usettings.pas:276
+msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
+msgstr "Uniquement avec un dossier de sortie séparé (« enregistrer à côté du fichier d'origine » est activé dans la fenêtre principale)."
+
+#: usettings.pas:379
+msgid "Nur wenn StemMaker gerade nicht im Vordergrund ist."
+msgstr "Seulement si StemMaker n'est pas au premier plan."
+
+#: usettings.pas:424
+msgid "OK"
+msgstr "OK"
+
+#: umain.pas:1037
+msgid "OK (%s)"
+msgstr "OK (%s)"
+
+#: playerform.pas:1311
+msgid "ORIGINAL"
+msgstr "ORIGINAL"
+
+#: playerform.pas:729
+msgid "ORIGINAL  O"
+msgstr "ORIGINAL  O"
+
+#: taggerform.pas:1315
+msgid "Ohne Cover"
+msgstr "Sans pochette"
+
+#: taggerform.pas:1312
+msgid "Ohne Tags"
+msgstr "Sans tags"
+
+#: taggerform.pas:1310
+msgid "Ohne Tags und Cover"
+msgstr "Sans tags ni pochette"
+
+#: taggerform.pas:1532
+msgid "Ordner geladen"
+msgstr "Dossier chargé"
+
+#: umain.pas:563
+msgid "Ordner mit Audiodateien wählen"
+msgstr "Choisir un dossier contenant des fichiers audio"
+
+#: taggerform.pas:1881
+msgid "Ordner mit Stem-Dateien wählen (mit Unterordnern)"
+msgstr "Choisir un dossier contenant des fichiers stem (sous-dossiers compris)"
+
+#: umain.lfm:314
+msgid "Ordner mit den fertigen Stem-Dateien im Explorer öffnen (zum Hineinziehen in Traktor)"
+msgstr "Ouvrir dans l'Explorateur le dossier contenant les fichiers stem terminés (pour les glisser dans Traktor)"
+
+#: umain.lfm:381
+msgid "Ordner nach der Umwandlung öffnen"
+msgstr "Ouvrir le dossier après la conversion"
+
+#: umain.lfm:313
+msgid "Ordner öffnen"
+msgstr "Ouvrir le dossier"
+
+#: umain.pas:1262 umain.pas:1272
+msgid "Ordner übersprungen, Pfad zu lang: %s"
+msgstr "Dossier ignoré, chemin trop long : %s"
+
+#: taggerform.pas:555 umain.lfm:42
+msgid "Ordner..."
+msgstr "Dossier..."
+
+#: playerform.pas:690
+msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
+msgstr "Original - cliquez ou faites glisser pour aller à cette position."
+
+#: playerform.pas:733
+msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
+msgstr "Mix original du fichier (piste 0) pour comparaison A/B (touche O)"
+
+#: umain.lfm:249
+msgid "PC nach Abschluss herunterfahren"
+msgstr "Éteindre le PC à la fin"
+
+#: umain.pas:2084
+msgid "PC wird heruntergefahren ..."
+msgstr "Arrêt du PC ..."
+
+#: usettings.pas:280
+msgid "PC während der Konvertierung wach halten (kein Standby)"
+msgstr "Garder le PC éveillé pendant la conversion (pas de veille)"
+
+#: ustemjob.pas:1961
+msgid "Pegel messen"
+msgstr "Mesure du niveau"
+
+#: ureport.pas:248
+msgid "Per E-Mail senden"
+msgstr "Envoyer par e-mail"
+
+#: umain.lfm:131
+msgid "Pfad"
+msgstr "Chemin"
+
+#: ustemjob.pas:1814
+msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
+msgstr "Chemin trop long (%d caractères, Windows autorise au maximum %d). Veuillez déplacer le fichier dans un dossier au chemin plus court."
+
+#: taggerform.pas:710
+msgid "Plattenfirma, die den Track veröffentlicht hat"
+msgstr "Label qui a publié le morceau"
+
+#: playerform.pas:657
+msgid "Play / Pause (Leertaste)"
+msgstr "Lecture / pause (Espace)"
+
+#: uinit.pas:896
+msgid "Problem gefunden"
+msgstr "Problème détecté"
+
+#: usettings.pas:358
+msgid "Programm"
+msgstr "Programme"
+
+#: umain.pas:711
+msgid "Programm wurde unerwartet beendet"
+msgstr "Le programme s'est fermé de façon inattendue"
+
+#: uinit.pas:569
+msgid "Prozessor"
+msgstr "Processeur"
+
+#: uinit.pas:506
+msgid "Prüfsumme (SHA-256) stimmt nicht - die Datei wurde verworfen. Bitte später nochmals versuchen."
+msgstr "La somme de contrôle (SHA-256) ne correspond pas - le fichier a été supprimé. Veuillez réessayer plus tard."
+
+#: playerform.pas:1070
+msgid "QUELLE"
+msgstr "SOURCE"
+
+#: ustemjob.pas:1916
+msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s"
+msgstr "Source : %s -> fichier stem AAC %d kbit/s"
+
+#: ustemjob.pas:1913
+msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
+msgstr "Source : %s -> fichier stem AAC %d kbit/s (automatique)"
+
+#: usettings.pas:533
+msgid "RAM knapp!"
+msgstr "RAM insuffisante !"
+
+#: ulicense.pas:149
+msgid "RECHTE AN DER MUSIK"
+msgstr "DROITS SUR LA MUSIQUE"
+
+#: playerform.pas:767
+msgid "RESET  0"
+msgstr "RESET  0"
+
+#: playerform.pas:1312
+msgid "REST"
+msgstr "RESTE"
+
+#: playerform.pas:730
+msgid "REST  R"
+msgstr "RESTE  R"
+
+#: playerform.pas:1016 playerform.pas:1037
+msgid "RESTZEIT"
+msgstr "RESTANT"
+
+#: taggerform.pas:746
+msgid "Rand zwischen zwei Spalten ziehen ändert die Breite"
+msgstr "Faites glisser le bord entre deux colonnes pour changer la largeur"
+
+#: playerform.pas:704
+msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
+msgstr "Glisser avec le bouton droit : placer la boucle (s'aligne sur la grille, libre avec Maj)."
+
+#: playerform.pas:691 playerform.pas:917
+msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
+msgstr "Glisser avec le bouton droit : tracer une zone de boucle"
+
+#: playerform.pas:734
+msgid "Rest = Original minus Summe aller Stems (Taste R):"
+msgstr "Reste = original moins la somme de tous les stems (touche R) :"
+
+#: playerform.pas:1061 playerform.pas:1949
+msgid "SOLO"
+msgstr "SOLO"
+
+#: playerform.pas:1045
+msgid "STEM-PADS"
+msgstr "PADS STEMS"
+
+#: playerform.pas:1313
+msgid "STEMS"
+msgstr "STEMS"
+
+#: playerform.pas:728
+msgid "STEMS  S"
+msgstr "STEMS  S"
+
+#: playerform.pas:1956
+msgid "STUMM"
+msgstr "MUET"
+
+#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:776
+msgid "Schliessen"
+msgstr "Fermer"
+
+#: uinfo.pas:430
+msgid "Schließen"
+msgstr "Fermer"
+
+#: udonate.pas:193
+msgid "Schon %d Tracks in Stems verwandelt"
+msgstr "Déjà %d morceaux transformés en stems"
+
+#: udownload.pas:225 udownload.pas:340
+msgid "Server meldet HTTP %d"
+msgstr "Le serveur a répondu HTTP %d"
+
+#: usettings.pas:350
+msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
+msgstr "Règle les 4 couleurs sur les valeurs des fichiers stem de Traktor (orange, violet, vert, bleu clair). Les noms restent."
+
+#: usettings.pas:401
+msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
+msgstr "Remet les valeurs de cette fenêtre aux réglages d'usine (la langue reste)."
+
+#: taggerform.pas:595
+msgid "Sicherungskopie anlegen (.bak)"
+msgstr "Créer une copie de sauvegarde (.bak)"
+
+#: uturbotest.pas:615
+msgid "Sitzung vorbereiten"
+msgstr "préparation de la session"
+
+#: playerform.pas:883 playerform.pas:1062
+msgid "Solo: nur diesen Stem hören (Shift+%d)."
+msgstr "Solo : n'écouter que ce stem (Maj+%d)."
+
+#: taggerform.pas:1676
+msgid "Speichere %s ..."
+msgstr "Enregistrement de %s ..."
+
+#: taggerform.pas:566
+msgid "Speichern"
+msgstr "Enregistrer"
+
+#: taggerform.pas:650
+msgid "Speichern..."
+msgstr "Enregistrer..."
+
+#: uinfo.pas:286
+msgid "Spender"
+msgstr "Donateurs"
+
+#: usettings.pas:359
+msgid "Sprache:"
+msgstr "Langue :"
+
+#: stemcli.lpr:193
+msgid "Spuren : "
+msgstr "Pistes : "
+
+#: uupdateui.pas:466
+msgid "Später"
+msgstr "Plus tard"
+
+#: usettings.pas:400
+msgid "Standard wiederherstellen"
+msgstr "Rétablir les valeurs par défaut"
+
+#: umain.lfm:293
+msgid "Start"
+msgstr "Démarrer"
+
+#: uinit.pas:873
+msgid "Starten"
+msgstr "Démarrer"
+
+#: taggerform.pas:731 umain.lfm:126
+msgid "Status"
+msgstr "Statut"
+
+#: stemcli.lpr:194
+msgid "Stem   : "
+msgstr "Stem   : "
+
+#: taggerform.pas:1317
+msgid "Stem OK (%d Spuren)"
+msgstr "Stem OK (%d pistes)"
+
+#: umain.lfm:70
+msgid "Stem prüfen..."
+msgstr "Vérifier un stem..."
+
+#: ustemjob.pas:1829
+msgid "Stem-Datei existiert schon"
+msgstr "Le fichier stem existe déjà"
+
+#: ustemjob.pas:2001
+msgid "Stem-Datei kodieren"
+msgstr "Encodage du fichier stem"
+
+#: umain.pas:1363
+msgid "Stem-Datei prüfen"
+msgstr "Vérifier un fichier stem"
+
+#: playerform.pas:478
+msgid "Stem-Datei öffnen"
+msgstr "Ouvrir un fichier stem"
+
+#: playerform.pas:615
+msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
+msgstr "Ouvrir un fichier stem (Ctrl+O) - ou le glisser simplement sur la fenêtre"
+
+#: playerform.pas:619
+msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
+msgstr "Ouvrir un fichier stem ou le glisser ici (glisser-déposer)"
+
+#: ustemjob.pas:2135
+msgid "Stem-Datei: %.1f MB"
+msgstr "Fichier stem : %.1f Mo"
+
+#: ustemjob.pas:2132
+msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
+msgstr "Fichier stem : %.1f Mo, vitesse : %.1f s par minute de musique (%s)"
+
+#: taggerform.pas:1856 umain.pas:1364
+msgid "Stem-Dateien"
+msgstr "Fichiers stem"
+
+#: taggerform.pas:1337
+msgid "Stem-Dateien oder Ordner hierher ziehen"
+msgstr "Glissez ici des fichiers stem ou des dossiers"
+
+#: taggerform.pas:1855
+msgid "Stem-Dateien öffnen"
+msgstr "Ouvrir des fichiers stem"
+
+#: ustemjob.pas:2055
+msgid "Stem-Metadaten schreiben"
+msgstr "Écriture des métadonnées stem"
+
+#: ustemjob.pas:2082
+msgid "Stem-Metadaten: %s"
+msgstr "Métadonnées stem : %s"
+
+#: umain.lfm:230
+msgid "Stem-Namen und Farben, Teile/Kerne, Überschreiben, Unterordner, Standby, Sprache, Updates, Werkzeuge"
+msgstr "Noms et couleurs des stems, parties/cœurs, écrasement, sous-dossiers, veille, langue, mises à jour, outils"
+
+#: stemcli.lpr:219
+msgid "StemCLI %s (Elospeed StemMaker) - erzeugt Traktor Stem-Dateien (*.stem.mp4)"
+msgstr "StemCLI %s (Elospeed StemMaker) - crée des fichiers stem Traktor (*.stem.mp4)"
+
+#: umain.lfm:7
+msgid "StemMaker"
+msgstr "StemMaker"
+
+#: uupdateui.pas:422
+msgid "StemMaker %s ist da"
+msgstr "StemMaker %s est disponible"
+
+#: uupdateui.pas:577
+msgid "StemMaker %s ist installiert. StemMaker startet jetzt neu."
+msgstr "StemMaker %s est installé. StemMaker va redémarrer."
+
+#: umain.pas:651
+msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
+msgstr "StemMaker %s est disponible - la mise à jour sera proposée après la conversion."
+
+#: umain.pas:2513
+msgid "StemMaker anzeigen"
+msgstr "Afficher StemMaker"
+
+#: ulicense.pas:156
+msgid "StemMaker ist Open Source unter der MIT-Lizenz (© 2026 Elospeed). Fremde Bestandteile:"
+msgstr "StemMaker est open source sous licence MIT (© 2026 Elospeed). Composants tiers :"
+
+#: usingleinstance.pas:267
+msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
+msgstr "StemMaker est déjà ouvert. Un seul StemMaker peut fonctionner à la fois, car deux partageraient la file d'attente, les paramètres et les fichiers terminés."
+
+#: umain.pas:2637
+msgid "StemMaker ist fertig"
+msgstr "StemMaker a terminé"
+
+#: udonate.pas:215
+msgid "StemMaker ist mein Hobbyprojekt: ein Mensch, viele Abende. Wenn es dir einen Kaffee wert ist, freue ich mich riesig darüber."
+msgstr "StemMaker est mon projet perso : une personne, beaucoup de soirées. S'il vaut un café pour vous, j'en serais ravi."
+
+#: usingleinstance.pas:266
+msgid "StemMaker läuft schon"
+msgstr "StemMaker est déjà en cours d'exécution"
+
+#: ulogui.pas:58
+msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
+msgstr "StemMaker continue de fonctionner. Si quelque chose ne marche plus correctement, veuillez redémarrer le programme."
+
+#: uturbotest.pas:359
+msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
+msgstr "StemMaker mesure une fois la vitesse à laquelle ce PC sépare les stems : d'abord le CPU, puis la carte graphique. Cela prend environ une minute."
+
+#: uturbotest.pas:720
+msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
+msgstr "Sur ce PC, StemMaker sépare avec la carte graphique (%s) : environ %s de calcul par minute de musique (CPU : %s)."
+
+#: ulicense.pas:144
+msgid "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an."
+msgstr "StemMaker est fourni gratuitement et sans aucune garantie (« en l'état »). Vous l'utilisez à vos propres risques. Dans la mesure permise par la loi, Elospeed décline toute responsabilité pour les dommages ou pertes de données résultant de son utilisation. Faites au préalable une sauvegarde de vos fichiers importants."
+
+#: umain.pas:707
+msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
+msgstr "StemMaker s'est fermé de façon inattendue la dernière fois."
+
+#: uturbotest.pas:454
+msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
+msgstr "StemOnnx.exe est introuvable (%s). StemMaker sépare avec demucs.cpp (Classique)."
+
+#: umain.pas:1493
+msgid "StemPlayer konnte nicht gestartet werden: %s"
+msgstr "Impossible de démarrer StemPlayer : %s"
+
+#: umain.pas:1474
+msgid "StemPlayer nicht gefunden:%s%s"
+msgstr "StemPlayer introuvable :%s%s"
+
+#: umain.pas:1527
+msgid "StemTagger konnte nicht gestartet werden: %s"
+msgstr "Impossible de démarrer StemTagger : %s"
+
+#: umain.pas:1511
+msgid "StemTagger nicht gefunden:%s%s"
+msgstr "StemTagger introuvable :%s%s"
+
+#: usettings.pas:327
+msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
+msgstr "Stems (noms et couleurs, tels que Traktor les affiche)"
+
+#: ustemjob.pas:1210
+msgid "Stems trennen (Turbo)"
+msgstr "Séparation des stems (Turbo)"
+
+#: ustemjob.pas:1927
+msgid "Stems trennen (demucs)"
+msgstr "Séparation des stems (demucs)"
+
+#: playerform.pas:664
+msgid "Stop und zurück an den Anfang"
+msgstr "Stop et retour au début"
+
+#: playerform.pas:884 playerform.pas:1063
+msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
+msgstr "Ctrl+clic : ajouter un autre stem (plusieurs solos)"
+
+#: uinfo.pas:559
+msgid "Suche ..."
+msgstr "Recherche ..."
+
+#: umain.pas:1736
+msgid "Tags bearbeiten..."
+msgstr "Modifier les tags..."
+
+#: ustemjob.pas:1895
+msgid "Tags der Quelle: BPM %s, Tonart %s"
+msgstr "Tags de la source : BPM %s, tonalité %s"
+
+#: ustemjob.pas:1893
+msgid "Tags der Quelle: BPM %s, keine Tonart"
+msgstr "Tags de la source : BPM %s, pas de tonalité"
+
+#: usettings.pas:251
+msgid "Teile:"
+msgstr "Parties :"
+
+#: uinit.pas:573
+msgid "Temp-Ordner"
+msgstr "Dossier temporaire"
+
+#: ustemjob.pas:2175
+msgid "Temp-Ordner behalten: %s"
+msgstr "Dossier temporaire conservé : %s"
+
+#: ustemjob.pas:1848
+msgid "Temp-Ordner kann nicht erstellt werden: %s"
+msgstr "Impossible de créer le dossier temporaire : %s"
+
+#: taggerform.pas:698
+msgid "Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128."
+msgstr "Tempo en battements par minute, nombres entiers de %d à %d uniquement, p. ex. 128."
+
+#: uinfo.pas:291
+msgid "Tempo-Vergleich"
+msgstr "comparaison de vitesse"
+
+#: uturbotest.pas:538
+msgid "Testsignal erzeugen"
+msgstr "Génération du signal de test"
+
+#: playerform.pas:756
+msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
+msgstr "Astuce : glisser avec le bouton droit dans une forme d'onde"
+
+#: taggerform.pas:406 taggerform.pas:729
+msgid "Titel"
+msgstr "Titre"
+
+#: umain.pas:1811
+msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
+msgstr "Modifier le titre, l'artiste, la pochette etc. des fichiers stem terminés sélectionnés"
+
+#: taggerform.pas:414
+msgid "Tonart"
+msgstr "Tonalité"
+
+#: taggerform.pas:701
+msgid "Tonart des Tracks: aus der Liste wählen oder selbst eintippen."
+msgstr "Tonalité du morceau : choisir dans la liste ou saisir la vôtre."
+
+#: umain.lfm:240
+msgid "Tools: ..."
+msgstr "Outils : ..."
+
+#: umain.pas:910
+msgid "Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden"
+msgstr "Outils : ffmpeg, Turbo, demucs.cpp et modèle trouvés"
+
+#: umain.pas:912
+msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
+msgstr "Outils : ffmpeg, demucs.cpp et modèle trouvés"
+
+#: taggerform.pas:412
+msgid "Track-Nr."
+msgstr "N° de piste"
+
+#: playerform.pas:479
+msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
+msgstr "Stems Traktor (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Tous les fichiers (*.*)|*.*"
+
+#: taggerform.pas:700
+msgid "Traktor misst das Tempo beim Analysieren ohnehin selbst."
+msgstr "De toute façon, Traktor mesure lui-même le tempo lors de l'analyse."
+
+#: ulicense.pas:169
+msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
+msgstr "Traktor et STEMS sont des marques de Native Instruments GmbH. StemMaker est un projet indépendant, sans lien avec Native Instruments."
+
+#: usettings.pas:349
+msgid "Traktor-Farben"
+msgstr "Couleurs Traktor"
+
+#: uturbotest.pas:593
+msgid "Treiber"
+msgstr "pilote"
+
+#: umain.lfm:185
+msgid "Trenn-Modell:"
+msgstr "Modèle de séparation :"
+
+#: uturbotest.pas:617
+msgid "Trennen"
+msgstr "séparation"
+
+#: uturbotest.pas:616
+msgid "Trennen auf der Grafikkarte"
+msgstr "séparation sur la carte graphique"
+
+#: uturbotest.pas:548
+msgid "Trennen gemessen"
+msgstr "Séparation mesurée"
+
+#: uinit.pas:603
+msgid "Trotzdem starten"
+msgstr "Démarrer quand même"
+
+#: ustemjob.pas:1225
+msgid "Turbo (StemOnnx), Grafikkarte wenn sie mitmacht"
+msgstr "Turbo (StemOnnx), carte graphique si elle convient"
+
+#: ustemjob.pas:1220
+msgid "Turbo (StemOnnx), nur CPU"
+msgstr "Turbo (StemOnnx), CPU uniquement"
+
+#: usettings.pas:292
+msgid "Turbo (schnell, Standard)"
+msgstr "Turbo (rapide, standard)"
+
+#: uturbotest.pas:453
+msgid "Turbo fehlt"
+msgstr "Turbo manquant"
+
+#: ustemjob.pas:1237
+msgid "Turbo hat nicht geklappt (Code %d), diese Datei trennt jetzt demucs.cpp"
+msgstr "Turbo n'a pas fonctionné (code %d), demucs.cpp sépare maintenant ce fichier"
+
+#: ustemjob.pas:1409
+msgid "Turbo rechnet auf: %s"
+msgstr "Turbo calcule sur : %s"
+
+#: uturbotest.pas:347
+msgid "Turbo-Vortest"
+msgstr "Test préalable Turbo"
+
+#: upower.pas:246
+msgid "Ultimative Leistung"
+msgstr "Performances ultimes"
+
+#: usettings.pas:248
+msgid "Umwandlung"
+msgstr "Conversion"
+
+#: udonate.pas:218
+msgid "Und wenn nicht, ist das völlig in Ordnung. Viel Spass beim Auflegen!"
+msgstr "Et sinon, c'est tout à fait normal. Bon mix !"
+
+#: umain.pas:706
+msgid "Unerwartet beendet"
+msgstr "Fermé de façon inattendue"
+
+#: ulogui.pas:53
+msgid "Unerwarteter Fehler"
+msgstr "Erreur inattendue"
+
+#: usettings.pas:269
+msgid "Unterordner im Ausgabeordner nachbauen"
+msgstr "Recréer les sous-dossiers dans le dossier de sortie"
+
+#: uupdateui.pas:413
+msgid "Update"
+msgstr "Mise à jour"
+
+#: uupdateui.pas:309
+msgid "Update auf %s"
+msgstr "Mise à jour vers %s"
+
+#: uupdateui.pas:547
+msgid "Update konnte nicht geladen werden: %s"
+msgstr "Impossible de télécharger la mise à jour : %s"
+
+#: uupdateui.pas:570
+msgid "Update konnte nicht installiert werden: %s"
+msgstr "Impossible d'installer la mise à jour : %s"
+
+#: udownload.pas:218 udownload.pas:334
+msgid "Verbindung fehlgeschlagen (Fehler %d)"
+msgstr "Échec de la connexion (erreur %d)"
+
+#: usettings.pas:281
+msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
+msgstr "Empêche la veille et suspend temporairement le mode d'économie d'énergie."
+
+#: uinfo.pas:494
+msgid "Versionen"
+msgstr "Versions"
+
+#: uturbotest.pas:371
+msgid "Vorbereiten"
+msgstr "Préparation"
+
+#: usettings.pas:312
+msgid "Vortest ..."
+msgstr "Test préalable ..."
+
+#: uturbotest.pas:704
+msgid "Vortest fehlgeschlagen"
+msgstr "Échec du test préalable"
+
+#: playerform.pas:1282
+msgid "WELLENFORM"
+msgstr "FORME D'ONDE"
+
+#: ulicense.pas:150
+msgid "Wandle nur Musik um, an der du die nötigen Rechte hast, z. B. selbst gekaufte Titel für den eigenen Gebrauch. Für das Einhalten von Urheberrecht und den Nutzungsbedingungen von Shops und Streaming-Diensten bist du selbst verantwortlich."
+msgstr "Ne convertissez que de la musique sur laquelle vous avez les droits nécessaires, p. ex. des morceaux achetés pour votre usage personnel. Vous êtes seul responsable du respect du droit d'auteur et des conditions d'utilisation des boutiques et services de streaming."
+
+#: ulangui.pas:200
+msgid "Warnung"
+msgstr "Avertissement"
+
+#: ureport.pas:433
+msgid "Was habe ich gerade gemacht?"
+msgstr "Qu'étais-je en train de faire ?"
+
+#: udonate.pas:235
+msgid "Weiter"
+msgstr "Continuer"
+
+#: ureport.pas:448
+msgid "Weiter zu GitHub?"
+msgstr "Continuer vers GitHub ?"
+
+#: umain.lfm:229
+msgid "Weitere Einstellungen..."
+msgstr "Plus de paramètres..."
+
+#: uinit.pas:574
+msgid "Weitere Modelle"
+msgstr "Autres modèles"
+
+#: umain.lfm:252
+msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
+msgstr "Quand tous les fichiers sont terminés, le PC s'éteint après 60 secondes (annulable)."
+
+#: usettings.pas:382
+msgid "Werkzeuge"
+msgstr "Outils"
+
+#: usettings.pas:249
+msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
+msgstr "Nombre de parties du morceau que demucs calcule en même temps. Chaque partie utilise en plus plusieurs cœurs et demande un peu plus de 2 Go de RAM."
+
+#: playerform.pas:1015
+msgid "ZEIT"
+msgstr "TEMPS"
+
+#: udownload.pas:593 udownload.pas:603 udownload.pas:653
+msgid "ZIP-Fehler: %s"
+msgstr "Erreur ZIP : %s"
+
+#: umain.lfm:71
+msgid "Zeigt Spuren und Stem-Metadaten einer vorhandenen .stem.mp4"
+msgstr "Affiche les pistes et les métadonnées stem d'un fichier .stem.mp4 existant"
+
+#: umain.lfm:382
+msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
+msgstr "Affiche le fichier stem terminé dans l'Explorateur - à glisser directement dans Traktor"
+
+#: uinfo.pas:471
+msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
+msgstr "Affiche un journal et aide à l'envoyer à Elospeed par e-mail ou via GitHub. Rien n'est envoyé automatiquement."
+
+#: ustemjob.pas:1818
+msgid "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen."
+msgstr "Chemin cible trop long (%d caractères, Windows autorise au maximum %d). Veuillez choisir un dossier de sortie plus court ou raccourcir le nom du fichier."
+
+#: taggerform.pas:2142
+msgid "Zuerst die Stem-Dateien markieren, die dieses Cover bekommen sollen."
+msgstr "Sélectionnez d'abord les fichiers stem qui doivent recevoir cette pochette."
+
+#: umain.pas:1053 umain.pas:2308 ustemjob.pas:2145
+msgid "abgebrochen"
+msgstr "annulé"
+
+#: uinit.pas:341
+msgid "beschädigt (nur %d KB)"
+msgstr "endommagé (seulement %d Ko)"
+
+#: uinit.pas:1016 umain.pas:1139 umain.pas:1148
+msgid "ca. %s"
+msgstr "env. %s"
+
+#: udownload.pas:393
+msgid "curl nicht gefunden"
+msgstr "curl introuvable"
+
+#: ustemjob.pas:1941
+msgid "demucs.cpp hat %s nicht erzeugt"
+msgstr "demucs.cpp n'a pas créé %s"
+
+#: ustemjob.pas:1938
+msgid "demucs.cpp ist fehlgeschlagen (Code %d)"
+msgstr "demucs.cpp a échoué (code %d)"
+
+#: ustemjob.pas:1253
+msgid "demucs.cpp nicht gefunden: %s"
+msgstr "demucs.cpp introuvable : %s"
+
+#: ustemjob.pas:1932
+msgid "demucs: %s (%s), %d Teile x je %d Kerne"
+msgstr "demucs : %s (%s), %d parties x %d cœurs chacune"
+
+#: upower.pas:247
+msgid "eigener Plan %s"
+msgstr "mode personnalisé %s"
+
+#: umain.pas:1052 umain.pas:2306
+msgid "existiert schon"
+msgstr "existe déjà"
+
+#: uinit.pas:335
+msgid "fehlt"
+msgstr "manquant"
+
+#: uinit.pas:730
+msgid "fehlt - wird heruntergeladen (ca. %d MB)"
+msgstr "manquant - sera téléchargé (env. %d Mo)"
+
+#: uinit.pas:734
+msgid "fehlt: %s"
+msgstr "manquant : %s"
+
+#: uinit.pas:769
+msgid "fehlt: %s - StemMaker-ZIP bitte komplett neu entpacken"
+msgstr "manquant : %s - veuillez extraire à nouveau le ZIP StemMaker en entier"
+
+#: uinit.pas:753
+msgid "ffmpeg (neu)"
+msgstr "ffmpeg (nouveau)"
+
+#: ustemjob.pas:1871
+msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
+msgstr "ffmpeg n'a pas pu décoder le fichier (code %d)"
+
+#: playerform.pas:1837
+msgid "ffmpeg konnte die Datei nicht dekodieren:"
+msgstr "ffmpeg n'a pas pu décoder le fichier :"
+
+#: ustemjob.pas:2052
+msgid "ffmpeg konnte die Stem-Datei nicht erstellen (Code %d)"
+msgstr "ffmpeg n'a pas pu créer le fichier stem (code %d)"
+
+#: ustemjob.pas:1251
+msgid "ffmpeg nicht gefunden: %s"
+msgstr "ffmpeg introuvable : %s"
+
+#: playerform.pas:1725
+msgid "ffmpeg wurde mit Code %d beendet."
+msgstr "ffmpeg s'est terminé avec le code %d."
+
+#: playerform.pas:1781
+msgid "ffmpeg.exe auswählen"
+msgstr "Sélectionner ffmpeg.exe"
+
+#: playerform.pas:500
+msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
+msgstr "ffmpeg.exe introuvable - il sera demandé à l'ouverture du premier fichier."
+
+#: playerform.pas:1776
+msgid "ffmpeg.exe wurde nicht gefunden."
+msgstr "ffmpeg.exe est introuvable."
+
+#: playerform.pas:1782
+msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
+msgstr "ffmpeg.exe|ffmpeg.exe|Programmes (*.exe)|*.exe"
+
+#: taggerform.pas:1303
+msgid "geändert"
+msgstr "modifié"
+
+#: ustemjob.pas:495
+msgid "hdemucs_mmi (Demucs v3, ältere Engine)"
+msgstr "hdemucs_mmi (Demucs v3, moteur plus ancien)"
+
+#: ustemjob.pas:497
+msgid "htdemucs (Standard, Demucs v4)"
+msgstr "htdemucs (standard, Demucs v4)"
+
+#: ustemjob.pas:494
+msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
+msgstr "htdemucs_ft (meilleure qualité, env. 4x plus lent)"
+
+#: playerform.pas:735
+msgid "hörbar, was bei der Trennung verloren ging oder anders"
+msgstr "on entend ce qui a été perdu à la séparation ou ce qui sonne"
+
+#: ureport.pas:430
+msgid "in StemMaker ist ein Fehler aufgetreten. Der Bericht ist angehängt (Datei aus dem Explorer-Fenster in diese Mail ziehen):"
+msgstr "une erreur s'est produite dans StemMaker. Le rapport est joint (glisser le fichier depuis la fenêtre de l'Explorateur dans cet e-mail) :"
+
+#: uturbotest.pas:161
+msgid "ist beim Test abgestürzt"
+msgstr "a planté pendant le test"
+
+#: uturbotest.pas:163
+msgid "ist mitten im Song ausgestiegen"
+msgstr "a décroché au milieu d'un morceau"
+
+#: uturbotest.pas:169
+msgid "ist nicht schneller als die CPU"
+msgstr "n'est pas plus rapide que le CPU"
+
+#: taggerform.pas:1299
+msgid "ja"
+msgstr "oui"
+
+#: usettings.pas:528
+msgid "je %d Kerne (%d von %d)"
+msgstr "%d cœurs chacune (%d sur %d)"
+
+#: usettings.pas:526
+msgid "je 1 Kern (%d von %d)"
+msgstr "1 cœur chacune (%d sur %d)"
+
+#: uinit.pas:718
+msgid "kein AVX (kompatible Version)"
+msgstr "pas d'AVX (version compatible)"
+
+#: taggerform.pas:1558
+msgid "kein Cover"
+msgstr "pas de pochette"
+
+#: uturbotest.pas:589
+msgid "keine Grafikkarte gefunden"
+msgstr "aucune carte graphique trouvée"
+
+#: uinit.pas:359
+msgid "keine gültige Modelldatei"
+msgstr "fichier de modèle non valide"
+
+#: playerform.pas:736
+msgid "klingt (ideal: fast Stille)."
+msgstr "différemment (idéalement : presque le silence)."
+
+#: umain.lfm:423
+msgid "ko-fi.com/elospeed"
+msgstr "ko-fi.com/elospeed"
+
+#: uturbotest.pas:159
+msgid "lässt sich nicht einschalten"
+msgstr "ne peut pas être activée"
+
+#: umain.pas:1006 umain.pas:1026
+msgid "läuft..."
+msgstr "en cours..."
+
+#: umain.lfm:176
+msgid "neben der Originaldatei speichern"
+msgstr "enregistrer à côté du fichier d'origine"
+
+#: uinit.pas:827
+msgid "nicht beschreibbar: %s"
+msgstr "accès en écriture impossible : %s"
+
+#: uinit.pas:353
+msgid "nicht lesbar"
+msgstr "illisible"
+
+#: umain.lfm:100
+msgid "oder hierher ziehen"
+msgstr "ou glissez-les ici"
+
+#: uinit.pas:725 uinit.pas:764 uinit.pas:787
+msgid "prüfe ..."
+msgstr "vérification ..."
+
+#: uturbotest.pas:167
+msgid "rechnet falsch"
+msgstr "calcule des résultats faux"
+
+#: uturbotest.pas:165
+msgid "rechnet ungenau"
+msgstr "calcule de façon imprécise"
+
+#: uinfo.pas:290
+msgid "spanische Übersetzung"
+msgstr "traduction espagnole"
+
+#: uinit.pas:750
+msgid "startet nicht: %s"
+msgstr "ne démarre pas : %s"
+
+#: ulog.pas:565 upower.pas:297 upower.pas:318
+msgid "unbekannt"
+msgstr "inconnu"
+
+#: udownload.pas:594 udownload.pas:653
+msgid "unerlaubter Pfad"
+msgstr "chemin non autorisé"
+
+#: uinit.pas:1019
+msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
+msgstr "écoulé %s   |   restant %s   |   %.1f Mo/s"
+
+#: uinfo.pas:413
+msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
+msgstr "par %s  ·  Stems Traktor à partir de fichiers audio  ·  gratuit && open source  ·  Build : %s"
+
+#: usettings.pas:267
+msgid "vorhandene Stem-Dateien überschreiben"
+msgstr "écraser les fichiers stem existants"
+
+#: umain.pas:1224 umain.pas:1907 umain.pas:1929
+msgid "wartet"
+msgstr "en attente"
+
+#: umain.pas:2309
+msgid "wartet (unterbrochen)"
+msgstr "en attente (interrompu)"
+
+#: playerform.pas:758
+msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
+msgstr "si la lecture est actuellement hors de la boucle."
+
+#: uinit.pas:1018 umain.pas:1151 umain.pas:1186
+msgid "wird berechnet ..."
+msgstr "calcul en cours ..."
+
+#: mp4stem.pas:273
+msgid "z.B. die von Elospeed StemMaker erzeugten."
+msgstr "p. ex. ceux créés par Elospeed StemMaker."
+
+#: usettings.pas:386
+msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
+msgstr "À modifier seulement si nécessaire : StemMaker.ini, section [Tools] (StemMaker fermé)."
+
+#: taggerform.pas:565
+msgid "Änderungen verwerfen"
+msgstr "Annuler les modifications"
+
+#: playerform.pas:614
+msgid "ÖFFNEN"
+msgstr "OUVRIR"
+
+#: usettings.pas:409
+msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
+msgstr "Ouvre le dossier contenant StemMaker.ini"
+
+#: umain.pas:1214
+msgid "Übersprungen (Format nicht unterstützt): %s"
+msgstr "Ignoré (format non pris en charge) : %s"
+
+#: ustemjob.pas:1830
+msgid "übersprungen, existiert schon: %s"
+msgstr "ignoré, existe déjà : %s"
+

@@ -273,6 +273,42 @@ msgstr "Iniciando %s ..."
 msgid "%s wurde nicht gefunden."
 msgstr "%s no se encontró."
 
+#: ulangui.pas:195
+msgid "&Alle"
+msgstr "&Todo"
+
+#: ulangui.pas:197
+msgid "&Alle bejahen"
+msgstr "Sí a &todo"
+
+#: ulangui.pas:198
+msgid "&Hilfe"
+msgstr "&Ayuda"
+
+#: ulangui.pas:194
+msgid "&Ignorieren"
+msgstr "&Ignorar"
+
+#: ulangui.pas:188
+msgid "&Ja"
+msgstr "&Sí"
+
+#: ulangui.pas:189
+msgid "&Nein"
+msgstr "&No"
+
+#: ulangui.pas:190
+msgid "&OK"
+msgstr "&Aceptar"
+
+#: ulangui.pas:199
+msgid "&Schließen"
+msgstr "&Cerrar"
+
+#: ulangui.pas:193
+msgid "&Wiederholen"
+msgstr "&Reintentar"
+
 #: umain.pas:2458
 msgid "(Tempo dieses PCs)"
 msgstr "(velocidad de este PC)"
@@ -401,7 +437,7 @@ msgstr "AVX (versión media)"
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (versión rápida)"
 
-#: uinit.pas:600 umain.pas:2729 usettings.pas:416
+#: uinit.pas:600 ulangui.pas:191 ulangui.pas:192
 msgid "Abbrechen"
 msgstr "Cancelar"
 
@@ -480,6 +516,10 @@ msgstr "Todos los detalles: Info -> Licencias, así como LICENSE y THIRD-PARTY-N
 #: uinfo.pas:511
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "Todos los detalles están en el CHANGELOG de GitHub (en alemán)"
+
+#: ulangui.pas:196
+msgid "Alle verneinen"
+msgstr "No a todo"
 
 #: uinit.pas:871
 msgid "Alles bereit"
@@ -644,6 +684,10 @@ msgstr "Mejor rendimiento"
 #: stemcli.lpr:138
 msgid "Bestätigt - StemCLI ist auf diesem PC freigegeben."
 msgstr "Aceptado - StemCLI está habilitado en este PC."
+
+#: ulangui.pas:203
+msgid "Bestätigung"
+msgstr "Confirmación"
 
 #: taggerform.pas:651
 msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
@@ -1053,7 +1097,7 @@ msgstr "ERROR: "
 msgid "Farbe wählen"
 msgstr "Elegir color"
 
-#: umain.pas:1055 umain.pas:2307
+#: ulangui.pas:201 umain.pas:1055 umain.pas:2307
 msgid "Fehler"
 msgstr "Error"
 
@@ -1264,6 +1308,10 @@ msgstr "No hay ninguna imagen en el portapapeles."
 #: uinfo.pas:388 umain.lfm:80
 msgid "Info"
 msgstr "Info"
+
+#: ulangui.pas:202
+msgid "Information"
+msgstr "Información"
 
 #: uinit.pas:564 uinit.pas:711
 msgid "Installation wird geprüft ..."
@@ -2364,6 +2412,10 @@ msgstr "FORMA DE ONDA"
 #: ulicense.pas:150
 msgid "Wandle nur Musik um, an der du die nötigen Rechte hast, z. B. selbst gekaufte Titel für den eigenen Gebrauch. Für das Einhalten von Urheberrecht und den Nutzungsbedingungen von Shops und Streaming-Diensten bist du selbst verantwortlich."
 msgstr "Solo convierte música de la que tengas los derechos necesarios, p. ej. pistas compradas para uso personal. Eres responsable de cumplir con las leyes de derechos de autor y los términos de uso de las tiendas y servicios de streaming."
+
+#: ulangui.pas:200
+msgid "Warnung"
+msgstr "Advertencia"
 
 #: ureport.pas:433
 msgid "Was habe ich gerade gemacht?"

@@ -127,7 +127,7 @@ begin
     F.BorderStyle := bsDialog;
     F.Position := poScreenCenter;
     F.ClientWidth := 340;
-    F.ClientHeight := 250;
+    F.ClientHeight := 310;               // Platz für alle Sprachen ohne Rollen
 
     Lbl := TLabel.Create(F);
     Lbl.Parent := F;
@@ -138,7 +138,7 @@ begin
 
     Lst := TListBox.Create(F);
     Lst.Parent := F;
-    Lst.SetBounds(16, 60, 308, 130);
+    Lst.SetBounds(16, 60, 308, 190);
     for I := 0 to Codes.Count - 1 do
       Lst.Items.Add(LangDisplayName(Codes[I]));
     Lst.ItemIndex := Codes.IndexOf(Preselect);
@@ -146,7 +146,7 @@ begin
 
     Btn := TButton.Create(F);
     Btn.Parent := F;
-    Btn.SetBounds(224, 202, 100, 32);
+    Btn.SetBounds(224, 262, 100, 32);
     Btn.Caption := 'OK';
     Btn.Default := True;
     Btn.ModalResult := mrOK;
@@ -163,40 +163,52 @@ end;
 
 { Die Knöpfe und Titel der Standard-Rückfragen (MessageDlg) stammen aus
   der LCL (Unit lclstrconsts) und sind von Haus aus Englisch: "Yes/No",
-  "Confirmation", "Error". Bei Deutsch werden sie hier ersetzt - sonst
-  stünde unter einer deutschen Frage "Yes / No". }
-function GermanLCLText(Name, Value: AnsiString; Hash: Longint;
+  "Confirmation", "Error". Hier werden sie durch den deutschen Text bzw.
+  seine Übersetzung aus lang\<code>.po ersetzt - sonst stünde unter einer
+  deutschen, französischen oder japanischen Frage "Yes / No".
+  Fehlt die Übersetzung, bleibt der englische LCL-Text stehen. }
+function LCLText(Name, Value: AnsiString; Hash: Longint;
   Arg: Pointer): AnsiString;
 var
   P: Integer;
+
+  { Tr = übersetzter Text, De = deutsches Original }
+  function Pick(const Tr, De: string): string;
+  begin
+    if (LangCode = 'de') or (Tr <> De) then
+      Result := Tr
+    else
+      Result := Value;                    // keine Übersetzung -> Englisch
+  end;
+
 begin
   { Name kommt als "lclstrconsts.rsmbyes" - nur den Teil nach dem Punkt }
   P := LastDelimiter('.', Name);
   case LowerCase(Copy(Name, P + 1, MaxInt)) of
-    'rsmbyes':          Result := '&Ja';
-    'rsmbno':           Result := '&Nein';
-    'rsmbok':           Result := '&OK';
-    'rsmbcancel':       Result := 'Abbrechen';
-    'rsmbabort':        Result := 'Abbrechen';
-    'rsmbretry':        Result := '&Wiederholen';
-    'rsmbignore':       Result := '&Ignorieren';
-    'rsmball':          Result := '&Alle';
-    'rsmbnotoall':      Result := 'Alle verneinen';
-    'rsmbyestoall':     Result := '&Alle bejahen';
-    'rsmbhelp':         Result := '&Hilfe';
-    'rsmbclose':        Result := '&Schließen';
-    'rsmtwarning':      Result := 'Warnung';
-    'rsmterror':        Result := 'Fehler';
-    'rsmtinformation':  Result := 'Information';
-    'rsmtconfirmation': Result := 'Bestätigung';
+    'rsmbyes':          Result := Pick(_('&Ja'), '&Ja');
+    'rsmbno':           Result := Pick(_('&Nein'), '&Nein');
+    'rsmbok':           Result := Pick(_('&OK'), '&OK');
+    'rsmbcancel':       Result := Pick(_('Abbrechen'), 'Abbrechen');
+    'rsmbabort':        Result := Pick(_('Abbrechen'), 'Abbrechen');
+    'rsmbretry':        Result := Pick(_('&Wiederholen'), '&Wiederholen');
+    'rsmbignore':       Result := Pick(_('&Ignorieren'), '&Ignorieren');
+    'rsmball':          Result := Pick(_('&Alle'), '&Alle');
+    'rsmbnotoall':      Result := Pick(_('Alle verneinen'), 'Alle verneinen');
+    'rsmbyestoall':     Result := Pick(_('&Alle bejahen'), '&Alle bejahen');
+    'rsmbhelp':         Result := Pick(_('&Hilfe'), '&Hilfe');
+    'rsmbclose':        Result := Pick(_('&Schließen'), '&Schließen');
+    'rsmtwarning':      Result := Pick(_('Warnung'), 'Warnung');
+    'rsmterror':        Result := Pick(_('Fehler'), 'Fehler');
+    'rsmtinformation':  Result := Pick(_('Information'), 'Information');
+    'rsmtconfirmation': Result := Pick(_('Bestätigung'), 'Bestätigung');
   else
     Result := Value;                      // alles andere bleibt
   end;
 end;
 
-procedure GermanLCLStrings;
+procedure LCLStrings;
 begin
-  SetUnitResourceStrings('lclstrconsts', @GermanLCLText, nil);
+  SetUnitResourceStrings('lclstrconsts', @LCLText, nil);
 end;
 
 procedure LangInitInteractive(const IniName: string);
@@ -223,8 +235,9 @@ begin
   end;
   if not LangLoad(Code) then
     LangLoad('de');                       // Datei fehlt -> Deutsch
-  if LangCode = 'de' then
-    GermanLCLStrings;
+  { Englisch ist das Original der LCL, alle anderen bekommen ihre Knöpfe }
+  if LangCode <> 'en' then
+    LCLStrings;
 end;
 
 end.
