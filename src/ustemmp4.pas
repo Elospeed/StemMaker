@@ -49,6 +49,14 @@
   alle diese Positionsangaben um die Differenz korrigiert werden - das
   macht ShiftChunkOffsets. (ffmpeg legt 'moov' normalerweise ans Ende,
   dann ist nichts zu korrigieren - funktioniert aber beides.)
+
+  TAGS LESEN UND SCHREIBEN (für das AddOn StemTagger)
+
+  ReadMp4Tags / WriteMp4Tags lesen und ändern die normalen iTunes-Tags
+  (Titel, Interpret, Cover, ...) in moov/udta/meta/ilst. Alles andere
+  bleibt Byte für Byte erhalten: die 5 Spuren, die 'stem'-Box, TAUT und
+  Tags, die wir nicht kennen. Vor dem Ersetzen wird die neue Datei geprüft
+  (gleiche Spurenzahl, gleicher Stem-JSON), sonst bleibt das Original.
   ============================================================================ }
 unit uStemMP4;
 
@@ -107,6 +115,36 @@ function CountTracks(const FileName: string): Integer;
   liegt (dann wird kopiert). False = nichts ersetzt, die alte Datei ist
   (wenn es sie gab) noch da. }
 function ReplaceFileSafe(const NewFile, Target: string): Boolean;
+
+{ ---------------------------------------------------------------------------
+  Tags bearbeiten (AddOn StemTagger)
+  --------------------------------------------------------------------------- }
+type
+  { Die Felder, die der StemTagger kennt. Alle als Text:
+    tfTrack z.B. '3' oder '3/12', tfBpm z.B. '128', tfCover nicht als Text,
+    sondern als Bild in TMp4Tags.Cover. }
+  TMp4TagField = (tfTitle, tfArtist, tfAlbum, tfAlbumArtist, tfGenre,
+                  tfYear, tfTrack, tfBpm, tfKey, tfLabel, tfComment, tfCover);
+  TMp4TagFields = set of TMp4TagField;
+
+  TMp4Tags = record
+    Text : array[TMp4TagField] of string;  // UTF-8, '' = nicht gesetzt
+    Cover: TBytes;                         // JPEG oder PNG, leer = kein Cover
+  end;
+
+{ Liest die Tags. False = Datei nicht lesbar (Grund in ErrMsg). }
+function ReadMp4Tags(const FileName: string; out Tags: TMp4Tags;
+  out ErrMsg: string): Boolean;
+
+{ Schreibt NUR die Felder aus Fields (leerer Text bzw. leeres Cover =
+  Tag entfernen). Alle anderen Tags, die Spuren und die 'stem'-Box bleiben
+  unverändert. Die neue Datei wird vor dem Ersetzen geprüft. Das Cover
+  muss JPEG oder PNG sein. }
+function WriteMp4Tags(const FileName: string; const Tags: TMp4Tags;
+  Fields: TMp4TagFields; out ErrMsg: string): Boolean;
+
+{ Ist das Bild JPEG oder PNG? (nur diese beiden kennt das MP4-Cover) }
+function IsMp4CoverImage(const Img: TBytes): Boolean;
 
 implementation
 
@@ -1061,6 +1099,436 @@ begin
   if Copied then
     DeleteFile(NewFile);
   Result := True;
+end;
+
+{ ---------------------------------------------------------------------------
+  Tags bearbeiten (AddOn StemTagger)
+
+  Ein Tag in 'ilst' ist eine Box mit dem Tag-Namen (z.B. #$A9'nam' für den
+  Titel). Darin steckt eine 'data'-Box:
+      4 Byte  Typ    (1 = UTF-8-Text, 0 = Zahlen, 13 = JPEG, 14 = PNG,
+                      21 = Ganzzahl)
+      4 Byte  Sprache (0)
+      Wert
+  Freiform-Tags ('----') haben davor noch 'mean' und 'name' (siehe
+  MakeFreeformTag). Wir zerlegen die Tag-Box beim Lesen selbst; in TBox
+  bleibt sie als rohe Bytes.
+  --------------------------------------------------------------------------- }
+const
+  { welcher 4-Byte-Tag zu welchem Feld gehört ('' = Freiform bzw. Cover) }
+  TagAtom: array[TMp4TagField] of RawByteString = (
+    #$A9'nam', #$A9'ART', #$A9'alb', 'aART', #$A9'gen',
+    #$A9'day', 'trkn', 'tmpo', '', #$A9'pub', #$A9'cmt', 'covr');
+  KEY_NAME = 'initialkey';   // Freiform-Name der Tonart (wie in ustemjob)
+
+  { Die alten ID3v1-Genres: manche Programme speichern das Genre als Nummer
+    im Tag 'gnre' (Nummer + 1). Nur zum Lesen. }
+  Id3Genres: array[0..79] of string = (
+    'Blues', 'Classic Rock', 'Country', 'Dance', 'Disco', 'Funk', 'Grunge',
+    'Hip-Hop', 'Jazz', 'Metal', 'New Age', 'Oldies', 'Other', 'Pop', 'R&B',
+    'Rap', 'Reggae', 'Rock', 'Techno', 'Industrial', 'Alternative', 'Ska',
+    'Death Metal', 'Pranks', 'Soundtrack', 'Euro-Techno', 'Ambient',
+    'Trip-Hop', 'Vocal', 'Jazz+Funk', 'Fusion', 'Trance', 'Classical',
+    'Instrumental', 'Acid', 'House', 'Game', 'Sound Clip', 'Gospel', 'Noise',
+    'AlternRock', 'Bass', 'Soul', 'Punk', 'Space', 'Meditative',
+    'Instrumental Pop', 'Instrumental Rock', 'Ethnic', 'Gothic', 'Darkwave',
+    'Techno-Industrial', 'Electronic', 'Pop-Folk', 'Eurodance', 'Dream',
+    'Southern Rock', 'Comedy', 'Cult', 'Gangsta', 'Top 40', 'Christian Rap',
+    'Pop/Funk', 'Jungle', 'Native American', 'Cabaret', 'New Wave',
+    'Psychadelic', 'Rave', 'Showtunes', 'Trailer', 'Lo-Fi', 'Tribal',
+    'Acid Punk', 'Acid Jazz', 'Polka', 'Retro', 'Musical', 'Rock & Roll',
+    'Hard Rock');
+
+{ Zerlegt den Inhalt einer Tag-Box in ihre Unter-Boxen und liefert die
+  erste 'data'-Box (Typ und Wert). Bei '----' auch den Namen aus 'name'.
+  False = keine brauchbare 'data'-Box. }
+function ParseTagBox(Box: TBox; out DataType: LongWord; out Value: TBytes;
+  out FreeName: RawByteString): Boolean;
+var
+  P, Sz, L: Int64;
+  T: RawByteString;
+  B: TBytes;
+begin
+  Result := False;
+  DataType := 0;
+  Value := nil;
+  FreeName := '';
+  B := Box.Payload;
+  P := 0;
+  SetLength(T, 4);
+  while P + 8 <= Length(B) do
+  begin
+    Sz := GetBE32(B, P);
+    if (Sz < 8) or (P + Sz > Length(B)) then
+      Exit;                          // kaputt -> lieber nichts lesen
+    Move(B[P + 4], T[1], 4);
+    if (T = 'name') and (Sz >= 12) then
+    begin
+      SetLength(FreeName, Sz - 12);
+      if Sz > 12 then
+        Move(B[P + 12], FreeName[1], Sz - 12);
+    end
+    else if (T = 'data') and (Sz >= 16) and not Result then
+    begin
+      DataType := GetBE32(B, P + 8) and $FFFFFF;   // ohne Versions-Byte
+      L := Sz - 16;
+      SetLength(Value, L);
+      if L > 0 then
+        Move(B[P + 16], Value[0], L);
+      Result := True;
+    end;
+    Inc(P, Sz);
+  end;
+end;
+
+{ Bytes als Text (UTF-8, ohne Umwandlung) }
+function BytesToStr(const B: TBytes): string;
+begin
+  Result := '';
+  SetLength(Result, Length(B));
+  if Length(B) > 0 then
+    Move(B[0], Result[1], Length(B));
+end;
+
+{ Tag-Box mit beliebigem Inhalt (Typ + Bytes) bauen, z.B. für Cover/trkn }
+function MakeDataTag(const Name: RawByteString; DataType: LongWord;
+  const Value: TBytes): TBox;
+var
+  Data: TBytes;
+  L: Integer;
+begin
+  Result := TBox.Create(Name);
+  L := Length(Value);
+  Data := nil;
+  SetLength(Data, 16 + L);
+  PutBE32(Data, 0, 16 + L);
+  Data[4] := Ord('d'); Data[5] := Ord('a'); Data[6] := Ord('t'); Data[7] := Ord('a');
+  PutBE32(Data, 8, DataType);         // Version 0 + Typ
+  PutBE32(Data, 12, 0);               // Sprache
+  if L > 0 then
+    Move(Value[0], Data[16], L);
+  Result.Payload := Data;
+end;
+
+{ Gehört diese Tag-Box zu Feld F? }
+function BoxIsField(Box: TBox; F: TMp4TagField): Boolean;
+var
+  DT: LongWord;
+  V: TBytes;
+  N: RawByteString;
+begin
+  if F = tfKey then
+    Result := (Box.BoxType = '----') and ParseTagBox(Box, DT, V, N) and
+              (LowerCase(N) = KEY_NAME)
+  else if F = tfGenre then
+    Result := (Box.BoxType = TagAtom[F]) or (Box.BoxType = 'gnre')
+  else
+    Result := Box.BoxType = TagAtom[F];
+end;
+
+function IsMp4CoverImage(const Img: TBytes): Boolean;
+begin
+  Result := (Length(Img) > 4) and
+    (((Img[0] = $FF) and (Img[1] = $D8)) or                     // JPEG
+     ((Img[0] = $89) and (Img[1] = $50) and (Img[2] = $4E) and (Img[3] = $47))); // PNG
+end;
+
+{ Zahl aus einem Text holen ('128.4' -> 128, '3/12' -> 3), -1 = keine }
+function LeadingInt(const S: string; out Rest: string): Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+  Rest := '';
+  I := 1;
+  while (I <= Length(S)) and (S[I] = ' ') do Inc(I);
+  while (I <= Length(S)) and (S[I] in ['0'..'9']) do
+  begin
+    if Result < 0 then Result := 0;
+    if Result < 100000 then
+      Result := Result * 10 + Ord(S[I]) - Ord('0');
+    Inc(I);
+  end;
+  Rest := Copy(S, I, MaxInt);
+end;
+
+{ Die ilst-Box der moov-Box suchen. Create = anlegen, falls es keine gibt. }
+function FindIlst(Moov: TBox; Create: Boolean): TBox;
+var
+  Udta, Meta: TBox;
+begin
+  Result := nil;
+  Udta := Moov.Find('udta');
+  if Udta = nil then
+  begin
+    if not Create then Exit;
+    Udta := TBox.Create('udta');
+    Udta.IsContainer := True;
+    Moov.Children.Add(Udta);
+  end;
+  Meta := Udta.Find('meta');
+  if Meta = nil then
+  begin
+    if not Create then Exit;
+    Meta := MakeMetaBox;
+    Udta.Children.Add(Meta);
+  end;
+  Result := Meta.Find('ilst');
+  if (Result = nil) and Create then
+  begin
+    Result := TBox.Create('ilst');
+    Result.IsContainer := True;
+    Meta.Children.Add(Result);
+  end;
+end;
+
+function ReadMp4Tags(const FileName: string; out Tags: TMp4Tags;
+  out ErrMsg: string): Boolean;
+var
+  S: TFileStream;
+  Tops: TTopBoxArray;
+  Moov, Ilst, Box: TBox;
+  Idx, I, N: Integer;
+  F: TMp4TagField;
+  DT: LongWord;
+  V: TBytes;
+  FName: RawByteString;
+  Txt: string;
+begin
+  Result := False;
+  ErrMsg := '';
+  for F := Low(TMp4TagField) to High(TMp4TagField) do
+    Tags.Text[F] := '';
+  Tags.Cover := nil;
+  Moov := nil;
+  try
+    S := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+    try
+      Tops := ScanTopLevel(S);
+      Moov := LoadMoov(S, Tops, Idx);
+      Ilst := FindIlst(Moov, False);
+      if Ilst <> nil then
+        for I := 0 to Ilst.Children.Count - 1 do
+        begin
+          Box := TBox(Ilst.Children[I]);
+          if not ParseTagBox(Box, DT, V, FName) then
+            Continue;
+          for F := Low(TMp4TagField) to High(TMp4TagField) do
+          begin
+            if not BoxIsField(Box, F) then
+              Continue;
+            case F of
+              tfCover:
+                if (Length(Tags.Cover) = 0) and IsMp4CoverImage(V) then
+                  Tags.Cover := V;
+              tfTrack:
+                if Length(V) >= 6 then
+                begin
+                  N := (V[2] shl 8) or V[3];
+                  Txt := '';
+                  if N > 0 then Txt := IntToStr(N);
+                  N := (V[4] shl 8) or V[5];
+                  if (N > 0) and (Txt <> '') then Txt := Txt + '/' + IntToStr(N);
+                  Tags.Text[F] := Txt;
+                end;
+              tfBpm:
+                if Length(V) >= 1 then
+                begin
+                  if Length(V) = 1 then N := V[0] else N := (V[0] shl 8) or V[1];
+                  if N > 0 then Tags.Text[F] := IntToStr(N);
+                end;
+              tfGenre:
+                if Box.BoxType = 'gnre' then
+                begin
+                  { Nummer nur nehmen, wenn kein Text-Genre da ist }
+                  if (Tags.Text[F] = '') and (Length(V) >= 2) then
+                  begin
+                    N := ((V[0] shl 8) or V[1]) - 1;
+                    if (N >= Low(Id3Genres)) and (N <= High(Id3Genres)) then
+                      Tags.Text[F] := Id3Genres[N];
+                  end;
+                end
+                else
+                  Tags.Text[F] := BytesToStr(V);
+            else
+              Tags.Text[F] := BytesToStr(V);
+            end;
+          end;
+        end;
+      Result := True;
+    finally
+      S.Free;
+    end;
+  except
+    on E: Exception do
+      ErrMsg := E.Message;
+  end;
+  Moov.Free;
+end;
+
+{ Die geänderten Felder in die ilst-Box übernehmen }
+procedure ApplyTags(Ilst: TBox; const Tags: TMp4Tags; Fields: TMp4TagFields);
+var
+  F: TMp4TagField;
+  I, Track, Total, Bpm: Integer;
+  Txt, Rest, Rest2: string;
+  V: TBytes;
+begin
+  for F := Low(TMp4TagField) to High(TMp4TagField) do
+  begin
+    if not (F in Fields) then
+      Continue;
+    { alte Einträge dieses Felds entfernen }
+    for I := Ilst.Children.Count - 1 downto 0 do
+      if BoxIsField(TBox(Ilst.Children[I]), F) then
+        Ilst.Children.Delete(I);
+    Txt := Trim(Tags.Text[F]);
+    V := nil;
+    case F of
+      tfCover:
+        if Length(Tags.Cover) > 0 then
+        begin
+          if not IsMp4CoverImage(Tags.Cover) then
+            raise Exception.Create('Cover ist kein JPEG/PNG');
+          if Tags.Cover[0] = $FF then
+            Ilst.Children.Add(MakeDataTag('covr', 13, Tags.Cover))
+          else
+            Ilst.Children.Add(MakeDataTag('covr', 14, Tags.Cover));
+        end;
+      tfTrack:
+        begin
+          Track := LeadingInt(Txt, Rest);
+          Total := -1;
+          Rest := Trim(Rest);
+          if (Rest <> '') and (Rest[1] = '/') then
+            Total := LeadingInt(Copy(Rest, 2, MaxInt), Rest2);
+          if Track > 0 then
+          begin
+            if Track > 65535 then Track := 65535;
+            if Total > 65535 then Total := 65535;
+            if Total < 0 then Total := 0;
+            SetLength(V, 8);
+            FillChar(V[0], 8, 0);
+            V[2] := Byte(Track shr 8); V[3] := Byte(Track);
+            V[4] := Byte(Total shr 8); V[5] := Byte(Total);
+            Ilst.Children.Add(MakeDataTag('trkn', 0, V));
+          end;
+        end;
+      tfBpm:
+        begin
+          { Kommazahl runden (tmpo kennt nur ganze BPM) }
+          Bpm := LeadingInt(Txt, Rest);
+          if (Bpm >= 0) and (Length(Rest) >= 2) and (Rest[1] in ['.', ',']) and
+             (Rest[2] in ['5'..'9']) then
+            Inc(Bpm);
+          if Bpm > 65535 then Bpm := 65535;
+          if Bpm > 0 then
+          begin
+            SetLength(V, 2);
+            V[0] := Byte(Bpm shr 8); V[1] := Byte(Bpm);
+            Ilst.Children.Add(MakeDataTag('tmpo', 21, V));
+          end;
+        end;
+      tfKey:
+        if Txt <> '' then
+          Ilst.Children.Add(MakeFreeformTag(KEY_NAME, Txt));
+    else
+      if Txt <> '' then
+        Ilst.Children.Add(MakeTextTag(TagAtom[F], Txt));
+    end;
+  end;
+end;
+
+function WriteMp4Tags(const FileName: string; const Tags: TMp4Tags;
+  Fields: TMp4TagFields; out ErrMsg: string): Boolean;
+var
+  Src, Dst: TFileStream;
+  Tops: TTopBoxArray;
+  MoovIdx, I, OldTracks: Integer;
+  Moov, Udta, StemBox: TBox;
+  OldMoovEnd, Delta, ExpectSize: Int64;
+  NewMoov: TMemoryStream;
+  TmpName, OldJSON: string;
+begin
+  Result := False;
+  ErrMsg := '';
+  TmpName := FileName + '.tagtmp';
+  Moov := nil;
+  NewMoov := TMemoryStream.Create;
+  try
+    try
+      Src := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+      try
+        { --- 1. moov laden und merken, wie die Datei vorher war ---------- }
+        Tops := ScanTopLevel(Src);
+        Moov := LoadMoov(Src, Tops, MoovIdx);
+        OldTracks := 0;
+        for I := 0 to Moov.Children.Count - 1 do
+          if TBox(Moov.Children[I]).BoxType = 'trak' then
+            Inc(OldTracks);
+        OldJSON := '';
+        Udta := Moov.Find('udta');
+        if Udta <> nil then
+        begin
+          StemBox := Udta.Find('stem');
+          if StemBox <> nil then
+            OldJSON := BytesToStr(StemBox.Payload);
+        end;
+
+        { --- 2. Tags ändern ----------------------------------------------- }
+        ApplyTags(FindIlst(Moov, True), Tags, Fields);
+
+        { --- 3. Positionsangaben korrigieren (wie InjectStemMetadata) ----- }
+        OldMoovEnd := Tops[MoovIdx].Offset + Tops[MoovIdx].Size;
+        Delta := Moov.TotalSize - Tops[MoovIdx].Size;
+        if (Delta <> 0) and (MoovIdx < High(Tops)) then
+          ShiftChunkOffsets(Moov, OldMoovEnd, Delta);
+        Moov.WriteTo(NewMoov);
+        ExpectSize := Src.Size + Delta;
+
+        { --- 4. neue Datei: vor moov + neue moov + nach moov -------------- }
+        Dst := TFileStream.Create(TmpName, fmCreate);
+        try
+          Src.Position := 0;
+          if Tops[MoovIdx].Offset > 0 then
+            Dst.CopyFrom(Src, Tops[MoovIdx].Offset);
+          NewMoov.Position := 0;
+          Dst.CopyFrom(NewMoov, NewMoov.Size);
+          if OldMoovEnd < Src.Size then
+          begin
+            Src.Position := OldMoovEnd;
+            Dst.CopyFrom(Src, Src.Size - OldMoovEnd);
+          end;
+          if Dst.Size <> ExpectSize then
+            raise Exception.Create('Neue Datei hat die falsche Größe');
+        finally
+          Dst.Free;
+        end;
+      finally
+        Src.Free;
+      end;
+
+      { --- 5. neue Datei prüfen, bevor das Original ersetzt wird --------- }
+      if CountTracks(TmpName) <> OldTracks then
+        raise Exception.Create('Prüfung: Spurenzahl hat sich geändert');
+      if ReadStemJSON(TmpName) <> OldJSON then
+        raise Exception.Create('Prüfung: Stem-Daten haben sich geändert');
+
+      if not ReplaceFileSafe(TmpName, FileName) then
+        raise Exception.Create('Originaldatei kann nicht ersetzt werden (offen in einem anderen Programm?)');
+      Result := True;
+    except
+      on E: Exception do
+      begin
+        ErrMsg := E.Message;
+        if FileExists(TmpName) then
+          DeleteFile(TmpName);
+      end;
+    end;
+  finally
+    Moov.Free;
+    NewMoov.Free;
+  end;
 end;
 
 end.

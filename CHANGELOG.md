@@ -14,6 +14,20 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Kein Explorer-Fenster mehr nach der Umwandlung:** Das Häkchen „Ordner nach der Umwandlung öffnen“ ist jetzt aus. Wer die Datei gleich in Traktor ziehen will, setzt es wieder oder klickt „Ordner öffnen“.
 - **Rechtsklick-Menü in der Dateiliste:** Rechtsklick auf eine Zeile bietet „Anhören“ (spielt eine fertige Datei im StemPlayer ab, wie der Doppelklick) und „Aus Liste entfernen“. Die Entf-Taste entfernt die markierten Zeilen ebenfalls. Erstellte Stem-Dateien bleiben dabei erhalten.
 - **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
+- **AddOn-Leiste statt Knopf „Anhören“:** Rechts neben der Dateiliste steht jetzt eine schmale Leiste mit einem Knopf pro AddOn, mit Symbol und Namen. „StemPlayer“ spielt wie bisher „Anhören“ die markierte oder zuletzt umgewandelte Datei ab, „StemTagger“ öffnet die markierten fertigen Dateien im StemTagger. Doppelklick und Rechtsklick in der Liste funktionieren weiter.
+- **„Tags bearbeiten...“ im Rechtsklick-Menü:** öffnet die markierten fertigen Stem-Dateien im neuen StemTagger.
+
+### StemTagger (neues AddOn, 0.1)
+- **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`-Dateien, also das, was Traktor und Mixxx anzeigen und wonach man dort sucht. Gedacht vor allem für Stem-Dateien ohne Tags. BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst; Werte, die schon in der Datei stehen, bleiben erhalten.
+- **Viele Dateien auf einmal:** Ordner laden, mehrere Zeilen markieren und z.B. Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange man sie nicht ändert.
+- **Cover bequem:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit Strg+V einfügen oder Datei wählen. Grosse Bilder werden auf Wunsch auf 1000 px verkleinert, BMP und GIF in JPEG umgewandelt. Das Cover lässt sich auch wieder als Bild speichern.
+- **Genre mit Auswahlliste:** aus rund 50 Musikstilen wählen oder selbst eintippen.
+- **Tooltip an jedem Feld**, der sagt, was hineingehört.
+- **Fehlendes auf einen Blick:** Die Spalte Status zeigt „Ohne Tags“ oder „Ohne Cover“. Klick auf eine Spaltenüberschrift sortiert die Liste.
+- **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
+- **Stems bleiben unangetastet:** Neu geschrieben wird nur die Tag-Liste. Audio, die vier Stems, die Stem-Beschreibung und Traktors eigene Daten bleiben bytegenau gleich. Nach dem Schreiben prüft der StemTagger die neue Datei, bevor sie die alte ersetzt. Eine Sicherungskopie `.bak` lässt sich einschalten. Nach dem Laden eines Ordners erklärt ein Hinweis, was sich ändert und was nicht, und vor dem Speichern mehrerer Dateien fragt der StemTagger nach. Getestet in Traktor Pro 4 und Mixxx 2.6 Beta.
+- **Auch einzeln:** Wer StemMaker nicht braucht, lädt den StemTagger als eigenes kleines ZIP von der Release-Seite.
+- Deutsch, Englisch und Spanisch.
 
 ### StemPlayer 1.8
 - **Neues Design CD-Player im DJ-Look:** Neben KOMPAKT und WELLENFORM gibt es jetzt den **CD-Player**. Die Ansicht wählst du oben in einem Ausklapp-Menü, so bleibt die Fläche übersichtlich. Er kann dasselbe wie die normale Ansicht, sieht nur anders aus. Die Wahl bleibt beim nächsten Start erhalten.

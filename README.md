@@ -16,6 +16,7 @@ It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), ju
 - **Traktor format, not four loose files:** master plus the four stems land in one `.stem.mp4` with the NI stem metadata, ready for a stem deck. No routing by hand, no extra software for the container, no Traktor licence to convert.
 - **Built for whole collections:** add complete folders, see the expected time beforehand, let it run overnight. The list is saved after every file, so a crash or a power cut costs one track instead of the run, and subfolders are rebuilt in the output folder.
 - **Check before you play:** `AddOns\StemPlayer.exe` plays a finished stem file with mute, solo, volume and level meters per stem and A/B against the original, so you don't have to import into Traktor just to listen.
+- **Tags and cover for stem files:** `AddOns\StemTagger.exe` sets title, artist, album, genre, cover and more in `.stem.mp4` files, also for many files at once. The stems stay untouched (tested in Traktor Pro 4 and Mixxx 2.6 beta).
 - **Level and bass sorted out:** quiet files are raised to club level without a limiter, and low bass that the model leaves in the melody stem is moved into the bass stem.
 - **Quality:** in a side-by-side test against a stem file made by Traktor Pro 4 from the same track, drums, kick, vocals and level came out practically the same.
 - **Your music stays local:** no account, no cloud, no telemetry, nothing running in the background.
@@ -54,7 +55,7 @@ If you pick a model in the main window that isn't installed yet (e.g. htdemucs_f
 
 ## Windows warning ("Windows protected your PC")
 
-StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe` or `AddOns\StemPlayer.exe`. Many small open-source tools do the same.
+StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe` or `AddOns\StemTagger.exe`. Many small open-source tools do the same.
 
 **To start it anyway:**
 1. Click **"More info"** in the blue window.
@@ -93,6 +94,7 @@ StemMaker\
   AddOns\                extra programs for advanced users
     StemCLI.exe          command-line version (batch files, Task Scheduler)
     StemPlayer.exe       test player for .stem.mp4 files (mute/solo per stem)
+    StemTagger.exe       tags and cover for .stem.mp4 files
   tools\
     onnx\                       Turbo engine: StemOnnx.exe, ONNX Runtime, DirectML, network graph without weights
     demucs_mt.cpp.main.exe      separation "Classic", Demucs v4 (AVX2 build)
@@ -195,7 +197,11 @@ Most people won't need this: the main window handles whole folders, the queue an
 
 ### Test player (AddOns\StemPlayer.exe)
 
-Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with **Listen** (plays the selected or last converted file right away) double-click a finished file in the list or right-click it and choose **Listen**, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with the **StemPlayer** button in the AddOns bar right of the file list (plays the selected or last converted file right away), double-click a finished file in the list or right-click it and choose **Listen**, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. The interface is German only for now. Source: `src/AddOns/StemPlayer/`.
+
+### Tag editor (AddOns\StemTagger.exe)
+
+Set title, artist, album, genre, year, label, comment and cover in `.stem.mp4` files (what Traktor and Mixxx show and search), e.g. for stem files from other tools that come without any tags. Load single files or whole folders, select several rows to set album or cover for all of them at once, paste a cover with Ctrl+V or drag an image onto the window, or fill artist and title from the file name. Large covers are scaled down to 1000 px if you like, and a `.bak` backup can be switched on. Only the tag list inside the file is rewritten: audio, the four stems and Traktor's own data stay byte-for-byte the same. Start it from StemMaker with the **StemTagger** button in the AddOns bar (opens the selected finished files) or by right-clicking finished files and choosing **Edit tags...**, or as a parameter: `AddOns\StemTagger.exe "track.stem.mp4"`. Also available on its own as `StemTagger-<version>.zip` on the release page. German, English and Spanish. Source: `src/AddOns/StemTagger/`. MP3 support is planned.
 
 ## Processing time
 
