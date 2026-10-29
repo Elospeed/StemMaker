@@ -6,6 +6,19 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.1 – 29 de octubre de 2026
+### Nuevo
+- StemTagger 1.0: título, artista, álbum, género y portada en archivos stem, también para muchos archivos a la vez
+- Barra de AddOns junto a la lista de archivos: StemPlayer y StemTagger con un clic
+- StemPlayer 1.8: nueva vista Reproductor de CD con jog wheel y pads de stems
+- Pestaña «Versiones» en la ventana Info
+- Menú contextual en la lista de archivos: Escuchar, Editar etiquetas, Quitar de la lista (también tecla Supr)
+### Mejorado
+- «Escuchar» reproduce directamente el archivo terminado
+- Ya no se abre el Explorador tras la conversión (se puede activar)
+### Corregido
+- StemPlayer: lupa cortada con escalado de pantalla al 150 % y 200 %
+
 ## 2.0 – 26 de octubre de 2026
 ### Nuevo
 - Motor Turbo: stems unas 6 a 10 veces más rápido en la CPU, misma calidad

@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Unveröffentlicht
+## 2.1 – 29. Oktober 2026
 
 ### StemMaker
 - **„Anhören“ spielt die fertige Datei gleich ab:** Der StemPlayer öffnet die markierte oder zuletzt umgewandelte Stem-Datei direkt, ohne Öffnen-Fenster.

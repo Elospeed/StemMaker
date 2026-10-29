@@ -6,6 +6,19 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.1 – 29 October 2026
+### New
+- StemTagger 1.0: set title, artist, album, genre and cover in stem files, also for many files at once
+- AddOn bar next to the file list: StemPlayer and StemTagger in one click
+- StemPlayer 1.8: new CD player view with jog wheel and stem pads
+- "Versions" tab in the Info window
+- Right-click menu in the file list: Listen, Edit tags, Remove from list (also Del key)
+### Improved
+- "Listen" plays the finished file directly
+- No Explorer window after conversion any more (can be switched on)
+### Fixed
+- StemPlayer: zoom view cut off at 150 % and 200 % display scaling
+
 ## 2.0 – 26 October 2026
 ### New
 - Turbo engine: stems about 6 to 10 times faster on the CPU, same quality
