@@ -72,6 +72,11 @@ jobs:
       - name: Quelltext holen
         uses: actions/checkout@v4
 
+      - name: Versionen prüfen
+        # Quelltext, Exe-Versionsinfo (.lpi) und LIESMICH/README müssen dieselbe
+        # Version nennen, bei StemMaker und allen AddOns
+        run: installer/versionen-pruefen.sh
+
       - name: Lazarus installieren
         # Fremde Action: auf einen festen Commit gepinnt (= Tag v3.4.1), nicht auf
         # "v3". Ein Tag kann der Autor jederzeit verschieben, und dieser Job läuft

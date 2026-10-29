@@ -17,11 +17,13 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **AddOn-Leiste statt Knopf „Anhören“:** Rechts neben der Dateiliste steht jetzt eine schmale Leiste mit einem Knopf pro AddOn, mit Symbol und Namen. „StemPlayer“ spielt wie bisher „Anhören“ die markierte oder zuletzt umgewandelte Datei ab, „StemTagger“ öffnet die markierten fertigen Dateien im StemTagger. Doppelklick und Rechtsklick in der Liste funktionieren weiter.
 - **„Tags bearbeiten...“ im Rechtsklick-Menü:** öffnet die markierten fertigen Stem-Dateien im neuen StemTagger.
 
-### StemTagger (neues AddOn, 0.1)
+### StemTagger 1.0 (neues AddOn)
 - **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`-Dateien, also das, was Traktor und Mixxx anzeigen und wonach man dort sucht. Gedacht vor allem für Stem-Dateien ohne Tags. BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst; Werte, die schon in der Datei stehen, bleiben erhalten.
 - **Viele Dateien auf einmal:** Ordner laden, mehrere Zeilen markieren und z.B. Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange man sie nicht ändert.
 - **Cover bequem:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit Strg+V einfügen oder Datei wählen. Grosse Bilder werden auf Wunsch auf 1000 px verkleinert, BMP und GIF in JPEG umgewandelt. Das Cover lässt sich auch wieder als Bild speichern.
-- **Genre mit Auswahlliste:** aus rund 50 Musikstilen wählen oder selbst eintippen.
+- **Genre mit Auswahlliste:** aus rund 50 Musikstilen wählen oder selbst eintippen, beim Tippen wird ergänzt („tech h“ wird „Tech House“).
+- **Dunkles Design wie der StemPlayer:** kompaktes Fenster, dunkle Liste und Felder, die markierte Zeile mit grünem Streifen, Status farbig (grün fertig, orange es fehlt etwas, gelb geändert). Sicherungskopie und Cover-Verkleinern sind LED-Schalter: rot aus, grün an.
+- **Spaltenbreiten:** Rand zwischen zwei Spalten ziehen ändert die Breite, Doppelklick passt die Spalte an den Text an. Die Spalten wachsen mit dem Fenster mit, die Breiten bleiben beim nächsten Start erhalten.
 - **Tooltip an jedem Feld**, der sagt, was hineingehört.
 - **Fehlendes auf einen Blick:** Die Spalte Status zeigt „Ohne Tags“ oder „Ohne Cover“. Klick auf eine Spaltenüberschrift sortiert die Liste.
 - **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.

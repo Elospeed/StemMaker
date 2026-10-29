@@ -95,6 +95,8 @@ jobs:
           for LPI in src/StemMaker.lpi src/StemCLI.lpi; do
             grep -q "ProductVersion=\"$VERSION\"" "$LPI" || { echo "::error::$LPI hat nicht ProductVersion=\"$VERSION\""; exit 1; }
           done
+          # AddOns: Quelltext, Exe-Versionsinfo und LIESMICH/README gleich
+          installer/versionen-pruefen.sh
           grep -q "^## $VERSION " CHANGELOG.md || { echo "::error::Im CHANGELOG fehlt der Abschnitt '## $VERSION – ...'"; exit 1; }
           # Kurzfassung für den Reiter "Versionen" im Info-Fenster, in allen drei Sprachen
           for V in src/versionen/de.md src/versionen/en.md src/versionen/es.md; do
