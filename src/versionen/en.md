@@ -17,6 +17,7 @@ keyword line per item. Only things users notice, no technical details.
 - "Listen" plays the finished file directly
 - No Explorer window after conversion any more (can be switched on)
 ### Fixed
+- Main window grew on every start with display scaling above 100 %
 - StemPlayer: zoom view cut off at 150 % and 200 % display scaling
 
 ## 2.0 – 26 October 2026

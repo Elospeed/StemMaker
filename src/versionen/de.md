@@ -17,6 +17,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 - „Anhören“ spielt die fertige Datei direkt ab
 - Nach der Umwandlung öffnet sich kein Explorer-Fenster mehr (einschaltbar)
 ### Behoben
+- Hauptfenster wurde bei Anzeigeskalierung über 100 % bei jedem Start grösser
 - StemPlayer: Lupe bei 150 % und 200 % Anzeigeskalierung abgeschnitten
 
 ## 2.0 – 26. Oktober 2026

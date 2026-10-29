@@ -46,6 +46,8 @@ type
   private
     FTitle: TLabel;
     FNextTop: Integer;
+    FPPI: Integer;                 // dpi des Fensters beim Anlegen
+    function L(X: Integer): Integer;
   public
     constructor Create(AOwner: TComponent); override;
     { Knopf für AddOns\<ExeFile> anlegen; nil, wenn die Exe fehlt }
@@ -178,15 +180,29 @@ constructor TAddOnBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BevelOuter := bvNone;
-  Width := S(TILE_W + 12);
+  { Die Leiste entsteht in FormCreate. Bei Anzeigeskalierung (125 %, 150 %,
+    200 %) skaliert die LCL das Fenster samt allen Kindern erst danach von
+    96 dpi auf die Bildschirm-dpi. Darum Masse in der dpi, die das Fenster
+    JETZT hat; sonst wird doppelt skaliert und die Leiste viel zu breit. }
+  if AOwner is TCustomForm then
+    FPPI := TCustomForm(AOwner).PixelsPerInch
+  else
+    FPPI := Screen.PixelsPerInch;
+  Width := L(TILE_W + 12);
   FTitle := TLabel.Create(Self);
   FTitle.Parent := Self;
   FTitle.AutoSize := False;
   FTitle.Alignment := taCenter;
   FTitle.Caption := 'AddOns';
   FTitle.Font.Color := clGrayText;
-  FTitle.SetBounds(0, S(8), Width, S(18));
+  FTitle.SetBounds(0, L(8), Width, L(18));
   FNextTop := 30;
+end;
+
+{ Pixel bei 96 dpi -> Pixel in der dpi, die das Fenster beim Anlegen hat }
+function TAddOnBar.L(X: Integer): Integer;
+begin
+  Result := MulDiv(X, FPPI, 96);
 end;
 
 function TAddOnBar.AddTile(const ExeFile, ACaption, AHint: string;
@@ -198,13 +214,14 @@ begin
   if not FileExists(ExeFile) then Exit;
   Result := TAddOnTile.Create(Self);
   Result.Parent := Self;
-  Result.SetBounds(S(6), S(FNextTop),
-    S(TILE_W), S(TILE_H));
-  Px := S(ICON_PX);
-  Result.FImage.SetBounds((Result.Width - Px) div 2, S(6), Px, Px);
-  if not LoadExeIcon(Result.FImage, ExeFile, Px) then
+  Result.SetBounds(L(6), L(FNextTop),
+    L(TILE_W), L(TILE_H));
+  Px := L(ICON_PX);
+  Result.FImage.SetBounds((Result.Width - Px) div 2, L(6), Px, Px);
+  { das Symbol selbst gleich in der Endgrösse holen (TImage zentriert es) }
+  if not LoadExeIcon(Result.FImage, ExeFile, S(ICON_PX)) then
     Result.FImage.Visible := False;
-  Result.FLabel.SetBounds(0, S(6 + ICON_PX + 4), Result.Width, S(18));
+  Result.FLabel.SetBounds(0, L(6 + ICON_PX + 4), Result.Width, L(18));
   Result.FLabel.Caption := ACaption;
   Result.Hint := AHint;
   Result.FImage.Hint := AHint;

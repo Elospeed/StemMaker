@@ -16,6 +16,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Reiter „Versionen“ im Info-Fenster:** Zeigt pro Version in Stichworten, was neu ist, was verbessert und was behoben wurde, neueste oben, auf Deutsch, Englisch oder Spanisch. Die ausführliche Fassung bleibt dieser CHANGELOG auf GitHub.
 - **AddOn-Leiste statt Knopf „Anhören“:** Rechts neben der Dateiliste steht jetzt eine schmale Leiste mit einem Knopf pro AddOn, mit Symbol und Namen. „StemPlayer“ spielt wie bisher „Anhören“ die markierte oder zuletzt umgewandelte Datei ab, „StemTagger“ öffnet die markierten fertigen Dateien im StemTagger. Doppelklick und Rechtsklick in der Liste funktionieren weiter.
 - **„Tags bearbeiten...“ im Rechtsklick-Menü:** öffnet die markierten fertigen Stem-Dateien im neuen StemTagger.
+- **Fenstergrösse bei Anzeigeskalierung:** Bei 125 %, 150 % oder 200 % Skalierung in Windows wurde das Hauptfenster bei jedem Start grösser. Die Grösse wird jetzt unabhängig von der Skalierung gespeichert.
 
 ### StemTagger 1.0 (neues AddOn)
 - **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`-Dateien, also das, was Traktor und Mixxx anzeigen und wonach man dort sucht. Gedacht vor allem für Stem-Dateien ohne Tags. BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst; Werte, die schon in der Datei stehen, bleiben erhalten.

@@ -17,6 +17,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 - «Escuchar» reproduce directamente el archivo terminado
 - Ya no se abre el Explorador tras la conversión (se puede activar)
 ### Corregido
+- La ventana principal crecía en cada inicio con escalado de pantalla superior al 100 %
 - StemPlayer: lupa cortada con escalado de pantalla al 150 % y 200 %
 
 ## 2.0 – 26 de octubre de 2026
