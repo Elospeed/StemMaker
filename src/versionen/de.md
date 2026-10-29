@@ -6,6 +6,20 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.1 – 29. Oktober 2026
+### Neu
+- StemTagger 1.0: Titel, Interpret, Album, Genre und Cover in Stem-Dateien setzen, auch für viele Dateien auf einmal
+- AddOn-Leiste neben der Dateiliste: StemPlayer und StemTagger mit einem Klick
+- StemPlayer 1.8: neue Ansicht CD-Player mit Jogwheel und Stem-Pads
+- Reiter „Versionen“ im Info-Fenster
+- Rechtsklick-Menü in der Dateiliste: Anhören, Tags bearbeiten, Aus Liste entfernen (auch Entf-Taste)
+### Verbessert
+- „Anhören“ spielt die fertige Datei direkt ab
+- Nach der Umwandlung öffnet sich kein Explorer-Fenster mehr (einschaltbar)
+### Behoben
+- Hauptfenster wurde bei Anzeigeskalierung über 100 % bei jedem Start grösser
+- StemPlayer: Lupe bei 150 % und 200 % Anzeigeskalierung abgeschnitten
+
 ## 2.0 – 26. Oktober 2026
 ### Neu
 - Turbo-Engine: Stems auf der CPU etwa 6- bis 10-mal schneller, gleiche Qualität

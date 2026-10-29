@@ -44,7 +44,7 @@
   "inLanguage": "de",
   "url": "https://elospeed.github.io/StemMaker/de/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "2.0",
+  "softwareVersion": "2.1",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
@@ -75,7 +75,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Aus deinen MP3s werden<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Neu in 2.0: Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden.</p>
+    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden. Neu in 2.1: der StemTagger für Titel, Interpret und Cover deiner Stem-Dateien.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download für Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">Quellcode auf GitHub</a>
@@ -89,8 +89,8 @@
       <li>Bis 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.0 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-      <img src="../img/stemmaker-de.png" width="860" height="724" alt="StemMaker-Hauptfenster mit einer Liste von MP3-Dateien, die in Traktor-Stem-Dateien umgewandelt werden">
+      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.1 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <img src="../img/stemmaker-de.png" width="860" height="724" alt="StemMaker-Hauptfenster mit einer Liste von MP3-Dateien, die in Traktor-Stem-Dateien umgewandelt werden, rechts die AddOn-Leiste mit StemPlayer und StemTagger">
     </figure>
   </div>
 </section>
@@ -182,13 +182,56 @@
   </div>
 </section>
 
-<section id="turbo" class="alt">
+<section id="neu" class="alt">
   <div class="wrap">
     <div class="split">
       <div>
-        <span class="badge">Neu in 2.0</span>
+        <span class="badge">Neu in 2.1</span>
+        <h2>StemTagger und CD-Player</h2>
+        <p class="sub" style="margin-bottom:0">Ein neues AddOn für deine Tags und ein neues Gesicht für den StemPlayer. Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.1 mit einem Klick.</p>
+        <div class="soon">
+          <h3>StemPlayer 1.8 im CD-Player-Design</h3>
+          <ul class="ticks">
+            <li>Eine neue <strong>Ansicht wie am DJ-Pult</strong>: grosses Jogwheel mit Restzeit, CUE- und Play-Taste, ein <strong>Stem-Pad</strong> pro Stem für Stumm und Solo, Kanalregler und Pegelanzeigen</li>
+            <li>Oben im Display alle Wellenformen; <strong>Loop A-B</strong> und Lupe funktionieren wie gewohnt</li>
+            <li>Mit einem Klick zwischen <strong>Kompakt, Wellenform und CD-Player</strong> wechseln; der StemPlayer merkt sich deine Wahl</li>
+          </ul>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="bar"><img src="../img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+        <img src="../img/stemplayer-cd.png" width="1000" height="700" alt="StemPlayer im CD-Player-Design: Display mit den Wellenformen aller Stems, Jogwheel mit Restzeit, CUE- und Play-Taste, Stem-Pads mit stummem Bass, Regler und Pegelanzeigen sowie ein aktiver A-B-Loop" loading="lazy">
+      </figure>
+    </div>
+    <div class="split rev" style="margin-top:56px">
+      <div>
+        <div class="soon">
+          <h3>StemTagger 1.0: Titel, Interpret und Cover für <span style="white-space:nowrap">Stem-Dateien</span></h3>
+          <ul class="ticks">
+            <li>Ein neues AddOn für Stem-Dateien (<code>.stem.mp4</code>): Es setzt <strong>Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover</strong>, also genau das, was Traktor und Mixxx anzeigen und wonach du dort suchst</li>
+            <li>Ideal für Stem-Dateien <strong>ganz ohne Tags</strong>: Die Liste zeigt sofort, welchen Tracks <strong>Tags oder Cover fehlen</strong></li>
+            <li><strong>Viele Dateien auf einmal</strong>: Ordner laden, mehrere Tracks markieren und Album oder Cover für alle gleichzeitig setzen. Ein Cover fügst du mit Strg+V ein oder ziehst es einfach aufs Fenster</li>
+            <li><strong>Die Stems bleiben unangetastet</strong>: Neu geschrieben werden nur die Tags. Audio und die vier Stems bleiben bytegenau gleich. Getestet mit Traktor Pro 4 und Mixxx 2.6 Beta</li>
+            <li>Startet direkt aus der neuen <strong>AddOn-Leiste</strong> in StemMaker, gleich neben der Dateiliste, oder per Rechtsklick „Tags bearbeiten...“</li>
+            <li>Brauchst du nur den StemTagger? Es gibt ihn auch <strong>einzeln als kleines ZIP</strong> auf der <a href="https://github.com/Elospeed/StemMaker/releases/latest">Release-Seite</a></li>
+          </ul>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="bar"><img src="../img/stemtagger-icon.png" alt=""><span>Elospeed StemTagger</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+        <img src="../img/stemtagger.png" width="1000" height="700" alt="StemTagger-Fenster im dunklen Design: Liste der Stem-Dateien mit Titel, Interpret, Album, Genre, Cover und Status wie „Ohne Tags und Cover“, darunter Cover und Felder des markierten Tracks" loading="lazy">
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="turbo">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <span class="badge">Seit 2.0</span>
         <h2>Turbo: ein Vielfaches schneller</h2>
-        <p class="sub" style="margin-bottom:0">Die grösste Änderung seit dem ersten Release: eine neue Trenn-Engine, die ein Vielfaches schneller ist. Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.0 mit einem Klick.</p>
+        <p class="sub" style="margin-bottom:0">Die grösste Änderung seit dem ersten Release: eine neue Trenn-Engine, die ein Vielfaches schneller ist.</p>
         <div class="soon">
           <h3>Turbo-Engine</h3>
           <ul class="ticks">
@@ -225,48 +268,6 @@
         <div class="row turbo"><span>Turbo, Grafikkarte</span><span class="track"><i style="width:1%"></i></span><span class="t">ca. 10 s</span></div>
       </div>
       <p class="note">Reine Trennzeit mit htdemucs (Standard), gemessen auf unseren eigenen PCs. Das Verpacken in die Stem-Datei kommt dazu (wenige Sekunden pro Songminute). htdemucs_ft (beste Qualität) braucht etwa drei- bis viermal so lang. Wie schnell es auf deinem PC geht, zeigt der Vortest, und StemMaker lernt das Tempo und zeigt, wie lange die Liste dauert.</p>
-    </div>
-  </div>
-</section>
-
-<section id="bald">
-  <div class="wrap">
-    <div class="split">
-      <div>
-        <span class="badge">Demnächst</span>
-        <h2>In Arbeit</h2>
-        <p class="sub" style="margin-bottom:0">Schon gebaut und im Test. Die Update-Funktion in StemMaker bietet sie an, sobald sie erschienen sind.</p>
-        <div class="soon">
-          <h3>StemPlayer im CD-Player-Design</h3>
-          <ul class="ticks">
-            <li>Eine neue <strong>Ansicht wie am DJ-Pult</strong>: grosses Jogwheel mit Restzeit, CUE- und Play-Taste, ein <strong>Stem-Pad</strong> pro Stem für Stumm und Solo, Kanalregler und Pegelanzeigen</li>
-            <li>Oben im Display alle Wellenformen; <strong>Loop A-B</strong> und Lupe funktionieren wie gewohnt</li>
-            <li>Mit einem Klick zwischen <strong>Kompakt, Wellenform und CD-Player</strong> wechseln; der StemPlayer merkt sich deine Wahl</li>
-          </ul>
-        </div>
-      </div>
-      <figure class="shot">
-        <div class="bar"><img src="../img/stemplayer-icon.png" alt=""><span>Elospeed StemPlayer</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-        <img src="../img/stemplayer-cd.png" width="1000" height="700" alt="StemPlayer im CD-Player-Design: Display mit den Wellenformen aller Stems, Jogwheel mit Restzeit, CUE- und Play-Taste, Stem-Pads mit stummem Bass, Regler und Pegelanzeigen sowie ein aktiver A-B-Loop" loading="lazy">
-      </figure>
-    </div>
-    <div class="split rev" style="margin-top:56px">
-      <div>
-        <div class="soon">
-          <h3>StemTagger: Titel, Interpret und Cover für <span style="white-space:nowrap">Stem-Dateien</span></h3>
-          <ul class="ticks">
-            <li>Ein neues AddOn für Stem-Dateien (<code>.stem.mp4</code>): Es setzt <strong>Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover</strong>, also genau das, was Traktor und Mixxx anzeigen und wonach du dort suchst</li>
-            <li>Ideal für Stem-Dateien <strong>ganz ohne Tags</strong>: Die Liste zeigt sofort, welchen Tracks <strong>Tags oder Cover fehlen</strong></li>
-            <li><strong>Viele Dateien auf einmal</strong>: Ordner laden, mehrere Tracks markieren und Album oder Cover für alle gleichzeitig setzen. Ein Cover fügst du mit Strg+V ein oder ziehst es einfach aufs Fenster</li>
-            <li><strong>Die Stems bleiben unangetastet</strong>: Neu geschrieben werden nur die Tags. Audio und die vier Stems bleiben bytegenau gleich. Getestet mit Traktor Pro 4 und Mixxx 2.6 Beta</li>
-            <li>Startet direkt aus der neuen <strong>AddOn-Leiste</strong> in StemMaker, gleich neben der Dateiliste</li>
-          </ul>
-        </div>
-      </div>
-      <figure class="shot">
-        <div class="bar"><img src="../img/stemtagger-icon.png" alt=""><span>Elospeed StemTagger</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
-        <img src="../img/stemtagger.png" width="1000" height="700" alt="StemTagger-Fenster im dunklen Design: Liste der Stem-Dateien mit Titel, Interpret, Album, Genre, Cover und Status wie „Ohne Tags und Cover“, darunter Cover und Felder des markierten Tracks" loading="lazy">
-      </figure>
     </div>
   </div>
 </section>

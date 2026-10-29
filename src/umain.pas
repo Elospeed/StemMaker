@@ -805,8 +805,13 @@ begin
     FToolFFmpeg := Ini.ReadString('Tools', 'FFmpeg', D.FFmpegExe);
     FToolDemucs := Ini.ReadString('Tools', 'DemucsDir', D.DemucsDir);
     FToolModels := Ini.ReadString('Tools', 'ModelsDir', D.ModelsDir);
-    Width  := Ini.ReadInteger('Window', 'Width', Width);
-    Height := Ini.ReadInteger('Window', 'Height', Height);
+    { Grösse steht in 96-dpi-Pixeln in der INI. Bei Anzeigeskalierung
+      skaliert die LCL das Fenster erst nach FormCreate; mit Bildschirm-
+      Pixeln wuchs das Fenster sonst bei jedem Start (200 %: doppelt). }
+    Width  := MulDiv(Ini.ReadInteger('Window', 'Width',
+      MulDiv(Width, 96, PixelsPerInch)), PixelsPerInch, 96);
+    Height := MulDiv(Ini.ReadInteger('Window', 'Height',
+      MulDiv(Height, 96, PixelsPerInch)), PixelsPerInch, 96);
   finally
     Ini.Free;
   end;
@@ -850,8 +855,8 @@ begin
       Ini.WriteString('Tools', 'FFmpeg', FToolFFmpeg);
       Ini.WriteString('Tools', 'DemucsDir', FToolDemucs);
       Ini.WriteString('Tools', 'ModelsDir', FToolModels);
-      Ini.WriteInteger('Window', 'Width', Width);
-      Ini.WriteInteger('Window', 'Height', Height);
+      Ini.WriteInteger('Window', 'Width', MulDiv(Width, 96, PixelsPerInch));
+      Ini.WriteInteger('Window', 'Height', MulDiv(Height, 96, PixelsPerInch));
     finally
       Ini.Free;
     end;
