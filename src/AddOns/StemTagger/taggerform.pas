@@ -799,6 +799,10 @@ begin
     FLastAvail := 0
   else
   begin
+    { erstes Mal sichtbar: bisherige Gesamtbreite der Spalten als Bezug }
+    if FLastAvail = 0 then
+      for I := 0 to High(FColW) do
+        Inc(FLastAvail, FColW[I]);
     if (FLastAvail > 0) and (Avail <> FLastAvail) and (FDragCol < 0) then
       for I := 0 to High(FColW) - 1 do
       begin
