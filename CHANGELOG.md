@@ -12,6 +12,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ### Anzeigeskalierung
 - **AddOn-Leiste:** Bei kleinem Fenster, grosser Anzeigeskalierung (125–200 %) oder hochgezogenem Log waren die AddOn-Knöpfe (StemPlayer, StemTagger) unten verdeckt. Reicht die Höhe nicht, werden die Knöpfe jetzt kleiner: erst ohne Namen (der steht dann im Tooltip), dann mit kleineren Symbolen, zuletzt zwei nebeneinander. Beim Start macht das Log Platz, damit die Knöpfe möglichst in voller Grösse zu sehen sind.
 
+### StemPlayer 1.8.2
+- **CD-Player bei 125 %** (Meldung ptrex): Der Ko-fi-Knopf unten rechts war zu breit und am Fensterrand abgeschnitten, der untere Rahmen des MASTER-Felds verschwand unter der Fusszeile. Beides behoben.
+
 ## 2.1.1 – 30. Oktober 2026
 
 ### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen

@@ -145,7 +145,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.1';
+  APP_VER   = '1.8.2';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -379,6 +379,7 @@ type
     procedure TimerTick(Sender: TObject);
     procedure HeadTimerTick(Data: PtrInt);
     procedure KofiClick(Sender: TObject);
+    procedure PnlBottomResize(Sender: TObject);
     procedure KofiPaint(Sender: TObject);
     procedure KofiEnter(Sender: TObject);
     procedure KofiLeave(Sender: TObject);
@@ -417,7 +418,8 @@ const
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
   DESIGN_W    = 1000;  // Innenbreite des Fensters im Design CD-Player
-  DESIGN_H    = 634;   // Innenhöhe ohne die Fusszeile
+  DESIGN_H    = 642;   // Innenhöhe ohne die Fusszeile (8 px Luft unter MASTER,
+                       // sonst verschwand der untere Rahmen bei 125 % durchs Runden)
 
 { ============================================================================
   Aufbau des Fensters
@@ -862,11 +864,16 @@ begin
   PbKofi := TPaintBox.Create(Self);
   PbKofi.Parent := PnlBottom;
   PbKofi.Canvas.Font.Style := [fsBold];
-  PbKofi.Width := KofiButtonWidth(PbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
+  { Breite in Bildschirm-Pixeln gemessen, das Fenster steht hier aber noch
+    auf 96 dpi und wird danach umgerechnet: zurückrechnen, sonst ist der
+    Knopf bei 125 % zu breit und ragt über den rechten Rand }
+  PbKofi.Width := MulDiv(KofiButtonWidth(PbKofi.Canvas, _('Kaffee spendieren'),
+    Screen.PixelsPerInch), PixelsPerInch, Screen.PixelsPerInch);
   PbKofi.Height := 24;
-  PbKofi.Left := PnlBottom.Width - PbKofi.Width - 12;
   PbKofi.Top := 40;
-  PbKofi.Anchors := [akTop, akRight];
+  { rechts ausrichten in PnlBottomResize statt akRight (Anker im
+    Konstruktor stimmen nach dem Umrechnen nicht) }
+  PnlBottom.OnResize := @PnlBottomResize;
   PbKofi.Cursor := crHandPoint;
   PbKofi.Hint := 'ko-fi.com/elospeed';
   PbKofi.ShowHint := True;
@@ -2838,6 +2845,13 @@ begin
   for i := 1 to STEM_COUNT do Rows[i].Wave.Position := F;
   Zoom.Position := FHeadPos;
   if FView = vmCD then Jog.Position := FHeadPos;
+end;
+
+{ Ko-fi-Knopf immer ganz rechts in der Fusszeile }
+procedure TMainForm.PnlBottomResize(Sender: TObject);
+begin
+  if PbKofi <> nil then
+    PbKofi.Left := PnlBottom.ClientWidth - PbKofi.Width - Scale96ToForm(12);
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
