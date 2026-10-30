@@ -145,7 +145,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.1';
+  APP_VER   = '1.8.2';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -388,6 +388,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormShow(Sender: TObject);
     procedure OpenDialogLater(Data: PtrInt);
+    procedure DesignNachpruefen(Data: PtrInt);
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -417,7 +418,7 @@ const
   MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
   MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
   DESIGN_W    = 1000;  // Innenbreite des Fensters im Design CD-Player
-  DESIGN_H    = 634;   // Innenhöhe ohne die Fusszeile
+  DESIGN_H    = 642;   // Innenhöhe ohne die Fusszeile (unten 8 px Rand wie oben)
 
 { ============================================================================
   Aufbau des Fensters
@@ -862,7 +863,11 @@ begin
   PbKofi := TPaintBox.Create(Self);
   PbKofi.Parent := PnlBottom;
   PbKofi.Canvas.Font.Style := [fsBold];
-  PbKofi.Width := KofiButtonWidth(PbKofi.Canvas, _('Kaffee spendieren'), Screen.PixelsPerInch);
+  { Gemessen wird in Bildschirm-Pixeln, das Fenster steht hier aber noch
+    auf 96 dpi und wird danach umgerechnet: deshalb zurückrechnen, sonst
+    ist der Knopf bei 125 % anderthalbmal zu breit (wie in StemMaker) }
+  PbKofi.Width := MulDiv(KofiButtonWidth(PbKofi.Canvas, _('Kaffee spendieren'),
+    Screen.PixelsPerInch), PixelsPerInch, Screen.PixelsPerInch);
   PbKofi.Height := 24;
   PbKofi.Left := PnlBottom.Width - PbKofi.Width - 12;
   PbKofi.Top := 40;
@@ -1417,6 +1422,9 @@ end;
 { Innengrösse des Fensters auf das Design einstellen und es auf dem
   Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
 procedure TMainForm.FitDesignWindow;
+var
+  R: TRect;
+  DW, DH: Integer;
 begin
   FFitting := True;
   try
@@ -1428,6 +1436,17 @@ begin
     { DESIGN_W/H sind 96-dpi-Pixel, die Fusszeile ist schon skaliert }
     ClientWidth := Scale96ToForm(DESIGN_W);
     ClientHeight := Scale96ToForm(DESIGN_H) + PnlBottom.Height;
+    { Unter Windows bei 125 % war die echte Innenfläche ein paar Pixel
+      kleiner als verlangt (Lazarus rechnet den Rahmen beim ersten Anzeigen
+      noch mit dem alten Wert) -> Ko-fi-Knopf unten abgeschnitten.
+      Darum die echte Innengrösse messen und die Differenz nachlegen. }
+    if HandleAllocated and LCLIntf.GetClientRect(Handle, R) then
+    begin
+      DW := Scale96ToForm(DESIGN_W) - (R.Right - R.Left);
+      DH := Scale96ToForm(DESIGN_H) + PnlBottom.Height - (R.Bottom - R.Top);
+      if (DW <> 0) or (DH <> 0) then
+        SetBounds(Left, Top, Width + DW, Height + DH);
+    end;
     Constraints.MinWidth := Width;
     Constraints.MinHeight := Height;
     { Feste Grösse: die Elemente im Design sitzen an festen Plätzen und
@@ -1609,7 +1628,13 @@ begin
       else
         SetView(vmCompact);
     end;
-    if FView = vmCD then FitDesignWindow
+    if FView = vmCD then
+    begin
+      FitDesignWindow;
+      { Rahmen und Titelleiste stehen erst fest, wenn das Fenster wirklich
+        sichtbar ist -> kurz danach noch einmal nachmessen }
+      Application.QueueAsyncCall(@DesignNachpruefen, 0);
+    end
     else
     begin
       { Wellenform-Ansicht passt nicht einmal mit ganz flachen Wellen -> Kompakt }
@@ -1634,6 +1659,11 @@ begin
     OpenDlg.InitialDir := ParamStr(1);
     Application.QueueAsyncCall(@OpenDialogLater, 0);
   end;
+end;
+
+procedure TMainForm.DesignNachpruefen(Data: PtrInt);
+begin
+  if FView = vmCD then FitDesignWindow;
 end;
 
 procedure TMainForm.OpenDialogLater(Data: PtrInt);

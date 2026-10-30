@@ -7,6 +7,12 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.1.2 – noch nicht veröffentlicht
+
+### StemPlayer 1.8.2
+- **CD-Player bei 125 % Anzeigeskalierung:** Der Ko-fi-Knopf unten rechts war zu etwa einem Drittel abgeschnitten und das MASTER-Feld stiess an die Fusszeile. Das Fenster misst jetzt seine echte Innenfläche nach und hat unten den gleichen Rand wie oben. Danke an ptrex für den Screenshot.
+- **Ko-fi-Knopf** war ab 125 % anderthalbmal zu breit (doppelt skaliert, gleicher Fehler wie in StemMaker 2.1.1).
+
 ## 2.1.1 – 30. Oktober 2026
 
 ### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen

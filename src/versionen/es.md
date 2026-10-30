@@ -6,6 +6,10 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.1.2 – aún no publicada
+### Corregido
+- StemPlayer 1.8.2: reproductor de CD cortado abajo con escalado del 125 % (botón Ko-fi, MASTER)
+
 ## 2.1.1 – 30 de octubre de 2026
 ### Corregido
 - Con escalado de pantalla del 150 % y 200 % las ventanas eran más altas que la pantalla (ventana principal, ajustes, StemDecks)

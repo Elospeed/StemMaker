@@ -6,6 +6,10 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.1.2 – not released yet
+### Fixed
+- StemPlayer 1.8.2: CD player cut off at the bottom at 125 % display scaling (Ko-fi button, MASTER)
+
 ## 2.1.1 – 30 October 2026
 ### Fixed
 - At 150 % and 200 % display scaling windows were taller than the screen (main window, settings, StemDecks)
