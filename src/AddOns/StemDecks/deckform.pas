@@ -349,6 +349,9 @@ begin
                            'ffmpeg.exe not found - you will be asked for it on first use.')
   else
     LblStatus.Caption := 'ffmpeg: ' + FFFmpeg + '    ·    Log: ' + LogFileName;
+  { lange Pfade sind im schmalen Fenster abgeschnitten: ganz im Tooltip }
+  LblStatus.Hint := LblStatus.Caption;
+  LblStatus.ShowHint := True;
   UpdateGains;
 end;
 
@@ -445,8 +448,12 @@ begin
   BtnSample.ShowHint := True;
   BtnSample.OnClick := @BtnSampleClick;
 
-  LblHint := MakeLabel(PnlTop, '', 740, 18, 0, False);
+  LblHint := MakeLabel(PnlTop, '', 740, 8, 0, False);
   LblHint.Font.Color := DJ_DIM;
+  { feste Breite bis zum Rand der Mindestbreite (1000), zwei Zeilen
+    (UpdateHint): sonst ist der Text im kleinsten Fenster abgeschnitten }
+  LblHint.AutoSize := False;
+  LblHint.SetBounds(740, 8, 1000 - 740 - 2 * MARGIN, 40);
 
   BtnPlay := MakeButton(PnlTop, '', 12, 56, 46, 36);
   BtnPlay.Glyph := dgPlay;
@@ -708,8 +715,17 @@ begin
 end;
 
 procedure TMainForm.UpdateHint;
+var
+  S: string;
+  K: Integer;
 begin
-  LblHint.Caption := PartsText;
+  { zwei Einträge pro Zeile, damit es auch in der Mindestbreite passt }
+  S := PartsText;
+  K := Pos('  ·  ', S);
+  if K > 0 then K := Pos('  ·  ', S, K + 1);
+  if K > 0 then
+    S := Copy(S, 1, K - 1) + LineEnding + Copy(S, K + Length('  ·  '), MaxInt);
+  LblHint.Caption := S;
 end;
 
 { ============================================================================
