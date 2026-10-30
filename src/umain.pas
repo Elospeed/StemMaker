@@ -215,6 +215,7 @@ type
     FMenuTags: TMenuItem;
     { Seitenleiste mit den AddOns (statt Knopf "Anhören") }
     FAddOnBar: TAddOnBar;
+    FInhalt: TPanel;               // Liste bis Log, links neben der Leiste
     procedure SetupAddOnBar;
     procedure AddOnTaggerClick(Sender: TObject);
     function  SelectedOutFiles: TStringList;
@@ -1813,9 +1814,32 @@ var
   N: Integer;
 begin
   btnListen.Visible := False;
-  FAddOnBar := TAddOnBar.Create(Self);
-  FAddOnBar.Parent := Self;
-  FAddOnBar.Align := alRight;
+  { Die Leiste geht als Seitenspalte von der Knopfleiste oben bis zur
+    Fusszeile (Wunsch Speedy 30.10.2026: wie ein angedocktes Seitenfenster).
+    Dazu kommen Liste, Einstellungen, Start-Zeile und Log in ein eigenes
+    Panel; sonst nehmen alTop/alBottom die ganze Breite und die Leiste ist
+    nur so hoch wie die Liste. }
+  DisableAlign;
+  try
+    FInhalt := TPanel.Create(Self);
+    FInhalt.BevelOuter := bvNone;
+    FInhalt.ParentColor := True;
+    FInhalt.SetBounds(0, pbAccent.Top + pbAccent.Height, ClientWidth,
+      pnlFoot.Top - pbAccent.Top - pbAccent.Height);
+    FInhalt.Parent := Self;
+    FInhalt.Align := alClient;
+    { von unten nach oben einhängen, damit die alBottom-Reihenfolge bleibt }
+    memLog.Parent := FInhalt;
+    splLog.Parent := FInhalt;
+    pnlRun.Parent := FInhalt;
+    gbSettings.Parent := FInhalt;
+    lvFiles.Parent := FInhalt;
+    FAddOnBar := TAddOnBar.Create(Self);
+    FAddOnBar.Parent := Self;
+    FAddOnBar.Align := alRight;
+  finally
+    EnableAlign;
+  end;
   Dir := AppBaseDir + 'AddOns' + PathDelim;
   N := 0;
   if FAddOnBar.AddTile(Dir + ExeName('StemPlayer'), 'StemPlayer',
@@ -1827,6 +1851,13 @@ begin
        @AddOnTaggerClick) <> nil then
     Inc(N);
   FAddOnBar.Visible := N > 0;
+  { Einstellungen brauchen ihre volle Breite neben der Leiste }
+  if FAddOnBar.Visible then
+  begin
+    Constraints.MinWidth := Constraints.MinWidth + FAddOnBar.Width;
+    if Width < Constraints.MinWidth then
+      Width := Constraints.MinWidth;
+  end;
 end;
 
 { StemTagger aus der Seitenleiste: markierte fertige Dateien, sonst die
@@ -2769,11 +2800,9 @@ procedure TfrmMain.LogKleinerBeiPlatzmangel(Data: PtrInt);
 var
   Fehlt: Integer;
 begin
-  { Platz für die Liste und, wenn möglich, die AddOn-Knöpfe in voller Grösse }
   Fehlt := Scale96ToForm(150);
   if (FAddOnBar <> nil) and FAddOnBar.Visible then
   begin
-    if FAddOnBar.FullHeight > Fehlt then Fehlt := FAddOnBar.FullHeight;
     FAddOnBar.ArrangeTiles;
   end;
   Fehlt := Fehlt - lvFiles.Height;
