@@ -11,8 +11,15 @@
   automatisch sein eigenes Symbol. Fehlt die Exe, wird der Knopf nicht
   angezeigt.
 
+  Ist die Leiste niedriger als alle Knöpfe (kleines Fenster, grosse
+  Anzeigeskalierung, Log hochgezogen), werden die Knöpfe kleiner statt
+  unten verdeckt: erst ohne Namen, dann kleinere Symbole, zuletzt zwei
+  nebeneinander. Der Name steht dann im Tooltip.
+
   Versionen:
     1.0  (27.10.2026)  Erste Version (Wunsch Speedy: Leiste statt "Anhören")
+    1.1  (30.10.2026)  Knöpfe werden kleiner, statt bei kleinem Fenster
+                       verdeckt zu werden (Meldung Speedy)
   ============================================================================ }
 unit uaddonbar;
 
@@ -31,6 +38,7 @@ type
     FImage: TImage;
     FLabel: TLabel;
     FHover: Boolean;
+    FName, FHintText: string;
     procedure ChildClick(Sender: TObject);
     procedure ChildEnter(Sender: TObject);
     procedure ChildLeave(Sender: TObject);
@@ -45,11 +53,17 @@ type
   TAddOnBar = class(TPanel)
   private
     FTitle: TLabel;
-    FNextTop: Integer;
-    FPPI: Integer;                 // dpi des Fensters beim Anlegen
-    function L(X: Integer): Integer;
+    FTiles: TList;
+    FArranging: Boolean;
+  protected
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    { Höhe (Bildschirm-Pixel), in der alle Knöpfe in voller Grösse passen }
+    function FullHeight: Integer;
+    { Knöpfe passend zur Höhe anordnen (läuft bei jeder Grössenänderung) }
+    procedure ArrangeTiles;
     { Knopf für AddOns\<ExeFile> anlegen; nil, wenn die Exe fehlt }
     function AddTile(const ExeFile, ACaption, AHint: string;
       AOnClick: TNotifyEvent): TAddOnTile;
@@ -59,8 +73,21 @@ implementation
 
 const
   TILE_W   = 80;
-  TILE_H   = 74;
   ICON_PX  = 40;
+
+type
+  { Stufen, von gross nach klein; alle Masse in 96-dpi-Pixeln }
+  TTileStufe = record
+    Oben, Hoehe, Abstand, Symbol: Integer;
+    MitTitel, MitName, ZweiSpalten: Boolean;
+  end;
+
+const
+  STUFEN: array[0..3] of TTileStufe = (
+    (Oben: 30; Hoehe: 74; Abstand: 6; Symbol: 40; MitTitel: True;  MitName: True;  ZweiSpalten: False),
+    (Oben: 6;  Hoehe: 50; Abstand: 4; Symbol: 40; MitTitel: False; MitName: False; ZweiSpalten: False),
+    (Oben: 4;  Hoehe: 34; Abstand: 2; Symbol: 26; MitTitel: False; MitName: False; ZweiSpalten: False),
+    (Oben: 4;  Hoehe: 34; Abstand: 2; Symbol: 26; MitTitel: False; MitName: False; ZweiSpalten: True));
 
 { Pixel bei 96 dpi -> Pixel bei der aktuellen Bildschirm-Skalierung }
 function S(X: Integer): Integer;
@@ -112,6 +139,8 @@ begin
   FImage := TImage.Create(Self);
   FImage.Parent := Self;
   FImage.Center := True;
+  FImage.Stretch := True;          // kleinere Stufen: Symbol verkleinern
+  FImage.Proportional := True;
   FImage.Cursor := crHandPoint;
   FImage.OnClick := @ChildClick;
   FImage.OnMouseEnter := @ChildEnter;
@@ -180,56 +209,125 @@ constructor TAddOnBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BevelOuter := bvNone;
-  { Die Leiste entsteht in FormCreate. Bei Anzeigeskalierung (125 %, 150 %,
-    200 %) skaliert die LCL das Fenster samt allen Kindern erst danach von
-    96 dpi auf die Bildschirm-dpi. Darum Masse in der dpi, die das Fenster
-    JETZT hat; sonst wird doppelt skaliert und die Leiste viel zu breit. }
+  FTiles := TList.Create;
+  { Breite in der dpi, die das Fenster JETZT hat (die Leiste entsteht in
+    FormCreate, die LCL rechnet das Fenster danach evtl. noch um; sonst
+    doppelt skaliert). Die Knöpfe ordnet ArrangeTiles bei jeder
+    Grössenänderung mit Scale96ToForm neu an. }
   if AOwner is TCustomForm then
-    FPPI := TCustomForm(AOwner).PixelsPerInch
+    Width := TCustomForm(AOwner).Scale96ToForm(TILE_W + 12)
   else
-    FPPI := Screen.PixelsPerInch;
-  Width := L(TILE_W + 12);
+    Width := TILE_W + 12;
   FTitle := TLabel.Create(Self);
   FTitle.Parent := Self;
   FTitle.AutoSize := False;
   FTitle.Alignment := taCenter;
   FTitle.Caption := 'AddOns';
   FTitle.Font.Color := clGrayText;
-  FTitle.SetBounds(0, L(8), Width, L(18));
-  FNextTop := 30;
 end;
 
-{ Pixel bei 96 dpi -> Pixel in der dpi, die das Fenster beim Anlegen hat }
-function TAddOnBar.L(X: Integer): Integer;
+destructor TAddOnBar.Destroy;
 begin
-  Result := MulDiv(X, FPPI, 96);
+  FTiles.Free;
+  inherited Destroy;
+end;
+
+function TAddOnBar.FullHeight: Integer;
+begin
+  Result := Scale96ToForm(STUFEN[0].Oben +
+    FTiles.Count * (STUFEN[0].Hoehe + STUFEN[0].Abstand));
+end;
+
+procedure TAddOnBar.Resize;
+begin
+  inherited Resize;
+  ArrangeTiles;
+end;
+
+{ grösste Stufe wählen, in der alle Knöpfe in die Höhe der Leiste passen }
+procedure TAddOnBar.ArrangeTiles;
+var
+  St: Integer;
+  Z: TTileStufe;
+  I, N, Zeilen, W, Px, X, Y: Integer;
+  T: TAddOnTile;
+begin
+  { Scale96ToForm braucht das Fenster (im Konstruktor noch ohne Parent) }
+  if FArranging or (FTiles = nil) or (GetParentForm(Self) = nil) then Exit;
+  N := FTiles.Count;
+  St := High(STUFEN);
+  for I := Low(STUFEN) to High(STUFEN) do
+  begin
+    Z := STUFEN[I];
+    if Z.ZweiSpalten then Zeilen := (N + 1) div 2 else Zeilen := N;
+    if Scale96ToForm(Z.Oben + Zeilen * (Z.Hoehe + Z.Abstand)) <= ClientHeight then
+    begin
+      St := I;
+      Break;
+    end;
+  end;
+  Z := STUFEN[St];
+  FArranging := True;
+  DisableAlign;
+  try
+    FTitle.Visible := Z.MitTitel;
+    FTitle.SetBounds(0, Scale96ToForm(8), ClientWidth, Scale96ToForm(18));
+    if Z.ZweiSpalten then W := Scale96ToForm(TILE_W div 2) else W := Scale96ToForm(TILE_W);
+    Px := Scale96ToForm(Z.Symbol);
+    for I := 0 to N - 1 do
+    begin
+      T := TAddOnTile(FTiles[I]);
+      if Z.ZweiSpalten then
+      begin
+        X := Scale96ToForm(6) + (I mod 2) * W;
+        Y := Scale96ToForm(Z.Oben + (I div 2) * (Z.Hoehe + Z.Abstand));
+      end
+      else
+      begin
+        X := Scale96ToForm(6);
+        Y := Scale96ToForm(Z.Oben + I * (Z.Hoehe + Z.Abstand));
+      end;
+      T.SetBounds(X, Y, W, Scale96ToForm(Z.Hoehe));
+      if Z.MitName then
+        Y := Scale96ToForm(6)
+      else
+        Y := (Scale96ToForm(Z.Hoehe) - Px) div 2;
+      T.FImage.SetBounds((W - Px) div 2, Y, Px, Px);
+      T.FLabel.Visible := Z.MitName;
+      if Z.MitName then
+      begin
+        T.FLabel.SetBounds(0, Scale96ToForm(6 + ICON_PX + 4), W, Scale96ToForm(18));
+        T.Hint := T.FHintText;
+      end
+      else
+        T.Hint := T.FName + ': ' + T.FHintText;   // Name fehlt -> im Tooltip
+      T.FImage.Hint := T.Hint;
+      T.FLabel.Hint := T.Hint;
+    end;
+  finally
+    EnableAlign;
+    FArranging := False;
+  end;
 end;
 
 function TAddOnBar.AddTile(const ExeFile, ACaption, AHint: string;
   AOnClick: TNotifyEvent): TAddOnTile;
-var
-  Px: Integer;
 begin
   Result := nil;
   if not FileExists(ExeFile) then Exit;
   Result := TAddOnTile.Create(Self);
   Result.Parent := Self;
-  Result.SetBounds(L(6), L(FNextTop),
-    L(TILE_W), L(TILE_H));
-  Px := L(ICON_PX);
-  Result.FImage.SetBounds((Result.Width - Px) div 2, L(6), Px, Px);
-  { das Symbol selbst gleich in der Endgrösse holen (TImage zentriert es) }
+  { das Symbol in der grössten Endgrösse holen, kleinere Stufen verkleinern es }
   if not LoadExeIcon(Result.FImage, ExeFile, S(ICON_PX)) then
     Result.FImage.Visible := False;
-  Result.FLabel.SetBounds(0, L(6 + ICON_PX + 4), Result.Width, L(18));
+  Result.FName := ACaption;
+  Result.FHintText := AHint;
   Result.FLabel.Caption := ACaption;
-  Result.Hint := AHint;
-  Result.FImage.Hint := AHint;
-  Result.FLabel.Hint := AHint;
   Result.FImage.ShowHint := True;
   Result.FLabel.ShowHint := True;
   Result.OnClick := AOnClick;
-  Inc(FNextTop, TILE_H + 6);
+  FTiles.Add(Result);
+  ArrangeTiles;
 end;
 
 end.

@@ -7,6 +7,11 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.1.2 – noch nicht veröffentlicht
+
+### Anzeigeskalierung
+- **AddOn-Leiste:** Bei kleinem Fenster, grosser Anzeigeskalierung (125–200 %) oder hochgezogenem Log waren die AddOn-Knöpfe (StemPlayer, StemTagger) unten verdeckt. Reicht die Höhe nicht, werden die Knöpfe jetzt kleiner: erst ohne Namen (der steht dann im Tooltip), dann mit kleineren Symbolen, zuletzt zwei nebeneinander. Beim Start macht das Log Platz, damit die Knöpfe möglichst in voller Grösse zu sehen sind.
+
 ## 2.1.1 – 30. Oktober 2026
 
 ### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen

@@ -2769,7 +2769,14 @@ procedure TfrmMain.LogKleinerBeiPlatzmangel(Data: PtrInt);
 var
   Fehlt: Integer;
 begin
-  Fehlt := Scale96ToForm(150) - lvFiles.Height;
+  { Platz für die Liste und, wenn möglich, die AddOn-Knöpfe in voller Grösse }
+  Fehlt := Scale96ToForm(150);
+  if (FAddOnBar <> nil) and FAddOnBar.Visible then
+  begin
+    if FAddOnBar.FullHeight > Fehlt then Fehlt := FAddOnBar.FullHeight;
+    FAddOnBar.ArrangeTiles;
+  end;
+  Fehlt := Fehlt - lvFiles.Height;
   if Fehlt <= 0 then Exit;
   { mindestens drei Log-Zeilen lassen }
   if memLog.Height - Fehlt > Scale96ToForm(60) then

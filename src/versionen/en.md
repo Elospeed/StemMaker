@@ -6,6 +6,10 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.1.2 – not yet released
+### Fixed
+- Add-on buttons (StemPlayer, StemTagger) hidden in a small window or with large display scaling: the buttons now get smaller instead of being cut off
+
 ## 2.1.1 – 30 October 2026
 ### Fixed
 - At 150 % and 200 % display scaling windows were taller than the screen (main window, settings, StemDecks)
