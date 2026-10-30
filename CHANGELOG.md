@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.1.1 – noch nicht veröffentlicht
+## 2.1.1 – 30. Oktober 2026
 
 ### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen
 - **Kein Fenster mehr grösser als der Bildschirm:** Bei 150 % war das Hauptfenster höher als ein Full-HD-Bildschirm (unten abgeschnitten, Ko-fi-Knopf halb weg), bei 200 % liess es sich nicht einmal kleiner ziehen. Alle Fenster von StemMaker und den AddOns öffnen jetzt höchstens so gross wie der freie Bildschirm, die Mindestgrösse ist immer kleiner als die Startgrösse.
