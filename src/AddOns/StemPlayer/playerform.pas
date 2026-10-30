@@ -1069,7 +1069,16 @@ begin
   FFitting := True;
   try
     Constraints.MaxHeight := 0;
+    Constraints.MaxWidth := 0;
     Constraints.MinWidth := Min(Scale96ToForm(720), Screen.WorkAreaWidth - FrameW);
+    { Maximieren nur in der Wellenform-Ansicht: dort wachsen die Wellen mit.
+      Kompakt hat eine feste Höhe, maximiert gäbe es nur einen breiten Streifen. }
+    if FView = vmWave then BorderIcons := [biSystemMenu, biMinimize, biMaximize]
+    else
+    begin
+      if WindowState = wsMaximized then WindowState := wsNormal;
+      BorderIcons := [biSystemMenu, biMinimize];
+    end;
     Constraints.MinHeight := MinH;
     if FView = vmCompact then
     begin
@@ -1360,6 +1369,9 @@ begin
   end;
   if V <> FView then
   begin
+    { Maximiert geht nur die Wellenform-Ansicht -> vorher zurück auf normal,
+      damit die gemerkte Fenstergrösse stimmt }
+    if (V <> vmWave) and (WindowState = wsMaximized) then WindowState := wsNormal;
     if FView = vmCD then LeaveDesign;
     FView := V;
     case V of
@@ -1384,14 +1396,21 @@ procedure TMainForm.FitDesignWindow;
 begin
   FFitting := True;
   try
+    if WindowState = wsMaximized then WindowState := wsNormal;
     Constraints.MinWidth := 0;
     Constraints.MinHeight := 0;
+    Constraints.MaxWidth := 0;
     Constraints.MaxHeight := 0;
     { DESIGN_W/H sind 96-dpi-Pixel, die Fusszeile ist schon skaliert }
     ClientWidth := Scale96ToForm(DESIGN_W);
     ClientHeight := Scale96ToForm(DESIGN_H) + PnlBottom.Height;
     Constraints.MinWidth := Width;
     Constraints.MinHeight := Height;
+    { Feste Grösse: die Elemente im Design sitzen an festen Plätzen und
+      wachsen nicht mit, ein grösseres Fenster gäbe nur leere Fläche }
+    Constraints.MaxWidth := Width;
+    Constraints.MaxHeight := Height;
+    BorderIcons := [biSystemMenu, biMinimize];
   finally
     FFitting := False;
   end;
@@ -1428,6 +1447,7 @@ begin
       verankerten Elemente wieder genau an ihren Platz }
     Constraints.MinWidth := 0;
     Constraints.MinHeight := 0;
+    Constraints.MaxWidth := 0;
     Constraints.MaxHeight := 0;
     SetBounds(Left, Top, Scale96ToForm(FClassicW), Scale96ToForm(FClassicH));
     { Versteckte Flächen werden nicht ausgerichtet und behalten sonst ihre
