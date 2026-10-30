@@ -1583,7 +1583,10 @@ begin
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
+var
+  CDZuGross: Boolean;   // gespeicherter CD-Player passte nicht (Hinweis steht schon)
 begin
+  CDZuGross := False;
   { Erst jetzt kennt Windows die Rahmenbreite und das Fenster ist auf die
     Windows-Skalierung vergrössert -> Ansicht an den Bildschirm anpassen.
     Passt die gespeicherte Ansicht nicht, startet eine kleinere
@@ -1595,8 +1598,12 @@ begin
     { Bildlaufleiste dunkel wie der Player (ab Windows 10 1809, sonst hell) }
     SetWindowTheme(FScroll.Handle, 'DarkMode_Explorer', nil);
     {$ENDIF}
+    { Mausrad: ein Raster = etwa eine halbe Stem-Zeile (Standard nur 8 Pixel) }
+    FScroll.VertScrollBar.Increment := Scale96ToForm(40);
     if (FView = vmCD) and not DesignFits then
     begin
+      LblStatus.Caption := _('Der CD-Player passt bei dieser Windows-Skalierung nicht auf den Bildschirm.');
+      CDZuGross := True;
       if FShowWaves and (ClassicMinHeight(True) + FrameH <= Screen.WorkAreaHeight) then
         SetView(vmWave)
       else
@@ -1607,7 +1614,11 @@ begin
     begin
       { Wellenform-Ansicht passt nicht einmal mit ganz flachen Wellen -> Kompakt }
       if (FView = vmWave) and (ClassicMinHeight(True) + FrameH > Screen.WorkAreaHeight) then
+      begin
+        if not CDZuGross then
+          LblStatus.Caption := _('Die Wellenformen passen bei dieser Windows-Skalierung nicht auf den Bildschirm.');
         SetView(vmCompact);
+      end;
       UpdateClassicSize;
       KeepOnScreen;
     end;
