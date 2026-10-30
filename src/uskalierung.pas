@@ -93,6 +93,9 @@ begin
     if WR.Bottom - WR.Top - F.Height > 0 then
       RandH := WR.Bottom - WR.Top - F.Height;
   end;
+  { ein paar Pixel Reserve: der Live-Test zeigte bei 150-175 % noch 3-4 px
+    Überstand (Menüleiste/Rahmen nicht ganz in GetWindowRect enthalten) }
+  Inc(RandH, F.Scale96ToForm(4));
   MaxB := R.Right - R.Left - RandB;
   MaxH := R.Bottom - R.Top - RandH;
   if (MaxB < 200) or (MaxH < 150) then Exit;
