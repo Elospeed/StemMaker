@@ -50,6 +50,7 @@ type
 
   TSkalierungWaechter = class
     procedure FormSichtbar(Sender: TObject; Form: TCustomForm);
+    procedure SpaeterPruefen(Data: PtrInt);
   end;
 
 var
@@ -165,7 +166,27 @@ end;
 procedure TSkalierungWaechter.FormSichtbar(Sender: TObject; Form: TCustomForm);
 begin
   if (Form <> nil) and Form.Visible then
+  begin
     BegrenzeAufBildschirm(Form);
+    { nochmals, wenn das Fenster fertig angezeigt ist: Menü, Ausrichtung
+      und OnShow können es danach noch ein paar Pixel höher machen
+      (LedPreResistor bei 150 %: 4 px unter der Taskleiste) }
+    Application.QueueAsyncCall(@SpaeterPruefen, PtrInt(Form));
+  end;
+end;
+
+procedure TSkalierungWaechter.SpaeterPruefen(Data: PtrInt);
+var
+  I: Integer;
+begin
+  { nur, wenn es das Fenster noch gibt }
+  for I := 0 to Screen.CustomFormCount - 1 do
+    if PtrInt(Screen.CustomForms[I]) = Data then
+    begin
+      if Screen.CustomForms[I].Visible then
+        BegrenzeAufBildschirm(Screen.CustomForms[I]);
+      Exit;
+    end;
 end;
 
 initialization
@@ -173,6 +194,8 @@ initialization
   Screen.AddHandlerFormVisibleChanged(@Waechter.FormSichtbar);
 
 finalization
+  if Application <> nil then
+    Application.RemoveAsyncCalls(Waechter);
   if Screen <> nil then
     Screen.RemoveHandlerFormVisibleChanged(@Waechter.FormSichtbar);
   Waechter.Free;
