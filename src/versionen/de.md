@@ -12,6 +12,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 - Sprachwahl, Update-Fenster und Frage vor dem Herunterfahren bei Anzeigeskalierung zu klein
 - Ko-fi-Knopf bei 150 % zu breit
 - StemTagger 1.0.1: Spalten der Liste bei Anzeigeskalierung zu schmal
+- StemPlayer 1.8.1: Fenster bei 125–200 % Anzeigeskalierung (Höhe änderbar, CD-Player richtig, Bildlaufleiste auf kleinen Bildschirmen)
 
 ## 2.1 – 29. Oktober 2026
 ### Neu

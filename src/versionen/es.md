@@ -12,6 +12,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 - Selección de idioma, ventana de actualización y pregunta antes de apagar demasiado pequeñas con escalado
 - Botón Ko-fi demasiado ancho al 150 %
 - StemTagger 1.0.1: columnas de la lista demasiado estrechas con escalado
+- StemPlayer 1.8.1: ventana con escalado del 125–200 % (altura ajustable, reproductor de CD correcto, barra de desplazamiento en pantallas pequeñas)
 
 ## 2.1 – 29 de octubre de 2026
 ### Nuevo

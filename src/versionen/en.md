@@ -12,6 +12,7 @@ keyword line per item. Only things users notice, no technical details.
 - Language choice, update window and shutdown question too small with display scaling
 - Ko-fi button too wide at 150 %
 - StemTagger 1.0.1: list columns too narrow with display scaling
+- StemPlayer 1.8.1: window at 125–200 % display scaling (resizable height, CD player layout fixed, scroll bar on small screens)
 
 ## 2.1 – 29 October 2026
 ### New
