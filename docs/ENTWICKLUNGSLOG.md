@@ -6,6 +6,12 @@ Neueste Einträge oben.
 
 ---
 
+## AddOn-Leiste bei kleinem Fenster verdeckt (2.1.2, Oktober 2026)
+
+**Problem:** Die AddOn-Leiste (alRight) ist nur so hoch wie die Dateiliste, weil die LCL erst alTop/alBottom (Einstellungen, Log) über die ganze Breite anordnet. Bei 150–200 % oder kleinem Fenster ist die Liste niedrig, der zweite Knopf (StemTagger) lag unter dem Einstellungen-Rahmen.
+
+**Lösung:** `TAddOnBar.ArrangeTiles` läuft bei jeder Grössenänderung und wählt die grösste Stufe, in der alle Knöpfe passen: voll (Titel, Symbol, Name), ohne Namen, kleine Symbole, zwei nebeneinander. Masse in 96-dpi-Pixeln, umgerechnet mit `Scale96ToForm` (erst wenn die Leiste ein Fenster hat, sonst Exception "has no parent form"). Bildposition pro Durchlauf nur einmal setzen, zweimal SetBounds/Top pro Resize gab "ChangeBounds loop detected". Beim Start macht das Log Platz für die volle Leistenhöhe (`FullHeight`).
+
 ## Anzeigeskalierung (DPI) in allen Programmen (Oktober 2026)
 
 **Regel:** Jedes Fenster in jedem Programm muss bei 100 %, 125 %, 150 % und 200 % Windows-Skalierung richtig aussehen. Keine festen Pixel in eigenem Code, der *nach* dem Aufbau läuft (immer `Scale96ToForm`), kein Fenster grösser als der freie Bildschirm, Mindestgrösse immer kleiner als die Startgrösse. Vor jedem PR mit GUI-Änderung und vor jedem Release unter Wine mit 100 % und 150 % testen (`wine reg add 'HKCU\Control Panel\Desktop' /v LogPixels /t REG_DWORD /d 144 /f`).

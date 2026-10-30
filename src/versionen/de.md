@@ -6,6 +6,11 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.1.2 – noch nicht veröffentlicht
+### Behoben
+- AddOn-Knöpfe (StemPlayer, StemTagger) bei kleinem Fenster oder grosser Anzeigeskalierung verdeckt: die Knöpfe werden jetzt kleiner statt abgeschnitten
+- StemPlayer 1.8.2: CD-Player bei 125 % mit abgeschnittenem Ko-fi-Knopf und MASTER-Rahmen
+
 ## 2.1.1 – 30. Oktober 2026
 ### Behoben
 - Bei 150 % und 200 % Anzeigeskalierung waren Fenster höher als der Bildschirm (Hauptfenster, Einstellungen, StemDecks)
