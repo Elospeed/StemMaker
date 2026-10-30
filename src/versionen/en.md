@@ -9,6 +9,7 @@ keyword line per item. Only things users notice, no technical details.
 ## 2.1.2 – not yet released
 ### Fixed
 - Add-on buttons (StemPlayer, StemTagger) hidden in a small window or with large display scaling: the buttons now get smaller instead of being cut off
+- StemPlayer 1.8.2: CD player at 125 % with cut-off Ko-fi button and MASTER frame
 
 ## 2.1.1 – 30 October 2026
 ### Fixed

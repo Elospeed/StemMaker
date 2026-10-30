@@ -9,6 +9,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 ## 2.1.2 – aún no publicada
 ### Corregido
 - Botones de AddOns (StemPlayer, StemTagger) tapados con ventana pequeña o escalado de pantalla grande: ahora los botones se hacen más pequeños en lugar de cortarse
+- StemPlayer 1.8.2: reproductor CD al 125 % con el botón Ko-fi y el marco MASTER cortados
 
 ## 2.1.1 – 30 de octubre de 2026
 ### Corregido

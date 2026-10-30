@@ -9,6 +9,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 ## 2.1.2 – noch nicht veröffentlicht
 ### Behoben
 - AddOn-Knöpfe (StemPlayer, StemTagger) bei kleinem Fenster oder grosser Anzeigeskalierung verdeckt: die Knöpfe werden jetzt kleiner statt abgeschnitten
+- StemPlayer 1.8.2: CD-Player bei 125 % mit abgeschnittenem Ko-fi-Knopf und MASTER-Rahmen
 
 ## 2.1.1 – 30. Oktober 2026
 ### Behoben
