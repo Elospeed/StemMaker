@@ -1332,6 +1332,9 @@ var
 begin
   { Display: Titel, 4 Stem-Wellen mit Farbstreifen, Original darunter }
   PlaceCtl(LblFile, CDDisplay, 16, 8, 400, 24);
+  { bis zur ZEIT-Anzeige ist nur Platz für 400 px: eine Spur kleiner,
+    sonst fehlte am Ende von "(Drag & Drop)" die Klammer }
+  LblFile.Font.Size := 11;
   for i := 1 to STEM_COUNT do
   begin
     PlaceCtl(Rows[i].Wave, CDDisplay, 16, 40 + (i - 1) * 36, 956, 32);
@@ -1505,6 +1508,7 @@ begin
     for i := 1 to STEM_COUNT do Rows[i].Panel.Width := PnlTop.Width;
     PnlMaster.Width := PnlTop.Width;
     RestorePlacements;
+    LblFile.Font.Size := 12;
     BtnStop.Glyph := dgStop;
     BtnStop.Caption := '';
     BtnStop.RoundShape := False;
