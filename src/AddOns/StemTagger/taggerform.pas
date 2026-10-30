@@ -534,9 +534,9 @@ var
 begin
   Caption := APP_TITLE + ' ' + APP_VER;
   Position := poScreenCenter;
-  Width := Scale96ToForm(880);         // bei 150 % passt die Fusszeile sonst knapp nicht
+  Width := Scale96ToForm(920);         // bei 150 % passt die Fusszeile sonst knapp nicht
   Height := Scale96ToForm(540);
-  Constraints.MinWidth := Scale96ToForm(800);
+  Constraints.MinWidth := Scale96ToForm(880);  // schmaler ragen Jahr/Label/Kommentar und der Namens-Knopf rechts hinaus (Live-Test 30.10.)
   Constraints.MinHeight := Scale96ToForm(420);
   Color := DJ_BG;
   Font.Color := DJ_TEXT;

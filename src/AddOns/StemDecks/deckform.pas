@@ -689,6 +689,10 @@ begin
   if W < Scale96ToForm(MIN_W) then W := Scale96ToForm(MIN_W);
   if H < Scale96ToForm(MIN_H) then H := Scale96ToForm(MIN_H);
   PnlDecks.SetBounds(0, 0, W, H);
+  { 200 % auf Full HD: Fenster schmaler als die Mindestbreite, dann passt
+    die Deck-Zuordnung oben rechts nicht mehr -> ausblenden statt abschneiden
+    (sie steht auch im Log) }
+  LblHint.Visible := LblHint.Left + LblHint.Width <= PnlTop.ClientWidth;
 end;
 
 procedure TMainForm.LayoutDecks(Sender: TObject);

@@ -21,7 +21,7 @@ unit uSkalierung;
 interface
 
 uses
-  Classes, Types, Forms, Controls, Graphics, LCLType, Math;
+  Classes, Types, Forms, Controls, Graphics, LCLType, LCLIntf, Math;
 
 { Für Fenster, deren Konstruktor durchgehend Scale96ToForm benutzt:
   direkt nach "inherited CreateNew" aufrufen. Danach rechnet
@@ -74,15 +74,26 @@ end;
 
 procedure BegrenzeAufBildschirm(F: TCustomForm);
 var
-  R: TRect;
+  R, WR: TRect;
   MaxB, MaxH: Integer;
+  RandB, RandH: Integer;  // Rahmen, Titelleiste und Menü ausserhalb von Width/Height
 begin
   if (F = nil) or (F.Parent <> nil) or (F.WindowState <> wsNormal) then Exit;
   R := FreierBereich(F);
-  { Platz für Rahmen und Titelleiste lassen: Width/Height sind bei der
-    LCL ohne Titelleiste gerechnet }
-  MaxB := R.Right - R.Left - F.Scale96ToForm(16);
-  MaxH := R.Bottom - R.Top - F.Scale96ToForm(48);
+  { Width/Height sind bei der LCL ohne Titelleiste und Rahmen gerechnet.
+    Deren echte Grösse vom Fenster messen (geschätzte Werte waren bei
+    150-200 % ein paar Pixel zu klein, das Fenster lag unter der Taskleiste) }
+  RandB := F.Scale96ToForm(16);
+  RandH := F.Scale96ToForm(48);
+  if F.HandleAllocated and (LCLIntf.GetWindowRect(F.Handle, WR) <> 0) then
+  begin
+    if WR.Right - WR.Left - F.Width > 0 then
+      RandB := WR.Right - WR.Left - F.Width;
+    if WR.Bottom - WR.Top - F.Height > 0 then
+      RandH := WR.Bottom - WR.Top - F.Height;
+  end;
+  MaxB := R.Right - R.Left - RandB;
+  MaxH := R.Bottom - R.Top - RandH;
   if (MaxB < 200) or (MaxH < 150) then Exit;
 
   if F.Constraints.MinWidth > MaxB then
@@ -106,9 +117,9 @@ begin
   end;
 
   { ein Fenster, das unten oder rechts über den Rand ragt, zurückschieben }
-  if F.Left + F.Width > R.Right then F.Left := Max(R.Left, R.Right - F.Width);
-  if F.Top + F.Height + F.Scale96ToForm(32) > R.Bottom then
-    F.Top := Max(R.Top, R.Bottom - F.Height - F.Scale96ToForm(32));
+  if F.Left + F.Width + RandB > R.Right then F.Left := Max(R.Left, R.Right - F.Width - RandB);
+  if F.Top + F.Height + RandH > R.Bottom then
+    F.Top := Max(R.Top, R.Bottom - F.Height - RandH);
   if F.Left < R.Left then F.Left := R.Left;
   if F.Top < R.Top then F.Top := R.Top;
 end;

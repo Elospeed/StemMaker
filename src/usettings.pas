@@ -243,7 +243,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 716;
+  Height := 728;
   ShowHint := True;
 
   { Bei 150-200 % Anzeigeskalierung ist das Fenster höher als der
@@ -392,7 +392,7 @@ begin
     _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
   { --- Werkzeuge (nur Anzeige) --- }
-  gb := NewGroup(_('Werkzeuge'), 116);
+  gb := NewGroup(_('Werkzeuge'), 128);  // Platz für die Hinweiszeile unten (Windows-Schrift ist höher als unter Wine)
   PathRow(4, 'ffmpeg:', FFmpegExe);
   PathRow(31, 'demucs.cpp:', DemucsDir);
   PathRow(58, _('Modelle:'), ModelsDir);
@@ -449,7 +449,7 @@ end;
   nichts abgeschnitten wird }
 procedure TfrmSettings.FormShowSettings(Sender: TObject);
 begin
-  if Height < Scale96ToForm(716) then
+  if Height < Scale96ToForm(728) then
     Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 

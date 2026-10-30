@@ -168,6 +168,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShowPlatz(Sender: TObject);
     procedure LogKleinerBeiPlatzmangel(Data: PtrInt);
+    procedure FormResizeDrop(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
@@ -584,6 +585,7 @@ begin
     Screen.PixelsPerInch), PixelsPerInch, Screen.PixelsPerInch);
 
   OnShow := @FormShowPlatz;
+  OnResize := @FormResizeDrop;
   FIniName := StemIniFileName;
   LoadSettings;
   SetupTray;
@@ -2769,10 +2771,18 @@ var
 begin
   Fehlt := Scale96ToForm(150) - lvFiles.Height;
   if Fehlt <= 0 then Exit;
-  if memLog.Height - Fehlt > Scale96ToForm(40) then
+  { mindestens drei Log-Zeilen lassen }
+  if memLog.Height - Fehlt > Scale96ToForm(60) then
     memLog.Height := memLog.Height - Fehlt
   else
-    memLog.Height := Scale96ToForm(40);
+    memLog.Height := Scale96ToForm(60);
+end;
+
+{ "oder hierher ziehen" ausblenden, wenn das Fenster dafür zu schmal ist
+  (Mindestbreite), statt es abzuschneiden }
+procedure TfrmMain.FormResizeDrop(Sender: TObject);
+begin
+  lblDrop.Visible := lblDrop.Left + lblDrop.Width <= lblDrop.Parent.ClientWidth;
 end;
 
 procedure TfrmMain.FreeWorker(Data: PtrInt);

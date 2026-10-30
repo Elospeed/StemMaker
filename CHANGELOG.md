@@ -17,6 +17,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Dateiliste bei 200 %:** Wird das Fenster auf die Bildschirmhöhe gekürzt, macht das Log beim Start Platz, damit die Liste nicht fast verschwindet.
 - **StemTagger 1.0.1:** Spaltenbreiten und Zeilenhöhe der Liste blieben bei 100 %, Spalten wie „Cover“ waren abgeschnitten. Etwas breiteres Startfenster, damit die Fusszeile bei 150 % ganz zu sehen ist.
 - **StemDecks 0.4 (Test):** Bei 150 % und 200 % war das Fenster höher als der Bildschirm und die unteren Decks abgeschnitten. Jetzt passt es, die Decks rollen bei Bedarf. Auswahl- und Protokollfenster werden mitskaliert. Die Deck-Zuordnung oben rechts ist in der kleinsten Fenstergrösse nicht mehr abgeschnitten (zwei Zeilen), den ganzen Log-Pfad zeigt ein Tooltip.
+- **Live-Test auf Windows (100–200 %):** Fenster lagen bei 150–200 % ein paar Pixel unter der Taskleiste (Rahmen und Titelleiste werden jetzt gemessen statt geschätzt). In den Einstellungen war die letzte Hinweiszeile halb verdeckt. „oder hierher ziehen“ verschwindet im schmalsten Fenster, statt abgeschnitten zu werden, und das Log zeigt bei 200 % mindestens drei Zeilen. StemTagger: Mindestbreite so, dass Jahr, Label, Kommentar und der Namens-Knopf ganz sichtbar bleiben. StemDecks: die Deck-Zuordnung oben rechts wird ausgeblendet, wenn sie bei 200 % nicht mehr passt.
 - **5.1 -> Stem 0.2 (Test) und Turbo-Test 1.0.1:** Fenster bleiben auf dem Bildschirm, Auswahlfenster werden mitskaliert.
 
 ### StemPlayer 1.8.1
