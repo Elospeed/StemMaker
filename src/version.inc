@@ -4,4 +4,4 @@
   Bei einem neuen Release ausserdem die Versionsinfo in StemMaker.lpi und
   StemCLI.lpi anpassen (der Workflow "Release erstellen" prüft alle drei). }
 const
-  APP_VERSION = '2.1';
+  APP_VERSION = '2.1.1';

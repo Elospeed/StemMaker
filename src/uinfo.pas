@@ -288,7 +288,7 @@ begin
 
   AddThanksGroup(Box, _('Helfende'), THANKS_BLUE);
   AddThanksName(Box, 'David GJ', _('spanische Übersetzung'));
-  AddThanksName(Box, 'ptrex alias DJ Pretski', _('Tempo-Vergleich'));
+  AddThanksName(Box, 'ptrex alias DJ Pretski', _('Tempo-Vergleich, Tests und Fehlerberichte'));
 end;
 
 { --- Reiter "Versionen" ---

@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls,
   Dialogs, LCLIntf, UTF8Process, Process, uUpdate, uDownload, uLang, uLog,
-  uStemJob;
+  uStemJob, uSkalierung;
 
 type
   { wird im Hauptthread aufgerufen, wenn eine neuere Version da ist }
@@ -473,6 +473,7 @@ begin
     bSkip.Caption := _('Diese Version überspringen');
     bSkip.ModalResult := MR_SKIP;
 
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     Result := F.ShowModal;
     AutoCheck := chk.Checked;
   finally

@@ -7,7 +7,18 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## Unveröffentlicht
+## 2.1.1 – noch nicht veröffentlicht
+
+### Anzeigeskalierung (125 %, 150 %, 200 %) in allen Programmen
+- **Kein Fenster mehr grösser als der Bildschirm:** Bei 150 % war das Hauptfenster höher als ein Full-HD-Bildschirm (unten abgeschnitten, Ko-fi-Knopf halb weg), bei 200 % liess es sich nicht einmal kleiner ziehen. Alle Fenster von StemMaker und den AddOns öffnen jetzt höchstens so gross wie der freie Bildschirm, die Mindestgrösse ist immer kleiner als die Startgrösse.
+- **Einstellungen:** passen sie nicht auf den Bildschirm, rollen die Gruppen, die Knöpfe OK und Abbrechen bleiben unten sichtbar.
+- **Sprachwahl beim ersten Start, Update-Fenster und Frage vor dem Herunterfahren:** wurden nicht mitvergrössert (grosse Schrift in zu kleinen Kästen, Text abgeschnitten). Jetzt richtig skaliert.
+- **Ko-fi-Knopf** war bei 150 % anderthalbmal zu breit.
+- **Dateiliste bei 200 %:** Wird das Fenster auf die Bildschirmhöhe gekürzt, macht das Log beim Start Platz, damit die Liste nicht fast verschwindet.
+- **StemTagger 1.0.1:** Spaltenbreiten und Zeilenhöhe der Liste blieben bei 100 %, Spalten wie „Cover“ waren abgeschnitten. Etwas breiteres Startfenster, damit die Fusszeile bei 150 % ganz zu sehen ist.
+- **StemDecks 0.4 (Test):** Bei 150 % und 200 % war das Fenster höher als der Bildschirm und die unteren Decks abgeschnitten. Jetzt passt es, die Decks rollen bei Bedarf. Auswahl- und Protokollfenster werden mitskaliert. Die Deck-Zuordnung oben rechts ist in der kleinsten Fenstergrösse nicht mehr abgeschnitten (zwei Zeilen), den ganzen Log-Pfad zeigt ein Tooltip.
+- **Live-Test auf Windows (100–200 %):** Fenster lagen bei 150–200 % ein paar Pixel unter der Taskleiste (Rahmen und Titelleiste werden jetzt gemessen statt geschätzt). In den Einstellungen war die letzte Hinweiszeile halb verdeckt. „oder hierher ziehen“ verschwindet im schmalsten Fenster, statt abgeschnitten zu werden, und das Log zeigt bei 200 % mindestens drei Zeilen. StemTagger: Mindestbreite so, dass Jahr, Label, Kommentar und der Namens-Knopf ganz sichtbar bleiben. StemDecks: die Deck-Zuordnung oben rechts wird ausgeblendet, wenn sie bei 200 % nicht mehr passt.
+- **5.1 -> Stem 0.2 (Test) und Turbo-Test 1.0.1:** Fenster bleiben auf dem Bildschirm, Auswahlfenster werden mitskaliert.
 
 ### StemPlayer 1.8.1
 - **Fenster bei Anzeigeskalierung (125 %, 150 %, 200 %):** Der StemPlayer war bei grosser Skalierung in Windows höher als der Bildschirm, die Höhe liess sich nicht ändern und Master, Fusszeile und Ko-fi-Knopf waren abgeschnitten. Im CD-Player lagen Knöpfe übereinander (CUE über dem Jogwheel, Fader über den SOLO-Pads), und rechts und unten war ein Teil abgeschnitten. Jetzt passt das Fenster auf den Bildschirm, und alle Elemente sitzen auch bei grosser Skalierung an ihrem Platz.

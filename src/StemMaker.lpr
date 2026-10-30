@@ -44,7 +44,8 @@ uses
   Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
-  uSettings, uReport, uStatusDraw, uTurboTest, uLoad;
+  uSettings, uReport, uStatusDraw, uTurboTest, uLoad,
+  uSkalierung;       // kein Fenster grösser als der freie Bildschirm (DPI)
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 

@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
-  IniFiles, uLang;
+  IniFiles, uLang, uSkalierung;
 
 { alle Texte eines Fensters (und seiner Bedienelemente) übersetzen }
 procedure TranslateComponent(Root: TComponent);
@@ -151,6 +151,7 @@ begin
     Btn.Default := True;
     Btn.ModalResult := mrOK;
     F.ActiveControl := Lst;
+    SkaliereDialog(F);                    // Masse oben sind 96-dpi-Pixel
 
     F.ShowModal;                          // auch mit X: dann gilt die Auswahl
     if (Lst.ItemIndex >= 0) and (Lst.ItemIndex < Codes.Count) then

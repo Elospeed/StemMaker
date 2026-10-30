@@ -19,7 +19,8 @@ program TurboTest;
 
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
-  Interfaces, Forms, testform;
+  Interfaces, Forms, testform,
+  uSkalierung;   // kein Fenster grösser als der freie Bildschirm (DPI)
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 

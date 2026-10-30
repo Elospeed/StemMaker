@@ -77,11 +77,12 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, LCLType, LCLIntf, Process, FileUtil, LazFileUtils, IniFiles,
-  uStemMP4, mp4stem, deckengine, djcontrols, surround51, decklog;
+  uStemMP4, mp4stem, deckengine, djcontrols, surround51, decklog,
+  uSkalierung;
 
 const
   APP_TITLE   = 'Elospeed StemDecks';
-  APP_VER     = '0.3';
+  APP_VER     = '0.4';
   TEMP_PREFIX = 'ElospeedStemDecks_';   // Präfix der Temp-Ordner
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   TEST_SECONDS= 180;                    // "nur Anfang" beim Umwandeln
@@ -135,6 +136,7 @@ type
     LblTotal   : TLabel;
     { --- Decks --- }
     PnlDecks   : TPanel;
+    SbDecks    : TScrollBox;   // um PnlDecks: rollt, wenn das Fenster kleiner als die Mindestgrösse ist (hohe DPI)
     Decks      : array[0..DECK_COUNT-1] of TDeck;
     { --- Master + Fusszeile --- }
     PnlMaster  : TDJPanel;
@@ -175,6 +177,7 @@ type
     { Aufbau }
     procedure BuildUI;
     procedure BuildDeck(d: Integer);
+    procedure DeckScrollResize(Sender: TObject);
     procedure LayoutDecks(Sender: TObject);
     procedure UpdateHint;
     function  MakeButton(AParent: TWinControl; const ACaption: string;
@@ -346,6 +349,9 @@ begin
                            'ffmpeg.exe not found - you will be asked for it on first use.')
   else
     LblStatus.Caption := 'ffmpeg: ' + FFFmpeg + '    ·    Log: ' + LogFileName;
+  { lange Pfade sind im schmalen Fenster abgeschnitten: ganz im Tooltip }
+  LblStatus.Hint := LblStatus.Caption;
+  LblStatus.ShowHint := True;
   UpdateGains;
 end;
 
@@ -442,8 +448,12 @@ begin
   BtnSample.ShowHint := True;
   BtnSample.OnClick := @BtnSampleClick;
 
-  LblHint := MakeLabel(PnlTop, '', 740, 18, 0, False);
+  LblHint := MakeLabel(PnlTop, '', 740, 8, 0, False);
   LblHint.Font.Color := DJ_DIM;
+  { feste Breite bis zum Rand der Mindestbreite (1000), zwei Zeilen
+    (UpdateHint): sonst ist der Text im kleinsten Fenster abgeschnitten }
+  LblHint.AutoSize := False;
+  LblHint.SetBounds(740, 8, 1000 - 740 - 4 * MARGIN, 40);
 
   BtnPlay := MakeButton(PnlTop, '', 12, 56, 46, 36);
   BtnPlay.Glyph := dgPlay;
@@ -548,16 +558,26 @@ begin
   BtnClip.ShowHint := True;
 
   { ---------- Mitte: 4 Decks im 2x2-Raster wie in Traktor ---------- }
+  { Bei 150-200 % Anzeigeskalierung passt das Fenster nicht auf den
+    Bildschirm und wird gekürzt: dann rollen die Decks statt abgeschnitten
+    zu werden (Mindestgrösse in DeckScrollResize) }
+  SbDecks := TScrollBox.Create(Self);
+  SbDecks.Parent := Self;
+  SbDecks.Align := alClient;
+  SbDecks.BorderStyle := bsNone;
+  SbDecks.Color := DJ_BG;
+  SbDecks.BorderSpacing.Left := MARGIN;
+  SbDecks.BorderSpacing.Right := MARGIN;
+  SbDecks.VertScrollBar.Tracking := True;
+  SbDecks.HorzScrollBar.Tracking := True;
+  SbDecks.OnResize := @DeckScrollResize;
   PnlDecks := TPanel.Create(Self);
-  PnlDecks.Parent := Self;
-  PnlDecks.Align := alClient;
+  PnlDecks.Parent := SbDecks;
   PnlDecks.BevelOuter := bvNone;
   PnlDecks.Color := DJ_BG;
-  PnlDecks.BorderSpacing.Left := MARGIN;
-  PnlDecks.BorderSpacing.Right := MARGIN;
   PnlDecks.OnResize := @LayoutDecks;
   { Grösse vorab ausrechnen, damit die Decks beim Aufbau richtig breit sind }
-  PnlDecks.SetBounds(MARGIN, PnlTop.Height + 2 * MARGIN, W,
+  PnlDecks.SetBounds(0, 0, W,
     ClientHeight - PnlTop.Height - 3 * MARGIN - PnlMaster.Height - MARGIN - PnlBottom.Height);
 
   for d := 0 to DECK_COUNT - 1 do
@@ -654,6 +674,27 @@ begin
 end;
 
 { Ordnet die 4 Decks im 2x2-Raster an:  A B / C D  (wie in Traktor) }
+{ Decks füllen den sichtbaren Bereich, aber nie kleiner als bei der
+  Mindestgrösse des Fensters (1000 x 760 bei 100 %), sonst wären die
+  Stem-Zeilen unten abgeschnitten }
+procedure TMainForm.DeckScrollResize(Sender: TObject);
+const
+  MIN_W = 1000 - 2 * MARGIN;
+  MIN_H = 760 - 104 - 56 - 48 - 5 * MARGIN;
+var
+  W, H: Integer;
+begin
+  W := SbDecks.ClientWidth;
+  H := SbDecks.ClientHeight;
+  if W < Scale96ToForm(MIN_W) then W := Scale96ToForm(MIN_W);
+  if H < Scale96ToForm(MIN_H) then H := Scale96ToForm(MIN_H);
+  PnlDecks.SetBounds(0, 0, W, H);
+  { 200 % auf Full HD: Fenster schmaler als die Mindestbreite, dann passt
+    die Deck-Zuordnung oben rechts nicht mehr -> ausblenden statt abschneiden
+    (sie steht auch im Log) }
+  LblHint.Visible := LblHint.Left + LblHint.Width <= PnlTop.ClientWidth;
+end;
+
 procedure TMainForm.LayoutDecks(Sender: TObject);
 var
   d, W, H: Integer;
@@ -678,8 +719,17 @@ begin
 end;
 
 procedure TMainForm.UpdateHint;
+var
+  S: string;
+  K: Integer;
 begin
-  LblHint.Caption := PartsText;
+  { zwei Einträge pro Zeile, damit es auch in der Mindestbreite passt }
+  S := PartsText;
+  K := Pos('  ·  ', S);
+  if K > 0 then K := Pos('  ·  ', S, K + 1);
+  if K > 0 then
+    S := Copy(S, 1, K - 1) + LineEnding + Copy(S, K + Length('  ·  '), MaxInt);
+  LblHint.Caption := S;
 end;
 
 { ============================================================================
@@ -841,6 +891,7 @@ begin
     FSetLfe := ChkLfe;
     FSetMaster := CbMaster;
     F.OnCloseQuery := @SettingsCloseQuery;
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     R := F.ShowModal;
     FSetLfe := nil;
     FSetMaster := nil;
@@ -1612,6 +1663,7 @@ begin
     B.ModalResult := mrCancel;
     B.Cancel := True;
 
+    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
     if (F.ShowModal = mrOK) and (LB.ItemIndex >= 0) then
     begin
       Idx := LB.ItemIndex;

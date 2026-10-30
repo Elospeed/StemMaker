@@ -43,11 +43,12 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, ImgList, Math, uLang, uStemMP4, uStatusDraw, djcontrols, djextra, coverbild;
+  IniFiles, IntfGraphics, Contnrs, ImgList, Math, uLang, uStemMP4, uStatusDraw, djcontrols, djextra, coverbild,
+  uSkalierung;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
-  APP_VER   = '1.0';
+  APP_VER   = '1.0.1';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type
@@ -349,6 +350,8 @@ var
   I: Integer;
 begin
   inherited CreateNew(TheOwner);
+  { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
+  StelleAufBildschirmDPI(Self);
   FEntries := TFPObjectList.Create(True);
   LoadLanguage;
   BuildUI;
@@ -531,9 +534,9 @@ var
 begin
   Caption := APP_TITLE + ' ' + APP_VER;
   Position := poScreenCenter;
-  Width := Scale96ToForm(840);
+  Width := Scale96ToForm(920);         // bei 150 % passt die Fusszeile sonst knapp nicht
   Height := Scale96ToForm(540);
-  Constraints.MinWidth := Scale96ToForm(800);
+  Constraints.MinWidth := Scale96ToForm(880);  // schmaler ragen Jahr/Label/Kommentar und der Namens-Knopf rechts hinaus (Live-Test 30.10.)
   Constraints.MinHeight := Scale96ToForm(420);
   Color := DJ_BG;
   Font.Color := DJ_TEXT;
