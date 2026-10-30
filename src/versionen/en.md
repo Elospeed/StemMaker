@@ -6,7 +6,7 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.1.1 – not released yet
+## 2.1.1 – 30 October 2026
 ### Fixed
 - At 150 % and 200 % display scaling windows were taller than the screen (main window, settings, StemDecks)
 - Language choice, update window and shutdown question too small with display scaling

@@ -6,7 +6,7 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.1.1 – aún no publicada
+## 2.1.1 – 30 de octubre de 2026
 ### Corregido
 - Con escalado de pantalla del 150 % y 200 % las ventanas eran más altas que la pantalla (ventana principal, ajustes, StemDecks)
 - Selección de idioma, ventana de actualización y pregunta antes de apagar demasiado pequeñas con escalado
