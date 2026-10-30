@@ -453,7 +453,7 @@ begin
   { feste Breite bis zum Rand der Mindestbreite (1000), zwei Zeilen
     (UpdateHint): sonst ist der Text im kleinsten Fenster abgeschnitten }
   LblHint.AutoSize := False;
-  LblHint.SetBounds(740, 8, 1000 - 740 - 2 * MARGIN, 40);
+  LblHint.SetBounds(740, 8, 1000 - 740 - 4 * MARGIN, 40);
 
   BtnPlay := MakeButton(PnlTop, '', 12, 56, 46, 36);
   BtnPlay.Glyph := dgPlay;
