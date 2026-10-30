@@ -13,6 +13,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Fenster bei Anzeigeskalierung (125 %, 150 %, 200 %):** Der StemPlayer war bei grosser Skalierung in Windows höher als der Bildschirm, die Höhe liess sich nicht ändern und Master, Fusszeile und Ko-fi-Knopf waren abgeschnitten. Im CD-Player lagen Knöpfe übereinander (CUE über dem Jogwheel, Fader über den SOLO-Pads), und rechts und unten war ein Teil abgeschnitten. Jetzt passt das Fenster auf den Bildschirm, und alle Elemente sitzen auch bei grosser Skalierung an ihrem Platz.
 - **Wellenformen wachsen mit dem Fenster:** In der Ansicht Wellenform lässt sich das Fenster frei vergrössern und auch maximieren, die vier Stem-Wellen werden dabei höher oder flacher, alles Waagrechte wird breiter. Kompakt hat eine feste Höhe, der CD-Player eine feste Grösse (dort gibt es keinen Maximieren-Knopf mehr, statt leerer Fläche um feste Elemente).
 - **Passt eine Ansicht nicht auf den Bildschirm** (z. B. CD-Player bei 150 % auf einem Full-HD-Laptop), startet der StemPlayer in einer kleineren Ansicht und sagt beim Umschalten, warum es nicht geht.
+- **Sehr kleiner Bildschirm** (z. B. 175 % auf einem Full-HD-Laptop): Passt selbst die Ansicht Kompakt nicht, bekommt das Fenster eine Bildlaufleiste, statt die MASTER-Zeile abzuschneiden. Die gezogene Höhe der Wellenform-Ansicht bleibt nach einem Wechsel zu Kompakt erhalten.
 
 ## 2.1 – 29. Oktober 2026
 

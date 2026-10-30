@@ -183,6 +183,7 @@ type
 
   TMainForm = class(TForm)
   private
+    FScroll     : TScrollBox;  // klassische Ansicht: Flächen mit Bildlauf, falls der Bildschirm zu klein ist
     { --- Oberer Bereich --- }
     PnlTop      : TDJPanel;
     BtnOpen     : TDJButton;
@@ -242,6 +243,7 @@ type
     FClassicH   : Integer;     // wird beim Zurückschalten wiederhergestellt
     FShown      : Boolean;     // Fenster wurde schon einmal angezeigt (FormShow)
     FFitting    : Boolean;     // Fenstergrösse wird gerade im Code angepasst
+    FWaveH96    : Integer;     // zuletzt gezogene Wellenhöhe (96 dpi), 0 = Standard
     { --- Sonstiges --- }
     Timer       : TTimer;
     Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
@@ -396,6 +398,7 @@ var
 implementation
 
 uses
+  {$IFDEF WINDOWS}UxTheme,{$ENDIF}
   uStatusDraw;   // Ko-fi-Knopf, gleich wie in StemMaker
 
 const
@@ -598,10 +601,10 @@ end;
 function TMainForm.MakeDJPanel(AHeight, ASpaceTop: Integer): TDJPanel;
 begin
   Result := TDJPanel.Create(Self);
-  Result.Parent := Self;
+  Result.Parent := FScroll;
   Result.Align := alTop;
   { Aufsteigender Top-Wert -> neue Fläche landet unter allen bisherigen }
-  Result.Top := ControlCount * 100;
+  Result.Top := FScroll.ControlCount * 100;
   Result.Height := AHeight;
   Result.BorderSpacing.Top := ASpaceTop;
   Result.BorderSpacing.Left := MARGIN;
@@ -618,6 +621,19 @@ var
   Item: TMenuItem;  // ein Menüeintrag
 begin
   W := ClientWidth - 2 * MARGIN;   // Breite der Flächen
+
+  { Alle Flächen der klassischen Ansicht liegen in einem Bildlauf-Bereich:
+    Ist der Bildschirm zu klein (z. B. 175 % auf einem Full-HD-Laptop),
+    erscheint rechts eine Bildlaufleiste statt dass MASTER unten fehlt }
+  FScroll := TScrollBox.Create(Self);
+  FScroll.Parent := Self;
+  FScroll.Align := alClient;
+  FScroll.BorderStyle := bsNone;
+  FScroll.Color := DJ_BG;
+  FScroll.ParentColor := False;
+  FScroll.HorzScrollBar.Visible := False;
+  FScroll.VertScrollBar.Tracking := True;
+  FScroll.AutoScroll := True;
 
   { ---------- Oben: Datei ---------- }
   PnlTop := MakeDJPanel(56, 4);
@@ -944,9 +960,17 @@ begin
   DisableAlign;
   try
     for i := 1 to STEM_COUNT do Rows[i].Wave.Visible := AShow;
-    if AShow then SetWaveSize(Scale96ToForm(WAVE_HEIGHT))
+    { Gezogene Wellenhöhe merken, damit sie nach Kompakt wiederkommt }
+    if AShow then
+    begin
+      if FWaveH96 > 0 then SetWaveSize(Scale96ToForm(FWaveH96))
+      else SetWaveSize(Scale96ToForm(WAVE_HEIGHT));
+    end
     else
+    begin
+      FWaveH96 := ScaleFormTo96(WaveSize);
       for i := 1 to STEM_COUNT do Rows[i].Panel.Height := Scale96ToForm(ROW_HEIGHT);
+    end;
     Constraints.MinHeight := 0;
     Constraints.MaxHeight := 0;
     Height := Height - ClientHeight + ContentHeight;
@@ -1429,6 +1453,7 @@ begin
     PnlDeck.Visible := False;
     for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := False;
     PnlMaster.Visible := False;
+    FScroll.Visible := False;
     FitDesignWindow;
     LayoutCD;
     PnlCD.Visible := True;
@@ -1472,6 +1497,7 @@ begin
     PnlDeck.Visible := True;
     for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := True;
     PnlMaster.Visible := True;
+    FScroll.Visible := True;
   finally
     EnableAlign;
   end;
@@ -1565,6 +1591,10 @@ begin
   if not FShown then
   begin
     FShown := True;
+    {$IFDEF WINDOWS}
+    { Bildlaufleiste dunkel wie der Player (ab Windows 10 1809, sonst hell) }
+    SetWindowTheme(FScroll.Handle, 'DarkMode_Explorer', nil);
+    {$ENDIF}
     if (FView = vmCD) and not DesignFits then
     begin
       if FShowWaves and (ClassicMinHeight(True) + FrameH <= Screen.WorkAreaHeight) then
