@@ -328,7 +328,7 @@ begin
     { Platzhalter, damit die Muster-Spalte bündig bleibt }
     Result.StemName.Visible := True;
     Result.StemName.Enabled := False;
-    Result.StemName.Width := Scale96ToForm(110 + 50);
+    Result.StemName.Width := Scale96ToForm(110 + 47);
     Result.StemName.Text := _('(Tags und Cover)');
   end;
 
