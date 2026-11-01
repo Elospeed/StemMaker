@@ -15,6 +15,7 @@ h2,h3{break-after:avoid}
 table{border-collapse:collapse;width:100%;margin:6px 0 10px}
 td,th{border:1px solid #ccc;padding:4px 6px;vertical-align:top;text-align:left}
 th{background:#f0f0f0}
+.ok,.note{break-inside:avoid}
 .note{background:#fff6e0;border-left:4px solid #ff9f0a;padding:6px 10px;margin:10px 0}
 .ok{background:#eafaf0;border-left:4px solid #30d158;padding:6px 10px;margin:10px 0}
 code{background:#f2f2f2;padding:0 3px;border-radius:3px}
@@ -87,19 +88,33 @@ code{background:#f2f2f2;padding:0 3px;border-radius:3px}
 <div class="win" style="width:80%"><img src="g5.png"></div>
 <p>The files can be loaded straight into <b>Traktor Pro 4</b> like any stem file. Traktor shows the four stems with the names and colours you set.</p>
 
-<h2>5. What we would like to know from your test</h2>
+<h2>5. Listen without Traktor: StemPlayer</h2>
+<p>To check a finished file before you load it into Traktor, start <b>StemPlayer.exe</b> (in the same folder) and click <b>OPEN</b>, or drop a <code>.stem.mp4</code> file onto its window. It plays all four stems in sync and shows them with the names and colours you set.</p>
+<div class="win" style="width:72%"><img src="g6.png"></div>
+<table>
+<tr><th style="width:28%">Control</th><th>What it does</th></tr>
+<tr><td><b>M</b> / <b>S</b> (per stem)</td><td>Mute this stem / play only this stem (solo). Keys: <code>1</code>–<code>4</code> mute, <code>Shift</code>+<code>1</code>–<code>4</code> solo.</td></tr>
+<tr><td>Slider (per stem)</td><td>Volume of this stem.</td></tr>
+<tr><td><b>STEMS / ORIGINAL / REST</b></td><td>Listen to the four stems mixed, to the master track, or to the master minus the stems (shows what is not in the stems).</td></tr>
+<tr><td><b>LOOP A / B / ON</b></td><td>Set a loop start and end and switch the loop on or off.</td></tr>
+<tr><td><b>MASTER</b></td><td>Overall volume; <b>CLIP</b> lights up when the sum is too loud.</td></tr>
+<tr><td><code>Space</code></td><td>Play / pause.</td></tr></table>
+<p>StemPlayer only reads the file and never changes it.</p>
+
+<h2>6. What we would like to know from your test</h2>
 <div class="ok"><ol style="margin:0">
 <li>Does it find your files with the naming scheme of your DVD folders?</li>
 <li>Does Traktor load the stem files, with the four stems (Front, LFE, Center, Rear), title, artist and cover?</li>
 <li>Optional: does the format “ALAC 24 bit, original sample rate (test)” play in Traktor?</li>
 <li>Is anything missing that you need for your 178 songs?</li></ol></div>
 
-<h2>6. If something goes wrong</h2>
+<h2>7. If something goes wrong</h2>
 <p>Everything the program does is written to <code>logs\StemPacker.log</code> next to the program. Click <b>Show log</b> to open it, and please send us that file.</p>
 
-<h2>7. Folder contents</h2>
+<h2>8. Folder contents</h2>
 <table>
 <tr><td><code>StemPacker.exe</code></td><td>the program</td></tr>
+<tr><td><code>StemPlayer.exe</code></td><td>player to listen to finished stem files (section 5)</td></tr>
 <tr><td><code>StemPacker-User-Guide.pdf</code></td><td>this guide</td></tr>
 <tr><td><code>README.txt</code> / <code>LIESMICH.txt</code></td><td>short guide (English / German)</td></tr>
 <tr><td><code>Example\</code></td><td>three short test songs in the 5.1 DVD naming scheme</td></tr>

@@ -6,7 +6,8 @@
 #   src/AddOns/StemPacker/stempacker-zip.sh <StemPacker.exe> <Ausgabeordner>
 #
 # Inhalt (Ordner StemPacker\):
-#   StemPacker.exe, LIESMICH.txt (DE), README.txt (EN), LICENSE.txt,
+#   StemPacker.exe, StemPlayer.exe (zum Anhören der fertigen Dateien, wird
+#   neben StemPacker.exe erwartet), LIESMICH.txt (DE), README.txt (EN), LICENSE.txt,
 #   StemPacker-User-Guide.pdf (englische Anleitung mit Bildern, Quelle in anleitung/),
 #   Example\ (3 kurze Testton-Songs im 5.1-DVD-Namensschema, hier erzeugt),
 #   lang\*.po (Englisch, Spanisch; Deutsch steckt in der Exe),
@@ -53,6 +54,9 @@ crlf "$HIER/README.txt"          "$ZIEL/README.txt"
 crlf "$REPO/LICENSE"             "$ZIEL/LICENSE.txt"
 cp "$REPO"/src/lang/*.po "$ZIEL/lang/"
 cp "$EXE" "$ZIEL/StemPacker.exe"
+SPIELER="$(dirname "$EXE")/StemPlayer.exe"
+[ -f "$SPIELER" ] || { echo "StemPlayer.exe fehlt neben $EXE"; exit 1; }
+cp "$SPIELER" "$ZIEL/StemPlayer.exe"
 cp "$HIER/anleitung/StemPacker-User-Guide.pdf" "$ZIEL/"
 
 # Beispiel im Namensschema 5.1-DVD: Downmix\Song (DOWNMIX #1).wav und

@@ -20,6 +20,8 @@ HOW TO
 4. "Find songs": the list shows every song, how many files were found and
    what is missing.
 5. "Pack all". Done: the stem files load straight into Traktor.
+6. To listen without Traktor: start StemPlayer.exe and open a finished
+   .stem.mp4 file. M / S mute or solo each stem.
 
 
 NAME PATTERNS
@@ -75,6 +77,7 @@ opens it; please send us that file.
 FOLDER CONTENTS
 ---------------
   StemPacker.exe              the program
+  StemPlayer.exe              player for finished stem files (mute/solo)
   README.txt / LIESMICH.txt   this guide (English / German)
   StemPacker-User-Guide.pdf   full guide with pictures (English)
   Example\                    3 short test songs (test tones) to try it

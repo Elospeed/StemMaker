@@ -9,7 +9,8 @@
 # aus build.yml das Vor-Release wieder.
 #
 # Auslöser: Push auf den StemPacker-Branch (nur wenn sich diese Datei ändert)
-# oder von Hand mit "Run workflow". Gibt es den Tag schon, passiert nichts.
+# oder von Hand mit "Run workflow". Ein alter Entwurf mit dem Tag wird ersetzt,
+# ein veröffentlichtes Vor-Release nicht.
 
 name: StemPacker-Test Vor-Release
 
@@ -42,9 +43,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            echo "Vor-Release $TAG gibt es schon, nichts zu tun."
-            echo "fertig=1" >> "$GITHUB_OUTPUT"
+          # Ein noch nicht veröffentlichter Entwurf wird durch den neuen ersetzt,
+          # ein veröffentlichtes Vor-Release bleibt unberührt.
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq "[.[] | select(.tag_name == \"$TAG\")][0] | select(. != null) | \"\\(.id) \\(.draft)\"")
+          if [ -n "$ID" ]; then
+            set -- $ID
+            if [ "$2" = "true" ]; then
+              echo "Alter Entwurf $TAG ($1) wird ersetzt."
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/$1"
+            else
+              echo "Vor-Release $TAG ist schon veröffentlicht, nichts zu tun."
+              echo "fertig=1" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
       - name: Auf den Build dieses Commits warten
@@ -80,6 +91,7 @@ jobs:
           (cd "$(dirname "$ZIP")" && sha256sum -c --ignore-missing SHA256SUMS.txt)
           unzip -l "$ZIP" | grep -q 'StemPacker/StemPacker-User-Guide.pdf'
           unzip -l "$ZIP" | grep -q 'StemPacker/Example/'
+          unzip -l "$ZIP" | grep -q 'StemPacker/StemPlayer.exe'
           echo "ZIP=$ZIP" >> "$GITHUB_ENV"
 
       - name: Entwurf des Vor-Releases anlegen
@@ -98,7 +110,7 @@ jobs:
           2. Read **StemPacker-User-Guide.pdf** (English, with pictures of every function).
           3. Start StemPacker.exe (if Windows SmartScreen warns: "More info" -> "Run anyway"). Nothing is installed.
           4. Try the **Example** folder first, then a **copy** of a few of your own songs.
-          5. Load the stem files in Traktor and tell us if everything works.
+          5. Listen to a finished file with **StemPlayer.exe** (mute/solo per stem), then load the stem files in Traktor and tell us if everything works.
 
           Contains FFmpeg (LGPL) in tools\\. Problems: logs\\StemPacker.log.
 
