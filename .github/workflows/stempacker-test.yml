@@ -1,0 +1,109 @@
+# StemPacker-Testversion als Vor-Release für einen externen Tester.
+#
+# Nimmt StemPacker-<Version>.zip aus dem fertigen Build-Artefakt (gleicher
+# Commit, siehe build.yml und src/AddOns/StemPacker/stempacker-zip.sh) und legt
+# damit einen ENTWURF eines Vor-Releases an. Veröffentlicht wird es erst, wenn
+# Speedy auf GitHub "Publish release" klickt.
+#
+# Der Tag beginnt bewusst nicht mit "test-", sonst löscht der Job "aufraeumen"
+# aus build.yml das Vor-Release wieder.
+#
+# Auslöser: Push auf den StemPacker-Branch (nur wenn sich diese Datei ändert)
+# oder von Hand mit "Run workflow". Gibt es den Tag schon, passiert nichts.
+
+name: StemPacker-Test Vor-Release
+
+on:
+  push:
+    branches: [claude/project-thread-twpwch]
+    paths: [.github/workflows/stempacker-test.yml]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag des Vor-Releases (z. B. stempacker-test-2)"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  TAG: ${{ inputs.tag || 'stempacker-test-1' }}
+
+jobs:
+  vorab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+
+      - name: Gibt es den Tag schon?
+        id: da
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "Vor-Release $TAG gibt es schon, nichts zu tun."
+            echo "fertig=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Auf den Build dieses Commits warten
+        if: steps.da.outputs.fertig != '1'
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Build läuft parallel (Pull Request), höchstens 40 Minuten warten
+          for i in $(seq 1 80); do
+            RUN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --commit "$GITHUB_SHA" \
+              --json databaseId,status,conclusion \
+              --jq '[.[] | select(.conclusion == "success")][0].databaseId // empty')
+            if [ -n "$RUN" ]; then echo "run=$RUN" >> "$GITHUB_OUTPUT"; exit 0; fi
+            OFFEN=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --commit "$GITHUB_SHA" \
+              --json status --jq '[.[] | select(.status != "completed")] | length')
+            if [ "$OFFEN" = "0" ] && [ "$i" -gt 4 ]; then
+              echo "::error::Kein erfolgreicher Build für $GITHUB_SHA"; exit 1
+            fi
+            sleep 30
+          done
+          echo "::error::Build nicht rechtzeitig fertig"; exit 1
+
+      - name: ZIP holen und prüfen
+        if: steps.da.outputs.fertig != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${{ steps.build.outputs.run }}" --repo "$GITHUB_REPOSITORY" \
+            --pattern 'StemMaker-Win64-*' --dir art
+          ZIP=$(find art -name 'StemPacker-*.zip' | head -1)
+          test -n "$ZIP"
+          (cd "$(dirname "$ZIP")" && sha256sum -c --ignore-missing SHA256SUMS.txt)
+          unzip -l "$ZIP" | grep -q 'StemPacker/StemPacker-User-Guide.pdf'
+          unzip -l "$ZIP" | grep -q 'StemPacker/Example/'
+          echo "ZIP=$ZIP" >> "$GITHUB_ENV"
+
+      - name: Entwurf des Vor-Releases anlegen
+        if: steps.da.outputs.fertig != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NAME=$(basename "$ZIP")
+          SHA=$(sha256sum "$ZIP" | cut -d' ' -f1)
+          cat > notes.md <<EOF
+          **StemPacker test version (pre-release, not a StemMaker version)**
+
+          StemPacker turns finished tracks into Traktor stem files (\`.stem.mp4\`), without AI and in batches: per song one master (e.g. a downmix) plus up to four stems (e.g. A, B, C, D) become one stem file. Tags and cover come from the master file.
+
+          1. Download $NAME and extract the whole ZIP into a folder.
+          2. Read **StemPacker-User-Guide.pdf** (English, with pictures of every function).
+          3. Start StemPacker.exe (if Windows SmartScreen warns: "More info" -> "Run anyway"). Nothing is installed.
+          4. Try the **Example** folder first, then a **copy** of a few of your own songs.
+          5. Load the stem files in Traktor and tell us if everything works.
+
+          Contains FFmpeg (LGPL) in tools\\. Problems: logs\\StemPacker.log.
+
+          SHA-256 of the ZIP: \`$SHA\`
+          EOF
+          gh release create "$TAG" "$ZIP" --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" --prerelease --draft --title "StemPacker test version" --notes-file notes.md
+          echo "Entwurf angelegt. Nach dem Veröffentlichen: https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/$NAME"

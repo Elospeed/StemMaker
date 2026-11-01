@@ -7,6 +7,8 @@
 #
 # Inhalt (Ordner StemPacker\):
 #   StemPacker.exe, LIESMICH.txt (DE), README.txt (EN), LICENSE.txt,
+#   StemPacker-User-Guide.pdf (englische Anleitung mit Bildern, Quelle in anleitung/),
+#   Example\ (3 kurze Testton-Songs im 5.1-DVD-Namensschema, hier erzeugt),
 #   lang\*.po (Englisch, Spanisch; Deutsch steckt in der Exe),
 #   tools\ffmpeg.exe + Lizenz und Quellcode-Hinweis (LGPL-Build aus unserem
 #   Release ffmpeg-9.0.2, Prüfsumme wird kontrolliert).
@@ -51,6 +53,30 @@ crlf "$HIER/README.txt"          "$ZIEL/README.txt"
 crlf "$REPO/LICENSE"             "$ZIEL/LICENSE.txt"
 cp "$REPO"/src/lang/*.po "$ZIEL/lang/"
 cp "$EXE" "$ZIEL/StemPacker.exe"
+cp "$HIER/anleitung/StemPacker-User-Guide.pdf" "$ZIEL/"
+
+# Beispiel im Namensschema 5.1-DVD: Downmix\Song (DOWNMIX #1).wav und
+# Channels\Song (A..D).wav, je 5 Sekunden Testton (A und D Stereo, B und C Mono)
+TESTFF="${FFMPEG_TEST:-$ZIEL/tools/ffmpeg.exe}"
+BSP="$ZIEL/Example"
+mkdir -p "$BSP/Downmix" "$BSP/Channels"
+winpfad() { if command -v cygpath >/dev/null; then cygpath -w "$1"; else echo "$1"; fi; }
+i=0
+for SONG in "Song One" "Song Two" "Song Three"; do
+  i=$((i + 1))
+  MSYS_NO_PATHCONV=1 "$TESTFF" -hide_banner -loglevel error -y -f lavfi \
+    -i "sine=frequency=$((200 + i * 60)):sample_rate=48000:duration=5" -ac 2 \
+    "$(winpfad "$BSP/Downmix/$SONG (DOWNMIX #1).wav")"
+  k=0
+  for C in A B C D; do
+    k=$((k + 1))
+    KAN=1; if [ "$C" = A ] || [ "$C" = D ]; then KAN=2; fi
+    MSYS_NO_PATHCONV=1 "$TESTFF" -hide_banner -loglevel error -y -f lavfi \
+      -i "sine=frequency=$((k * 150 + i * 20)):sample_rate=48000:duration=5" -ac $KAN \
+      "$(winpfad "$BSP/Channels/$SONG ($C).wav")"
+  done
+done
+crlf "$HIER/anleitung/Example-README.txt" "$BSP/How-to-use-the-example.txt"
 
 ZIPNAME="$AUS/StemPacker-$VERSION.zip"
 rm -f "$ZIPNAME"

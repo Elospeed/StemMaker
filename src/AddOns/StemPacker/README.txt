@@ -76,6 +76,8 @@ FOLDER CONTENTS
 ---------------
   StemPacker.exe              the program
   README.txt / LIESMICH.txt   this guide (English / German)
+  StemPacker-User-Guide.pdf   full guide with pictures (English)
+  Example\                    3 short test songs (test tones) to try it
   LICENSE.txt                 licence (MIT)
   lang\                       language files (English, Spanish)
   tools\ffmpeg.exe            FFmpeg (LGPL), does the actual audio work
