@@ -28,4 +28,4 @@ Die Regeln gelten gleich für alle Elospeed-Programme (StemMaker mit allen AddOn
 - Alle Fenster und Ansichten öffnen, auch Ansichtswechsel zur Laufzeit und den Start mit jeder gespeicherten Ansicht.
 - Im PR schreiben, bei welchen Stufen getestet wurde.
 
-**Hier im Repo:** Die Regel gilt auch für StemPlayer, StemTagger, StemDecks, Stem51 und TurboTest unter `src/AddOns/`. Die AddOns binden dieselbe `src/uskalierung.pas` ein.
+**Hier im Repo:** Die Regel gilt auch für StemPlayer, StemTagger, StemPacker, StemDecks, Stem51 und TurboTest unter `src/AddOns/`. Die AddOns binden dieselbe `src/uskalierung.pas` ein.
