@@ -1,0 +1,125 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>StemPacker 0.1 - User Guide</title>
+<style>
+@page{size:A4;margin:16mm 15mm}
+body{font-family:"Segoe UI",Arial,sans-serif;font-size:10.5pt;line-height:1.45;color:#1e1e20}
+h1{font-size:22pt;margin:0 0 2px}
+h2{font-size:14pt;margin:18px 0 6px;border-bottom:2px solid #30d158;padding-bottom:2px}
+h3{font-size:11.5pt;margin:12px 0 4px}
+.sub{color:#666;margin-bottom:14px}
+.win{break-inside:avoid;page-break-inside:avoid;border:1px solid #888;border-radius:6px;overflow:hidden;margin:8px 0 4px;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.win .bar{background:#2b2b2e;color:#fff;font-size:9pt;padding:4px 10px}
+.win img{display:block;width:100%}
+.cap{font-size:9pt;color:#666;margin-bottom:10px}
+tr{break-inside:avoid}
+h2,h3{break-after:avoid}
+table{border-collapse:collapse;width:100%;margin:6px 0 10px}
+td,th{border:1px solid #ccc;padding:4px 6px;vertical-align:top;text-align:left}
+th{background:#f0f0f0}
+.ok,.note{break-inside:avoid}
+.note{background:#fff6e0;border-left:4px solid #ff9f0a;padding:6px 10px;margin:10px 0}
+.ok{background:#eafaf0;border-left:4px solid #30d158;padding:6px 10px;margin:10px 0}
+code{background:#f2f2f2;padding:0 3px;border-radius:3px}
+.pb{page-break-before:always}
+</style></head><body>
+<h1>StemPacker 0.1 (test version)</h1>
+<div class="sub">User guide · by Elospeed · free software · ko-fi.com/elospeed</div>
+
+<p><b>What it does:</b> StemPacker builds Traktor stem files (<code>.stem.mp4</code>) from tracks you already have. For every song it takes one <b>master</b> file (for example your downmix) and up to <b>four stem files</b> (for example A, B, C and D) and puts them together into <b>one</b> stem file. There is <b>no AI separation</b>: your files are used exactly as they are. It works in <b>batches</b>, so hundreds of songs are packed in one run.</p>
+
+<div class="note"><b>Please test with copies.</b> StemPacker only reads your WAV files and never changes them; it writes new <code>.stem.mp4</code> files. Still, as this is a first test version, please use a copy of a few songs (or a separate test folder) for the first run.</div>
+
+<h2>1. Getting started</h2>
+<ol>
+<li>Unzip the whole folder somewhere (e.g. Desktop). Keep the folders <code>tools</code> (contains ffmpeg.exe) and <code>lang</code> next to <code>StemPacker.exe</code>.</li>
+<li>Start <code>StemPacker.exe</code>. If Windows shows “Windows protected your PC” (the program is not signed): click <b>More info</b> → <b>Run anyway</b>.</li>
+<li>Nothing is installed. Settings are saved in <code>StemPacker.ini</code> next to the program.</li>
+</ol>
+<p>The folder <code>Example</code> contains three short test songs (simple test tones) in the same naming scheme as your DVD files. You can use it for a first try before using your own music.</p>
+
+<h2>2. The main window</h2>
+<div class="win"><div class="bar">Elospeed StemPacker 0.1 - pack finished tracks into stem files</div><img src="g1.png"></div>
+<div class="cap">The main window with the preset “5.1 DVD”. Master files are in C:\Music\Downmix, the A/B/C/D files in C:\Music\Channels.</div>
+
+<h3>Preset</h3>
+<div class="win"><img src="g2.png"></div>
+<p>A preset fills in the name patterns, stem names and colours in one click. Your folders stay as they are.</p>
+<table><tr><th>Preset</th><th>Finds files like</th><th>Stem names</th></tr>
+<tr><td><b>5.1 DVD</b> (default)</td><td><code>Song (DOWNMIX #1).wav</code> = master<br><code>Song (A).wav</code> … <code>Song (D).wav</code> = stems 1–4</td><td>Front, LFE, Center, Rear</td></tr>
+<tr><td>DAW export</td><td><code>Song.wav</code> = master, <code>Song_drums.wav</code>, <code>_bass</code>, <code>_other</code>, <code>_vocals</code></td><td>Drums, Bass, Other, Vox</td></tr>
+<tr><td>Numbers</td><td><code>Song_0.wav</code> = master, <code>Song_1</code> … <code>Song_4</code></td><td>Drums, Bass, Other, Vox</td></tr>
+<tr><td>Custom patterns</td><td>Selected automatically as soon as you change a pattern yourself.</td><td>as you set them</td></tr></table>
+
+<h3>The five rows: Master and Stem 1 to 4</h3>
+<table><tr><th style="width:24%">Column</th><th>What it is for</th></tr>
+<tr><td><b>Folder</b> and <b>…</b></td><td>The folder where the files for this row are. Type the path or click <b>…</b> to choose it. You can also drop a folder onto the window: it becomes the master folder. <b>An empty folder means “same as the row above”</b>: so if A, B, C and D are all in one folder, set it only for Stem 1.</td></tr>
+<tr><td><b>Name pattern</b></td><td>How the file name looks, <b>without</b> the extension (.wav). The star <code>*</code> stands for the song name. <code>* (DOWNMIX #1)</code> finds <code>Hello (DOWNMIX #1).wav</code>, the song is then called “Hello”, and the stems must be called <code>Hello (A).wav</code> and so on. Upper/lower case does not matter. A second star stands for any text that is not part of the song name.</td></tr>
+<tr><td><b>Stem name</b></td><td>The name Traktor shows for this stem (e.g. Front, LFE). It is written into the stem file. The letters in your file names (A, B …) are only used to find the files.</td></tr>
+<tr><td><b>Colour</b></td><td>The colour of this stem in Traktor. Click the coloured box to change it.</td></tr>
+<tr><td>Master row</td><td>The master is the normal “full mix” track of the stem file (what Traktor and normal players play when stems are off). <b>Title, artist, album, BPM, key, cover and other tags are taken from the master file.</b></td></tr></table>
+
+<h3>Options at the top</h3>
+<table><tr><th style="width:24%">Option</th><th>What it does</th></tr>
+<tr><td><b>Mix master from the stems</b></td><td>For songs that have no master file: the four stems are mixed together (without changing the level) and used as the master. The master row is then switched off.</td></tr>
+<tr><td><b>Search subfolders</b></td><td>Also looks into subfolders, e.g. one subfolder per album. The subfolders must have the same names in the master folder and in the stem folders. With an output folder, the same subfolders are created there.</td></tr></table>
+
+<h3>Target, format and extras</h3>
+<table><tr><th style="width:24%">Setting</th><th>What it does</th></tr>
+<tr><td><b>Target</b></td><td><b>next to the master file</b>: the stem file is saved in the same folder as the master.<br><b>into this folder</b>: all stem files go into the folder you choose (subfolders are kept).</td></tr>
+<tr><td><b>File name</b></td><td>Always <code>&lt;song name&gt;.stem.mp4</code>, e.g. <code>Hello.stem.mp4</code>.</td></tr>
+<tr><td><b>Format</b></td><td><b>AAC 320 kbit/s</b> – like the stem files from Traktor itself, small files (recommended).<br><b>ALAC lossless, 16 bit / 44.1 kHz</b> – no quality loss, bigger files.<br><b>ALAC 24 bit, original sample rate (test)</b> – keeps 24 bit and e.g. 96 kHz. <b>Not yet tested in Traktor</b>, please try one song first and tell us if Traktor plays it.</td></tr>
+<tr><td><b>Overwrite existing</b></td><td>Off: songs that already have a stem file are skipped (handy to continue a batch). On: they are built again.</td></tr>
+<tr><td><b>Fill missing stems with silence</b></td><td>Off: a song with a missing stem file is skipped. On: a silent track is used instead, so the song is still packed.</td></tr>
+<tr><td><b>Cover from the folder</b></td><td>If the master file has no cover, an image from its folder is used: <code>&lt;song&gt;.jpg</code>, <code>cover.jpg</code>, <code>folder.jpg</code> or <code>front.jpg</code> (also .png).</td></tr></table>
+
+<h2>3. Find songs</h2>
+<p>Click <b>Find songs</b>. The list shows every song that was found:</p>
+<div class="win"><div class="bar">Elospeed StemPacker 0.1 - pack finished tracks into stem files</div><img src="g3.png"></div>
+<div class="cap">“Song Three” has no C file, so it shows “missing: Stem 3” and would be skipped.</div>
+<table><tr><th style="width:24%">Column</th><th>Meaning</th></tr>
+<tr><td><b>Song</b></td><td>Song name (the part of the file name at the star).</td></tr>
+<tr><td><b>Files</b></td><td>How many of the 5 files were found (4 when the master is mixed).</td></tr>
+<tr><td><b>Status</b></td><td><b>ready</b> = will be packed · <b>missing: …</b> = file(s) not found, song is skipped · <b>ready, filled with silence: …</b> = missing stem becomes silent · <b>already exists, will be skipped</b> · after packing: <b>done</b> or an error message.</td></tr>
+<tr><td><b>Target</b></td><td>Where the stem file will be saved.</td></tr></table>
+<p>With <b>Fill missing stems with silence</b> switched on and <b>Find songs</b> clicked again:</p>
+<div class="win" style="width:80%"><img src="g4.png"></div>
+
+<h2>4. Pack all</h2>
+<p>Click <b>Pack all</b>. The songs are packed one after the other; the status line shows the progress. <b>Cancel</b> stops after the current step (the unfinished file is removed). At the end you see a summary and can open the folder:</p>
+<div class="win" style="width:80%"><img src="g5.png"></div>
+<p>The files can be loaded straight into <b>Traktor Pro 4</b> like any stem file. Traktor shows the four stems with the names and colours you set.</p>
+
+<h2>5. Listen without Traktor: StemPlayer</h2>
+<p>To check a finished file before you load it into Traktor, start <b>StemPlayer.exe</b> (in the same folder) and click <b>OPEN</b>, or drop a <code>.stem.mp4</code> file onto its window. It plays all four stems in sync and shows them with the names and colours you set.</p>
+<div class="win" style="width:72%"><img src="g6.png"></div>
+<table>
+<tr><th style="width:28%">Control</th><th>What it does</th></tr>
+<tr><td><b>M</b> / <b>S</b> (per stem)</td><td>Mute this stem / play only this stem (solo). Keys: <code>1</code>–<code>4</code> mute, <code>Shift</code>+<code>1</code>–<code>4</code> solo.</td></tr>
+<tr><td>Slider (per stem)</td><td>Volume of this stem.</td></tr>
+<tr><td><b>STEMS / ORIGINAL / REST</b></td><td>Listen to the four stems mixed, to the master track, or to the master minus the stems (shows what is not in the stems).</td></tr>
+<tr><td><b>LOOP A / B / ON</b></td><td>Set a loop start and end and switch the loop on or off.</td></tr>
+<tr><td><b>MASTER</b></td><td>Overall volume; <b>CLIP</b> lights up when the sum is too loud.</td></tr>
+<tr><td><code>Space</code></td><td>Play / pause.</td></tr></table>
+<p>StemPlayer only reads the file and never changes it.</p>
+
+<h2>6. What we would like to know from your test</h2>
+<div class="ok"><ol style="margin:0">
+<li>Does it find your files with the naming scheme of your DVD folders?</li>
+<li>Does Traktor load the stem files, with the four stems (Front, LFE, Center, Rear), title, artist and cover?</li>
+<li>Optional: does the format “ALAC 24 bit, original sample rate (test)” play in Traktor?</li>
+<li>Is anything missing that you need for your 178 songs?</li></ol></div>
+
+<h2>7. If something goes wrong</h2>
+<p>Everything the program does is written to <code>logs\StemPacker.log</code> next to the program. Click <b>Show log</b> to open it, and please send us that file.</p>
+
+<h2>8. Folder contents</h2>
+<table>
+<tr><td><code>StemPacker.exe</code></td><td>the program</td></tr>
+<tr><td><code>StemPlayer.exe</code></td><td>player to listen to finished stem files (section 5)</td></tr>
+<tr><td><code>StemPacker-User-Guide.pdf</code></td><td>this guide</td></tr>
+<tr><td><code>README.txt</code> / <code>LIESMICH.txt</code></td><td>short guide (English / German)</td></tr>
+<tr><td><code>Example\</code></td><td>three short test songs in the 5.1 DVD naming scheme</td></tr>
+<tr><td><code>lang\</code></td><td>language files (English, Spanish; German is built in)</td></tr>
+<tr><td><code>tools\ffmpeg.exe</code></td><td>FFmpeg (LGPL), does the audio work, with licence and source info</td></tr>
+<tr><td><code>LICENSE.txt</code></td><td>licence of StemPacker (MIT)</td></tr></table>
+<p style="font-size:8.5pt;color:#777">Free software by Elospeed. FFmpeg is a trademark of Fabrice Bellard. Traktor is a trademark of Native Instruments. StemPacker is not affiliated with Native Instruments.</p>
+</body></html>

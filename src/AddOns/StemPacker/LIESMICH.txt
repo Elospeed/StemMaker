@@ -1,0 +1,94 @@
+Elospeed StemPacker 0.1 (Test)  -  von Elospeed  (ko-fi.com/elospeed)
+=====================================================================
+
+Macht aus fertigen Einzelspuren Traktor-Stem-Dateien (.stem.mp4), OHNE KI
+und im Stapel. Pro Song braucht es einen Master und bis zu vier Stems,
+z. B. aus der DAW, aus 5.1-DVDs oder aus einem anderen Trennprogramm.
+Aus jedem Song wird eine Datei  <Song>.stem.mp4.  English: README.txt
+
+
+SO GEHT'S
+---------
+1. Den ganzen Ordner entpacken. Der Ordner "tools" mit ffmpeg.exe und der
+   Ordner "lang" müssen neben StemPacker.exe bleiben.
+   (Im StemMaker-Paket liegt der StemPacker unter AddOns\ und nimmt das
+   ffmpeg von StemMaker.)
+2. StemPacker.exe starten. Kommt "Der Computer wurde durch Windows
+   geschützt" (Programm ist nicht signiert): "Weitere Informationen" ->
+   "Trotzdem ausführen".
+3. Vorlage wählen oder eigene Namensmuster eintragen, dann die Ordner
+   angeben (Knopf "..." oder Ordner aufs Fenster ziehen).
+4. "Songs suchen": die Liste zeigt jeden Song, wie viele Dateien gefunden
+   wurden und was fehlt.
+5. "Alle packen". Fertig: die Stem-Dateien lassen sich direkt in Traktor
+   laden.
+6. Zum Anhören ohne Traktor: StemPlayer.exe starten und eine fertige
+   .stem.mp4 öffnen. M / S schalten jeden Stem stumm oder solo.
+
+
+NAMENSMUSTER
+------------
+Für Master und Stem 1 bis 4 gibt es je einen Ordner und ein Muster. Der
+Stern * steht für den Songnamen, die Dateiendung gehört nicht dazu.
+Gross-/Kleinschreibung spielt keine Rolle.
+
+  Beispiel 5.1-DVD (zwei Ordner):
+    Master:  Ordner 1   "* (DOWNMIX #1)"   findet  "Hello (DOWNMIX #1).wav"
+    Stem 1:  Ordner 2   "* (A)"            findet  "Hello (A).wav"
+    Stem 2:  leer       "* (B)"            ...
+  Ergebnis:  Hello.stem.mp4  mit den Stems Front, LFE, Center, Rear.
+
+  Beispiel DAW-Export (ein Ordner):
+    Master "*", Stems "*_drums", "*_bass", "*_other", "*_vocals"
+    Eine Datei, die zu einem Stem-Muster passt, zählt nie als Master.
+
+Ein leerer Ordner bedeutet "wie die Zeile darüber" (Stem 1 wie Master,
+Stem 2 wie Stem 1 usw.). Ein zweiter Stern im Muster steht für beliebigen
+Text, der nicht zum Songnamen gehört.
+
+Was im Dateinamen steht (A, B, _drums ...), dient nur zum Erkennen. In der
+fertigen Datei stehen Name und Farbe jedes Stems so, wie sie rechts
+eingestellt sind; Traktor zeigt sie direkt an.
+
+
+EINSTELLUNGEN
+-------------
+- Ziel: neben die Master-Datei oder in einen eigenen Ordner (Unterordner
+  werden übernommen).
+- Format: AAC 320 kbit/s (wie Traktor-Stems), ALAC verlustfrei 16 Bit /
+  44,1 kHz, oder ALAC 24 Bit mit Original-Abtastrate (TEST: in Traktor
+  noch nicht geprüft, bitte zuerst mit einem Song ausprobieren).
+- Master aus den Stems mischen: für Spuren ohne fertigen Master. Die Stems
+  werden ohne Pegeländerung zusammengemischt.
+- Fehlende Stems still füllen: sonst wird ein Song mit fehlendem Stem
+  übersprungen.
+- Cover aus dem Ordner: hat die Master-Datei kein Cover, wird
+  <Song>.jpg, cover.jpg, folder.jpg oder front.jpg genommen.
+- Vorhandene überschreiben: sonst werden fertige Songs übersprungen.
+Tags (Titel, Interpret, Album, BPM, Tonart ...) und Cover kommen aus der
+Master-Datei. Hat sie keinen Titel, wird der Songname eingetragen.
+Gespeichert in StemPacker.ini neben dem Programm.
+
+
+WENN ETWAS NICHT KLAPPT
+-----------------------
+Alles, was das Programm tut, steht in logs\StemPacker.log. "Log anzeigen"
+öffnet die Datei; bitte diese schicken.
+
+
+INHALT DES ORDNERS
+------------------
+  StemPacker.exe              das Programm
+  StemPlayer.exe              Player für fertige Stem-Dateien (stumm/solo)
+  LIESMICH.txt / README.txt   diese Anleitung (Deutsch / Englisch)
+  StemPacker-User-Guide.pdf   ausführliche Anleitung mit Bildern (Englisch)
+  Example\                    3 kurze Test-Songs (Testtöne) zum Ausprobieren
+  LICENSE.txt                 Lizenz (MIT)
+  lang\                       Sprachdateien (Englisch, Spanisch)
+  tools\ffmpeg.exe            FFmpeg (LGPL), macht die eigentliche Tonarbeit
+  tools\FFMPEG-LICENSE.txt    Lizenz von FFmpeg
+  tools\FFMPEG-SOURCE.txt     Quellcode von FFmpeg
+
+Freie Software von Elospeed. FFmpeg ist eine Marke von Fabrice Bellard,
+https://ffmpeg.org - das Programm startet ffmpeg.exe als eigenes Programm.
+Traktor ist eine Marke von Native Instruments.
