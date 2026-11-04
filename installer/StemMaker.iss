@@ -74,6 +74,13 @@ ShowLanguageDialog=no
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+Name: "es"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "fr"; MessagesFile: "compiler:Languages\French.isl"
+Name: "ptbr"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"
+Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "pl"; MessagesFile: "compiler:Languages\Polish.isl"
 
 [CustomMessages]
 de.StartPlayer=StemPlayer (Stem-Dateien anhören)
@@ -82,6 +89,27 @@ de.StartTagger=StemTagger (Titel und Cover in Stem-Dateien setzen)
 en.StartTagger=StemTagger (set title and cover in stem files)
 de.AskDeleteData=Sollen auch die heruntergeladenen Modelle, ffmpeg, die Einstellungen und die Logs gelöscht werden?%n%nBei „Nein“ bleiben sie im Ordner%n%1%nund werden bei einer späteren Installation wieder benutzt.
 en.AskDeleteData=Also delete the downloaded models, ffmpeg, the settings and the logs?%n%nIf you choose "No", they stay in the folder%n%1%nand are used again by a later installation.
+es.StartPlayer=StemPlayer (escuchar archivos stem)
+es.StartTagger=StemTagger (poner título y portada en archivos stem)
+es.AskDeleteData=¿Borrar también los modelos descargados, ffmpeg, los ajustes y los registros?%n%nSi eliges «No», se quedan en la carpeta%n%1%ny se vuelven a usar en una instalación posterior.
+fr.StartPlayer=StemPlayer (écouter des fichiers stem)
+fr.StartTagger=StemTagger (titre et pochette des fichiers stem)
+fr.AskDeleteData=Supprimer aussi les modèles téléchargés, ffmpeg, les paramètres et les journaux ?%n%nSi vous choisissez « Non », ils restent dans le dossier%n%1%net seront réutilisés lors d'une installation ultérieure.
+ptbr.StartPlayer=StemPlayer (ouvir arquivos stem)
+ptbr.StartTagger=StemTagger (título e capa em arquivos stem)
+ptbr.AskDeleteData=Excluir também os modelos baixados, o ffmpeg, as configurações e os logs?%n%nSe você escolher "Não", eles ficam na pasta%n%1%ne serão usados de novo em uma instalação futura.
+it.StartPlayer=StemPlayer (ascoltare file stem)
+it.StartTagger=StemTagger (titolo e copertina nei file stem)
+it.AskDeleteData=Eliminare anche i modelli scaricati, ffmpeg, le impostazioni e i log?%n%nScegliendo "No" restano nella cartella%n%1%ne verranno riutilizzati in un'installazione successiva.
+ja.StartPlayer=StemPlayer (ステムファイルを再生)
+ja.StartTagger=StemTagger (ステムファイルのタイトルとカバーを設定)
+ja.AskDeleteData=ダウンロードしたモデル、ffmpeg、設定、ログも削除しますか?%n%n「いいえ」を選ぶと、それらはフォルダー%n%1%nに残り、次回のインストールで再び使われます。
+nl.StartPlayer=StemPlayer (stem-bestanden beluisteren)
+nl.StartTagger=StemTagger (titel en hoes in stem-bestanden zetten)
+nl.AskDeleteData=Ook de gedownloade modellen, ffmpeg, de instellingen en de logs verwijderen?%n%nBij "Nee" blijven ze in de map%n%1%nen worden ze bij een latere installatie opnieuw gebruikt.
+pl.StartPlayer=StemPlayer (odsłuch plików stem)
+pl.StartTagger=StemTagger (tytuł i okładka w plikach stem)
+pl.AskDeleteData=Czy usunąć także pobrane modele, ffmpeg, ustawienia i logi?%n%nPo wybraniu „Nie” pozostaną w folderze%n%1%ni zostaną ponownie użyte przy późniejszej instalacji.
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked

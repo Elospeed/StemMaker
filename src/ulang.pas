@@ -26,7 +26,7 @@
         msgstr "Add files..."
 
   NEUE SPRACHE HINZUFÜGEN
-  lang\StemMaker.pot (Vorlage mit allen Texten) nach z.B. lang\fr.po
+  lang\StemMaker.pot (Vorlage mit allen Texten) nach z.B. lang\sv.po
   kopieren, mit Poedit übersetzen, fertig. StemMaker findet die Datei beim
   nächsten Start von selbst und bietet die Sprache zur Auswahl an.
 
@@ -58,12 +58,16 @@ function LangLoad(const Code: string): Boolean;
 function LangCode: string;
 { Ordner mit den Sprachdateien: <Programmordner>\lang\ }
 function LangDir: string;
-{ Sprache von Windows: 'de' wenn Windows deutsch ist, sonst 'en' }
+{ Sprache von Windows, wenn es sie in lang\ gibt (z.B. 'de', 'fr'), sonst 'en' }
 function LangSystemDefault: string;
 { alle verfügbaren Sprachen (immer mit 'de'), z.B. ['de', 'en'] }
 function LangAvailable: TStringList;
 { Name einer Sprache in ihrer eigenen Sprache, z.B. 'en' -> 'English' }
 function LangDisplayName(const Code: string): string;
+
+{ Schrift mit fester Breite für Log-Felder: Consolas hat keine japanischen
+  Zeichen, deshalb bei Japanisch "MS Gothic" (auf jedem japanischen Windows) }
+function MonoFontName: string;
 
 implementation
 
@@ -242,22 +246,44 @@ end;
 { ---------------------------------------------------------------------------
   Windows-Sprache: GetUserDefaultUILanguage liefert z.B. $0807 (Deutsch
   Schweiz) oder $0409 (Englisch USA). Die unteren 10 Bit sind die
-  Hauptsprache: $07 = Deutsch.
+  Hauptsprache: $07 = Deutsch, $0C = Französisch usw. Vorgeschlagen wird
+  eine Sprache nur, wenn es lang\<code>.po dazu gibt - sonst Englisch.
   --------------------------------------------------------------------------- }
 {$IFDEF WINDOWS}
 function GetUserDefaultUILanguage: Word; stdcall; external 'kernel32.dll';
 {$ENDIF}
 
 function LangSystemDefault: string;
-begin
-  Result := 'en';
+var
+  C: string;
   {$IFDEF WINDOWS}
-  if (GetUserDefaultUILanguage and $3FF) = $07 then
-    Result := 'de';
-  {$ELSE}
-  if Pos('de', LowerCase(GetEnvironmentVariable('LANG'))) = 1 then
-    Result := 'de';
+  Id: Word;
   {$ENDIF}
+begin
+  C := 'en';
+  {$IFDEF WINDOWS}
+  Id := GetUserDefaultUILanguage;
+  case Id and $3FF of
+    $07: C := 'de';
+    $0A: C := 'es';
+    $0C: C := 'fr';
+    $10: C := 'it';
+    $11: C := 'ja';
+    $13: C := 'nl';
+    $15: C := 'pl';
+    { Portugiesisch: $0416 = Brasilien, $0816 = Portugal (bekommt vorerst
+      auch die brasilianische Übersetzung, besser als Englisch) }
+    $16: C := 'pt_br';
+  end;
+  {$ELSE}
+  C := LowerCase(Copy(GetEnvironmentVariable('LANG'), 1, 5));   // z.B. "pt_br"
+  if C <> 'pt_br' then
+    C := Copy(C, 1, 2);
+  {$ENDIF}
+  if (C = 'de') or FileExists(LangDir + C + '.po') then
+    Result := C
+  else
+    Result := 'en';
 end;
 
 function LangAvailable: TStringList;
@@ -279,6 +305,14 @@ begin
   end;
 end;
 
+function MonoFontName: string;
+begin
+  if LangCode = 'ja' then
+    Result := 'MS Gothic'
+  else
+    Result := 'Consolas';
+end;
+
 function LangDisplayName(const Code: string): string;
 begin
   case LowerCase(Code) of
@@ -289,6 +323,8 @@ begin
     'es': Result := 'Español';
     'nl': Result := 'Nederlands';
     'pt': Result := 'Português';
+    'pt_br': Result := 'Português (Brasil)';
+    'ja': Result := '日本語';
     'pl': Result := 'Polski';
     'tr': Result := 'Türkçe';
   else
