@@ -1,8 +1,8 @@
-Elospeed StemTagger 1.0.1  -  von Elospeed  (ko-fi.com/elospeed)
+Elospeed StemTagger 1.2.0  -  von Elospeed  (ko-fi.com/elospeed)
 =================================================================
 
 Setzt Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in
-Traktor-Stem-Dateien (.stem.mp4) - das, was Traktor und Mixxx anzeigen und
+Traktor-Stem-Dateien (.stem.mp4) und MP3-Dateien - das, was Traktor und Mixxx anzeigen und
 wonach man dort sucht. BPM und Tonart ermitteln Traktor und Mixxx beim
 Analysieren selbst; Werte, die schon in der Datei stehen, bleiben erhalten.
 
@@ -18,9 +18,10 @@ INSTALLATION
   In StemMaker ist der StemTagger schon dabei (AddOns\StemTagger.exe,
   Knopf in der AddOn-Leiste). Ohne StemMaker: StemTagger-<Version>.zip
   von der Release-Seite entpacken und StemTagger.exe starten, der Ordner
-  lang\ muss daneben bleiben. Die Sprache (Deutsch, Englisch, Spanisch)
-  kommt aus den Einstellungen von StemMaker, sonst aus der Sprache von
-  Windows.
+  lang\ muss daneben bleiben. Die Sprache kommt aus den Einstellungen
+  von StemMaker, sonst aus der Sprache von Windows (Deutsch, Englisch,
+  Spanisch, Französisch, Portugiesisch, Italienisch, Japanisch,
+  Niederländisch, Polnisch; jede andere Sprache bekommt Englisch).
 
 BEDIENUNG
   - Stem-Dateien oder ganze Ordner auf das Fenster ziehen
@@ -60,8 +61,19 @@ HINWEIS ZU TRAKTOR
   zurückschreiben. Die Datei darf beim Speichern nicht in Traktor
   geladen sein.
 
-WAS (NOCH) NICHT GEHT
-  MP3-Dateien kommen in einer späteren Version.
+MP3-DATEIEN (ab 1.1)
+  MP3s werden wie Stem-Dateien geladen (auch beim Durchsuchen von
+  Ordnern) und bekommen dieselben Felder. Die Tags stehen im ID3v2-Block
+  am Anfang der Datei. Geändert werden nur die Einträge der geänderten
+  Felder. Die Audiodaten und alles andere im Block bleiben Byte für Byte
+  gleich, besonders Traktors eigene Daten (Beatgrid, Cue-Punkte, Analyse
+  im Eintrag "TRAKTOR4"). Hat Traktor die Datei schon analysiert,
+  zeigt die Spalte Traktor "ja" und die Spalte Status "MP3 OK, mit
+  Traktor-Daten".
+  Geschrieben wird in der ID3-Version, die schon in der Datei steht
+  (2.3 oder 2.4); MP3s ohne Tags bekommen ID3v2.3. Sehr alte Tags
+  (ID3v2.2) und beschädigte Tags werden nur angezeigt, nicht geändert.
+  Ein alter ID3v1-Tag am Dateiende bleibt, wie er ist.
 
 PROTOKOLL
   logs\StemTagger.log neben der exe (bei schreibgeschütztem Ordner in

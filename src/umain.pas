@@ -215,6 +215,8 @@ type
     FMenuTags: TMenuItem;
     { Seitenleiste mit den AddOns (statt Knopf "Anhören") }
     FAddOnBar: TAddOnBar;
+    FInhalt: TPanel;               // Liste bis Log, links neben der Leiste
+    FZeigtSchaetzung: Boolean;     // lblTotal zeigt gerade die Schätzung vor dem Start
     procedure SetupAddOnBar;
     procedure AddOnTaggerClick(Sender: TObject);
     function  SelectedOutFiles: TStringList;
@@ -352,6 +354,68 @@ begin
     Result := Format('%d:%.2d:%.2d', [Sec div 3600, (Sec mod 3600) div 60, Sec mod 60])
   else
     Result := Format('%d:%.2d', [Sec div 60, Sec mod 60]);
+end;
+
+{ ---------------------------------------------------------------------------
+  Uhrzeit, zu der die ganze Liste ungefähr fertig ist:
+    "18:40", "morgen 03:10" oder "06.11. 14:05" (ab übermorgen)
+  RestMS = geschätzte Restzeit in Millisekunden.
+  --------------------------------------------------------------------------- }
+function FinishClock(RestMS: Double): string;
+var
+  T: TDateTime;
+  Tage: Integer;
+begin
+  T := SysUtils.Now + RestMS / MSecsPerDay;
+  Tage := Trunc(T) - Trunc(SysUtils.Now);
+  if Tage <= 0 then
+    Result := FormatDateTime('hh:nn', T)
+  else if Tage = 1 then
+    Result := Format(_('morgen %s'), [FormatDateTime('hh:nn', T)])
+  else
+    Result := FormatDateTime('dd.mm. hh:nn', T);
+end;
+
+{ Text ins Label, wenn möglich mit "fertig ca. 18:40" dahinter.
+  Reihenfolge: langer Text + Uhrzeit, kurzer Text + Uhrzeit (was im kurzen
+  fehlt, kommt in den Tooltip), langer Text ohne Uhrzeit, zuletzt nur der
+  kurze Text (schmales Fenster, lange Sprache, grosse Skalierung). Was
+  nicht in die Zeile passt, steht im Tooltip. }
+procedure SetTextWithClock(L: TLabel; const Main, Short: string;
+  RestMS: Double; const BaseHint: string);
+var
+  Clock, H: string;
+
+  function Passt(const S: string): Boolean;
+  begin
+    Result := L.Canvas.TextWidth(S) <= L.ClientWidth;
+  end;
+
+  procedure Setze(const S, Extra: string);
+  begin
+    L.Caption := S;
+    H := BaseHint;
+    if Extra <> '' then
+      if H <> '' then H := Extra + LineEnding + H else H := Extra;
+    L.Hint := H;
+    L.ShowHint := H <> '';
+  end;
+
+begin
+  if RestMS <= 0 then
+  begin
+    Setze(Main, '');
+    Exit;
+  end;
+  Clock := Format(_('fertig ca. %s'), [FinishClock(RestMS)]);
+  if Passt(Main + ', ' + Clock) then
+    Setze(Main + ', ' + Clock, '')
+  else if (Short <> '') and Passt(Short + ', ' + Clock) then
+    Setze(Short + ', ' + Clock, Main)
+  else if Passt(Main) or (Short = '') then
+    Setze(Main, Clock)
+  else
+    Setze(Short, Main + ', ' + Clock);   // nicht einmal der lange Text passt
 end;
 
 { ---------------------------------------------------------------------------
@@ -558,6 +622,7 @@ var
   I: Integer;
 begin
   TranslateComponent(Self);   // Texte aus umain.lfm übersetzen (uLangUI)
+  memLog.Font.Name := MonoFontName;   // Consolas hat keine japanischen Zeichen
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');
@@ -1198,11 +1263,17 @@ begin
     TotalRest := Format(_('ca. %s'), [FormatDuration(Round(TotalRestMS))]);
   end
   else
+  begin
     TotalRest := _('wird berechnet ...');
+    TotalRestMS := 0;                            // noch keine Uhrzeit zeigen
+  end;
   Current := FFilesDone + 1;
   if Current > FTotal then Current := FTotal;
-  lblTotal.Caption := Format(_('Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s'),
-    [Current, FTotal, FormatDuration(RunMS), TotalRest]);
+  SetTextWithClock(lblTotal,
+    Format(_('Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s'),
+      [Current, FTotal, FormatDuration(RunMS), TotalRest]),
+    Format(_('Gesamt (Datei %d von %d):  verbleibend %s'),
+      [Current, FTotal, TotalRest]), TotalRestMS, '');
 end;
 
 procedure TfrmMain.tmrTimeTimer(Sender: TObject);
@@ -1365,6 +1436,11 @@ begin
   lvFiles.Items.Clear;
   QueueDelete;                     // gespeicherte Liste ebenfalls löschen
   lblTotal.Caption := '';
+  lblTotal.Hint := '';
+  { Gesamtbalken blieb sonst voll grün stehen (gefunden 16.10.2026) }
+  pbTotal.Position := 0;
+  lblFileTime.Caption := '';
+  pbFile.Position := 0;
 end;
 
 { "Stem prüfen...": zeigt Anzahl Spuren und die Stem-Infos einer Datei an }
@@ -1813,9 +1889,32 @@ var
   N: Integer;
 begin
   btnListen.Visible := False;
-  FAddOnBar := TAddOnBar.Create(Self);
-  FAddOnBar.Parent := Self;
-  FAddOnBar.Align := alRight;
+  { Die Leiste geht als Seitenspalte von der Knopfleiste oben bis zur
+    Fusszeile (Wunsch Speedy 30.10.2026: wie ein angedocktes Seitenfenster).
+    Dazu kommen Liste, Einstellungen, Start-Zeile und Log in ein eigenes
+    Panel; sonst nehmen alTop/alBottom die ganze Breite und die Leiste ist
+    nur so hoch wie die Liste. }
+  DisableAlign;
+  try
+    FInhalt := TPanel.Create(Self);
+    FInhalt.BevelOuter := bvNone;
+    FInhalt.ParentColor := True;
+    FInhalt.SetBounds(0, pbAccent.Top + pbAccent.Height, ClientWidth,
+      pnlFoot.Top - pbAccent.Top - pbAccent.Height);
+    FInhalt.Parent := Self;
+    FInhalt.Align := alClient;
+    { von unten nach oben einhängen, damit die alBottom-Reihenfolge bleibt }
+    memLog.Parent := FInhalt;
+    splLog.Parent := FInhalt;
+    pnlRun.Parent := FInhalt;
+    gbSettings.Parent := FInhalt;
+    lvFiles.Parent := FInhalt;
+    FAddOnBar := TAddOnBar.Create(Self);
+    FAddOnBar.Parent := Self;
+    FAddOnBar.Align := alRight;
+  finally
+    EnableAlign;
+  end;
   Dir := AppBaseDir + 'AddOns' + PathDelim;
   N := 0;
   if FAddOnBar.AddTile(Dir + ExeName('StemPlayer'), 'StemPlayer',
@@ -1827,6 +1926,13 @@ begin
        @AddOnTaggerClick) <> nil then
     Inc(N);
   FAddOnBar.Visible := N > 0;
+  { Einstellungen brauchen ihre volle Breite neben der Leiste }
+  if FAddOnBar.Visible then
+  begin
+    Constraints.MinWidth := Constraints.MinWidth + FAddOnBar.Width;
+    if Width < Constraints.MinWidth then
+      Width := Constraints.MinWidth;
+  end;
 end;
 
 { StemTagger aus der Seitenleiste: markierte fertige Dateien, sonst die
@@ -1985,6 +2091,7 @@ begin
   SaveQueueNow;
   lblFileTime.Caption := '';
   lblTotal.Caption := '';
+  FZeigtSchaetzung := False;
   lblTotal.Font.Color := clDefault;     // Farbe der letzten Zusammenfassung weg
   tmrTime.Interval := 1000;
   tmrTime.Enabled := True;
@@ -2022,6 +2129,7 @@ begin
   if not FUserCancelled then
     TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
+  lblTotal.Hint := '';                  // "fertig ca. ..." gilt nicht mehr
   if FUserCancelled then
     lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total])
   else
@@ -2434,9 +2542,10 @@ var
   Audio: Int64;
   Est: Double;
   Measured: Boolean;
-  S: string;
+  S, H, Kurz: string;
 begin
   if FWorker <> nil then Exit;     // während der Arbeit zeigt UpdateTimes die Zeiten
+  FZeigtSchaetzung := False;
   lblTotal.Font.Color := clDefault;  // grün/rot gilt nur für die Zusammenfassung
   Open := 0;
   Unknown := 0;
@@ -2467,21 +2576,26 @@ begin
   Est := Audio * RateMsPerMs * Open / (Open - Unknown);
   S := Format(_('%d Dateien offen, %s Musik - Dauer ca. %s'),
     [Open, FormatDuration(Audio), FormatDuration(Round(Est))]);
+  Kurz := S;                       // ohne Zusatz, falls die Uhrzeit sonst nicht passt
   { kurzer Zusatz im Text, die Erklärung im Hinweis (Maus drüber) }
   if Measured then
   begin
     S := S + ' ' + _('(Tempo dieses PCs)');
-    lblTotal.Hint := _('Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde.');
+    H := _('Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde.');
   end
   else
   begin
     S := S + ' ' + _('(grob geschätzt)');
-    lblTotal.Hint := _('Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs.');
+    H := _('Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs.');
   end;
   if Unknown > 0 then
+  begin
     S := S + Format(_(' - %d Längen noch unbekannt'), [Unknown]);
-  lblTotal.ShowHint := True;
-  lblTotal.Caption := S;
+    Kurz := '';                    // die Warnung soll sichtbar bleiben
+  end;
+  { mit Uhrzeit "fertig ca. 18:40", wenn jetzt gestartet wird (Speedy 30.10.) }
+  SetTextWithClock(lblTotal, S, Kurz, Est, H);
+  FZeigtSchaetzung := True;
 end;
 
 { ---------------------------------------------------------------------------
@@ -2769,11 +2883,9 @@ procedure TfrmMain.LogKleinerBeiPlatzmangel(Data: PtrInt);
 var
   Fehlt: Integer;
 begin
-  { Platz für die Liste und, wenn möglich, die AddOn-Knöpfe in voller Grösse }
   Fehlt := Scale96ToForm(150);
   if (FAddOnBar <> nil) and FAddOnBar.Visible then
   begin
-    if FAddOnBar.FullHeight > Fehlt then Fehlt := FAddOnBar.FullHeight;
     FAddOnBar.ArrangeTiles;
   end;
   Fehlt := Fehlt - lvFiles.Height;
@@ -2790,6 +2902,10 @@ end;
 procedure TfrmMain.FormResizeDrop(Sender: TObject);
 begin
   lblDrop.Visible := lblDrop.Left + lblDrop.Width <= lblDrop.Parent.ClientWidth;
+  { breiteres Fenster: passt "fertig ca. ..." jetzt in die Zeile?
+    Während der Arbeit macht das der Sekunden-Timer (UpdateTimes). }
+  if (FWorker = nil) and FZeigtSchaetzung then
+    UpdateEstimate;
 end;
 
 procedure TfrmMain.FreeWorker(Data: PtrInt);

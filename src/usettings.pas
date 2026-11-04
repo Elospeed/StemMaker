@@ -155,11 +155,23 @@ procedure LoadGearGlyph(Btn: TBitBtn);
 var
   MS: TMemoryStream;
   Png: TPortableNetworkGraphic;
+  Px: Integer;
 begin
+  { Grösse passend zur Windows-Skalierung (20 Pixel bei 100 %). Das Symbol
+    wird von der LCL nicht mitskaliert, darum hier selbst die passende
+    Grösse wählen (sonst bleibt es bei 200 % klein, gesehen 30.10.2026). }
+  Px := MulDiv(20, Screen.PixelsPerInch, 96);
   MS := TMemoryStream.Create;
   Png := TPortableNetworkGraphic.Create;
   try
-    MS.WriteBuffer(GEAR_PNG[0], Length(GEAR_PNG));
+    if Px >= 38 then
+      MS.WriteBuffer(GEAR_PNG_40[0], Length(GEAR_PNG_40))
+    else if Px >= 28 then
+      MS.WriteBuffer(GEAR_PNG_30[0], Length(GEAR_PNG_30))
+    else if Px >= 23 then
+      MS.WriteBuffer(GEAR_PNG_25[0], Length(GEAR_PNG_25))
+    else
+      MS.WriteBuffer(GEAR_PNG_20[0], Length(GEAR_PNG_20));
     MS.Position := 0;
     Png.LoadFromStream(MS);
     Btn.Glyph.Assign(Png);

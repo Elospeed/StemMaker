@@ -6,8 +6,19 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.1.2 – aún no publicada
+## 2.2 – 4 de noviembre de 2026
+### Nuevo
+- Seis idiomas nuevos: francés, portugués (Brasil), italiano, japonés, neerlandés, polaco
+- Barra de AddOns como columna lateral en toda la altura de la ventana
+- Hora a la que estará lista toda la lista ("listo aprox. 18:40")
+- StemTagger 1.2.0: etiquetas y portada también para MP3, los cues de Traktor se conservan
+### Mejorado
+- El engranaje de "Más ajustes..." crece con el escalado de pantalla
+- Los nombres de los AddOns se ven más tiempo cuando hay poco espacio
+- Botones Sí/No de los mensajes en el idioma elegido
 ### Corregido
+- Español: etiqueta del modelo de separación cortada
+- La barra total seguía verde tras "Vaciar lista"
 - Botones de AddOns (StemPlayer, StemTagger) tapados con ventana pequeña o escalado de pantalla grande: ahora los botones se hacen más pequeños en lugar de cortarse
 - StemPlayer 1.8.2: reproductor CD al 125 % con el botón Ko-fi y el marco MASTER cortados
 

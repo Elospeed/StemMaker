@@ -13,13 +13,16 @@
 
   Ist die Leiste niedriger als alle Knöpfe (kleines Fenster, grosse
   Anzeigeskalierung, Log hochgezogen), werden die Knöpfe kleiner statt
-  unten verdeckt: erst ohne Namen, dann kleinere Symbole, zuletzt zwei
-  nebeneinander. Der Name steht dann im Tooltip.
+  unten verdeckt: erst ohne Überschrift, dann ohne Namen, dann kleinere
+  Symbole, zuletzt zwei nebeneinander. Fehlt der Name, steht er im Tooltip.
+  Wird die Leiste wieder höher, kommen die Namen zurück.
 
   Versionen:
     1.0  (27.10.2026)  Erste Version (Wunsch Speedy: Leiste statt "Anhören")
     1.1  (30.10.2026)  Knöpfe werden kleiner, statt bei kleinem Fenster
                        verdeckt zu werden (Meldung Speedy)
+    1.2  (04.11.2026)  Namen bleiben länger sichtbar (erst die Überschrift
+                       weg), Leiste als Seitenspalte über die ganze Höhe
   ============================================================================ }
 unit uaddonbar;
 
@@ -83,8 +86,11 @@ type
   end;
 
 const
-  STUFEN: array[0..3] of TTileStufe = (
+  STUFEN: array[0..4] of TTileStufe = (
     (Oben: 30; Hoehe: 74; Abstand: 6; Symbol: 40; MitTitel: True;  MitName: True;  ZweiSpalten: False),
+    { zuerst nur die Überschrift "AddOns" weglassen, die Namen bleiben,
+      solange es irgendwie geht (Speedy 30.10.2026) }
+    (Oben: 6;  Hoehe: 74; Abstand: 4; Symbol: 40; MitTitel: False; MitName: True;  ZweiSpalten: False),
     (Oben: 6;  Hoehe: 50; Abstand: 4; Symbol: 40; MitTitel: False; MitName: False; ZweiSpalten: False),
     (Oben: 4;  Hoehe: 34; Abstand: 2; Symbol: 26; MitTitel: False; MitName: False; ZweiSpalten: False),
     (Oben: 4;  Hoehe: 34; Abstand: 2; Symbol: 26; MitTitel: False; MitName: False; ZweiSpalten: True));

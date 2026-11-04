@@ -6,8 +6,19 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
-## 2.1.2 – noch nicht veröffentlicht
+## 2.2 – 4. November 2026
+### Neu
+- Sechs neue Sprachen: Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch, Polnisch
+- AddOn-Leiste als Seitenspalte über die ganze Fensterhöhe
+- Uhrzeit, wann die ganze Liste fertig ist („fertig ca. 18:40“)
+- StemTagger 1.2.0: Tags und Cover auch für MP3, Traktors Cues bleiben erhalten
+### Verbessert
+- Zahnrad „Weitere Einstellungen...“ wächst mit der Anzeigeskalierung
+- AddOn-Namen bleiben bei wenig Platz länger sichtbar
+- Ja/Nein-Knöpfe in Meldungen in der gewählten Sprache
 ### Behoben
+- Spanisch: Beschriftung des Trenn-Modells abgeschnitten
+- Gesamtbalken blieb nach „Liste leeren“ grün
 - AddOn-Knöpfe (StemPlayer, StemTagger) bei kleinem Fenster oder grosser Anzeigeskalierung verdeckt: die Knöpfe werden jetzt kleiner statt abgeschnitten
 - StemPlayer 1.8.2: CD-Player bei 125 % mit abgeschnittenem Ko-fi-Knopf und MASTER-Rahmen
 

@@ -7,12 +7,32 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.1.2 – noch nicht veröffentlicht
+## 2.2 – 4. November 2026
 
-### Anzeigeskalierung
+### Neu
+- **Sechs neue Sprachen:** Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch, für StemMaker, StemPlayer, StemTagger und das Setup. Beim ersten Start schlägt StemMaker die Sprache von Windows vor, wenn es sie gibt. Die Übersetzungen sind maschinell erstellt; Verbesserungen von Muttersprachlern sind willkommen.
+- **AddOn-Leiste als Seitenspalte:** Die AddOns (StemPlayer, StemTagger) stehen rechts in einer eigenen Spalte von der Knopfleiste bis zur Fusszeile, wie ein angedocktes Seitenfenster. So sind sie auch bei kleinem Fenster und grosser Anzeigeskalierung ganz zu sehen.
+- **Uhrzeit, wann die Liste fertig ist:** Neben der geschätzten Dauer steht „fertig ca. 18:40“ (oder „morgen 03:10“), vor dem Start und während der Arbeit. Ist das Fenster zu schmal dafür, steht die Uhrzeit im Tooltip.
+- **StemTagger 1.2.0:** Tags und Cover jetzt auch für MP3-Dateien (Traktors Cues und Beatgrid bleiben erhalten), in neun Sprachen. Der StemTagger hat jetzt ein eigenes Repository (Elospeed/StemTagger) und kommt als AddOn mit.
+
+### Verbessert
+- **Zahnrad „Weitere Einstellungen...“** wird mit der Anzeigeskalierung grösser (war bei 200 % winzig).
+- **AddOn-Namen** bleiben bei wenig Platz länger sichtbar: zuerst verschwindet nur die Überschrift „AddOns“.
+- **Ja/Nein-Knöpfe** in Meldungen kommen aus der Sprachdatei (waren z. B. bei Spanisch englisch).
+
+### Behoben
+- Spanisch: „Modelo de separación:“ war im Hauptfenster abgeschnitten (jetzt „Modelo:“).
+- Nach „Liste leeren“ blieb der Gesamtbalken voll grün stehen.
+
+### Danke
+- Neu in der Danke-Liste im Info-Fenster: ptrex alias DJ Pretski unter den Spendern und Cuiusquemodi (Tests und Ideen zu 5.1-Stems).
+
+### Aus 2.1.2 (nicht separat veröffentlicht)
+
+#### Anzeigeskalierung
 - **AddOn-Leiste:** Bei kleinem Fenster, grosser Anzeigeskalierung (125–200 %) oder hochgezogenem Log waren die AddOn-Knöpfe (StemPlayer, StemTagger) unten verdeckt. Reicht die Höhe nicht, werden die Knöpfe jetzt kleiner: erst ohne Namen (der steht dann im Tooltip), dann mit kleineren Symbolen, zuletzt zwei nebeneinander. Beim Start macht das Log Platz, damit die Knöpfe möglichst in voller Grösse zu sehen sind.
 
-### StemPlayer 1.8.2
+#### StemPlayer 1.8.2
 - **CD-Player bei 125 %** (Meldung ptrex): Der Ko-fi-Knopf unten rechts war zu breit und am Fensterrand abgeschnitten, der untere Rahmen des MASTER-Felds verschwand unter der Fusszeile. Beides behoben.
 
 ## 2.1.1 – 30. Oktober 2026
