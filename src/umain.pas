@@ -378,8 +378,9 @@ end;
 
 { Text ins Label, wenn möglich mit "fertig ca. 18:40" dahinter.
   Reihenfolge: langer Text + Uhrzeit, kurzer Text + Uhrzeit (was im kurzen
-  fehlt, kommt in den Tooltip), sonst langer Text und die Uhrzeit nur im
-  Tooltip (schmales Fenster, lange Sprache, grosse Skalierung). }
+  fehlt, kommt in den Tooltip), langer Text ohne Uhrzeit, zuletzt nur der
+  kurze Text (schmales Fenster, lange Sprache, grosse Skalierung). Was
+  nicht in die Zeile passt, steht im Tooltip. }
 procedure SetTextWithClock(L: TLabel; const Main, Short: string;
   RestMS: Double; const BaseHint: string);
 var
@@ -411,8 +412,10 @@ begin
     Setze(Main + ', ' + Clock, '')
   else if (Short <> '') and Passt(Short + ', ' + Clock) then
     Setze(Short + ', ' + Clock, Main)
+  else if Passt(Main) or (Short = '') then
+    Setze(Main, Clock)
   else
-    Setze(Main, Clock);
+    Setze(Short, Main + ', ' + Clock);   // nicht einmal der lange Text passt
 end;
 
 { ---------------------------------------------------------------------------
