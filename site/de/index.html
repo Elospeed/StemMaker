@@ -44,7 +44,7 @@
   "inLanguage": "de",
   "url": "https://elospeed.github.io/StemMaker/de/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "2.1.1",
+  "softwareVersion": "2.2",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
@@ -76,7 +76,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Aus deinen MP3s werden<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden. Neu in 2.1: der StemTagger für Titel, Interpret und Cover deiner Stem-Dateien.</p>
+    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden. Neu in 2.2: neun Sprachen, eine AddOn-Seitenspalte und der StemTagger jetzt auch für MP3.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download für Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">Quellcode auf GitHub</a>
@@ -90,7 +90,7 @@
       <li>Bis 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.1.1 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.2 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
       <img src="../img/stemmaker-de.png" width="860" height="724" alt="StemMaker-Hauptfenster mit einer Liste von MP3-Dateien, die in Traktor-Stem-Dateien umgewandelt werden, rechts die AddOn-Leiste mit StemPlayer und StemTagger">
     </figure>
   </div>
@@ -121,7 +121,7 @@
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Nativ statt Python-Installation</h3><p>Die Trennung läuft nativ mit ONNX Runtime (Turbo) oder demucs.cpp statt über Python und PyTorch. Kein Python, kein CUDA und keine Treiber zu installieren, nichts im Hintergrund, kein Konto, keine Cloud. Startet in einer Sekunde, und deine Musik verlässt den PC nie.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club-Pegel und Bass-Fix</h3><p>Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, damit die Wellenformen gut lesbar sind und ein Stem im Set nicht plötzlich im Pegel abfällt. Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem, so wie bei Traktor. Kick und Bass bleiben dadurch satt.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Passt sich deinem PC an</h3><p>Prüft beim ersten Start, ob deine Grafikkarte hilft, und nimmt sie nur, wenn sie richtig und schneller rechnet, sonst rechnet der Prozessor. Hält den PC bei langen Läufen wach und fährt ihn am Ende auf Wunsch herunter.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Deutsch, Englisch und Spanisch</h3><p>StemMaker und der StemPlayer sprechen <strong>Deutsch, English und Español</strong>, ausgewählt beim ersten Start. Ein besonderer Dank geht an <strong>David GJ</strong> für die spanische Übersetzung! Alle Helfer stehen unter „Info“ im Reiter „Danke“.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Neun Sprachen</h3><p>StemMaker, StemPlayer und StemTagger sprechen <strong>Deutsch, English, Español, Français, Português (Brasil), Italiano, 日本語, Nederlands und Polski</strong>, ausgewählt beim ersten Start. Ein besonderer Dank geht an <strong>David GJ</strong> für die spanische Übersetzung! Alle Helfer stehen unter „Info“ im Reiter „Danke“.</p></div>
     </div>
   </div>
 </section>
@@ -185,11 +185,25 @@
 
 <section id="neu" class="alt">
   <div class="wrap">
+    <div style="margin-bottom:56px">
+      <span class="badge">Neu in 2.2</span>
+      <h2>Neun Sprachen und eine Seitenspalte für AddOns</h2>
+      <p class="sub">Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.2 mit einem Klick.</p>
+      <div class="soon">
+        <ul class="ticks">
+          <li><strong>Sechs neue Sprachen:</strong> Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch, für StemMaker, StemPlayer, StemTagger und das Setup. Beim ersten Start schlägt StemMaker die Sprache von Windows vor. Die neuen Übersetzungen sind maschinell erstellt, Verbesserungen von Muttersprachlern sind willkommen</li>
+          <li><strong>AddOn-Seitenspalte:</strong> StemPlayer und StemTagger stehen rechts in einer eigenen Spalte von der Knopfleiste bis zur Fusszeile, ganz sichtbar auch bei kleinem Fenster und grosser Anzeigeskalierung</li>
+          <li><strong>Wann ist die Liste fertig?</strong> Neben der geschätzten Dauer zeigt StemMaker jetzt die Uhrzeit, zum Beispiel „fertig ca. 18:40“ oder „morgen 03:10“</li>
+          <li><strong>StemTagger 1.2:</strong> Tags und Cover jetzt auch für <strong>MP3-Dateien</strong>, Traktors Cues und Beatgrid bleiben erhalten. Der StemTagger hat jetzt eine <a href="https://elospeed.github.io/StemTagger/de/">eigene Projektseite</a> und kommt weiterhin als AddOn mit</li>
+          <li>Kleinere Verbesserungen: Das Zahnrad wächst mit der Anzeigeskalierung, AddOn-Namen bleiben länger sichtbar, Ja/Nein-Knöpfe sind übersetzt</li>
+        </ul>
+      </div>
+    </div>
     <div class="split">
       <div>
-        <span class="badge">Neu in 2.1</span>
+        <span class="badge">Seit 2.1</span>
         <h2>StemTagger und CD-Player</h2>
-        <p class="sub" style="margin-bottom:0">Ein neues AddOn für deine Tags und ein neues Gesicht für den StemPlayer. Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.1.1 mit einem Klick. 2.1.1 korrigiert die Fenster aller Programme bei 125 bis 200 % Anzeigeskalierung.</p>
+        <p class="sub" style="margin-bottom:0">Ein neues AddOn für deine Tags und ein neues Gesicht für den StemPlayer.</p>
         <div class="soon">
           <h3>StemPlayer 1.8 im CD-Player-Design</h3>
           <ul class="ticks">
@@ -207,14 +221,14 @@
     <div class="split rev" style="margin-top:56px">
       <div>
         <div class="soon">
-          <h3>StemTagger 1.0: Titel, Interpret und Cover für <span style="white-space:nowrap">Stem-Dateien</span></h3>
+          <h3>StemTagger: Titel, Interpret und Cover für <span style="white-space:nowrap">Stem-Dateien</span> und MP3s</h3>
           <ul class="ticks">
             <li>Ein neues AddOn für Stem-Dateien (<code>.stem.mp4</code>): Es setzt <strong>Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover</strong>, also genau das, was Traktor und Mixxx anzeigen und wonach du dort suchst</li>
             <li>Ideal für Stem-Dateien <strong>ganz ohne Tags</strong>: Die Liste zeigt sofort, welchen Tracks <strong>Tags oder Cover fehlen</strong></li>
             <li><strong>Viele Dateien auf einmal</strong>: Ordner laden, mehrere Tracks markieren und Album oder Cover für alle gleichzeitig setzen. Ein Cover fügst du mit Strg+V ein oder ziehst es einfach aufs Fenster</li>
             <li><strong>Die Stems bleiben unangetastet</strong>: Neu geschrieben werden nur die Tags. Audio und die vier Stems bleiben bytegenau gleich. Getestet mit Traktor Pro 4 und Mixxx 2.6 Beta</li>
             <li>Startet direkt aus der neuen <strong>AddOn-Leiste</strong> in StemMaker, gleich neben der Dateiliste, oder per Rechtsklick „Tags bearbeiten...“</li>
-            <li>Brauchst du nur den StemTagger? Es gibt ihn auch <strong>einzeln als kleines ZIP</strong> auf der <a href="https://github.com/Elospeed/StemMaker/releases/latest">Release-Seite</a></li>
+            <li>Brauchst du nur den StemTagger? Es gibt ihn auch <strong>einzeln als kleines ZIP</strong> auf seiner <a href="https://elospeed.github.io/StemTagger/de/">Projektseite</a></li>
           </ul>
         </div>
       </div>
