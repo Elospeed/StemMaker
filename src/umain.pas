@@ -356,6 +356,57 @@ begin
 end;
 
 { ---------------------------------------------------------------------------
+  Uhrzeit, zu der die ganze Liste ungefähr fertig ist:
+    "18:40", "morgen 03:10" oder "06.11. 14:05" (ab übermorgen)
+  RestMS = geschätzte Restzeit in Millisekunden.
+  --------------------------------------------------------------------------- }
+function FinishClock(RestMS: Double): string;
+var
+  T: TDateTime;
+  Tage: Integer;
+begin
+  T := SysUtils.Now + RestMS / MSecsPerDay;
+  Tage := Trunc(T) - Trunc(SysUtils.Now);
+  if Tage <= 0 then
+    Result := FormatDateTime('hh:nn', T)
+  else if Tage = 1 then
+    Result := Format(_('morgen %s'), [FormatDateTime('hh:nn', T)])
+  else
+    Result := FormatDateTime('dd.mm. hh:nn', T);
+end;
+
+{ Text ins Label; das "fertig ca. 18:40" kommt nur dazu, wenn es in die
+  Breite passt (schmales Fenster, lange Sprache), sonst in den Tooltip. }
+procedure SetTextWithClock(L: TLabel; const Main: string; RestMS: Double;
+  const BaseHint: string);
+var
+  Clock, Full: string;
+begin
+  if RestMS <= 0 then
+  begin
+    L.Caption := Main;
+    L.Hint := BaseHint;
+    Exit;
+  end;
+  Clock := Format(_('fertig ca. %s'), [FinishClock(RestMS)]);
+  Full := Main + '   |   ' + Clock;
+  if L.Canvas.TextWidth(Full) <= L.ClientWidth then
+  begin
+    L.Caption := Full;
+    L.Hint := BaseHint;
+  end
+  else
+  begin
+    L.Caption := Main;
+    if BaseHint <> '' then
+      L.Hint := Clock + LineEnding + BaseHint
+    else
+      L.Hint := Clock;
+  end;
+  L.ShowHint := L.Hint <> '';
+end;
+
+{ ---------------------------------------------------------------------------
   TStemWorker
   --------------------------------------------------------------------------- }
 constructor TStemWorker.Create(AForm: TfrmMain; const ASettings: TStemSettings);
@@ -1199,11 +1250,15 @@ begin
     TotalRest := Format(_('ca. %s'), [FormatDuration(Round(TotalRestMS))]);
   end
   else
+  begin
     TotalRest := _('wird berechnet ...');
+    TotalRestMS := 0;                            // noch keine Uhrzeit zeigen
+  end;
   Current := FFilesDone + 1;
   if Current > FTotal then Current := FTotal;
-  lblTotal.Caption := Format(_('Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s'),
-    [Current, FTotal, FormatDuration(RunMS), TotalRest]);
+  SetTextWithClock(lblTotal,
+    Format(_('Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s'),
+      [Current, FTotal, FormatDuration(RunMS), TotalRest]), TotalRestMS, '');
 end;
 
 procedure TfrmMain.tmrTimeTimer(Sender: TObject);
@@ -1366,6 +1421,11 @@ begin
   lvFiles.Items.Clear;
   QueueDelete;                     // gespeicherte Liste ebenfalls löschen
   lblTotal.Caption := '';
+  lblTotal.Hint := '';
+  { Gesamtbalken blieb sonst voll grün stehen (gefunden 16.10.2026) }
+  pbTotal.Position := 0;
+  lblFileTime.Caption := '';
+  pbFile.Position := 0;
 end;
 
 { "Stem prüfen...": zeigt Anzahl Spuren und die Stem-Infos einer Datei an }
@@ -2053,6 +2113,7 @@ begin
   if not FUserCancelled then
     TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
+  lblTotal.Hint := '';                  // "fertig ca. ..." gilt nicht mehr
   if FUserCancelled then
     lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total])
   else
@@ -2465,7 +2526,7 @@ var
   Audio: Int64;
   Est: Double;
   Measured: Boolean;
-  S: string;
+  S, H: string;
 begin
   if FWorker <> nil then Exit;     // während der Arbeit zeigt UpdateTimes die Zeiten
   lblTotal.Font.Color := clDefault;  // grün/rot gilt nur für die Zusammenfassung
@@ -2502,17 +2563,18 @@ begin
   if Measured then
   begin
     S := S + ' ' + _('(Tempo dieses PCs)');
-    lblTotal.Hint := _('Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde.');
+    H := _('Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde.');
   end
   else
   begin
     S := S + ' ' + _('(grob geschätzt)');
-    lblTotal.Hint := _('Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs.');
+    H := _('Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs.');
   end;
   if Unknown > 0 then
     S := S + Format(_(' - %d Längen noch unbekannt'), [Unknown]);
+  { mit Uhrzeit "fertig ca. 18:40", wenn jetzt gestartet wird (Speedy 30.10.) }
+  SetTextWithClock(lblTotal, S, Est, H);
   lblTotal.ShowHint := True;
-  lblTotal.Caption := S;
 end;
 
 { ---------------------------------------------------------------------------

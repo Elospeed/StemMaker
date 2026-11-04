@@ -8,7 +8,12 @@
     StemTagger.lpr   dieses Hauptprogramm
     taggerform.pas   Fenster und Bedienung
     coverbild.pas    Cover-Bilder prüfen, umwandeln, verkleinern
-    ..\..\ustemmp4.pas  Tags lesen/schreiben (gemeinsam mit StemMaker)
+    ump4tags.pas     Tags in .stem.mp4 lesen/schreiben
+    djcontrols.pas,
+    djextra.pas      dunkle Knöpfe, Schalter, Auswahllisten (wie StemPlayer)
+    ulang.pas        Übersetzungen (lang\*.po)
+    ustatusdraw.pas  Ko-fi-Knopf zeichnen
+    uskalierung.pas  Hilfen für die Windows-Skalierung (DPI)
     StemTagger.ico   Programmsymbol (wird über die .lpi eingebunden)
   ============================================================================ }
 program StemTagger;
