@@ -5,7 +5,7 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
-#: umain.pas:2277
+#: umain.pas:2287
 msgid "                   vorhanden: %s"
 msgstr "                      installé : %s"
 
@@ -33,15 +33,15 @@ msgstr "        [-t parties] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]
 msgid "  -  von Elospeed"
 msgstr "  -  par Elospeed"
 
-#: umain.pas:2281
+#: umain.pas:2291
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  ATTENTION         : le PC a été en veille env. %s - les durées ci-dessus sont trop longues d'autant."
 
-#: umain.pas:2251
+#: umain.pas:2261
 msgid "  Abgebrochen    : %d"
 msgstr "  Annulés          : %d"
 
-#: umain.pas:1447
+#: umain.pas:1457
 msgid "  Audiospuren: %d (Stem = 5)"
 msgstr "  Pistes audio : %d (stem = 5)"
 
@@ -49,43 +49,43 @@ msgstr "  Pistes audio : %d (stem = 5)"
 msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
 msgstr "  Camelot (Mixed In Key) :  8A = la mineur, 8B = do majeur (A = mineur, B = majeur)"
 
-#: umain.pas:2248
+#: umain.pas:2258
 msgid "  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)"
 msgstr "  Fichiers          : %d  (OK %d, ignorés %d, erreurs %d)"
 
-#: umain.pas:1116
+#: umain.pas:1124
 msgid "  Dauer: %s"
 msgstr "  Durée : %s"
 
-#: umain.pas:2278
+#: umain.pas:2288
 msgid "  Energie        : %s"
 msgstr "  Énergie           : %s"
 
-#: umain.pas:2267
+#: umain.pas:2277
 msgid "  Engine         : Klassisch (demucs.cpp) für %d Datei(en)"
 msgstr "  Moteur            : Classique (demucs.cpp) pour %d fichier(s)"
 
-#: umain.pas:2263
+#: umain.pas:2273
 msgid "  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s"
 msgstr "  Moteur            : Turbo (StemOnnx) pour %d fichier(s), dernier sur : %s"
 
-#: umain.pas:1454
+#: umain.pas:1464
 msgid "  Fehler: %s"
 msgstr "  Erreur : %s"
 
-#: umain.pas:2260
+#: umain.pas:2270
 msgid "  Format         : %s"
 msgstr "  Format            : %s"
 
-#: umain.pas:2252
+#: umain.pas:2262
 msgid "  Gesamtzeit     : %s"
 msgstr "  Durée totale      : %s"
 
-#: umain.pas:2276
+#: umain.pas:2286
 msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
 msgstr "  Carte graphique   : non utilisée (demucs.cpp calcule uniquement avec le CPU)"
 
-#: umain.pas:1449
+#: umain.pas:1459
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr "  AUCUN bloc de métadonnées stem trouvé - fichier stem non valide"
 
@@ -93,7 +93,7 @@ msgstr "  AUCUN bloc de métadonnées stem trouvé - fichier stem non valide"
 msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
 msgstr "  Classique :  Am = la mineur, C = do majeur (m = mineur, sans m = majeur)"
 
-#: umain.pas:2259
+#: umain.pas:2269
 msgid "  Modell         : %s"
 msgstr "  Modèle            : %s"
 
@@ -101,31 +101,31 @@ msgstr "  Modèle            : %s"
 msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
 msgstr "  Open Key (Traktor) :  1m = la mineur, 1d = do majeur (m = mineur, d = majeur)"
 
-#: umain.pas:2273
+#: umain.pas:2283
 msgid "  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)"
 msgstr "  RAM séparation    : max. %d Mo  (RAM totale %.1f Go)"
 
-#: umain.pas:2268
+#: umain.pas:2278
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  Puissance de calcul : %d parties x %d cœurs = %d sur %d cœurs physiques (%d logiques), version demucs %s"
 
-#: umain.pas:2284
+#: umain.pas:2294
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  Veille            : aucune pendant la conversion"
 
-#: umain.pas:2253
+#: umain.pas:2263
 msgid "  Schnitt/Track  : %s  (nur erfolgreiche Tracks)"
 msgstr "  Moyenne par piste : %s  (pistes réussies uniquement)"
 
-#: umain.pas:1451
+#: umain.pas:1461
 msgid "  Stem-Metadaten: %s"
 msgstr "  Métadonnées stem : %s"
 
-#: umain.pas:2257
+#: umain.pas:2267
 msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
 msgstr "  Vitesse           : %.1f s par minute de musique (statistiques : logs\\statistik.csv)"
 
-#: umain.pas:2575
+#: umain.pas:2587
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d durées encore inconnues"
 
@@ -161,7 +161,7 @@ msgstr "%d fichiers OK"
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr "%d fichiers remplis à partir du nom de fichier - pas encore enregistrés"
 
-#: umain.pas:2445
+#: umain.pas:2455
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "%d fichiers de la liste enregistrée n'existent plus - ignorés."
 
@@ -177,11 +177,11 @@ msgstr "%d fichiers enregistrés, %d avec erreur. Les fichiers en erreur sont in
 msgid "%d Dateien in der Liste."
 msgstr "%d fichiers dans la liste."
 
-#: umain.pas:2554
+#: umain.pas:2564
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d fichiers en attente - lecture des durées ..."
 
-#: umain.pas:2561
+#: umain.pas:2571
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d fichiers en attente, %s de musique - durée env. %s"
 
@@ -201,7 +201,7 @@ msgstr "%d cœurs (%d logiques), %s"
 msgid "%d Minuten"
 msgstr "%d minutes"
 
-#: umain.pas:1351
+#: umain.pas:1361
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d dossier(s) n'ont pas pu être lus car leur chemin dépasse %d caractères. La musique qu'ils contiennent manque dans la liste."
 
@@ -217,7 +217,7 @@ msgstr "%d pistes chargées  ·  durée %s  ·  ffmpeg : %s"
 msgid "%d Stunden"
 msgstr "%d heures"
 
-#: umain.pas:2747
+#: umain.pas:2760
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr "%d réussis, %d ignorés, %d échoués - durée totale %s"
 
@@ -233,15 +233,15 @@ msgstr "%d s"
 msgid "%d:%.2d min"
 msgstr "%d:%.2d min"
 
-#: umain.pas:622
+#: umain.pas:630
 msgid "%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien"
 msgstr "%s %s  -  Stems Traktor (*.stem.mp4) à partir de fichiers audio"
 
-#: umain.pas:649
+#: umain.pas:657
 msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
 msgstr "%s %s - prêt. Ajoutez des fichiers ou faites-les glisser dans la fenêtre."
 
-#: umain.pas:2663
+#: umain.pas:2676
 msgid "%s - %d %% (Datei %d von %d)"
 msgstr "%s - %d %% (fichier %d sur %d)"
 
@@ -309,7 +309,7 @@ msgstr "&Fermer"
 msgid "&Wiederholen"
 msgstr "&Réessayer"
 
-#: umain.pas:2566
+#: umain.pas:2577
 msgid "(Tempo dieses PCs)"
 msgstr "(vitesse de ce PC)"
 
@@ -321,7 +321,7 @@ msgstr "(exécution en cours)"
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(pris en compte au prochain démarrage)"
 
-#: umain.pas:2571
+#: umain.pas:2582
 msgid "(grob geschätzt)"
 msgstr "(estimation grossière)"
 
@@ -381,11 +381,11 @@ msgstr "--- dernière sortie ---"
 msgid "<verschieden>"
 msgstr "<différent>"
 
-#: umain.pas:1446
+#: umain.pas:1456
 msgid "== Prüfung: %s"
 msgstr "== Vérification : %s"
 
-#: umain.pas:2247
+#: umain.pas:2257
 msgid "=== Zusammenfassung ==="
 msgstr "=== Résumé ==="
 
@@ -397,7 +397,7 @@ msgstr "AAC 256 kbit/s (standard NI)"
 msgid "AAC 320 kbit/s"
 msgstr "AAC 320 kbit/s"
 
-#: umain.pas:2241
+#: umain.pas:2251
 msgid "AAC automatisch (wie die Quelle, max. %d kbit/s) - Bitrate pro Datei siehe \"Quelle:\" oben"
 msgstr "AAC automatique (comme la source, max. %d kbit/s) - débit par fichier, voir « Source : » ci-dessus"
 
@@ -405,7 +405,7 @@ msgstr "AAC automatique (comme la source, max. %d kbit/s) - débit par fichier, 
 msgid "AAC automatisch (wie die Quelle, max. 320 kbit/s)"
 msgstr "AAC automatique (comme la source, max. 320 kbit/s)"
 
-#: umain.pas:2238
+#: umain.pas:2248
 msgid "ALAC (verlustfrei)"
 msgstr "ALAC (sans perte)"
 
@@ -441,7 +441,7 @@ msgstr "AVX2 (version rapide)"
 msgid "Abbrechen"
 msgstr "Annuler"
 
-#: umain.pas:2095
+#: umain.pas:2105
 msgid "Abbruch angefordert..."
 msgstr "Annulation demandée..."
 
@@ -449,11 +449,11 @@ msgstr "Annulation demandée..."
 msgid "Abgebrochen"
 msgstr "Annulé"
 
-#: umain.pas:2111
+#: umain.pas:2121
 msgid "Abgebrochen: %d Datei(en)"
 msgstr "Annulé : %d fichier(s)"
 
-#: umain.pas:1353
+#: umain.pas:1363
 msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
 msgstr "Solution : placer le dossier plus haut (p. ex. directement sous D:\\Musique) ou raccourcir les noms de dossiers. Les dossiers figurent dans le journal."
 
@@ -485,7 +485,7 @@ msgstr "Album, EP ou single sur lequel le morceau est paru"
 msgid "Album-Interpret"
 msgstr "Artiste de l'album"
 
-#: umain.pas:1418
+#: umain.pas:1428
 msgid "Alle %d Dateien aus der Liste entfernen?"
 msgstr "Retirer les %d fichiers de la liste ?"
 
@@ -493,19 +493,19 @@ msgstr "Retirer les %d fichiers de la liste ?"
 msgid "Alle Audiodateien eines Ordners (inkl. Unterordner) hinzufügen"
 msgstr "Ajouter tous les fichiers audio d'un dossier (sous-dossiers compris)"
 
-#: umain.pas:619 umain.pas:1442
+#: umain.pas:627 umain.pas:1452
 msgid "Alle Dateien"
 msgstr "Tous les fichiers"
 
-#: umain.pas:2021
+#: umain.pas:2031
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "Tous les fichiers de la liste sont déjà terminés. Les convertir à nouveau ?"
 
-#: umain.pas:2549
+#: umain.pas:2559
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "Tous les fichiers de la liste sont terminés."
 
-#: umain.pas:2807 umain.pas:2833
+#: umain.pas:2820 umain.pas:2846
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "Tous les fichiers sont terminés. Le PC s'éteindra dans %d secondes."
 
@@ -537,7 +537,7 @@ msgstr "Comme issue GitHub"
 msgid "Als GitHub-Issue (öffentlich)"
 msgstr "Comme issue GitHub (publique)"
 
-#: umain.pas:1808 umain.lfm:325
+#: umain.pas:1818 umain.lfm:325
 msgid "Anhören"
 msgstr "Écouter"
 
@@ -565,7 +565,7 @@ msgstr "L'audio, les stems et les données propres à Traktor (aussi dans les MP
 msgid "Audio-Format:"
 msgstr "Format audio :"
 
-#: umain.pas:616
+#: umain.pas:624
 msgid "Audiodateien wählen"
 msgstr "Choisir des fichiers audio"
 
@@ -577,7 +577,7 @@ msgstr "Impossible d'ouvrir le périphérique audio (erreur waveOutOpen %d)."
 msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
 msgstr "Utilisation : StemCLI <fichier|dossier> [...] [-o dossier_sortie] [-m ht|ft|v3]"
 
-#: umain.pas:1817
+#: umain.pas:1827
 msgid "Aus Liste entfernen"
 msgstr "Retirer de la liste"
 
@@ -633,7 +633,7 @@ msgstr "Correction des basses : basses profondes sous %s Hz déplacées de Other
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr "Correction des basses : déplacer les basses profondes de Other vers Bass"
 
-#: uinit.pas:604 ulicenseui.pas:89 umain.pas:2627
+#: uinit.pas:604 ulicenseui.pas:89 umain.pas:2640
 msgid "Beenden"
 msgstr "Quitter"
 
@@ -661,11 +661,11 @@ msgstr "Rechercher les mises à jour au démarrage"
 msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
 msgstr "Les nombres voisins se mixent bien ensemble (p. ex. 8A avec 7A, 9A et 8B)."
 
-#: umain.pas:1419
+#: umain.pas:1429
 msgid "Bereits erstellte Stem-Dateien bleiben erhalten."
 msgstr "Les fichiers stem déjà créés sont conservés."
 
-#: umain.pas:773
+#: umain.pas:781
 msgid "Bericht ansehen..."
 msgstr "Voir le rapport..."
 
@@ -713,7 +713,7 @@ msgstr "Veuillez glisser ici le fichier depuis la fenêtre de l'Explorateur :"
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr "Veuillez déposer un fichier stem (.stem.mp4), pas un dossier."
 
-#: umain.pas:1982
+#: umain.pas:1992
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "Veuillez choisir un dossier de sortie ou activer « à côté du fichier d'origine »."
 
@@ -825,7 +825,7 @@ msgstr "Impossible d'enregistrer le fichier : %s"
 msgid "Datei nicht gefunden: %s"
 msgstr "Fichier introuvable : %s"
 
-#: umain.pas:1220
+#: umain.pas:1228
 msgid "Datei:  vergangen %s   |   verbleibend %s"
 msgstr "Fichier :  écoulé %s   |   restant %s"
 
@@ -913,7 +913,7 @@ msgstr "La carte graphique (%s) %s. StemMaker sépare avec le CPU : environ %s d
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "La carte graphique (%s) fonctionnerait, mais « CPU uniquement » est sélectionné. StemMaker sépare avec le CPU : environ %s par minute de musique."
 
-#: umain.pas:798
+#: umain.pas:806
 msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
 msgstr "La conversion est en cours. Annuler et quitter ?"
 
@@ -921,7 +921,7 @@ msgstr "La conversion est en cours. Annuler et quitter ?"
 msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
 msgstr "La copie n'est jamais écrasée, elle reste donc le véritable original."
 
-#: umain.pas:2043
+#: umain.pas:2053
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr "La liste est vide - ajoutez d'abord des fichiers."
 
@@ -953,7 +953,7 @@ msgstr "Les formes d'onde ne tiennent pas à l'écran avec cette mise à l'éche
 msgid "Die alte Version wurde wiederhergestellt."
 msgstr "L'ancienne version a été restaurée."
 
-#: umain.pas:2443
+#: umain.pas:2453
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "Le dernier fichier traité a été interrompu - il sera refait avec « Démarrer »."
 
@@ -1029,7 +1029,7 @@ msgstr "Vous êtes d'accord ? Lancez alors StemCLI une fois avec --accept (ou d�
 msgid "Energiesparmodus"
 msgstr "Économiseur d'énergie"
 
-#: umain.pas:2063
+#: umain.pas:2073
 msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
 msgstr "Mode d'alimentation « %s » réglé temporairement sur « %s » - il sera rétabli après la conversion."
 
@@ -1073,7 +1073,7 @@ msgstr "Tester à nouveau"
 msgid "Erscheinungsjahr, z.B. 2016"
 msgstr "Année de sortie, p. ex. 2016"
 
-#: umain.pas:1992
+#: umain.pas:2002
 msgid "Es fehlen Programmteile:"
 msgstr "Des composants du programme manquent :"
 
@@ -1097,7 +1097,7 @@ msgstr "Il y a des modifications non enregistrées. Vider quand même la liste ?
 msgid "Es ist ein unerwarteter Fehler aufgetreten:"
 msgstr "Une erreur inattendue s'est produite :"
 
-#: umain.pas:598
+#: umain.pas:606
 msgid "FEHLER im Hintergrund: %s (Details im Log)"
 msgstr "ERREUR en arrière-plan : %s (détails dans le journal)"
 
@@ -1109,7 +1109,7 @@ msgstr "ERREUR : "
 msgid "Farbe wählen"
 msgstr "Choisir une couleur"
 
-#: ulangui.pas:202 umain.pas:1123 umain.pas:2415
+#: ulangui.pas:202 umain.pas:1131 umain.pas:2425
 msgid "Fehler"
 msgstr "Erreur"
 
@@ -1145,7 +1145,7 @@ msgstr "Envoyer un rapport d'erreur"
 msgid "Fehlerbericht senden..."
 msgstr "Envoyer un rapport d'erreur..."
 
-#: umain.pas:986
+#: umain.pas:994
 msgid "Fehlt: %s"
 msgstr "Manquant : %s"
 
@@ -1153,7 +1153,7 @@ msgstr "Manquant : %s"
 msgid "Fertig"
 msgstr "Terminé"
 
-#: umain.pas:2119
+#: umain.pas:2129
 msgid "Fertig - Gesamtzeit %s"
 msgstr "Terminé - durée totale %s"
 
@@ -1161,7 +1161,7 @@ msgstr "Terminé - durée totale %s"
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
 msgstr "Terminé : %d réussis, %d ignorés, %d échoués"
 
-#: umain.pas:2108 umain.pas:2123
+#: umain.pas:2118 umain.pas:2133
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr "Terminé : %d réussis, %d ignorés, %d échoués  -  durée totale %s"
 
@@ -1173,7 +1173,7 @@ msgstr "Texte libre, p. ex. des notes pour mixer"
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "Survolez l'icône pour voir la progression."
 
-#: umain.pas:1011
+#: umain.pas:1019
 msgid "Für \"%s\" fehlen noch Dateien."
 msgstr "Des fichiers manquent encore pour « %s »."
 
@@ -1189,11 +1189,15 @@ msgstr "Genre"
 msgid "Gerät:"
 msgstr "Périphérique :"
 
-#: umain.pas:1261
+#: umain.pas:1271
+msgid "Gesamt (Datei %d von %d):  verbleibend %s"
+msgstr "Total (fichier %d sur %d) :  restant %s"
+
+#: umain.pas:1269
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "Total (fichier %d sur %d) :  écoulé %s   |   restant %s"
 
-#: umain.pas:2567
+#: umain.pas:2578
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "Estimation basée sur la vitesse mesurée sur ce PC."
 
@@ -1221,7 +1225,7 @@ msgstr "Vérification de la carte graphique (jusqu'à 30 s)"
 msgid "Grafikkarte suchen"
 msgstr "Recherche de la carte graphique"
 
-#: umain.pas:2572
+#: umain.pas:2583
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "Estimation grossière - après la première piste terminée, StemMaker connaît la vitesse de ce PC."
 
@@ -1241,7 +1245,7 @@ msgstr "Bonjour Elospeed,"
 msgid "Helfende"
 msgstr "Contributeurs"
 
-#: umain.pas:2214
+#: umain.pas:2224
 msgid "Herunterfahren abgebrochen."
 msgstr "Arrêt annulé."
 
@@ -1257,11 +1261,11 @@ msgstr "Télécharger (env. %d Mo)"
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "Ne figurent ici que les personnes qui ont donné leur accord. Vous avez aidé et souhaitez être cité ici ? Écrivez à elospeed.dev@gmail.com."
 
-#: umain.pas:667
+#: umain.pas:675
 msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Remarque : %d exécutions précédentes se sont terminées de façon inattendue - détails dans les journaux contenant « _ABSTURZ » dans leur nom (Info -> Ouvrir le dossier des journaux)."
 
-#: umain.pas:2057
+#: umain.pas:2067
 msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
 msgstr "Remarque : le PC fonctionne sur batterie (%s). Windows ralentit alors le CPU - sur secteur, c'est nettement plus rapide."
 
@@ -1273,7 +1277,7 @@ msgstr "Remarque : le PC fonctionne sur batterie - c'est plus rapide sur secteur
 msgid "Hinweis: Der PC war ca. %d min im Ruhezustand."
 msgstr "Remarque : le PC a été en veille pendant env. %d min."
 
-#: umain.pas:664
+#: umain.pas:672
 msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Remarque : la dernière exécution s'est terminée de façon inattendue - détails dans le journal contenant « _ABSTURZ » dans son nom (Info -> Ouvrir le dossier des journaux)."
 
@@ -1361,11 +1365,11 @@ msgstr "Année"
 msgid "Jetzt aktualisieren"
 msgstr "Mettre à jour maintenant"
 
-#: umain.pas:1012
+#: umain.pas:1020
 msgid "Jetzt herunterladen?"
 msgstr "Télécharger maintenant ?"
 
-#: umain.pas:1993
+#: umain.pas:2003
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr "Vérifier maintenant et télécharger les fichiers manquants ?"
 
@@ -1437,7 +1441,7 @@ msgstr "Mesure de l'encodage (ffmpeg, 5 pistes)"
 msgid "Kommentar"
 msgstr "Commentaire"
 
-#: umain.pas:797
+#: umain.pas:805
 msgid "Konvertierung läuft"
 msgstr "Conversion en cours"
 
@@ -1445,7 +1449,7 @@ msgstr "Conversion en cours"
 msgid "Kopiert das Protokoll unten in die Zwischenablage"
 msgstr "Copie le journal ci-dessous dans le presse-papiers"
 
-#: umain.pas:786
+#: umain.pas:794
 msgid "Kopiert ✓"
 msgstr "Copié ✓"
 
@@ -1533,7 +1537,7 @@ msgstr "S'allume en rouge quand la somme sature (baissez alors le master)"
 msgid "Liste leeren"
 msgstr "Vider la liste"
 
-#: umain.pas:2440
+#: umain.pas:2450
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Liste de la dernière fois restaurée : %d fichiers, dont %d encore en attente."
 
@@ -1545,7 +1549,7 @@ msgstr "Licences"
 msgid "Log konnte nicht gelesen werden: %s"
 msgstr "Impossible de lire le journal : %s"
 
-#: umain.pas:789 umain.lfm:90
+#: umain.pas:797 umain.lfm:90
 msgid "Log kopieren"
 msgstr "Copier le journal"
 
@@ -1645,7 +1649,7 @@ msgstr "Fichiers MP4"
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "Déplacez les repères A et B avec la souris. Faites glisser l'onde avec le bouton gauche pour aller à une position, le son est audible pendant le déplacement."
 
-#: umain.pas:1907 umain.lfm:326
+#: umain.pas:1917 umain.lfm:326
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr "Lire dans StemPlayer le fichier stem sélectionné ou le dernier converti"
 
@@ -1689,7 +1693,7 @@ msgstr "Modèle manquant : %s"
 msgid "Modell lesen"
 msgstr "Lecture du modèle"
 
-#: umain.pas:1010
+#: umain.pas:1018
 msgid "Modell nicht installiert"
 msgstr "Modèle non installé"
 
@@ -1705,7 +1709,7 @@ msgstr "Style musical : choisir dans la liste ou saisir le vôtre"
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "Mute : couper ce stem (touche %d)"
 
-#: umain.pas:771
+#: umain.pas:779
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Voulez-vous envoyer un rapport d'erreur à Elospeed ? Vous verrez le rapport avant, rien n'est envoyé automatiquement."
 
@@ -1717,7 +1721,7 @@ msgstr "Rechercher des mises à jour"
 msgid "Name des Tracks, z.B. „Clap Your Hands“"
 msgstr "Nom du morceau, p. ex. « Clap Your Hands »"
 
-#: umain.pas:773
+#: umain.pas:781
 msgid "Nein, danke"
 msgstr "Non, merci"
 
@@ -1749,7 +1753,7 @@ msgstr "Ne pas envoyer"
 msgid "Noch kein Vortest auf diesem PC."
 msgstr "Pas encore de test préalable sur ce PC."
 
-#: umain.pas:1794
+#: umain.pas:1804
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr "Pas encore de fichier stem pour « %s » - convertissez-le d'abord."
 
@@ -1777,7 +1781,7 @@ msgstr "Seulement si StemMaker n'est pas au premier plan."
 msgid "OK"
 msgstr "OK"
 
-#: umain.pas:1105
+#: umain.pas:1113
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
@@ -1805,7 +1809,7 @@ msgstr "Sans tags ni pochette"
 msgid "Ordner geladen"
 msgstr "Dossier chargé"
 
-#: umain.pas:620
+#: umain.pas:628
 msgid "Ordner mit Audiodateien wählen"
 msgstr "Choisir un dossier contenant des fichiers audio"
 
@@ -1825,7 +1829,7 @@ msgstr "Ouvrir le dossier après la conversion"
 msgid "Ordner öffnen"
 msgstr "Ouvrir le dossier"
 
-#: umain.pas:1334 umain.pas:1344
+#: umain.pas:1344 umain.pas:1354
 msgid "Ordner übersprungen, Pfad zu lang: %s"
 msgstr "Dossier ignoré, chemin trop long : %s"
 
@@ -1845,7 +1849,7 @@ msgstr "Mix original du fichier (piste 0) pour comparaison A/B (touche O)"
 msgid "PC nach Abschluss herunterfahren"
 msgstr "Éteindre le PC à la fin"
 
-#: umain.pas:2192
+#: umain.pas:2202
 msgid "PC wird heruntergefahren ..."
 msgstr "Arrêt du PC ..."
 
@@ -1885,7 +1889,7 @@ msgstr "Problème détecté"
 msgid "Programm"
 msgstr "Programme"
 
-#: umain.pas:774
+#: umain.pas:782
 msgid "Programm wurde unerwartet beendet"
 msgstr "Le programme s'est fermé de façon inattendue"
 
@@ -2073,7 +2077,7 @@ msgstr "Le fichier stem existe déjà"
 msgid "Stem-Datei kodieren"
 msgstr "Encodage du fichier stem"
 
-#: umain.pas:1440
+#: umain.pas:1450
 msgid "Stem-Datei prüfen"
 msgstr "Vérifier un fichier stem"
 
@@ -2097,7 +2101,7 @@ msgstr "Fichier stem : %.1f Mo"
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr "Fichier stem : %.1f Mo, vitesse : %.1f s par minute de musique (%s)"
 
-#: taggerform.pas:1978 umain.pas:1441
+#: taggerform.pas:1978 umain.pas:1451
 msgid "Stem-Dateien"
 msgstr "Fichiers stem"
 
@@ -2133,11 +2137,11 @@ msgstr "StemMaker %s est disponible"
 msgid "StemMaker %s ist installiert. StemMaker startet jetzt neu."
 msgstr "StemMaker %s est installé. StemMaker va redémarrer."
 
-#: umain.pas:714
+#: umain.pas:722
 msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
 msgstr "StemMaker %s est disponible - la mise à jour sera proposée après la conversion."
 
-#: umain.pas:2622
+#: umain.pas:2635
 msgid "StemMaker anzeigen"
 msgstr "Afficher StemMaker"
 
@@ -2149,7 +2153,7 @@ msgstr "StemMaker est open source sous licence MIT (© 2026 Elospeed). Composant
 msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
 msgstr "StemMaker est déjà ouvert. Un seul StemMaker peut fonctionner à la fois, car deux partageraient la file d'attente, les paramètres et les fichiers terminés."
 
-#: umain.pas:2746
+#: umain.pas:2759
 msgid "StemMaker ist fertig"
 msgstr "StemMaker a terminé"
 
@@ -2177,7 +2181,7 @@ msgstr "Sur ce PC, StemMaker sépare avec la carte graphique (%s) : environ %s d
 msgid "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an."
 msgstr "StemMaker est fourni gratuitement et sans aucune garantie (« en l'état »). Vous l'utilisez à vos propres risques. Dans la mesure permise par la loi, Elospeed décline toute responsabilité pour les dommages ou pertes de données résultant de son utilisation. Faites au préalable une sauvegarde de vos fichiers importants."
 
-#: umain.pas:770
+#: umain.pas:778
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "StemMaker s'est fermé de façon inattendue la dernière fois."
 
@@ -2185,19 +2189,19 @@ msgstr "StemMaker s'est fermé de façon inattendue la dernière fois."
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe est introuvable (%s). StemMaker sépare avec demucs.cpp (Classique)."
 
-#: umain.pas:1570
+#: umain.pas:1580
 msgid "StemPlayer konnte nicht gestartet werden: %s"
 msgstr "Impossible de démarrer StemPlayer : %s"
 
-#: umain.pas:1551
+#: umain.pas:1561
 msgid "StemPlayer nicht gefunden:%s%s"
 msgstr "StemPlayer introuvable :%s%s"
 
-#: umain.pas:1604
+#: umain.pas:1614
 msgid "StemTagger konnte nicht gestartet werden: %s"
 msgstr "Impossible de démarrer StemTagger : %s"
 
-#: umain.pas:1588
+#: umain.pas:1598
 msgid "StemTagger nicht gefunden:%s%s"
 msgstr "StemTagger introuvable :%s%s"
 
@@ -2225,7 +2229,7 @@ msgstr "Ctrl+clic : ajouter un autre stem (plusieurs solos)"
 msgid "Suche ..."
 msgstr "Recherche ..."
 
-#: umain.pas:1813
+#: umain.pas:1823
 msgid "Tags bearbeiten..."
 msgstr "Modifier les tags..."
 
@@ -2277,7 +2281,7 @@ msgstr "Astuce : glisser avec le bouton droit dans une forme d'onde"
 msgid "Titel"
 msgstr "Titre"
 
-#: umain.pas:1911
+#: umain.pas:1921
 msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
 msgstr "Modifier le titre, l'artiste, la pochette etc. des fichiers stem terminés sélectionnés"
 
@@ -2293,11 +2297,11 @@ msgstr "Tonalité du morceau : choisir dans la liste ou saisir la vôtre."
 msgid "Tools: ..."
 msgstr "Outils : ..."
 
-#: umain.pas:978
+#: umain.pas:986
 msgid "Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden"
 msgstr "Outils : ffmpeg, Turbo, demucs.cpp et modèle trouvés"
 
-#: umain.pas:980
+#: umain.pas:988
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr "Outils : ffmpeg, demucs.cpp et modèle trouvés"
 
@@ -2389,7 +2393,7 @@ msgstr "Conversion"
 msgid "Und wenn nicht, ist das völlig in Ordnung. Viel Spass beim Auflegen!"
 msgstr "Et sinon, c'est tout à fait normal. Bon mix !"
 
-#: umain.pas:769
+#: umain.pas:777
 msgid "Unerwartet beendet"
 msgstr "Fermé de façon inattendue"
 
@@ -2513,7 +2517,7 @@ msgstr "Chemin cible trop long (%d caractères, Windows autorise au maximum %d).
 msgid "Zuerst die Dateien markieren, die dieses Cover bekommen sollen."
 msgstr "Sélectionnez d'abord les fichiers qui doivent recevoir cette pochette."
 
-#: umain.pas:1121 umain.pas:2416 ustemjob.pas:2145
+#: umain.pas:1129 umain.pas:2426 ustemjob.pas:2145
 msgid "abgebrochen"
 msgstr "annulé"
 
@@ -2521,7 +2525,7 @@ msgstr "annulé"
 msgid "beschädigt (nur %d KB)"
 msgstr "endommagé (seulement %d Ko)"
 
-#: uinit.pas:1016 umain.pas:1207 umain.pas:1216
+#: uinit.pas:1016 umain.pas:1215 umain.pas:1224
 msgid "ca. %s"
 msgstr "env. %s"
 
@@ -2549,7 +2553,7 @@ msgstr "demucs : %s (%s), %d parties x %d cœurs chacune"
 msgid "eigener Plan %s"
 msgstr "mode personnalisé %s"
 
-#: umain.pas:1120 umain.pas:2414
+#: umain.pas:1128 umain.pas:2424
 msgid "existiert schon"
 msgstr "existe déjà"
 
@@ -2569,7 +2573,7 @@ msgstr "manquant : %s"
 msgid "fehlt: %s - StemMaker-ZIP bitte komplett neu entpacken"
 msgstr "manquant : %s - veuillez extraire à nouveau le ZIP StemMaker en entier"
 
-#: umain.pas:391
+#: umain.pas:408
 msgid "fertig ca. %s"
 msgstr "terminé vers %s"
 
@@ -2689,7 +2693,7 @@ msgstr "ko-fi.com/elospeed"
 msgid "lässt sich nicht einschalten"
 msgstr "ne peut pas être activée"
 
-#: umain.pas:1074 umain.pas:1094
+#: umain.pas:1082 umain.pas:1102
 msgid "läuft..."
 msgstr "en cours..."
 
@@ -2753,11 +2757,11 @@ msgstr "par %s  ·  Stems Traktor à partir de fichiers audio  ·  gratuit && op
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "écraser les fichiers stem existants"
 
-#: umain.pas:1296 umain.pas:2014 umain.pas:2036
+#: umain.pas:1306 umain.pas:2024 umain.pas:2046
 msgid "wartet"
 msgstr "en attente"
 
-#: umain.pas:2417
+#: umain.pas:2427
 msgid "wartet (unterbrochen)"
 msgstr "en attente (interrompu)"
 
@@ -2765,7 +2769,7 @@ msgstr "en attente (interrompu)"
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "si la lecture est actuellement hors de la boucle."
 
-#: uinit.pas:1018 umain.pas:1219 umain.pas:1255
+#: uinit.pas:1018 umain.pas:1227 umain.pas:1263
 msgid "wird berechnet ..."
 msgstr "calcul en cours ..."
 
@@ -2789,7 +2793,7 @@ msgstr "OUVRIR"
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Ouvre le dossier contenant StemMaker.ini"
 
-#: umain.pas:1286
+#: umain.pas:1296
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "Ignoré (format non pris en charge) : %s"
 
