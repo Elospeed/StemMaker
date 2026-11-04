@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.1.1
+# Elospeed StemMaker 2.2
 
 **by Elospeed**
 
@@ -197,11 +197,11 @@ Most people won't need this: the main window handles whole folders, the queue an
 
 ### Test player (AddOns\StemPlayer.exe)
 
-Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with the **StemPlayer** button in the AddOns bar right of the file list (plays the selected or last converted file right away), double-click a finished file in the list or right-click it and choose **Listen**, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. German, English and Spanish. Source: `src/AddOns/StemPlayer/`.
+Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at once) and volume per stem, level meters, A/B comparison with the original mix, and a "Rest" mode (original minus the sum of all stems) that shows what the separation lost. Start it from StemMaker with the **StemPlayer** button in the AddOns bar right of the file list (plays the selected or last converted file right away), double-click a finished file in the list or right-click it and choose **Listen**, or open a file via the dialog, drag & drop or as a parameter: `AddOns\StemPlayer.exe "track.stem.mp4"`. It uses StemMaker's `tools\ffmpeg.exe`. In the same nine languages as StemMaker. Source: `src/AddOns/StemPlayer/`.
 
 ### Tag editor (AddOns\StemTagger.exe)
 
-Set title, artist, album, genre, year, label, comment and cover in `.stem.mp4` files (what Traktor and Mixxx show and search), e.g. for stem files from other tools that come without any tags. Load single files or whole folders, select several rows to set album or cover for all of them at once, paste a cover with Ctrl+V or drag an image onto the window, or fill artist and title from the file name. Large covers are scaled down to 1000 px if you like, and a `.bak` backup can be switched on. Only the tag list inside the file is rewritten: audio, the four stems and Traktor's own data stay byte-for-byte the same. Start it from StemMaker with the **StemTagger** button in the AddOns bar (opens the selected finished files) or by right-clicking finished files and choosing **Edit tags...**, or as a parameter: `AddOns\StemTagger.exe "track.stem.mp4"`. Also available on its own as `StemTagger-<version>.zip` on the release page. German, English and Spanish. Source: `src/AddOns/StemTagger/`. MP3 support is planned.
+Set title, artist, album, genre, year, label, comment and cover in `.stem.mp4` and MP3 files (what Traktor and Mixxx show and search), e.g. for stem files from other tools that come without any tags. Load single files or whole folders, select several rows to set album or cover for all of them at once, paste a cover with Ctrl+V or drag an image onto the window, or fill artist and title from the file name. Large covers are scaled down to 1000 px if you like, and a `.bak` backup can be switched on. Only the tag list inside the file is rewritten: audio, the four stems and Traktor's own data stay byte-for-byte the same. Start it from StemMaker with the **StemTagger** button in the AddOns bar (opens the selected finished files) or by right-clicking finished files and choosing **Edit tags...**, or as a parameter: `AddOns\StemTagger.exe "track.stem.mp4"`. In MP3s, Traktor's cue points, beatgrid and analysis are kept. The StemTagger has its own project page and repository ([Elospeed/StemTagger](https://github.com/Elospeed/StemTagger)), where it is also available on its own. Nine languages. Source here: `src/AddOns/StemTagger/` (copy of the StemTagger repository).
 
 ## Processing time
 
@@ -266,11 +266,11 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Languages
 
-StemMaker and StemPlayer speak **German, English and Spanish**. Thanks to **David GJ** for the Spanish translation!
+StemMaker, StemPlayer and StemTagger speak **German, English, Spanish, French, Portuguese (Brazil), Italian, Japanese, Dutch and Polish**. Thanks to **David GJ** for the Spanish translation! The six newest languages (since 2.2) are machine translations; corrections from native speakers are very welcome (GitHub issue or discussion).
 
 On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time under **More settings** (gear button) → "Language:". The new language applies from the next start.
 
-The language files are in the `lang\` folder (gettext, `.po`). To add a language, copy `lang\StemMaker.pot` to e.g. `lang\fr.po` and translate it with [Poedit](https://poedit.net).
+The language files are in the `lang\` folder (gettext, `.po`). To add a language, copy `lang\StemMaker.pot` to e.g. `lang\sv.po` (Swedish) and translate it with [Poedit](https://poedit.net).
 
 ## Build it yourself
 

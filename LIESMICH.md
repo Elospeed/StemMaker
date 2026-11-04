@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.1.1
+# Elospeed StemMaker 2.2
 
 **by Elospeed**
 
@@ -195,11 +195,11 @@ Für die meisten ist das nicht nötig: Das Hauptfenster kann ganze Ordner, Warte
 
 ### Testplayer (AddOns\StemPlayer.exe)
 
-Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit dem Knopf **StemPlayer** in der AddOn-Leiste rechts neben der Dateiliste (spielt die markierte oder zuletzt umgewandelte Datei gleich ab), per Doppelklick auf eine fertige Datei in der Liste oder per Rechtsklick und **Anhören**. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. Deutsch, Englisch und Spanisch. Quellcode: `src/AddOns/StemPlayer/`.
+Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo hören (auch mehrere gleichzeitig) und in der Lautstärke ändern, mit Pegelanzeigen, A/B-Vergleich mit dem Originalmix und Modus „Rest“ (Original minus Summe aller Stems), der zeigt, was bei der Trennung verloren ging. Aus StemMaker startet er mit dem Knopf **StemPlayer** in der AddOn-Leiste rechts neben der Dateiliste (spielt die markierte oder zuletzt umgewandelte Datei gleich ab), per Doppelklick auf eine fertige Datei in der Liste oder per Rechtsklick und **Anhören**. Sonst Datei öffnen, aufs Fenster ziehen oder als Parameter übergeben: `AddOns\StemPlayer.exe "Track.stem.mp4"`. Er nutzt `tools\ffmpeg.exe` von StemMaker. In denselben neun Sprachen wie StemMaker. Quellcode: `src/AddOns/StemPlayer/`.
 
 ### Tag-Editor (AddOns\StemTagger.exe)
 
-Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`-Dateien setzen (das, was Traktor und Mixxx anzeigen und durchsuchen), z.B. für Stem-Dateien aus anderen Programmen, die ganz ohne Tags kommen. Einzelne Dateien oder ganze Ordner laden, mehrere Zeilen markieren und Album oder Cover für alle auf einmal setzen, ein Cover mit Strg+V einfügen oder ein Bild aufs Fenster ziehen, oder Interpret und Titel aus dem Dateinamen übernehmen. Grosse Cover werden auf Wunsch auf 1000 px verkleinert, eine Sicherungskopie `.bak` lässt sich einschalten. Neu geschrieben wird nur die Tag-Liste in der Datei: Audio, die vier Stems und Traktors eigene Daten bleiben bytegenau gleich. Aus StemMaker startet er mit dem Knopf **StemTagger** in der AddOn-Leiste (öffnet die markierten fertigen Dateien) oder per Rechtsklick auf fertige Dateien und **Tags bearbeiten...**, sonst als Parameter: `AddOns\StemTagger.exe "Track.stem.mp4"`. Auch einzeln als `StemTagger-<Version>.zip` auf der Release-Seite. Deutsch, Englisch und Spanisch. Quellcode: `src/AddOns/StemTagger/`. MP3 ist geplant.
+Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`- und MP3-Dateien setzen (das, was Traktor und Mixxx anzeigen und durchsuchen), z.B. für Stem-Dateien aus anderen Programmen, die ganz ohne Tags kommen. Einzelne Dateien oder ganze Ordner laden, mehrere Zeilen markieren und Album oder Cover für alle auf einmal setzen, ein Cover mit Strg+V einfügen oder ein Bild aufs Fenster ziehen, oder Interpret und Titel aus dem Dateinamen übernehmen. Grosse Cover werden auf Wunsch auf 1000 px verkleinert, eine Sicherungskopie `.bak` lässt sich einschalten. Neu geschrieben wird nur die Tag-Liste in der Datei: Audio, die vier Stems und Traktors eigene Daten bleiben bytegenau gleich. Aus StemMaker startet er mit dem Knopf **StemTagger** in der AddOn-Leiste (öffnet die markierten fertigen Dateien) oder per Rechtsklick auf fertige Dateien und **Tags bearbeiten...**, sonst als Parameter: `AddOns\StemTagger.exe "Track.stem.mp4"`. In MP3s bleiben Traktors Cue-Punkte, Beatgrid und Analyse erhalten. Der StemTagger hat eine eigene Projektseite und ein eigenes Repository ([Elospeed/StemTagger](https://github.com/Elospeed/StemTagger)), dort gibt es ihn auch einzeln. Neun Sprachen. Quellcode hier: `src/AddOns/StemTagger/` (Kopie aus dem StemTagger-Repository).
 
 ## Dauer
 
@@ -264,11 +264,11 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Sprachen
 
-StemMaker und StemPlayer sprechen **Deutsch, Englisch und Spanisch**. Danke an **David GJ** für die spanische Übersetzung!
+StemMaker, StemPlayer und StemTagger sprechen **Deutsch, Englisch, Spanisch, Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch**. Danke an **David GJ** für die spanische Übersetzung! Die sechs neuesten Sprachen (seit 2.2) sind maschinell übersetzt; Verbesserungen von Muttersprachlern sind sehr willkommen (GitHub-Issue oder Diskussion).
 
 Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 
-Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Sprache `lang\StemMaker.pot` kopieren, z. B. nach `lang\fr.po`, und mit [Poedit](https://poedit.net) übersetzen.
+Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Sprache `lang\StemMaker.pot` kopieren, z. B. nach `lang\sv.po` (Schwedisch), und mit [Poedit](https://poedit.net) übersetzen.
 
 ## Selber kompilieren
 

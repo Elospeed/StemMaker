@@ -6,8 +6,19 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.1.2 – not yet released
+## 2.2 – not yet released
+### New
+- Six new languages: French, Portuguese (Brazil), Italian, Japanese, Dutch, Polish
+- Add-on bar as a side column over the full window height
+- Clock time when the whole list will be done ("done approx. 18:40")
+- StemTagger 1.2.0: tags and cover for MP3 too, Traktor's cues are kept
+### Improved
+- Gear icon on "More settings..." grows with display scaling
+- Add-on names stay visible longer when space is tight
+- Yes/No buttons in messages in the chosen language
 ### Fixed
+- Spanish: separation model label cut off
+- Overall progress bar stayed green after "Clear list"
 - Add-on buttons (StemPlayer, StemTagger) hidden in a small window or with large display scaling: the buttons now get smaller instead of being cut off
 - StemPlayer 1.8.2: CD player at 125 % with cut-off Ko-fi button and MASTER frame
 
