@@ -6,7 +6,7 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.2 – aún no publicada
+## 2.2 – 4 de noviembre de 2026
 ### Nuevo
 - Seis idiomas nuevos: francés, portugués (Brasil), italiano, japonés, neerlandés, polaco
 - Barra de AddOns como columna lateral en toda la altura de la ventana

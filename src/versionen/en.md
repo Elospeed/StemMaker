@@ -6,7 +6,7 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.2 – not yet released
+## 2.2 – 4 November 2026
 ### New
 - Six new languages: French, Portuguese (Brazil), Italian, Japanese, Dutch, Polish
 - Add-on bar as a side column over the full window height

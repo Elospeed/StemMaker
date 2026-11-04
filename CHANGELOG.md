@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.2 – noch nicht veröffentlicht
+## 2.2 – 4. November 2026
 
 ### Neu
 - **Sechs neue Sprachen:** Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch, für StemMaker, StemPlayer, StemTagger und das Setup. Beim ersten Start schlägt StemMaker die Sprache von Windows vor, wenn es sie gibt. Die Übersetzungen sind maschinell erstellt; Verbesserungen von Muttersprachlern sind willkommen.

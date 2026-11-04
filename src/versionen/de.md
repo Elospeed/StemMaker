@@ -6,7 +6,7 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
-## 2.2 – noch nicht veröffentlicht
+## 2.2 – 4. November 2026
 ### Neu
 - Sechs neue Sprachen: Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch, Polnisch
 - AddOn-Leiste als Seitenspalte über die ganze Fensterhöhe
