@@ -100,9 +100,12 @@ if [ -n "$BILDER" ] && command -v Xvfb >/dev/null && command -v xdotool >/dev/nu
       sleep 3
       W=$(xdotool search --name "Please|Bitte" | head -n 1)
       import -window root "$BILDER/${DPI}dpi-2-Hinweise.png"
-      klick "$W" 18 453; sleep 1    # Häkchen "gelesen"
-      klick "$W" 377 492            # "Einverstanden - StemMaker starten"
     fi
+    # Hinweise per StemCLI bestätigen (dieselbe INI) und StemMaker neu starten,
+    # Klicks ins Häkchen sind ohne Fenstermanager unzuverlässig
+    pkill -f '\.exe' 2>/dev/null || true; sleep 3
+    "$AI" --cli --accept >/dev/null 2>&1 || true
+    "$AI" >/dev/null 2>&1 &
     if warte_fenster "Traktor Stems"; then
       sleep 15; import -window root "$BILDER/${DPI}dpi-3-Hauptfenster.png"
     fi
