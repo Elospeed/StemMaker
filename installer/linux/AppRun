@@ -81,6 +81,10 @@ if [ -f "$HERE/fonts/$SCHRIFT" ] && ! cmp -s "$HERE/fonts/$SCHRIFT" "$FONTS/$SCH
            "SimSun" "NSimSun" "Microsoft YaHei" "Microsoft JhengHei" "MingLiU" "PMingLiU"; do
     "$WINE" reg add 'HKCU\Software\Wine\Fonts\Replacements' /v "$F" /t REG_SZ /d "Noto Sans JP" /f >/dev/null 2>&1
   done
+  # Uniscribe-Ersatzschrift direkt setzen (Schlüssel = Skript-Kennung hex: hani, kana)
+  for T in 696e6168 616e616b; do
+    "$WINE" reg add 'HKCU\Software\Wine\Uniscribe\Fallback' /v "$T" /t REG_SZ /d "Noto Sans JP" /f >/dev/null 2>&1
+  done
   "$WINESERVER" -w
 fi
 

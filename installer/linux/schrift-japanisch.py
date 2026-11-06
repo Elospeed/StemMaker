@@ -42,6 +42,7 @@ def zeichen_sammeln(ordner):
     zeichen.update(chr(c) for c in range(0x3000, 0x3100))  # Satzzeichen, Hiragana, Katakana
     zeichen.update(chr(c) for c in range(0xFF01, 0xFFA0))  # volle und halbe Breite
     zeichen.update(chr(c) for c in range(0x20, 0x7F))      # ASCII
+    zeichen.update(chr(c) for c in range(0xA0, 0x100))     # Latin-1
     return zeichen
 
 
@@ -54,6 +55,10 @@ def main():
     opt.name_languages = ["*"]
     opt.notdef_outline = True
     opt.hinting = False
+    # Zeichensatz-Bits (OS/2) wie im Original lassen: Wines Uniscribe sucht die
+    # Ersatzschrift für Kanji/Kana mit ANSI_CHARSET; ohne das Latin-1-Bit nimmt
+    # Wine die Schrift dort nicht, und mehrzeilige Textfelder zeigen Kästchen
+    opt.prune_codepage_ranges = False
     schrift = subset.load_font(quelle, opt)
     teil = subset.Subsetter(opt)
     teil.populate(text="".join(sorted(zeichen)))
