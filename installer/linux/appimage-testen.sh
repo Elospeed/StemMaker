@@ -126,6 +126,13 @@ with open(sys.argv[1], "w", encoding="utf-8") as f: ini.write(f, space_around_de
 PY
     "$AI" >/dev/null 2>&1 &
     sleep 40; import -window root "$BILDER/${DPI}dpi-4-Japanisch.png"
+    # Japanisch beim allerersten Start: Hinweisfenster mit mehrzeiligem Textfeld
+    # (zeichnet über Uniscribe, braucht die Ersatzschrift für SimSun)
+    pkill -f '\.exe' 2>/dev/null || true; sleep 3
+    J="$HOME/data-ja-$DPI/prefix/drive_c/StemMaker"; mkdir -p "$J"
+    printf '[Main]\r\nLanguage=ja\r\n' > "$J/StemMaker.ini"
+    STEMMAKER_DATA="$HOME/data-ja-$DPI" "$AI" >/dev/null 2>&1 &
+    sleep 60; import -window root "$BILDER/${DPI}dpi-5-Japanisch-Hinweise.png"
     # alles von Wine beenden, bevor die nächste Stufe startet
     pkill -f '\.exe' 2>/dev/null || true
     pkill -f wineserver 2>/dev/null || true

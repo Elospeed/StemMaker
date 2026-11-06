@@ -6,7 +6,7 @@
 # der Sprachwahl und die ganze japanische Oberfläche als Kästchen.
 # Darum liegt Noto Sans JP (SIL Open Font License 1.1) in der AppImage,
 # aber nur mit den Zeichen, die StemMaker braucht (ca. 0,3 MB statt 4,5 MB):
-#   - alle japanischen Zeichen aus den Sprachdateien (lang/*.po usw.)
+#   - alle Sonderzeichen aus den Sprachdateien (lang/*.po usw.), auch ✓
 #   - zusammenhängende japanische Wörter aus den Programmen (z. B. 日本語)
 #   - alle Hiragana, Katakana, japanischen Satzzeichen und Zeichen voller Breite
 #
@@ -20,7 +20,6 @@ import sys
 from fontTools import subset
 
 BEREICH = "[　-ヿ㐀-䶿一-鿿＀-￯]"
-EINZELN = re.compile(BEREICH)
 WORT = re.compile(BEREICH + "{2,}")
 
 
@@ -36,8 +35,10 @@ def zeichen_sammeln(ordner):
             if name.lower().endswith((".exe", ".dll")):
                 # in Programmen nur ganze Wörter, einzelne Treffer sind Zufall
                 zeichen.update("".join(WORT.findall(text)))
-            else:
-                zeichen.update(EINZELN.findall(text))
+            elif name.lower().endswith((".po", ".txt", ".md", ".ini", ".json", ".csv", ".html")):
+                # aus Textdateien alle Nicht-ASCII-Zeichen (auch ✓, Pfeile usw.);
+                # was die Schrift nicht hat, lässt fontTools einfach weg
+                zeichen.update(c for c in text if ord(c) > 0x7F and c != "\ufffd")
     zeichen.update(chr(c) for c in range(0x3000, 0x3100))  # Satzzeichen, Hiragana, Katakana
     zeichen.update(chr(c) for c in range(0xFF01, 0xFFA0))  # volle und halbe Breite
     zeichen.update(chr(c) for c in range(0x20, 0x7F))      # ASCII
