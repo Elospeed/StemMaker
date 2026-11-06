@@ -36,7 +36,7 @@ winpfad() { echo "Z:$(echo "$1" | tr '/' '\\')"; }
 cat "$ERG"
 
 echo "== Vorbereiten (erster Start legt den Wine-Ordner an)"
-"$AI" --cli >/dev/null 2>&1 || true
+"$AI" --cli --accept >/dev/null 2>&1 || true
 mkdir -p "$C/models"
 M="$C/models/ggml-model-htdemucs-4s-f16.bin"
 if ! echo "$MODELL_SHA  $M" | sha256sum -c --quiet - 2>/dev/null; then

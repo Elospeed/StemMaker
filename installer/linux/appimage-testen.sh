@@ -19,7 +19,7 @@ export STEMMAKER_DATA="$HOME/data"
 C="$STEMMAKER_DATA/prefix/drive_c/StemMaker"
 
 echo "== 1. Erster Start (Wine-Ordner anlegen, StemMaker kopieren)"
-"$AI" --cli > "$T/start.log" 2>&1 || true
+"$AI" --cli --accept > "$T/start.log" 2>&1 || true   # Haftungsausschluss bestätigen (wie im Fenster)
 cat "$T/start.log"
 test -f "$C/StemMaker.exe" || { echo "FEHLER: StemMaker wurde nicht in den Wine-Ordner kopiert"; exit 1; }
 test -f "$C/APPIMAGE_VERSION"
