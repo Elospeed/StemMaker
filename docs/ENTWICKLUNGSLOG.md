@@ -6,6 +6,20 @@ Neueste Einträge oben.
 
 ---
 
+## Linux-AppImage mit Wine (Beta, November 2026)
+
+**Frage:** Linux-Version ohne zweite Codebasis? **Antwort:** die fertige Windows-Version mit Wine in eine AppImage packen (`installer/linux/`, Workflow `appimage.yml`).
+
+| Problem | Lösung |
+|---|---|
+| AppImage ist schreibgeschützt, StemMaker schreibt INI, Modelle, ffmpeg und Logs neben die Exe. | `AppRun` kopiert StemMaker beim ersten Start nach `~/.local/share/StemMaker-Wine/prefix/drive_c/StemMaker`. Neuere AppImage kopiert drüber (INI/Modelle/ffmpeg bleiben), ältere nicht. Kein Code-Umbau nötig, auch das Update aus StemMaker heraus geht dort. |
+| Wine ist gross (645 MB). | Portables Wine von Kron4ek (glibc 2.25+, unverändert), nur 64 Bit, Debug-Infos weg → ca. 170 MB, gepackt mit der App ca. 80 MB. |
+| Skalierung: Wine kennt die Desktop-Skalierung nicht. | `AppRun` liest `Xft.dpi` (GNOME/KDE/XFCE) und setzt beim Anlegen `LogPixels`. Test bei 96 und 144 dpi im Workflow. |
+| Grafikkarte: DirectML unter Wine meldet `80004001 Not implemented`. | StemOnnx fällt sauber auf die CPU zurück (Prototyp 6.11.2026: 3:10-Track in 2:38 min, 4 Cloud-Kerne). Versuche: `STEMMAKER_GPU=vkd3d` (vkd3d-proton + DXVK wie in Proton) und StemOnnx 0.5 `--geraet webgpu` (onnxruntime-webgpu, Dawn über Vulkan). Messung mit `installer/linux/gpu-test/gpu-test.sh` auf echter Hardware. |
+| Ausführen fremder Programme ist in der Cloud-Umgebung gesperrt. | AppImage bauen und testen läuft in GitHub Actions (5 Distros in Docker, Bilder bei 100/150 %). |
+
+---
+
 ## AddOn-Leiste bei kleinem Fenster verdeckt (2.1.2, Oktober 2026)
 
 **Problem:** Die AddOn-Leiste (alRight) ist nur so hoch wie die Dateiliste, weil die LCL erst alTop/alBottom (Einstellungen, Log) über die ganze Breite anordnet. Bei 150–200 % oder kleinem Fenster ist die Liste niedrig, der zweite Knopf (StemTagger) lag unter dem Einstellungen-Rahmen.

@@ -1,0 +1,43 @@
+StemMaker für Linux (Beta) - Elospeed
+=====================================
+
+DE
+Diese AppImage enthält die normale Windows-Version von StemMaker (mit
+StemCLI, StemPlayer und StemTagger) und ein unverändertes Wine @WINE_VER@,
+das sie unter Linux startet.
+
+Start:   chmod +x StemMaker-*-x86_64.AppImage   und dann doppelklicken
+Daten:   ~/.local/share/StemMaker-Wine/  (Einstellungen, Modelle, ffmpeg, Logs)
+Beta:    Turbo rechnet unter Linux auf der CPU (Grafikkarte noch nicht).
+         "Ordner öffnen" zeigt den Dateimanager von Wine.
+
+EN
+This AppImage contains the regular Windows version of StemMaker (with
+StemCLI, StemPlayer and StemTagger) and an unmodified Wine @WINE_VER@ that
+runs it on Linux.
+
+Start:   chmod +x StemMaker-*-x86_64.AppImage   then double-click
+Data:    ~/.local/share/StemMaker-Wine/  (settings, models, ffmpeg, logs)
+Beta:    Turbo runs on the CPU on Linux (no graphics card yet).
+         "Open folder" shows Wine's file manager.
+
+Wine
+----
+Wine is free software under the GNU Lesser General Public License 2.1 or
+later (licenses/Wine-LICENSE.txt, licenses/Wine-COPYING.LIB.txt).
+Binary build: @WINE_URL@
+              (Kron4ek/Wine-Builds, built from the unmodified WineHQ source)
+Source code:  @WINE_SRC@
+Wine is included unmodified; only debug information and the 32-bit parts
+were removed to reduce the size.
+
+vkd3d-proton @VKD3D_VER@ (LGPL 2.1, licenses/vkd3d-proton-LICENSE.txt) and
+DXVK @DXVK_VER@ (zlib license, licenses/DXVK-LICENSE.txt) are included
+unmodified in gpu/ for an optional graphics card test (STEMMAKER_GPU=vkd3d).
+Binaries: @VKD3D_URL@
+          @DXVK_URL@
+Source:   https://github.com/HansKristian-Work/vkd3d-proton/tree/v@VKD3D_VER@
+          https://github.com/doitsujin/dxvk/tree/v@DXVK_VER@
+
+StemMaker: MIT license, see StemMaker/LICENSE and StemMaker/THIRD-PARTY-NOTICES.md
+https://elospeed.github.io/StemMaker/

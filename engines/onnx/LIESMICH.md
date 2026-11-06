@@ -7,7 +7,7 @@ StemOnnx trennt Songs mit demselben KI-Modell wie StemMaker (htdemucs = Demucs v
 - auf der **Grafikkarte** über DirectML (NVIDIA, AMD, Intel, ohne Zusatz-Installation)
 - ohne passende Grafikkarte auf der **CPU**, dort etwa 4 bis 6x schneller als demucs.cpp
 
-**Stand: ab StemMaker 2.0 eingebaut (Version 0.4) und dort Standard („Turbo“).** Das Paket liegt im Release unter `tools\onnx\`. Die bewährte demucs.cpp-Engine bleibt als „Klassisch“ wählbar und springt automatisch ein, wenn StemOnnx bei einer Datei mit einem Fehler endet.
+**Stand: ab StemMaker 2.0 eingebaut (Version 0.4, im Repository 0.5 mit WebGPU-Versuch) und dort Standard („Turbo“).** Das Paket liegt im Release unter `tools\onnx\`. Die bewährte demucs.cpp-Engine bleibt als „Klassisch“ wählbar und springt automatisch ein, wenn StemOnnx bei einer Datei mit einem Fehler endet.
 
 ## Qualität
 
@@ -56,6 +56,7 @@ StemOnnx.exe --karten
 - `--vortest`: der Vortest, den StemMaker beim ersten Start zeigt. Misst Laden des Modells, die CPU (4 Durchgänge, die ersten zwei wärmen nur auf) und die Grafikkarte (richtig und schneller?). Schreibt Fortschritt als `SCHRITT <prozent>: <text>` und die Messwerte als `VORTEST <name>=<wert>`.
 - `--karten`: meldet nur die Grafikkarten in einer Zeile `KARTEN <name>|<treiber>;...` (schnell). StemMaker merkt sich das und wiederholt den Vortest, wenn eine Karte oder ein Treiber wechselt.
 - Die Telemetrie von ONNX Runtime ist abgeschaltet.
+- `--geraet webgpu` (Versuch ab 0.5, StemMaker nutzt es noch nicht): rechnet über den WebGPU-Weg von ONNX Runtime (Dawn). Braucht statt der DirectML-Ausgabe die `onnxruntime.dll` (+ `dxcompiler.dll`, `dxil.dll`) aus dem Paket `onnxruntime-webgpu`. Vergleicht immer mit der CPU und meldet Abstand und Tempo. Unterbau wählbar mit der Umgebungsvariable `STEMONNX_WEBGPU_BACKEND=Vulkan` oder `D3D12` (unter Linux mit Wine ist Vulkan der kürzere Weg). Gebaut wird das Testpaket im Workflow „Linux-AppImage“ (`installer/linux/gpu-test/`).
 
 ## Modell: wir liefern keine Gewichte mit
 
