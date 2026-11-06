@@ -56,6 +56,31 @@ if [ ! -f "$WINEPREFIX/system.reg" ]; then
   "$WINESERVER" -w
 fi
 
+# --- Japanische Schrift (Noto Sans JP, nur die von StemMaker gebrauchten Zeichen) ---
+# Wine hat keine, viele Linux-Systeme auch nicht: ohne sie erscheint Japanisch
+# als Kästchen. Die Schrift kommt nach C:\Windows\Fonts und wird als Ersatz
+# (Font-Link) hinter die Oberflächen-Schriften gehängt. Andere Sprachen
+# ändern sich dadurch nicht, die Schrift springt nur für fehlende Zeichen ein.
+SCHRIFT="NotoSansJP-StemMaker.otf"
+FONTS="$WINEPREFIX/drive_c/windows/Fonts"
+if [ -f "$HERE/fonts/$SCHRIFT" ] && ! cmp -s "$HERE/fonts/$SCHRIFT" "$FONTS/$SCHRIFT"; then
+  mkdir -p "$FONTS"
+  cp --no-preserve=mode "$HERE/fonts/$SCHRIFT" "$FONTS/$SCHRIFT"
+  "$WINE" reg add 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\Fonts' \
+    /v 'Noto Sans JP (TrueType)' /t REG_SZ /d "$SCHRIFT" /f >/dev/null 2>&1
+  LINK="$SCHRIFT,Noto Sans JP\0MSGOTHIC.TTC,MS UI Gothic\0gulim.ttc,Gulim\0SIMSUN.TTC,SimSun\0MINGLIU.TTC,PMingLiU"
+  for F in "Tahoma" "Tahoma Bold" "Microsoft Sans Serif" "MS Sans Serif" "MS Shell Dlg" "MS Shell Dlg 2" \
+           "Segoe UI" "Segoe UI Bold" "Lucida Sans Unicode" "Arial" "Arial Bold" "Courier New"; do
+    "$WINE" reg add 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\FontLink\SystemLink' \
+      /v "$F" /t REG_MULTI_SZ /d "$LINK" /f >/dev/null 2>&1
+  done
+  # Programme, die ausdrücklich eine japanische Windows-Schrift verlangen
+  for F in "MS UI Gothic" "MS Gothic" "MS PGothic" "Meiryo" "Meiryo UI" "Yu Gothic" "Yu Gothic UI"; do
+    "$WINE" reg add 'HKCU\Software\Wine\Fonts\Replacements' /v "$F" /t REG_SZ /d "Noto Sans JP" /f >/dev/null 2>&1
+  done
+  "$WINESERVER" -w
+fi
+
 # --- Programm kopieren, wenn die AppImage neuer ist als die Kopie ---
 # StemMaker.ini, Modelle, ffmpeg und Logs liegen nicht in der AppImage und
 # bleiben erhalten. Ein Update aus StemMaker heraus ändert APPIMAGE_VERSION

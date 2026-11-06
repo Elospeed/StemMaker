@@ -10,6 +10,8 @@ Start:   chmod +x StemMaker-*-x86_64.AppImage   und dann doppelklicken
 Daten:   ~/.local/share/StemMaker-Wine/  (Einstellungen, Modelle, ffmpeg, Logs)
 Beta:    Turbo rechnet unter Linux auf der CPU (Grafikkarte noch nicht).
          "Ordner öffnen" zeigt den Dateimanager von Wine.
+Schrift: Für japanische Dateinamen die Noto-CJK-Schriften der Distribution
+         installieren (z. B. Ubuntu/Debian: fonts-noto-cjk).
 
 EN
 This AppImage contains the regular Windows version of StemMaker (with
@@ -20,6 +22,8 @@ Start:   chmod +x StemMaker-*-x86_64.AppImage   then double-click
 Data:    ~/.local/share/StemMaker-Wine/  (settings, models, ffmpeg, logs)
 Beta:    Turbo runs on the CPU on Linux (no graphics card yet).
          "Open folder" shows Wine's file manager.
+Fonts:   For Japanese file names install your distribution's Noto CJK
+         fonts (e.g. Ubuntu/Debian: fonts-noto-cjk).
 
 Wine
 ----
@@ -38,6 +42,13 @@ Binaries: @VKD3D_URL@
           @DXVK_URL@
 Source:   https://github.com/HansKristian-Work/vkd3d-proton/tree/v@VKD3D_VER@
           https://github.com/doitsujin/dxvk/tree/v@DXVK_VER@
+
+Noto Sans JP (fonts/NotoSansJP-StemMaker.otf): SIL Open Font License 1.1
+(licenses/NotoSansJP-OFL.txt), (c) Adobe / Google, from
+https://github.com/notofonts/noto-cjk (tag @FONT_TAG@). Reduced to the
+characters StemMaker uses, so the Japanese user interface is readable on
+systems without a Japanese font. For Japanese file names install your
+distribution's Noto CJK fonts (e.g. Ubuntu/Debian: fonts-noto-cjk).
 
 StemMaker: MIT license, see StemMaker/LICENSE and StemMaker/THIRD-PARTY-NOTICES.md
 https://elospeed.github.io/StemMaker/

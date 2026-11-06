@@ -25,6 +25,10 @@ VKD3D_SHA="842b20e40b765107bf5ca9c8077fea2428375efc9c53ef38547ec55ca365002f"
 DXVK_VER="2.7.1"
 DXVK_URL="https://github.com/doitsujin/dxvk/releases/download/v${DXVK_VER}/dxvk-${DXVK_VER}.tar.gz"
 DXVK_SHA="d85ce7c79f57ecd765aaa1b9e7007cb875e6fde9f6d331df799bce73d513ce87"
+# Japanische Schrift (SIL Open Font License 1.1), wird auf die gebrauchten Zeichen verkleinert
+FONT_TAG="Sans2.004"
+FONT_URL="https://raw.githubusercontent.com/notofonts/noto-cjk/${FONT_TAG}/Sans/SubsetOTF/JP/NotoSansJP-Regular.otf"
+FONT_SHA="dff723ba59d57d136764a04b9b2d03205544f7cd785a711442d6d2d085ac5073"
 TOOL_URL="https://github.com/AppImage/appimagetool/releases/download/1.9.0/appimagetool-x86_64.AppImage"
 
 ZIP=$(realpath "$1"); VERSION="$2"
@@ -68,14 +72,21 @@ echo "$DXVK_SHA  $ARBEIT/dxvk.tar.gz" | sha256sum -c -
 tar -xzf "$ARBEIT/dxvk.tar.gz" -C "$ARBEIT"
 cp "$ARBEIT/dxvk-$DXVK_VER/x64/dxgi.dll" "$APPDIR/gpu/"
 
+echo "== Japanische Schrift (Noto Sans JP $FONT_TAG, nur gebrauchte Zeichen)"
+mkdir -p "$APPDIR/fonts"
+curl -sSfL -o "$ARBEIT/NotoSansJP-Regular.otf" "$FONT_URL"
+echo "$FONT_SHA  $ARBEIT/NotoSansJP-Regular.otf" | sha256sum -c -
+python3 -I "$HIER/schrift-japanisch.py" "$ARBEIT/NotoSansJP-Regular.otf" "$APPDIR/StemMaker" "$APPDIR/fonts/NotoSansJP-StemMaker.otf"
+
 echo "== Lizenzen"
 mkdir -p "$APPDIR/licenses"
 curl -sSfL -o "$APPDIR/licenses/Wine-LICENSE.txt" "https://raw.githubusercontent.com/wine-mirror/wine/wine-${WINE_VER}/LICENSE"
 curl -sSfL -o "$APPDIR/licenses/Wine-COPYING.LIB.txt" "https://raw.githubusercontent.com/wine-mirror/wine/wine-${WINE_VER}/COPYING.LIB"
 curl -sSfL -o "$APPDIR/licenses/vkd3d-proton-LICENSE.txt" "https://raw.githubusercontent.com/HansKristian-Work/vkd3d-proton/v${VKD3D_VER}/LICENSE"
+curl -sSfL -o "$APPDIR/licenses/NotoSansJP-OFL.txt" "https://raw.githubusercontent.com/notofonts/noto-cjk/${FONT_TAG}/LICENSE"
 curl -sSfL -o "$APPDIR/licenses/DXVK-LICENSE.txt" "https://raw.githubusercontent.com/doitsujin/dxvk/v${DXVK_VER}/LICENSE"
 sed -e "s|@VKD3D_VER@|$VKD3D_VER|g" -e "s|@VKD3D_URL@|$VKD3D_URL|g" -e "s|@DXVK_VER@|$DXVK_VER|g" -e "s|@DXVK_URL@|$DXVK_URL|g" \
-    -e "s|@WINE_VER@|$WINE_VER|g" -e "s|@WINE_SRC@|$WINE_SRC|g" -e "s|@WINE_URL@|$WINE_URL|g" \
+    -e "s|@FONT_TAG@|$FONT_TAG|g" -e "s|@WINE_VER@|$WINE_VER|g" -e "s|@WINE_SRC@|$WINE_SRC|g" -e "s|@WINE_URL@|$WINE_URL|g" \
   "$HIER/LIESMICH-LINUX.txt" > "$APPDIR/LIESMICH-LINUX.txt"
 
 echo "== Startskript, Symbol, Desktop-Datei"

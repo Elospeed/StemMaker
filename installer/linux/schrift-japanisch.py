@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+# Japanische Schrift für die Linux-AppImage verkleinern.
+#
+# Wine bringt keine japanische Schrift mit, und viele Linux-Systeme (z. B.
+# Ubuntu ohne Sprachpaket, WSL) haben auch keine. Dann erscheint 日本語 in
+# der Sprachwahl und die ganze japanische Oberfläche als Kästchen.
+# Darum liegt Noto Sans JP (SIL Open Font License 1.1) in der AppImage,
+# aber nur mit den Zeichen, die StemMaker braucht (ca. 0,3 MB statt 4,5 MB):
+#   - alle japanischen Zeichen aus den Sprachdateien (lang/*.po usw.)
+#   - zusammenhängende japanische Wörter aus den Programmen (z. B. 日本語)
+#   - alle Hiragana, Katakana, japanischen Satzzeichen und Zeichen voller Breite
+#
+#   schrift-japanisch.py <NotoSansJP-Regular.otf> <StemMaker-Ordner> <Ziel.otf>
+#
+# Braucht fontTools (pip install fonttools).
+import os
+import re
+import sys
+
+from fontTools import subset
+
+BEREICH = "[　-ヿ㐀-䶿一-鿿＀-￯]"
+EINZELN = re.compile(BEREICH)
+WORT = re.compile(BEREICH + "{2,}")
+
+
+def zeichen_sammeln(ordner):
+    zeichen = set()
+    for wurzel, _, dateien in os.walk(ordner):
+        for name in dateien:
+            pfad = os.path.join(wurzel, name)
+            if os.path.getsize(pfad) > 50_000_000:
+                continue
+            with open(pfad, "rb") as f:
+                text = f.read().decode("utf-8", "replace")
+            if name.lower().endswith((".exe", ".dll")):
+                # in Programmen nur ganze Wörter, einzelne Treffer sind Zufall
+                zeichen.update("".join(WORT.findall(text)))
+            else:
+                zeichen.update(EINZELN.findall(text))
+    zeichen.update(chr(c) for c in range(0x3000, 0x3100))  # Satzzeichen, Hiragana, Katakana
+    zeichen.update(chr(c) for c in range(0xFF01, 0xFFA0))  # volle und halbe Breite
+    zeichen.update(chr(c) for c in range(0x20, 0x7F))      # ASCII
+    return zeichen
+
+
+def main():
+    quelle, ordner, ziel = sys.argv[1:4]
+    zeichen = zeichen_sammeln(ordner)
+    opt = subset.Options()
+    opt.layout_features = ["*"]
+    opt.name_IDs = ["*"]
+    opt.name_languages = ["*"]
+    opt.notdef_outline = True
+    opt.hinting = False
+    schrift = subset.load_font(quelle, opt)
+    teil = subset.Subsetter(opt)
+    teil.populate(text="".join(sorted(zeichen)))
+    teil.subset(schrift)
+    subset.save_font(schrift, ziel, opt)
+    print(f"{len(zeichen)} Zeichen, {os.path.getsize(ziel)} Bytes -> {ziel}")
+
+
+if __name__ == "__main__":
+    main()

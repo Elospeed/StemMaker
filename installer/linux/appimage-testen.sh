@@ -114,6 +114,18 @@ if [ -n "$BILDER" ] && command -v Xvfb >/dev/null && command -v xdotool >/dev/nu
     else
       import -window root "$BILDER/${DPI}dpi-3-statt-Hauptfenster.png"
     fi
+    # Japanisch: zeigt, ob die mitgelieferte Schrift greift (sonst Kästchen)
+    pkill -f '\.exe' 2>/dev/null || true; sleep 3
+    python3 - "$D/StemMaker.ini" <<'PY'
+import configparser, sys
+ini = configparser.RawConfigParser(); ini.optionxform = str
+ini.read(sys.argv[1], encoding="utf-8")
+if not ini.has_section("Main"): ini.add_section("Main")
+ini.set("Main", "Language", "ja")
+with open(sys.argv[1], "w", encoding="utf-8") as f: ini.write(f, space_around_delimiters=False)
+PY
+    "$AI" >/dev/null 2>&1 &
+    sleep 40; import -window root "$BILDER/${DPI}dpi-4-Japanisch.png"
     # alles von Wine beenden, bevor die nächste Stufe startet
     pkill -f '\.exe' 2>/dev/null || true
     pkill -f wineserver 2>/dev/null || true
