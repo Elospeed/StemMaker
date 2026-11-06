@@ -105,9 +105,14 @@ if [ -n "$BILDER" ] && command -v Xvfb >/dev/null && command -v xdotool >/dev/nu
     # Klicks ins Häkchen sind ohne Fenstermanager unzuverlässig
     pkill -f '\.exe' 2>/dev/null || true; sleep 3
     "$AI" --cli --accept >/dev/null 2>&1 || true
+    # ffmpeg und Modell aus Schritt 2 mitgeben, sonst kommt zuerst das Download-Fenster
+    D="$STEMMAKER_DATA/prefix/drive_c/StemMaker"
+    cp "$C/tools/ffmpeg.exe" "$D/tools/" && cp "$C/models/"*.bin "$D/models/"
     "$AI" >/dev/null 2>&1 &
     if warte_fenster "Traktor Stems"; then
       sleep 15; import -window root "$BILDER/${DPI}dpi-3-Hauptfenster.png"
+    else
+      import -window root "$BILDER/${DPI}dpi-3-statt-Hauptfenster.png"
     fi
     # alles von Wine beenden, bevor die nächste Stufe startet
     pkill -f '\.exe' 2>/dev/null || true
