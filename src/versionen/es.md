@@ -8,7 +8,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
 ## 2.2.1 – 7 de noviembre de 2026
 ### Corregido
-- Linux (AppImage): StemMaker y StemPlayer se pueden minimizar, el dock muestra el icono del programa
+- Linux (AppImage): StemMaker, StemPlayer y StemTagger se pueden minimizar, el dock muestra el icono del programa
 
 ## 2.2 – 4 de noviembre de 2026
 ### Nuevo

@@ -8,7 +8,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 
 ## 2.2.1 – 7. November 2026
 ### Behoben
-- Linux (AppImage): StemMaker und StemPlayer lassen sich minimieren, das Dock zeigt das Programmsymbol
+- Linux (AppImage): StemMaker, StemPlayer und StemTagger lassen sich minimieren, das Dock zeigt das Programmsymbol
 
 ## 2.2 – 4. November 2026
 ### Neu

@@ -8,7 +8,7 @@ keyword line per item. Only things users notice, no technical details.
 
 ## 2.2.1 – 7 November 2026
 ### Fixed
-- Linux (AppImage): StemMaker and StemPlayer can be minimized, the dock shows the program icon
+- Linux (AppImage): StemMaker, StemPlayer and StemTagger can be minimized, the dock shows the program icon
 
 ## 2.2 – 4 November 2026
 ### New
