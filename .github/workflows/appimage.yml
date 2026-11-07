@@ -1,0 +1,203 @@
+# Linux-AppImage (Beta): StemMaker für Windows + mitgeliefertes Wine.
+#
+# Was passiert:
+# 1. "appimage": nimmt das Release-ZIP (Standard: aktuelle Version aus update.json)
+#    und baut StemMaker-<Version>-x86_64.AppImage (installer/linux/appimage-bauen.sh).
+# 2. "gpu-testpaket": baut StemOnnx (engines/onnx) und legt es mit dem
+#    WebGPU-Paket von ONNX Runtime in GPU-Testpaket.zip (Versuch Grafikkarte).
+# 3. "test-distros": startet die AppImage auf mehreren Distros (Docker) und
+#    wandelt einen Testton ganz um (installer/linux/appimage-testen.sh).
+# 4. "test-bilder": Bilder der ersten Fenster bei 100 % und 150 % (DPI-Regel)
+#    und GPU-Testpaket auf der Software-Grafikkarte (lavapipe), nur Funktion.
+# 5. Nur bei Start von Hand mit "hochladen": AppImage ans Release anhängen.
+#
+# Läuft automatisch bei PRs, die installer/linux, engines/onnx oder diese Datei
+# ändern. Die Ergebnisse liegen als Artefakte am Lauf.
+
+name: Linux-AppImage
+
+on:
+  pull_request:
+    paths:
+      - "installer/linux/**"
+      - "engines/onnx/**"
+      - ".github/workflows/appimage.yml"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release-Tag, z. B. v2.2 (leer = Version aus update.json)"
+        required: false
+      hochladen:
+        description: "AppImage ans Release anhängen"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  # onnxruntime-webgpu von PyPI (Microsoft, MIT): Windows-Paket mit Dawn eingebaut
+  ORT_WEBGPU_URL: "https://files.pythonhosted.org/packages/df/28/016260c51c877ba5b3eba823b43107e894659e73e0ecf250eb07e801e3c2/onnxruntime_webgpu-1.27.0-cp312-cp312-win_amd64.whl"
+  ORT_WEBGPU_SHA: "7ef99275b13e8cb9584bd0db7a6f00ebf76095601eeccf7d34749b89ee991c19"
+
+jobs:
+  appimage:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.zip.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Werkzeuge
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq mingw-w64 imagemagick zstd desktop-file-utils >/dev/null
+          # fontTools zum Verkleinern der japanischen Schrift (Version fest)
+          sudo python3 -m pip install -q --break-system-packages fonttools==4.60.1
+
+      - name: Release-ZIP holen
+        id: zip
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -e
+          if [ -n "$TAG" ]; then
+            VERSION="${TAG#v}"
+            gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "StemMaker-$VERSION.zip"
+          else
+            read -r VERSION URL SHA < <(python3 -c "import json; d=json.load(open('update.json', encoding='utf-8')); print(d['version'], d['zip_url'], d['zip_sha256'])")
+            curl -sSfL -o "StemMaker-$VERSION.zip" "$URL"
+            echo "$SHA  StemMaker-$VERSION.zip" | sha256sum -c -
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: AppImage bauen
+        run: bash installer/linux/appimage-bauen.sh "StemMaker-$VERSION.zip" "$VERSION" ausgabe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StemMaker-AppImage
+          path: ausgabe/*.AppImage
+          retention-days: 14
+
+  gpu-testpaket:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: mingw
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gcc-mingw-w64-x86-64-posix unzip >/dev/null
+      - name: StemOnnx bauen
+        run: bash engines/onnx/build.sh
+      - name: Paket zusammenstellen
+        run: |
+          set -e
+          P=GPU-Testpaket; W=$P/StemOnnx-WebGPU
+          mkdir -p "$W/lizenzen"
+          cp engines/onnx/dist/StemOnnx/StemOnnx.exe engines/onnx/dist/StemOnnx/htdemucs-geruest.onnx \
+             engines/onnx/dist/StemOnnx/htdemucs-geruest.txt "$W/"
+          curl -sSfL -o ort.whl "$ORT_WEBGPU_URL"
+          echo "$ORT_WEBGPU_SHA  ort.whl" | sha256sum -c -
+          python3 - ort.whl "$W" <<'PY'
+          import os, sys, zipfile
+          z = zipfile.ZipFile(sys.argv[1]); ziel = sys.argv[2]
+          for n in z.namelist():
+              b = os.path.basename(n)
+              if n.startswith("onnxruntime/capi/") and b.endswith(".dll"):
+                  open(os.path.join(ziel, b), "wb").write(z.read(n))
+              elif n in ("onnxruntime/LICENSE", "onnxruntime/ThirdPartyNotices.txt"):
+                  open(os.path.join(ziel, "lizenzen", "ONNXRuntime-" + b + (".txt" if b == "LICENSE" else "")), "wb").write(z.read(n))
+          PY
+          cp LICENSE "$W/lizenzen/StemMaker-LICENSE.txt"
+          cp installer/linux/gpu-test/gpu-test.sh installer/linux/gpu-test/LIESMICH.txt "$P/"
+          chmod +x "$P/gpu-test.sh"
+          ls -la "$P" "$W"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GPU-Testpaket
+          path: GPU-Testpaket
+          retention-days: 14
+
+  test-distros:
+    needs: appimage
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        bild: ["ubuntu:22.04", "ubuntu:24.04", "debian:12", "fedora:41", "archlinux:latest"]
+    container: ${{ matrix.bild }}
+    steps:
+      - name: Pakete der Distro
+        run: |
+          if command -v apt-get >/dev/null; then
+            apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git python3 curl ca-certificates \
+              libx11-6 libxext6 libxrender1 libxrandr2 libxi6 libxcursor1 libfreetype6 libfontconfig1 libgnutls30 >/dev/null
+          elif command -v dnf >/dev/null; then
+            dnf install -y -q git python3 curl libX11 libXext libXrender libXrandr libXi libXcursor freetype fontconfig gnutls >/dev/null
+          elif command -v pacman >/dev/null; then
+            pacman -Sy --noconfirm --quiet git python curl libx11 libxext libxrender libxrandr libxi libxcursor freetype2 fontconfig gnutls >/dev/null
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: StemMaker-AppImage
+          path: ai
+      - name: AppImage testen
+        run: |
+          chmod +x ai/*.AppImage
+          bash installer/linux/appimage-testen.sh ai/*.AppImage
+
+  test-bilder:
+    needs: [appimage, gpu-testpaket]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pakete
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb xdotool imagemagick mesa-vulkan-drivers vulkan-tools libfuse2t64 \
+            libgnutls30t64 libfreetype6 libfontconfig1 >/dev/null
+      - uses: actions/download-artifact@v4
+        with:
+          name: StemMaker-AppImage
+          path: ai
+      - uses: actions/download-artifact@v4
+        with:
+          name: GPU-Testpaket
+          path: GPU-Testpaket
+      - name: AppImage testen + Bilder 100 % / 150 %
+        run: |
+          chmod +x ai/*.AppImage
+          bash installer/linux/appimage-testen.sh ai/*.AppImage bilder
+      - name: GPU-Testpaket auf Software-Grafikkarte (lavapipe), nur Funktion
+        continue-on-error: true
+        timeout-minutes: 40
+        run: |
+          cp ai/*.AppImage GPU-Testpaket/
+          chmod +x GPU-Testpaket/gpu-test.sh
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          xvfb-run -a GPU-Testpaket/gpu-test.sh || true
+          cp GPU-Testpaket/gpu-test-ergebnis.txt bilder/ || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Bilder-und-GPU-Ergebnis
+          path: bilder
+          retention-days: 14
+
+  hochladen:
+    if: github.event_name == 'workflow_dispatch' && inputs.hochladen
+    needs: [appimage, test-distros, test-bilder]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: StemMaker-AppImage
+          path: ai
+      - name: ans Release anhängen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.appimage.outputs.version }}
+        run: |
+          gh release upload "v$VERSION" ai/*.AppImage --repo "$GITHUB_REPOSITORY" --clobber
+          echo "### StemMaker-$VERSION-x86_64.AppImage ans Release v$VERSION angehängt" >> "$GITHUB_STEP_SUMMARY"

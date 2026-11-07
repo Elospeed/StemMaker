@@ -18,7 +18,8 @@
                benutzt (ONNX Runtime verteilt die Arbeit selbst auf alle Kerne)
 
     Optionen:
-      --geraet auto|gpu|cpu   auto (Standard): Grafikkarte, wenn sie richtig
+      --geraet auto|gpu|cpu|webgpu
+                              auto (Standard): Grafikkarte, wenn sie richtig
                               UND schneller rechnet als die CPU, sonst CPU
       --gpu <nummer>          bestimmte Grafikkarte (0, 1, ...), Standard: die
                               schnellste, die Windows meldet
@@ -71,7 +72,7 @@
 #include <dxgi.h>
 #include "onnxruntime_c_api.h"
 
-#define STEMONNX_VERSION "0.4"
+#define STEMONNX_VERSION "0.5"
 
 #define SR       44100
 #define SEG      343980          /* 7,8 s bei 44,1 kHz, feste Eingangslänge des Modells */
@@ -512,8 +513,15 @@ static int prepare_weights(Tensor **order)
 /* Arten, wie gerechnet wird. DirectML MIT Graph-Fusion rechnet htdemucs
    falsch (Diagnose auf der RTX 4060 Ti, 12.10.2026: Werte bis 680000 statt
    höchstens ca. 3) und wird darum nie benutzt. */
-enum { DEV_CPU = 0, DEV_DML = 1, DEV_DML_NOMETA = 2 };
-static const char *DEV_NAMES[] = {"CPU", "Grafikkarte (DirectML)", "Grafikkarte (DirectML, ohne Metacommands)"};
+enum { DEV_CPU = 0, DEV_DML = 1, DEV_DML_NOMETA = 2, DEV_WEBGPU = 3 };
+static const char *DEV_NAMES[] = {"CPU", "Grafikkarte (DirectML)", "Grafikkarte (DirectML, ohne Metacommands)",
+                                  "Grafikkarte (WebGPU)"};
+/* Versuch ab 0.5 (6.11.2026): --geraet webgpu rechnet mit dem WebGPU-Weg von
+   ONNX Runtime (Dawn, unter Windows über D3D12 oder Vulkan). Geht nur mit
+   einer onnxruntime.dll aus dem Paket "onnxruntime-webgpu" statt der
+   DirectML-Ausgabe. Gedacht für Tests (z. B. unter Linux mit Wine, wo
+   DirectML nicht läuft); StemMaker selbst benutzt es noch nicht. */
+static int g_webgpu = 0;
 
 /* Sitzung erzeugen. gpu_id < 0: schnellste Grafikkarte nehmen. */
 static OrtSession *new_session(int dev, int gpu_id)
@@ -528,7 +536,20 @@ static OrtSession *new_session(int dev, int gpu_id)
     g_ort->ReleaseSessionOptions(opt);
     return NULL;
   }
-  if (dev != DEV_CPU) {
+  if (dev == DEV_WEBGPU) {
+    /* Dawn-Unterbau wählen: STEMONNX_WEBGPU_BACKEND=Vulkan oder D3D12
+       (unter Wine ist Vulkan der kürzere Weg zur Grafikkarte) */
+    const char *be = getenv("STEMONNX_WEBGPU_BACKEND");
+    if (be && *be) {
+      say("WebGPU-Unterbau: %s\n", be);
+      g_ort->AddSessionConfigEntry(opt, "ep.webgpuexecutionprovider.dawnBackendType", be);
+    }
+    OrtStatus *st = g_ort->SessionOptionsAppendExecutionProvider(opt, "WebGPU", NULL, NULL, 0);
+    if (ort_fail(st, "Grafikkarte einschalten (WebGPU)")) {
+      g_ort->ReleaseSessionOptions(opt);
+      return NULL;
+    }
+  } else if (dev != DEV_CPU) {
     /* DirectML verlangt: kein Speicher-Muster, nacheinander rechnen */
     g_ort->DisableMemPattern(opt);
     g_ort->SetSessionExecutionMode(opt, ORT_SEQUENTIAL);
@@ -711,7 +732,8 @@ static OrtSession *try_gpu(int gpu_id, float *in, float *res, const float *res_c
                            double *t_gpu, double *snr_out, double *t_open, double *t_first)
 {
   OrtSession *sess = NULL;
-  for (int d = DEV_DML; d <= DEV_DML_NOMETA && !sess; d++) {
+  int d_von = g_webgpu ? DEV_WEBGPU : DEV_DML, d_bis = g_webgpu ? DEV_WEBGPU : DEV_DML_NOMETA;
+  for (int d = d_von; d <= d_bis && !sess; d++) {
     say("Probiere %s ...\n", DEV_NAMES[d]);
     double to = now_s();
     OrtSession *g = new_session(d, gpu_id);
@@ -1041,6 +1063,7 @@ int wmain(int argc, wchar_t **argv)
       i++;
       if (!_wcsicmp(argv[i], L"gpu")) geraet = "gpu";
       else if (!_wcsicmp(argv[i], L"cpu")) geraet = "cpu";
+      else if (!_wcsicmp(argv[i], L"webgpu")) { geraet = "webgpu"; g_webgpu = 1; }
       else geraet = "auto";
     } else if (!wcscmp(argv[i], L"--gpu") && i + 1 < argc) gpu_id = _wtoi(argv[++i]);
     else if (!wcscmp(argv[i], L"--kerne") && i + 1 < argc) g_kerne = _wtoi(argv[++i]);
@@ -1060,7 +1083,7 @@ int wmain(int argc, wchar_t **argv)
   }
   if (npos < (vortest ? 1 : 3)) {
     say("\nAufruf: StemOnnx.exe <modell> <eingang.wav> <ausgabeordner> [teile]\n"
-        "        [--geraet auto|gpu|cpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]\n"
+        "        [--geraet auto|gpu|cpu|webgpu] [--gpu <nummer>] [--kerne <anzahl>] [--ergebnis <datei>] [--neu-pruefen]\n"
         "        StemOnnx.exe <modell> --vortest [--gpu <nummer>] [--ergebnis <datei>]\n"
         "        StemOnnx.exe --karten\n\n"
         "<modell>: ggml-model-htdemucs-4s-f16.bin oder der Ordner mit den 4 htdemucs_ft-Dateien\n");
@@ -1208,7 +1231,8 @@ int wmain(int argc, wchar_t **argv)
       fill_segment((long)probe * g_stride, in, &pst, &plen);
       double t_cpu = 0;
       OrtSession *cpu = NULL;
-      if (!strcmp(geraet, "auto") && !bewaehrt) {
+      /* webgpu (Versuch): immer mit der CPU vergleichen, Abstand + Tempo melden */
+      if ((!strcmp(geraet, "auto") && !bewaehrt) || g_webgpu) {
         cpu = new_session(DEV_CPU, -1);
         if (!cpu) return 4;
         if (ort_fail(run_segment(cpu, g_mem, in, res_cpu, &t_cpu), "Probe auf der CPU")) return 5;
