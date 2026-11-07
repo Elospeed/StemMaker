@@ -12,6 +12,12 @@ Neueste Einträge oben.
 
 **Lösung:** Neue Unit `src/uwine.pas`: `UnterWine` erkennt Wine an `wine_get_version` in `ntdll.dll`, `WineFensterEinrichten` setzt nur dann `Application.MainFormOnTaskBar := True` (direkt nach `Application.Initialize`). Das Hauptfenster hat so kein Elternfenster mehr und gilt als normales Fenster. Unter Windows bleibt alles wie bisher, weil sich dort das Verhalten von Taskleiste und Alt+Tab mit `MainFormOnTaskBar` ändern würde. Zusammen mit `StartupWMClass=stemmaker.exe` in der .desktop-Datei des AppImage zeigt das Dock das richtige Symbol. Der StemTagger hat eine Kopie der Unit (hier und im Repository Elospeed/StemTagger).
 
+## StemPlayer 1.8.4: Kreise unter Wine treppig (November 2026)
+
+**Problem:** Im CD-Player waren Jogwheel und die runden Knöpfe CUE/Play unter Linux (AppImage mit Wine) deutlich treppig. Das Jogwheel wird doppelt so gross vorgezeichnet und mit `StretchBlt` im Modus `HALFTONE` verkleinert; Wine setzt `HALFTONE` nicht als Mittelung um, sondern nimmt einzelne Pixel. Die runden Knöpfe zeichnete `TDJButton` direkt mit `Ellipse`, ohne jede Glättung (auch unter Windows leicht stufig).
+
+**Lösung:** `SmoothDownsample` in `djcontrols.pas` mittelt je n x n Pixel selbst (über `TLazIntfImage`, byteweise, damit die Reihenfolge der Farbkanäle egal ist). `designviews.Downsample` ruft es auf, `TDJButton` zeichnet runde Knöpfe dreifach gross vor und verkleinert sie damit; die Ecken bekommen `Parent.Color`. Kosten unter Wine gemessen: Jogwheel (680 auf 340 px) etwa 8 ms pro Neuzeichnen des Hintergrunds (nur bei Grössenänderung und alle halbe Grad Restzeit-Ring), Knopf (180 auf 60 px) unter 1 ms.
+
 ## AddOn-Leiste bei kleinem Fenster verdeckt (2.1.2, Oktober 2026)
 
 **Problem:** Die AddOn-Leiste (alRight) ist nur so hoch wie die Dateiliste, weil die LCL erst alTop/alBottom (Einstellungen, Log) über die ganze Breite anordnet. Bei 150–200 % oder kleinem Fenster ist die Liste niedrig, der zweite Knopf (StemTagger) lag unter dem Einstellungen-Rahmen.

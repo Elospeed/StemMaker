@@ -7,6 +7,8 @@ Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), u
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
 ## 2.2.1 – 7 de noviembre de 2026
+### Mejorado
+- StemPlayer 1.8.4: bordes suaves en el jog wheel y los botones redondos del reproductor CD
 ### Corregido
 - Linux (AppImage): StemMaker, StemPlayer y StemTagger se pueden minimizar, el dock muestra el icono del programa
 

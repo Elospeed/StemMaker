@@ -20,8 +20,9 @@
                  Scrubbing (Ton wie beim Ziehen der Welle in der Lupe).
   Kantenglättung: Windows zeichnet Kreise und schräge Linien ohne
   Kantenglättung (treppig). Darum werden die unveränderlichen Teile (Rand,
-  Ringe) einmal in doppelter Grösse vorgezeichnet und mit
-  StretchBlt im Modus HALFTONE weich verkleinert (Downsample). Bei jedem
+  Ringe) einmal in doppelter Grösse vorgezeichnet und weich verkleinert
+  (Downsample, je 2x2 Pixel gemittelt; früher StretchBlt/HALFTONE, das
+  Wine unter Linux nicht glättet). Bei jedem
   Bild wird nur noch dieses fertige Bild kopiert und die beweglichen Teile
   (Strich, Zeit) darüber gezeichnet.
 
@@ -159,15 +160,11 @@ begin
   while Result < -180 do Result := Result + 360;
 end;
 
-{ Doppelt grosses Bild weich auf die Grösse von Small verkleinern }
+{ Doppelt grosses Bild weich auf die Grösse von Small verkleinern
+  (selbst gerechnet, siehe SmoothDownsample in djcontrols) }
 procedure Downsample(Big, Small: TBitmap);
-var DC: HDC;
 begin
-  DC := Small.Canvas.Handle;
-  SetStretchBltMode(DC, HALFTONE);
-  SetBrushOrgEx(DC, 0, 0, nil);   // nötig nach HALFTONE (laut Windows-Doku)
-  StretchBlt(DC, 0, 0, Small.Width, Small.Height,
-             Big.Canvas.Handle, 0, 0, Big.Width, Big.Height, SRCCOPY);
+  SmoothDownsample(Big, Small);
 end;
 
 { Text waagrecht zentriert um CX ausgeben (Oberkante Y) }

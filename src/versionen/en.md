@@ -7,6 +7,8 @@ Below it "### New", "### Improved", "### Fixed" (only those that apply), one sho
 keyword line per item. Only things users notice, no technical details.
 
 ## 2.2.1 – 7 November 2026
+### Improved
+- StemPlayer 1.8.4: smooth edges for the jog wheel and round buttons in the CD player
 ### Fixed
 - Linux (AppImage): StemMaker, StemPlayer and StemTagger can be minimized, the dock shows the program icon
 

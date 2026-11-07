@@ -12,8 +12,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ### Behoben
 - **Linux (AppImage, Beta):** StemMaker, StemPlayer und StemTagger liessen sich unter Ubuntu nicht minimieren, und das Dock zeigte ein Zahnrad statt des Programmsymbols. Unter Wine besitzt jetzt das Hauptfenster selbst den Taskleisten-Knopf, damit gilt es als normales Fenster. Unter Windows ändert sich nichts.
 
-#### StemPlayer 1.8.3, StemTagger 1.2.1
+#### StemPlayer 1.8.4, StemTagger 1.2.1
 - Linux: Minimieren-Knopf und richtiges Symbol im Dock (wie oben).
+- **CD-Player mit glatten Kreisen** (Meldung Speedy): Jogwheel und die runden Knöpfe CUE und Play hatten Treppenstufen am Rand, unter Linux deutlich, unter Windows beim Knopf-Ring leicht. Die Kanten werden jetzt vom StemPlayer selbst geglättet und sehen überall gleich weich aus.
 
 ## 2.2 – 4. November 2026
 
