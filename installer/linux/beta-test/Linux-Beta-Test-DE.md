@@ -5,7 +5,7 @@ Danke, dass du die Linux-Version von StemMaker ausprobierst! Sie ist eine **Beta
 Dauer: etwa 20–30 Minuten.
 
 ## Was du brauchst
-- Ein 64-Bit-Linux (getestet: Ubuntu 24.04, Debian 12, Fedora, Arch)
+- Ein 64-Bit-Linux (von Hand getestet: Ubuntu 24.04; Start und Umwandlung automatisch geprüft auf Debian 12, Fedora und Arch)
 - Etwa 1 GB freien Platz (Programm + Modell, das beim ersten Start geladen wird)
 - Internet beim ersten Start
 - Ein, zwei eigene Songs (MP3, FLAC oder WAV)

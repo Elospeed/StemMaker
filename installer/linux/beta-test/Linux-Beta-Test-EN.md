@@ -5,7 +5,7 @@ Thanks for trying the Linux version of StemMaker! It is a **beta**: the regular 
 Time needed: about 20–30 minutes.
 
 ## What you need
-- A 64-bit Linux (tested: Ubuntu 24.04, Debian 12, Fedora, Arch)
+- A 64-bit Linux (tested by hand: Ubuntu 24.04; start and conversion checked automatically on Debian 12, Fedora and Arch)
 - About 1 GB of free space (program + model downloaded on first start)
 - Internet on first start
 - One or two songs of your own (MP3, FLAC or WAV)
