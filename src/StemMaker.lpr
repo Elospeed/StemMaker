@@ -45,7 +45,8 @@ uses
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
   uSettings, uReport, uStatusDraw, uTurboTest, uLoad,
-  uSkalierung;       // kein Fenster grösser als der freie Bildschirm (DPI)
+  uSkalierung,       // kein Fenster grösser als der freie Bildschirm (DPI)
+  uWine;             // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
@@ -59,6 +60,7 @@ begin
   Application.Scaled := True;
   Application.Title := APP_NAME;
   Application.Initialize;
+  WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
 
   { 00. Läuft schon ein StemMaker? Dann Hinweis zeigen, dessen Fenster nach
         vorne holen und sofort aufhören - noch bevor Log, INI oder

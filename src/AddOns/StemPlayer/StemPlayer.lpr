@@ -20,7 +20,8 @@ program StemPlayer;
 
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
-  Interfaces, Forms, playerform;
+  Interfaces, Forms, playerform,
+  uWine;   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -29,6 +30,7 @@ begin
   Application.Scaled := True;
   Application.Title := 'Elospeed StemPlayer';
   Application.Initialize;
+  WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

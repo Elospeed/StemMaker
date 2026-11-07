@@ -6,6 +6,12 @@ Neueste Einträge oben.
 
 ---
 
+## Linux: Fenster liess sich nicht minimieren (2.2.1, November 2026)
+
+**Problem:** Im Linux-AppImage (Wine) hatten StemMaker, StemPlayer und StemTagger unter Ubuntu/GNOME keinen Minimieren-Knopf, Minimieren über die Leiste ging nicht, und das Dock zeigte ein Zahnrad. Ursache: Lazarus legt unter Windows ein unsichtbares Anwendungsfenster an, das den Taskleisten-Knopf besitzt; das Hauptfenster bekommt es als Elternfenster (`win32wsforms.pp`: ohne `Application.MainFormOnTaskBar` wird `Parent := AppHandle`). Wine macht daraus ein 1x1-Fenster und setzt beim Hauptfenster `WM_TRANSIENT_FOR` darauf. GNOME behandelt es deshalb als Unterfenster (Dialog).
+
+**Lösung:** Neue Unit `src/uwine.pas`: `UnterWine` erkennt Wine an `wine_get_version` in `ntdll.dll`, `WineFensterEinrichten` setzt nur dann `Application.MainFormOnTaskBar := True` (direkt nach `Application.Initialize`). Das Hauptfenster hat so kein Elternfenster mehr und gilt als normales Fenster. Unter Windows bleibt alles wie bisher, weil sich dort das Verhalten von Taskleiste und Alt+Tab mit `MainFormOnTaskBar` ändern würde. Zusammen mit `StartupWMClass=stemmaker.exe` in der .desktop-Datei des AppImage zeigt das Dock das richtige Symbol. Der StemTagger hat eine Kopie der Unit (hier und im Repository Elospeed/StemTagger).
+
 ## AddOn-Leiste bei kleinem Fenster verdeckt (2.1.2, Oktober 2026)
 
 **Problem:** Die AddOn-Leiste (alRight) ist nur so hoch wie die Dateiliste, weil die LCL erst alTop/alBottom (Einstellungen, Log) über die ganze Breite anordnet. Bei 150–200 % oder kleinem Fenster ist die Liste niedrig, der zweite Knopf (StemTagger) lag unter dem Einstellungen-Rahmen.
