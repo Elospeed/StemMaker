@@ -50,6 +50,7 @@ Ideally as a post in the [GitHub Discussions](https://github.com/Elospeed/StemMa
 - **Dialogs** (open, save) look like Windows; your Linux folders are on drive **Z:**.
 - **Japanese file names**: install the Noto CJK fonts (Ubuntu/Debian: `fonts-noto-cjk`).
 - Inside a **virtual machine** sound may stutter; on a real PC it shouldn't. If it does, please tell me.
+- **"Unexpectedly closed"** on the next start: appears if the PC was shut down while StemMaker was still open (on Linux StemMaker isn't told about it). Close StemMaker first.
 - **Dock icon**: the proper StemMaker icon is only guaranteed once the AppImage is integrated into the system (e.g. with "Gear Lever" or "AppImageLauncher"). Started directly, a generic icon may appear.
 
 Thanks! Speedy · Elospeed

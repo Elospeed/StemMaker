@@ -50,6 +50,7 @@ Am liebsten als Beitrag in den [GitHub-Diskussionen](https://github.com/Elospeed
 - Die **Dialoge** (Dateien öffnen, Speichern) sehen aus wie unter Windows, deine Linux-Ordner findest du unter Laufwerk **Z:**.
 - **Japanische Dateinamen**: dafür die Noto-CJK-Schriften installieren (Ubuntu/Debian: `fonts-noto-cjk`).
 - In einer **virtuellen Maschine** kann der Ton stocken; auf einem echten PC sollte das nicht passieren. Wenn doch, bitte melden.
+- **„Unerwartet beendet“** beim nächsten Start: kommt, wenn der PC heruntergefahren wurde, während StemMaker noch offen war (unter Linux bekommt StemMaker das nicht mit). StemMaker vorher schliessen.
 - **Symbol im Dock**: das richtige StemMaker-Symbol erscheint sicher erst, wenn die AppImage ins System eingebunden ist (z. B. mit „Gear Lever“ oder „AppImageLauncher“). Direkt gestartet kann ein allgemeines Symbol erscheinen.
 
 Danke! Speedy · Elospeed
