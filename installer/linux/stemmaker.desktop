@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=StemMaker
+GenericName=Stem file creator
+Comment=Turn your music into stems for Traktor and Mixxx
+Comment[de]=Musik in Stems für Traktor und Mixxx umwandeln
+Exec=AppRun %F
+Icon=stemmaker
+Categories=AudioVideo;Audio;
+Terminal=false
+# Wine meldet das Fenster mit dieser Klasse, damit das Dock das StemMaker-Symbol zeigt
+StartupWMClass=stemmaker.exe

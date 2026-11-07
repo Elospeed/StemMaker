@@ -1,0 +1,124 @@
+#!/bin/bash
+# AppRun - Startskript der StemMaker-AppImage für Linux (Beta)
+#
+# Startet die Windows-Version von StemMaker mit dem mitgelieferten Wine.
+# Die AppImage selbst ist schreibgeschützt. Darum kopiert dieses Skript
+# StemMaker beim ersten Start (und bei einer neueren AppImage) in einen
+# eigenen Wine-Ordner:
+#     ~/.local/share/StemMaker-Wine/prefix/drive_c/StemMaker   (= C:\StemMaker)
+# Dort liegen dann StemMaker.ini, Modelle, ffmpeg und Logs wie unter Windows,
+# und auch das Update aus StemMaker heraus funktioniert dort.
+#
+# Aufruf:
+#     StemMaker-x.y-x86_64.AppImage              StemMaker
+#     ... --cli <Dateien/Ordner>                 StemCLI (Kommandozeile)
+#     ... --player | --tagger                    StemPlayer | StemTagger
+#     ... --winecfg                              Wine-Einstellungen
+#     ... --run <C:\Pfad\Programm.exe> [...]     anderes Windows-Programm im selben Wine (Tests)
+#     ... --reset                                Wine-Ordner neu anlegen (Einstellungen weg!)
+# Umgebungsvariablen:
+#     STEMMAKER_DPI=144      Skalierung beim Anlegen erzwingen (96 = 100 %, 144 = 150 %)
+#     STEMMAKER_DATA=<Pfad>  anderer Ordner statt ~/.local/share/StemMaker-Wine
+#     STEMMAKER_GPU=vkd3d    Versuch: Grafikkarte für Turbo über vkd3d-proton + DXVK
+#                            (D3D12/DXGI über Vulkan, wie in Steam/Proton)
+
+HERE="$(dirname "$(readlink -f "$0")")"
+DATA="${STEMMAKER_DATA:-${XDG_DATA_HOME:-$HOME/.local/share}/StemMaker-Wine}"
+export WINEPREFIX="$DATA/prefix"
+export WINEDEBUG="${WINEDEBUG:--all}"
+# keine Rückfragen nach Mono/Gecko, keine Startmenü-Einträge von Wine
+export WINEDLLOVERRIDES="mscoree=;mshtml=;winemenubuilder.exe=d${WINEDLLOVERRIDES:+;$WINEDLLOVERRIDES}"
+# grösserer Tonpuffer: mit 1024 Samples meldete PipeWire beim StemPlayer in einer
+# VM laufend Aussetzer, mit 2048 keine mehr (gilt auch für PulseAudio)
+export PIPEWIRE_LATENCY="${PIPEWIRE_LATENCY:-2048/48000}"
+export PULSE_LATENCY_MSEC="${PULSE_LATENCY_MSEC:-100}"
+# StemMaker erkennt daran, dass es aus der AppImage läuft
+export STEMMAKER_APPIMAGE="${APPIMAGE:-$HERE}"
+WINE="$HERE/wine/bin/wine"
+WINESERVER="$HERE/wine/bin/wineserver"
+APPVER="$(cat "$HERE/StemMaker/APPIMAGE_VERSION")"
+TARGET="$WINEPREFIX/drive_c/StemMaker"
+
+if [ "$1" = "--reset" ]; then
+  "$WINESERVER" -k 2>/dev/null
+  rm -rf "$WINEPREFIX"
+  shift
+fi
+
+# --- Wine-Ordner beim ersten Start anlegen ---
+if [ ! -f "$WINEPREFIX/system.reg" ]; then
+  mkdir -p "$DATA"
+  "$WINE" wineboot -i >/dev/null 2>&1
+  # Skalierung des Desktops an Wine weitergeben (Xft.dpi von GNOME/KDE/XFCE)
+  DPI="${STEMMAKER_DPI:-}"
+  if [ -z "$DPI" ] && command -v xrdb >/dev/null 2>&1; then
+    DPI=$(xrdb -query 2>/dev/null | awk '/^Xft.dpi:/{print int($2)}')
+  fi
+  if [ -n "$DPI" ] && [ "$DPI" -ge 96 ] 2>/dev/null; then
+    "$WINE" reg add 'HKCU\Control Panel\Desktop' /v LogPixels /t REG_DWORD /d "$DPI" /f >/dev/null 2>&1
+  fi
+  "$WINESERVER" -w
+fi
+
+# --- Japanische Schrift (Noto Sans JP, nur die von StemMaker gebrauchten Zeichen) ---
+# Wine hat keine, viele Linux-Systeme auch nicht: ohne sie erscheint Japanisch
+# als Kästchen. Die Schrift kommt nach C:\Windows\Fonts und wird als Ersatz
+# (Font-Link) hinter die Oberflächen-Schriften gehängt. Andere Sprachen
+# ändern sich dadurch nicht, die Schrift springt nur für fehlende Zeichen ein.
+SCHRIFT="NotoSansJP-StemMaker.otf"
+FONTS="$WINEPREFIX/drive_c/windows/Fonts"
+if [ -f "$HERE/fonts/$SCHRIFT" ] && ! cmp -s "$HERE/fonts/$SCHRIFT" "$FONTS/$SCHRIFT"; then
+  mkdir -p "$FONTS"
+  cp --no-preserve=mode "$HERE/fonts/$SCHRIFT" "$FONTS/$SCHRIFT"
+  "$WINE" reg add 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\Fonts' \
+    /v 'Noto Sans JP (TrueType)' /t REG_SZ /d "$SCHRIFT" /f >/dev/null 2>&1
+  LINK="$SCHRIFT,Noto Sans JP\0MSGOTHIC.TTC,MS UI Gothic\0gulim.ttc,Gulim\0SIMSUN.TTC,SimSun\0MINGLIU.TTC,PMingLiU"
+  for F in "Tahoma" "Tahoma Bold" "Microsoft Sans Serif" "MS Sans Serif" "MS Shell Dlg" "MS Shell Dlg 2" \
+           "Segoe UI" "Segoe UI Bold" "Lucida Sans Unicode" "Arial" "Arial Bold" "Courier New"; do
+    "$WINE" reg add 'HKLM\Software\Microsoft\Windows NT\CurrentVersion\FontLink\SystemLink' \
+      /v "$F" /t REG_MULTI_SZ /d "$LINK" /f >/dev/null 2>&1
+  done
+  # Schriften, die ausdrücklich verlangt werden: japanische Windows-Schriften
+  # (z. B. MS Gothic für Log und Bericht) und SimSun, die Ersatzschrift von
+  # Wines Uniscribe für Kanji/Kana (mehrzeilige Textfelder zeichnen damit)
+  for F in "MS UI Gothic" "MS Gothic" "MS PGothic" "Meiryo" "Meiryo UI" "Yu Gothic" "Yu Gothic UI" \
+           "SimSun" "NSimSun" "Microsoft YaHei" "Microsoft JhengHei" "MingLiU" "PMingLiU"; do
+    "$WINE" reg add 'HKCU\Software\Wine\Fonts\Replacements' /v "$F" /t REG_SZ /d "Noto Sans JP" /f >/dev/null 2>&1
+  done
+  # Uniscribe-Ersatzschrift direkt setzen (Schlüssel = Skript-Kennung hex: hani, kana)
+  for T in 696e6168 616e616b; do
+    "$WINE" reg add 'HKCU\Software\Wine\Uniscribe\Fallback' /v "$T" /t REG_SZ /d "Noto Sans JP" /f >/dev/null 2>&1
+  done
+  "$WINESERVER" -w
+fi
+
+# --- Programm kopieren, wenn die AppImage neuer ist als die Kopie ---
+# StemMaker.ini, Modelle, ffmpeg und Logs liegen nicht in der AppImage und
+# bleiben erhalten. Ein Update aus StemMaker heraus ändert APPIMAGE_VERSION
+# nicht, eine ältere AppImage überschreibt es darum nicht wieder.
+OLDVER="$(cat "$TARGET/APPIMAGE_VERSION" 2>/dev/null)"
+NEWEST="$(printf '%s\n%s\n' "$OLDVER" "$APPVER" | sort -V | tail -n 1)"
+if [ -z "$OLDVER" ] || { [ "$OLDVER" != "$APPVER" ] && [ "$NEWEST" = "$APPVER" ]; }; then
+  mkdir -p "$TARGET"
+  cp -r --no-preserve=mode "$HERE/StemMaker/." "$TARGET/"
+fi
+
+# --- Versuch Grafikkarte: vkd3d-proton (D3D12) + DXVK (DXGI) nur für Turbo ---
+# Die DLLs kommen neben StemOnnx.exe, gelten also nur für Turbo. Ohne
+# STEMMAKER_GPU werden sie wieder entfernt (Standard: Wine-eigenes D3D12).
+ONNX="$TARGET/tools/onnx"
+if [ "${STEMMAKER_GPU:-}" = "vkd3d" ] && [ -d "$HERE/gpu" ]; then
+  cp --no-preserve=mode "$HERE/gpu/"*.dll "$ONNX/"
+  export WINEDLLOVERRIDES="$WINEDLLOVERRIDES;d3d12,d3d12core,dxgi=n,b"
+else
+  rm -f "$ONNX/d3d12.dll" "$ONNX/d3d12core.dll" "$ONNX/dxgi.dll"
+fi
+
+case "$1" in
+  --cli)     shift; exec "$WINE" "$TARGET/AddOns/StemCLI.exe" "$@" ;;
+  --player)  shift; exec "$WINE" "$TARGET/AddOns/StemPlayer.exe" "$@" ;;
+  --tagger)  shift; exec "$WINE" "$TARGET/AddOns/StemTagger.exe" "$@" ;;
+  --winecfg) shift; exec "$WINE" winecfg "$@" ;;
+  --run)     shift; exec "$WINE" "$@" ;;
+  *)         exec "$WINE" "$TARGET/StemMaker.exe" "$@" ;;
+esac

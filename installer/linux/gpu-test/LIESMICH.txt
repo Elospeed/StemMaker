@@ -1,0 +1,13 @@
+StemMaker GPU-Testpaket (Versuch, nicht zum Weitergeben)
+=========================================================
+
+Inhalt
+  gpu-test.sh          misst Turbo auf CPU, DirectML (vkd3d-proton) und WebGPU
+  StemOnnx-WebGPU/     StemOnnx 0.5 mit onnxruntime-webgpu (Microsoft, MIT)
+
+Anleitung
+  1. Die AppImage (StemMaker-x.y-x86_64.AppImage) in diesen Ordner legen.
+  2. Terminal in diesem Ordner öffnen:   ./gpu-test.sh
+  3. Die Datei gpu-test-ergebnis.txt an Elospeed schicken.
+
+Lizenzen: ONNX Runtime MIT (StemOnnx-WebGPU/lizenzen), StemOnnx MIT.
