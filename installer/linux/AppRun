@@ -28,6 +28,10 @@ export WINEPREFIX="$DATA/prefix"
 export WINEDEBUG="${WINEDEBUG:--all}"
 # keine Rückfragen nach Mono/Gecko, keine Startmenü-Einträge von Wine
 export WINEDLLOVERRIDES="mscoree=;mshtml=;winemenubuilder.exe=d${WINEDLLOVERRIDES:+;$WINEDLLOVERRIDES}"
+# grösserer Tonpuffer: mit 1024 Samples meldete PipeWire beim StemPlayer in einer
+# VM laufend Aussetzer, mit 2048 keine mehr (gilt auch für PulseAudio)
+export PIPEWIRE_LATENCY="${PIPEWIRE_LATENCY:-2048/48000}"
+export PULSE_LATENCY_MSEC="${PULSE_LATENCY_MSEC:-100}"
 # StemMaker erkennt daran, dass es aus der AppImage läuft
 export STEMMAKER_APPIMAGE="${APPIMAGE:-$HERE}"
 WINE="$HERE/wine/bin/wine"

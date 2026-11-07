@@ -8,3 +8,5 @@ Exec=AppRun %F
 Icon=stemmaker
 Categories=AudioVideo;Audio;
 Terminal=false
+# Wine meldet das Fenster mit dieser Klasse, damit das Dock das StemMaker-Symbol zeigt
+StartupWMClass=stemmaker.exe
