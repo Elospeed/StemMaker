@@ -6,6 +6,10 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.2.1 – 7 November 2026
+### Fixed
+- Linux (AppImage): StemMaker and StemPlayer can be minimized, the dock shows the program icon
+
 ## 2.2 – 4 November 2026
 ### New
 - Six new languages: French, Portuguese (Brazil), Italian, Japanese, Dutch, Polish
