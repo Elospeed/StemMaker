@@ -15,3 +15,7 @@ Gebaut und getestet wird im Workflow **Linux-AppImage** (`.github/workflows/appi
 **Grafikkarte:** Standard ist CPU (Wine-eigenes D3D12 kann DirectML nicht). Mit `STEMMAKER_GPU=vkd3d` wird vkd3d-proton + DXVK nur für Turbo eingeschaltet. Ob das oder WebGPU auf echten Karten trägt, misst `gpu-test/gpu-test.sh`.
 
 **Lizenzen:** Wine und vkd3d-proton LGPL 2.1 (unverändert, Lizenztexte + Quellcode-Links in der AppImage), DXVK zlib, onnxruntime-webgpu MIT. Demucs-Gewichte und ffmpeg werden wie unter Windows beim ersten Start geladen, nicht mitgeliefert.
+
+## Testversion für Linux-Tester
+
+`beta-test/testversion-packen.sh` ersetzt in einer fertigen AppImage die Programme durch neuere aus einem Build-Artefakt und packt sie mit den Testanleitungen (`beta-test/Linux-Beta-Test-DE.md`, `-EN.md`) und `SHA256SUMS.txt` in ein ZIP fürs Vor-Release.
