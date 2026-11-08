@@ -6,7 +6,7 @@
 # Testanleitungen DE/EN und SHA256SUMS.txt.
 #
 # Aufruf: testversion-packen.sh <alte.AppImage> <Ordner mit Exes> <Version> <Ziel>
-#   Version z. B. 2.2.1-beta1 (in der AppImage als 2.2.1~beta1, damit die
+#   Version z. B. 2.2.1-beta2 (in der AppImage als 2.2.1~beta2, damit die
 #   spätere 2.2.1 sie beim Start ersetzt, siehe AppRun "sort -V")
 # Braucht: unsquashfs, mksquashfs (squashfs-tools, mit zstd), zip, python3
 set -euo pipefail

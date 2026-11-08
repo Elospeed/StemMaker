@@ -11,11 +11,11 @@ Time needed: about 20–30 minutes.
 - One or two songs of your own (MP3, FLAC or WAV)
 
 ## 1. Download and start
-1. Unzip **StemMaker-2.2.1-beta1-Linux-Test.zip** (download: https://github.com/Elospeed/StemMaker/releases/tag/v2.2.1-linux-beta1). It contains the AppImage, this guide (DE/EN) and `SHA256SUMS.txt` for checking (`sha256sum -c SHA256SUMS.txt`).
+1. Unzip **StemMaker-2.2.1-beta2-Linux-Test.zip** (download: https://github.com/Elospeed/StemMaker/releases/tag/v2.2.1-linux-beta2). It contains the AppImage, this guide (DE/EN) and `SHA256SUMS.txt` for checking (`sha256sum -c SHA256SUMS.txt`).
 2. Make it executable: right-click → Properties → allow "Run as program". Or in a terminal:
    ```
-   chmod +x StemMaker-2.2.1-beta1-x86_64.AppImage
-   ./StemMaker-2.2.1-beta1-x86_64.AppImage
+   chmod +x StemMaker-2.2.1-beta2-x86_64.AppImage
+   ./StemMaker-2.2.1-beta2-x86_64.AppImage
    ```
 3. If it doesn't start and mentions **FUSE**: on Ubuntu 24.04 run `sudo apt install libfuse2t64`, on older Ubuntu/Debian `sudo apt install libfuse2`.
 
