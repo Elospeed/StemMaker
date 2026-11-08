@@ -143,6 +143,8 @@ jobs:
       - name: Download-ZIP für das Test-Tool "5.1 -> Stem" bauen
         # Komplettes ZIP für Leute ohne StemMaker: Stem51.exe, Anleitung DE/EN,
         # ffmpeg (LGPL, aus unserem Release) und eine kleine 5.1-Testdatei.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           VER=$(sed -n "s/^ *APP_VER *= *'\(.*\)';.*/\1/p" src/AddOns/StemDecks/stem51form.pas | head -n 1 | tr -d '\r')

@@ -26,7 +26,12 @@ ZIEL="$ARBEIT/Elospeed-5.1-Stem"
 mkdir -p "$ZIEL/tools"
 
 # ffmpeg holen und Prüfsumme kontrollieren
-curl -sSfL -o "$ARBEIT/ffmpeg.zip" "$FFMPEG_URL"
+# (direkter Link; bei einer Störung, z. B. 504, über die GitHub-API mit gh)
+if ! curl -sSfL -o "$ARBEIT/ffmpeg.zip" "$FFMPEG_URL"; then
+  echo "Direkter Download gescheitert, hole ffmpeg über die GitHub-API" >&2
+  gh release download ffmpeg-9.0.2 -R Elospeed/StemMaker \
+    -p "$(basename "$FFMPEG_URL")" -O "$ARBEIT/ffmpeg.zip" --clobber
+fi
 echo "$FFMPEG_SHA  $ARBEIT/ffmpeg.zip" | sha256sum -c -
 python - "$ARBEIT/ffmpeg.zip" "$ARBEIT/ff" <<'PY'
 import sys, zipfile
