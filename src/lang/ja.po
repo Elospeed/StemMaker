@@ -33,7 +33,7 @@ msgstr "        [--no-normalize] [--no-bassfix]  (サウンドオプションを
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr "        [-t 分割数] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 
-#: playerform.pas:445
+#: playerform.pas:450
 msgid "  -  von Elospeed"
 msgstr "  -  作者 Elospeed"
 
@@ -209,11 +209,11 @@ msgstr "%d 分"
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d 個のフォルダーはパスが %d 文字を超えるため読み込めませんでした。その中の音楽はリストに含まれていません。"
 
-#: playerform.pas:2190
+#: playerform.pas:2202
 msgid "%d Spuren  ·  Länge %s"
 msgstr "%d トラック  ·  長さ %s"
 
-#: playerform.pas:2198
+#: playerform.pas:2210
 msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
 msgstr "%d トラック読み込み済み  ·  長さ %s  ·  ffmpeg: %s"
 
@@ -337,7 +337,7 @@ msgstr "(ログが見つかりません)"
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(暫定値、測定するたびに正確になります)"
 
-#: playerform.pas:2097
+#: playerform.pas:2109
 msgid "(z.B. die von Elospeed StemMaker)."
 msgstr "(例: Elospeed StemMaker のもの)。"
 
@@ -417,19 +417,19 @@ msgstr "ALAC (ロスレス)"
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr "ALAC ロスレス (ファイルサイズ大)"
 
-#: playerform.pas:787
+#: playerform.pas:792
 msgid "AN  L"
 msgstr "ON  L"
 
-#: playerform.pas:1279
+#: playerform.pas:1284
 msgid "ANSICHT"
 msgstr "表示"
 
-#: playerform.pas:2278
+#: playerform.pas:2290
 msgid "AUS (SOLO)"
 msgstr "OFF (ソロ)"
 
-#: playerform.pas:820
+#: playerform.pas:825
 msgid "AUSGANG L / R"
 msgstr "出力 L / R"
 
@@ -529,7 +529,7 @@ msgstr "すべていいえ"
 msgid "Alles bereit"
 msgstr "準備完了"
 
-#: playerform.pas:808
+#: playerform.pas:813
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr "すべてリセット: ミュート/ソロ OFF、フェーダー 100 %、ステムモード (0 キー)"
 
@@ -553,7 +553,7 @@ msgstr "説明書"
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr "説明書、バージョン、寄付、ログ"
 
-#: playerform.pas:670
+#: playerform.pas:675
 msgid "Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)"
 msgstr "表示を選択: コンパクト、波形、CD プレーヤー (W キー: コンパクト/波形)"
 
@@ -713,7 +713,7 @@ msgstr "画像"
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr "エクスプローラーのウィンドウからファイルをここにドラッグしてください:"
 
-#: playerform.pas:2074
+#: playerform.pas:2086
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr "フォルダーではなく、ステムファイル (.stem.mp4) をドロップしてください。"
 
@@ -721,7 +721,7 @@ msgstr "フォルダーではなく、ステムファイル (.stem.mp4) をド�
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "出力フォルダーを選択するか、「元ファイルと同じ場所」をオンにしてください。"
 
-#: playerform.pas:2096
+#: playerform.pas:2108
 msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr "次のダイアログで ffmpeg.exe を選択してください"
 
@@ -733,7 +733,7 @@ msgstr "初めて使う前にお読みください"
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr "GitHub アカウントが必要です。Issue は誰でも閲覧できます。"
 
-#: playerform.pas:3015
+#: playerform.pas:3027
 msgid "Breche Dekodieren ab ..."
 msgstr "デコードをキャンセル中 ..."
 
@@ -741,11 +741,11 @@ msgstr "デコードをキャンセル中 ..."
 msgid "Breche ab ..."
 msgstr "キャンセル中 ..."
 
-#: playerform.pas:1556
+#: playerform.pas:1568
 msgid "CD-PLAYER"
 msgstr "CD プレーヤー"
 
-#: playerform.pas:839
+#: playerform.pas:844
 msgid "CLIP"
 msgstr "CLIP"
 
@@ -761,7 +761,7 @@ msgstr "CPU を測定中 (%d / %d 回目)"
 msgid "CPU vorbereiten"
 msgstr "CPU を準備"
 
-#: playerform.pas:1362
+#: playerform.pas:1367
 msgid "CUE"
 msgstr "CUE"
 
@@ -849,11 +849,11 @@ msgstr "ファイル..."
 msgid "Dateigröße: %.1f MB"
 msgstr "ファイルサイズ: %.1f MB"
 
-#: playerform.pas:2034
+#: playerform.pas:2046
 msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
 msgstr "ffmpeg で %d トラックをデコード中 ... %.1f 秒"
 
-#: playerform.pas:2140
+#: playerform.pas:2152
 msgid "Dekodiere ..."
 msgstr "デコード中 ..."
 
@@ -861,7 +861,7 @@ msgstr "デコード中 ..."
 msgid "Dekodieren"
 msgstr "デコード"
 
-#: playerform.pas:794
+#: playerform.pas:799
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr "A から B までの区間が繰り返し再生されます。"
 
@@ -869,7 +869,7 @@ msgstr "A から B までの区間が繰り返し再生されます。"
 msgid "Der Bericht konnte nicht gespeichert werden: %s"
 msgstr "レポートを保存できませんでした: %s"
 
-#: playerform.pas:1402 playerform.pas:1638
+#: playerform.pas:1407 playerform.pas:1650
 msgid "Der CD-Player passt bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "このWindowsの拡大率ではCDプレーヤーが画面に収まりません。"
 
@@ -893,11 +893,11 @@ msgstr "このバージョンにはバージョン履歴がありません。"
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "事前テストがうまくいきませんでした (コード %s)。StemMaker はそれでも Turbo を試し、だめな場合は demucs.cpp (クラシック) を使います。詳細はログにあります。"
 
-#: playerform.pas:1249
+#: playerform.pas:1254
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "青いリングは残り時間を示します。"
 
-#: playerform.pas:771
+#: playerform.pas:776
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "4 つのステムをミックス - ミュート / ソロ / 音量付き (S キー)"
 
@@ -949,7 +949,7 @@ msgstr "更新の確認に失敗しました: %s"
 msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
 msgstr "アイコンは Traktor が位置 1-4 ごとに固定で表示するため、変更できません。"
 
-#: playerform.pas:1409 playerform.pas:1658
+#: playerform.pas:1414 playerform.pas:1670
 msgid "Die Wellenformen passen bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "このWindowsの拡大率では波形が画面に収まりません。"
 
@@ -1121,11 +1121,11 @@ msgstr "エラー"
 msgid "Fehler %s"
 msgstr "エラー %s"
 
-#: playerform.pas:2153
+#: playerform.pas:2165
 msgid "Fehler beim Dekodieren"
 msgstr "デコードエラー"
 
-#: playerform.pas:2154
+#: playerform.pas:2166
 msgid "Fehler beim Dekodieren: "
 msgstr "デコードエラー: "
 
@@ -1289,15 +1289,15 @@ msgstr "注意: 前回の実行が予期せず終了しました - 詳細は名�
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr "注意: トゥルーピークが 0 dBFS を超えています - 再生時にマスタートラックがわずかにクリップする可能性があります"
 
-#: playerform.pas:2133
+#: playerform.pas:2145
 msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
 msgstr "注意: Traktor の「stem」ブロックが見つかりません (標準の名前を使用します)。"
 
-#: playerform.pas:2280
+#: playerform.pas:2292
 msgid "HÖRBAR"
 msgstr "聞こえる"
 
-#: playerform.pas:763 playerform.pas:1226 playerform.pas:1281
+#: playerform.pas:768 playerform.pas:1231 playerform.pas:1286
 msgid "HÖREN"
 msgstr "試聴"
 
@@ -1385,15 +1385,15 @@ msgstr "今すぐ保存しますか?"
 msgid "Jetzt spenden"
 msgstr "今すぐ寄付"
 
-#: playerform.pas:1248
+#: playerform.pas:1253
 msgid "Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand."
 msgstr "ジョグホイール: マウスボタンを押したまま回すと、レコードに手を置いたように音が聞こえます。"
 
-#: playerform.pas:1553
+#: playerform.pas:1565
 msgid "KOMPAKT"
 msgstr "コンパクト"
 
-#: playerform.pas:878 playerform.pas:2902 taggerform.pas:609
+#: playerform.pas:883 playerform.pas:2914 taggerform.pas:609
 msgid "Kaffee spendieren"
 msgstr "コーヒーをおごる"
 
@@ -1417,7 +1417,7 @@ msgstr "グラフィックカードが見つかりません。StemMaker は CPU 
 msgid "Keine Stem-Datei"
 msgstr "ステムファイルではありません"
 
-#: playerform.pas:2085
+#: playerform.pas:2097
 msgid "Keine Stem-Datei: "
 msgstr "ステムファイルではありません: "
 
@@ -1433,7 +1433,7 @@ msgstr "クラシック (demucs.cpp、1.9 までと同じ)"
 msgid "Klick sortiert, nochmal klicken sortiert umgekehrt"
 msgstr "クリックで並べ替え、もう一度クリックで逆順"
 
-#: playerform.pas:960
+#: playerform.pas:965
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "クリックまたはドラッグでこの位置へジャンプします。"
 
@@ -1465,7 +1465,7 @@ msgstr "アーティストまたはバンド (例: 「Kungs」)"
 msgid "LIZENZEN"
 msgstr "ライセンス"
 
-#: playerform.pas:783 playerform.pas:1239
+#: playerform.pas:788 playerform.pas:1244
 msgid "LOOP"
 msgstr "LOOP"
 
@@ -1481,7 +1481,7 @@ msgstr "%s をダウンロード中  (%d / %d)"
 msgid "Lade StemMaker %s ..."
 msgstr "StemMaker %s をダウンロード中 ..."
 
-#: playerform.pas:2148
+#: playerform.pas:2160
 msgid "Laden abgebrochen."
 msgstr "読み込みをキャンセルしました。"
 
@@ -1517,7 +1517,7 @@ msgstr "音量を揃える: レベルを測定できなかったため変更な�
 msgid "Leer lassen, wenn er gleich ist wie der Interpret."
 msgstr "アーティストと同じ場合は空欄のままにしてください。"
 
-#: playerform.pas:856
+#: playerform.pas:861
 msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
 msgstr "スペース 再生/一時停止  ·  1-4 ミュート  ·  Shift+1-4 ソロ  ·  0 リセット  ·  S/O/R モード  ·  矢印 -/+5 秒  ·  W 波形  ·  A/B/L ループ  ·  Shift/Ctrl+矢印 幅"
 
@@ -1533,7 +1533,7 @@ msgstr "音量の小さいファイルは、最も大きい部分が 0 dB のわ
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr "ダウンロード中の読み取りエラー (エラー %d)"
 
-#: playerform.pas:844
+#: playerform.pas:849
 msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr "合計がクリップすると赤く点灯します (その場合はマスターを下げてください)"
 
@@ -1565,55 +1565,55 @@ msgstr "ログ:"
 msgid "Logs-Ordner öffnen"
 msgstr "ログフォルダーを開く"
 
-#: playerform.pas:796
+#: playerform.pas:801
 msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
 msgstr "ループ ON/OFF (L キー)。ON にすると、再生位置が"
 
-#: playerform.pas:2477
+#: playerform.pas:2489
 msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
 msgstr "ループ ON:  %s から %s  (%.1f 秒)  ·  L = OFF、Backspace = 削除"
 
-#: playerform.pas:2480
+#: playerform.pas:2492
 msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
 msgstr "ループ OFF:  %s から %s を記憶  ·  L = 再び ON"
 
-#: playerform.pas:798
+#: playerform.pas:803
 msgid "Loop löschen (Rücktaste)"
 msgstr "ループを削除 (Backspace)"
 
-#: playerform.pas:792
+#: playerform.pas:797
 msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
 msgstr "現在位置にループポイント A を設定 (A キー)"
 
-#: playerform.pas:793
+#: playerform.pas:798
 msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
 msgstr "現在位置にループポイント B を設定 (B キー)。"
 
-#: playerform.pas:2484
+#: playerform.pas:2496
 msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
 msgstr "ループ: ポイント A は %s  ·  終了位置で B を押してください"
 
-#: playerform.pas:2398
+#: playerform.pas:2410
 msgid "Loop: Punkt B muss hinter Punkt A liegen."
 msgstr "ループ: ポイント B はポイント A より後にしてください。"
 
-#: playerform.pas:2508
+#: playerform.pas:2520
 msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
 msgstr "ループ: 短すぎます (0.1 秒以上)。"
 
-#: playerform.pas:2392
+#: playerform.pas:2404
 msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
 msgstr "ループ: 先にポイント A を設定してから (A キー)、B を設定してください。"
 
-#: playerform.pas:2412
+#: playerform.pas:2424
 msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
 msgstr "ループ: 先にポイント A と B を設定してください (A キーと B キー、または波形内で右ボタンでドラッグ)。"
 
-#: playerform.pas:742
+#: playerform.pas:747
 msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
 msgstr "ルーペ: 赤い線の前後数秒を表示し、ループを正確に設定できます。"
 
-#: playerform.pas:1225
+#: playerform.pas:1230
 msgid "LÄNGE"
 msgstr "長さ"
 
@@ -1621,15 +1621,15 @@ msgstr "長さ"
 msgid "Länge: %d:%.2d min"
 msgstr "長さ: %d:%.2d 分"
 
-#: playerform.pas:819 playerform.pas:1283
+#: playerform.pas:824 playerform.pas:1288
 msgid "MASTER"
 msgstr "マスター"
 
-#: playerform.pas:2264
+#: playerform.pas:2276
 msgid "MODUS: ORIGINAL"
 msgstr "モード: オリジナル"
 
-#: playerform.pas:2264
+#: playerform.pas:2276
 msgid "MODUS: REST"
 msgstr "モード: 残差"
 
@@ -1649,7 +1649,7 @@ msgstr "MP3 ファイル"
 msgid "MP4-Dateien"
 msgstr "MP4 ファイル"
 
-#: playerform.pas:744
+#: playerform.pas:749
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "マーカー A と B はマウスで移動できます。左ボタンで波形をドラッグすると位置を移動でき、ドラッグ中は音が聞こえます。"
 
@@ -1657,7 +1657,7 @@ msgstr "マーカー A と B はマウスで移動できます。左ボタンで
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr "選択したステムファイル、または最後に変換したステムファイルを StemPlayer で再生"
 
-#: playerform.pas:745
+#: playerform.pas:750
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "マウスホイール: ズーム。クリック: ジャンプ。"
 
@@ -1665,7 +1665,7 @@ msgstr "マウスホイール: ズーム。クリック: ジャンプ。"
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "変換が終わったら時計の横に通知"
 
-#: playerform.pas:2157
+#: playerform.pas:2169
 msgid "Meldung von ffmpeg:"
 msgstr "ffmpeg からのメッセージ:"
 
@@ -1709,7 +1709,7 @@ msgstr "モデル:"
 msgid "Musikstil: aus der Liste wählen oder selbst eintippen"
 msgstr "音楽ジャンル: リストから選ぶか、直接入力"
 
-#: playerform.pas:919 playerform.pas:1263
+#: playerform.pas:924 playerform.pas:1268
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "ミュート: このステムを消音 (%d キー)"
 
@@ -1789,11 +1789,11 @@ msgstr "OK"
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
-#: playerform.pas:1583
+#: playerform.pas:1595
 msgid "ORIGINAL"
 msgstr "オリジナル"
 
-#: playerform.pas:768
+#: playerform.pas:773
 msgid "ORIGINAL  O"
 msgstr "オリジナル  O"
 
@@ -1841,11 +1841,11 @@ msgstr "パスが長すぎるためフォルダーをスキップ: %s"
 msgid "Ordner..."
 msgstr "フォルダー..."
 
-#: playerform.pas:729
+#: playerform.pas:734
 msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "オリジナル - クリックまたはドラッグでこの位置へジャンプします。"
 
-#: playerform.pas:772
+#: playerform.pas:777
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr "ファイル内のオリジナルミックス (トラック 0) で A/B 比較 (O キー)"
 
@@ -1881,7 +1881,7 @@ msgstr "パスが長すぎます (%d 文字、Windows の上限は %d 文字)。
 msgid "Plattenfirma, die den Track veröffentlicht hat"
 msgstr "トラックをリリースしたレーベル"
 
-#: playerform.pas:696
+#: playerform.pas:701
 msgid "Play / Pause (Leertaste)"
 msgstr "再生 / 一時停止 (スペース)"
 
@@ -1905,7 +1905,7 @@ msgstr "プロセッサ"
 msgid "Prüfsumme (SHA-256) stimmt nicht - die Datei wurde verworfen. Bitte später nochmals versuchen."
 msgstr "チェックサム (SHA-256) が一致しません - ファイルは破棄されました。後でもう一度お試しください。"
 
-#: playerform.pas:1278
+#: playerform.pas:1283
 msgid "QUELLE"
 msgstr "ソース"
 
@@ -1925,19 +1925,19 @@ msgstr "メモリ不足!"
 msgid "RECHTE AN DER MUSIK"
 msgstr "音楽の権利"
 
-#: playerform.pas:806
+#: playerform.pas:811
 msgid "RESET  0"
 msgstr "リセット  0"
 
-#: playerform.pas:1584
+#: playerform.pas:1596
 msgid "REST"
 msgstr "残差"
 
-#: playerform.pas:769
+#: playerform.pas:774
 msgid "REST  R"
 msgstr "残差  R"
 
-#: playerform.pas:1224 playerform.pas:1245
+#: playerform.pas:1229 playerform.pas:1250
 msgid "RESTZEIT"
 msgstr "残り"
 
@@ -1945,35 +1945,35 @@ msgstr "残り"
 msgid "Rand zwischen zwei Spalten ziehen ändert die Breite"
 msgstr "2つの列の境界をドラッグすると幅を変更できます"
 
-#: playerform.pas:743
+#: playerform.pas:748
 msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
 msgstr "右ボタンでドラッグ: ループを設定 (グリッドにスナップ、Shift で自由に)。"
 
-#: playerform.pas:730 playerform.pas:961
+#: playerform.pas:735 playerform.pas:966
 msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
 msgstr "右ボタンでドラッグ: ループ範囲を指定"
 
-#: playerform.pas:773
+#: playerform.pas:778
 msgid "Rest = Original minus Summe aller Stems (Taste R):"
 msgstr "残差 = オリジナル - 全ステムの合計 (R キー):"
 
-#: playerform.pas:1269 playerform.pas:2268
+#: playerform.pas:1274 playerform.pas:2280
 msgid "SOLO"
 msgstr "ソロ"
 
-#: playerform.pas:1253
+#: playerform.pas:1258
 msgid "STEM-PADS"
 msgstr "ステムパッド"
 
-#: playerform.pas:1585
+#: playerform.pas:1597
 msgid "STEMS"
 msgstr "ステム"
 
-#: playerform.pas:767
+#: playerform.pas:772
 msgid "STEMS  S"
 msgstr "ステム  S"
 
-#: playerform.pas:2275
+#: playerform.pas:2287
 msgid "STUMM"
 msgstr "ミュート"
 
@@ -2009,7 +2009,7 @@ msgstr "バックアップを作成 (.bak)"
 msgid "Sitzung vorbereiten"
 msgstr "セッションを準備"
 
-#: playerform.pas:927 playerform.pas:1270
+#: playerform.pas:932 playerform.pas:1275
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr "ソロ: このステムだけを聴く (Shift+%d)。"
 
@@ -2085,15 +2085,15 @@ msgstr "ステムファイルをエンコード"
 msgid "Stem-Datei prüfen"
 msgstr "ステムファイルをチェック"
 
-#: playerform.pas:504
+#: playerform.pas:509
 msgid "Stem-Datei öffnen"
 msgstr "ステムファイルを開く"
 
-#: playerform.pas:654
+#: playerform.pas:659
 msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
 msgstr "ステムファイルを開く (Ctrl+O) - またはウィンドウにドラッグするだけ"
 
-#: playerform.pas:658
+#: playerform.pas:663
 msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr "ステムファイルを開くか、ここにドラッグ (ドラッグ&ドロップ)"
 
@@ -2221,11 +2221,11 @@ msgstr "ステムを分離 (Turbo)"
 msgid "Stems trennen (demucs)"
 msgstr "ステムを分離 (demucs)"
 
-#: playerform.pas:703
+#: playerform.pas:708
 msgid "Stop und zurück an den Anfang"
 msgstr "停止して先頭に戻る"
 
-#: playerform.pas:928 playerform.pas:1271
+#: playerform.pas:933 playerform.pas:1276
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+クリック: 別のステムを追加 (複数ソロ)"
 
@@ -2277,7 +2277,7 @@ msgstr "5.1ステムのテストとアイデア"
 msgid "Testsignal erzeugen"
 msgstr "テスト信号を生成中"
 
-#: playerform.pas:795
+#: playerform.pas:800
 msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
 msgstr "ヒント: 波形内で右ボタンでドラッグ"
 
@@ -2317,7 +2317,7 @@ msgstr "トラック番号"
 msgid "Traktor"
 msgstr "Traktor"
 
-#: playerform.pas:505
+#: playerform.pas:510
 msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr "Traktor ステム (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|すべてのファイル (*.*)|*.*"
 
@@ -2449,7 +2449,7 @@ msgstr "事前テスト ..."
 msgid "Vortest fehlgeschlagen"
 msgstr "事前テストに失敗しました"
 
-#: playerform.pas:1554
+#: playerform.pas:1566
 msgid "WELLENFORM"
 msgstr "波形"
 
@@ -2501,7 +2501,7 @@ msgstr "Wine を検出 (Linux): Wine ではグラフィックカードを使用�
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine を検出: Turbo は CPU で動作します"
 
-#: playerform.pas:1223
+#: playerform.pas:1228
 msgid "ZEIT"
 msgstr "時間"
 
@@ -2597,7 +2597,7 @@ msgstr "ffmpeg (新規)"
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg がファイルをデコードできませんでした (コード %d)"
 
-#: playerform.pas:2156
+#: playerform.pas:2168
 msgid "ffmpeg konnte die Datei nicht dekodieren:"
 msgstr "ffmpeg がファイルをデコードできませんでした:"
 
@@ -2609,23 +2609,23 @@ msgstr "ffmpeg がステムファイルを作成できませんでした (コー
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg が見つかりません: %s"
 
-#: playerform.pas:2044
+#: playerform.pas:2056
 msgid "ffmpeg wurde mit Code %d beendet."
 msgstr "ffmpeg がコード %d で終了しました。"
 
-#: playerform.pas:2100
+#: playerform.pas:2112
 msgid "ffmpeg.exe auswählen"
 msgstr "ffmpeg.exe を選択"
 
-#: playerform.pas:526
+#: playerform.pas:531
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
 msgstr "ffmpeg.exe が見つかりません - 最初のファイルを開くときに指定を求めます。"
 
-#: playerform.pas:2095
+#: playerform.pas:2107
 msgid "ffmpeg.exe wurde nicht gefunden."
 msgstr "ffmpeg.exe が見つかりませんでした。"
 
-#: playerform.pas:2101
+#: playerform.pas:2113
 msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr "ffmpeg.exe|ffmpeg.exe|プログラム (*.exe)|*.exe"
 
@@ -2645,7 +2645,7 @@ msgstr "htdemucs (標準、Demucs v4)"
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (最高品質、約 4 倍遅い)"
 
-#: playerform.pas:774
+#: playerform.pas:779
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr "分離で失われた音や、異なって聞こえる音が"
 
@@ -2693,7 +2693,7 @@ msgstr "グラフィックカードが見つかりません"
 msgid "keine gültige Modelldatei"
 msgstr "有効なモデルファイルではありません"
 
-#: playerform.pas:775
+#: playerform.pas:780
 msgid "klingt (ideal: fast Stille)."
 msgstr "わかります (理想: ほぼ無音)。"
 
@@ -2777,7 +2777,7 @@ msgstr "待機中"
 msgid "wartet (unterbrochen)"
 msgstr "待機中 (中断)"
 
-#: playerform.pas:797
+#: playerform.pas:802
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "ループの外にある場合は A へジャンプします。"
 
@@ -2797,7 +2797,7 @@ msgstr "必要な場合のみ変更: StemMaker.ini の [Tools] セクション (
 msgid "Änderungen verwerfen"
 msgstr "変更を破棄"
 
-#: playerform.pas:653
+#: playerform.pas:658
 msgid "ÖFFNEN"
 msgstr "開く"
 
