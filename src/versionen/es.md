@@ -9,6 +9,8 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 ## 2.2.1 – 7 de noviembre de 2026
 ### Corregido
 - Linux (AppImage): StemMaker, StemPlayer y StemTagger se pueden minimizar, el dock muestra el icono del programa
+- Linux (Wine): Turbo indica desde el principio que funciona con la CPU en lugar de probar la tarjeta gráfica
+- Prueba previa de Turbo: los mensajes de error cortos ya están traducidos
 
 ## 2.2 – 4 de noviembre de 2026
 ### Nuevo

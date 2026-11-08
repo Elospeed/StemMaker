@@ -6,6 +6,12 @@ Neueste Einträge oben.
 
 ---
 
+## Wine: Turbo-Vortest versuchte die Grafikkarte (2.2.1, November 2026)
+
+**Fehler:** Test von David GJ (Bazzite Linux, RTX 3090, Linux-ZIP unter Wine): Der Vortest zeigte eine „NVIDIA GeForce GTX 470“, die es nicht gibt, versuchte zweimal DirectML (Fehler 80004001 = E_NOTIMPL) und fiel dann auf die CPU zurück. Die Zusammenfassung nach dem Trennen zeigte dagegen „RTX 3090 (24 GB), llvmpipe“. Die Zeile „Grafikkarte einschalten“ blieb im Vortest-Fenster deutsch.
+**Ursache:** DXGI unter Wine meldet eine Ersatzkarte, wenn Wine die echte nicht zuordnen kann; DirectML läuft auf Wines Direct3D 12 nicht. Die Zusammenfassung liest die Registry, dort trägt Wine die echten Geräte ein, „llvmpipe“ ist Mesas Software-Treiber. Fehlerzeilen wurden nur übersetzt, wenn sie länger als 80 Zeichen waren.
+**Lösung:** StemOnnx erkennt Wine (`wine_get_version` in ntdll.dll), meldet „Grafikkarte: wine“ und rechnet gleich auf der CPU (Vortest und Trennen). StemMaker zeigt „Wine erkannt: Turbo läuft auf der CPU“, lässt „llvmpipe“ in der Grafikkarten-Liste weg und übersetzt jede Fehlerzeile.
+
 ## Linux: Fenster liess sich nicht minimieren (2.2.1, November 2026)
 
 **Problem:** Im Linux-AppImage (Wine) hatten StemMaker, StemPlayer und StemTagger unter Ubuntu/GNOME keinen Minimieren-Knopf, Minimieren über die Leiste ging nicht, und das Dock zeigte ein Zahnrad. Ursache: Lazarus legt unter Windows ein unsichtbares Anwendungsfenster an, das den Taskleisten-Knopf besitzt; das Hauptfenster bekommt es als Elternfenster (`win32wsforms.pp`: ohne `Application.MainFormOnTaskBar` wird `Parent := AppHandle`). Wine macht daraus ein 1x1-Fenster und setzt beim Hauptfenster `WM_TRANSIENT_FOR` darauf. GNOME behandelt es deshalb als Unterfenster (Dialog).
