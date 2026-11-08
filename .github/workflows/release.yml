@@ -137,10 +137,17 @@ jobs:
           path: stemonnx
 
       - name: Release-ZIP zusammenstellen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           read -r URL SHA < <(python -c "import json; d=json.load(open('update.json', encoding='utf-8')); print(d['zip_url'], d['zip_sha256'])" | tr -d '\r')
-          curl -sSfL -o alt.zip "$URL"
+          # Direkter Link zuerst; bei Störung (z. B. 504) über die GitHub-API holen
+          if ! curl -sSfL -o alt.zip "$URL"; then
+            echo "::warning::Direkter Download gescheitert, hole die Datei über die GitHub-API"
+            gh release download "$(basename "$(dirname "$URL")")" -R "$GITHUB_REPOSITORY" \
+              -p "$(basename "$URL")" -O alt.zip --clobber
+          fi
           echo "$SHA  alt.zip" | sha256sum -c -
           bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe stemonnx
           ZIPSHA=$(sha256sum "ausgabe/StemMaker-$VERSION.zip" | cut -d' ' -f1)
