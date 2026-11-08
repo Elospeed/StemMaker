@@ -137,6 +137,11 @@
                        sauber geglätteten Kanten, auch unter Linux (Wine
                        glättete StretchBlt/HALFTONE nicht). Das Mitteln der
                        Pixel rechnet jetzt SmoothDownsample in djcontrols.
+    1.8.5 (08.11.2026) Umschalten von Wellenform/Kompakt auf CD-Player zur
+                       Laufzeit: das Fenster bekam die falsche Grösse
+                       (unten abgeschnitten, rechts leer), weil die Innen-
+                       fläche gemessen wurde, bevor das Fenster umgestellt
+                       war. Jetzt wird erst danach nachgemessen.
   ============================================================================ }
 unit playerform;
 
@@ -152,7 +157,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.4';
+  APP_VER   = '1.8.5';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -337,7 +342,7 @@ type
     procedure SetView(V: TViewMode);
     procedure EnterDesign(V: TViewMode);
     procedure LeaveDesign;
-    procedure FitDesignWindow;
+    procedure FitDesignWindow(Nachmessen: Boolean = True);
     procedure UpdateViewButtons;
     procedure UpdateDesignLook;
     procedure UpdateDesignNames;
@@ -1434,7 +1439,7 @@ end;
 
 { Innengrösse des Fensters auf das Design einstellen und es auf dem
   Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
-procedure TMainForm.FitDesignWindow;
+procedure TMainForm.FitDesignWindow(Nachmessen: Boolean);
 var
   R: TRect;
   DW, DH: Integer;
@@ -1453,7 +1458,11 @@ begin
       kleiner als verlangt (Lazarus rechnet den Rahmen beim ersten Anzeigen
       noch mit dem alten Wert) -> Ko-fi-Knopf unten abgeschnitten.
       Darum die echte Innengrösse messen und die Differenz nachlegen. }
-    if HandleAllocated and LCLIntf.GetClientRect(Handle, R) then
+    { Nicht beim Umschalten zur Laufzeit (EnterDesign): dort hat das Fenster
+      die neue Grösse noch nicht übernommen, GetClientRect liefert noch die
+      Innenfläche der Wellenform-Ansicht -> Fenster 1196x673 statt 1016x747,
+      unten abgeschnitten. Nachgemessen wird dann über DesignNachpruefen. }
+    if Nachmessen and HandleAllocated and LCLIntf.GetClientRect(Handle, R) then
     begin
       DW := Scale96ToForm(DESIGN_W) - (R.Right - R.Left);
       DH := Scale96ToForm(DESIGN_H) + PnlBottom.Height - (R.Bottom - R.Top);
@@ -1486,12 +1495,15 @@ begin
     for i := 1 to STEM_COUNT do Rows[i].Panel.Visible := False;
     PnlMaster.Visible := False;
     FScroll.Visible := False;
-    FitDesignWindow;
+    FitDesignWindow(False);
     LayoutCD;
     PnlCD.Visible := True;
   finally
     EnableAlign;
   end;
+  { wenn das Fenster die neue Grösse hat, die echte Innenfläche nachmessen }
+  if Visible then
+    Application.QueueAsyncCall(@DesignNachpruefen, 0);
 end;
 
 procedure TMainForm.LeaveDesign;

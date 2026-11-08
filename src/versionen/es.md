@@ -8,11 +8,12 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
 ## 2.2.1 – 7 de noviembre de 2026
 ### Mejorado
-- StemPlayer 1.8.4: bordes suaves en el jog wheel y los botones redondos del reproductor CD
+- StemPlayer 1.8.5: bordes suaves en el jog wheel y los botones redondos del reproductor CD
 ### Corregido
 - Linux (AppImage): StemMaker, StemPlayer y StemTagger se pueden minimizar, el dock muestra el icono del programa
 - Linux (Wine): Turbo indica desde el principio que funciona con la CPU en lugar de probar la tarjeta gráfica
 - Prueba previa de Turbo: los mensajes de error cortos ya están traducidos
+- StemPlayer: la ventana vuelve a tener el tamaño correcto al cambiar al reproductor CD
 
 ## 2.2 – 4 de noviembre de 2026
 ### Nuevo
