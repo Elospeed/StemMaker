@@ -10,6 +10,7 @@ keyword line per item. Only things users notice, no technical details.
 ### Improved
 - StemPlayer 1.8.4: smooth edges for the jog wheel and round buttons in the CD player
 ### Fixed
+- StemPlayer 1.8.5: CD player no longer cut off after switching from the waveform view
 - Linux (AppImage): StemMaker, StemPlayer and StemTagger can be minimized, the dock shows the program icon
 - Linux (Wine): Turbo says right away that it runs on the CPU instead of trying the graphics card
 - Turbo pre-test: short error messages are now translated

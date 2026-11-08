@@ -14,9 +14,10 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Linux (Wine): Turbo-Vortest ohne Grafikkarten-Versuch.** StemMaker erkennt Wine und sagt gleich „Wine erkannt: Turbo läuft auf der CPU“. Bisher versuchte der Vortest die Grafikkarte (DirectML geht unter Wine nicht, Fehler 80004001) und zeigte dabei eine Platzhalter-Karte von Wine (z. B. „GeForce GTX 470“) statt der echten. In der Zusammenfassung erscheint „llvmpipe“ (Software-Treiber) nicht mehr als Grafikkarte. Gemeldet von David GJ (Bazzite Linux).
 - **Übersetzung:** Kurze Fehlermeldungen im Turbo-Vortest (z. B. „Grafikkarte einschalten“) blieben auf Deutsch.
 
-#### StemPlayer 1.8.4, StemTagger 1.2.1
+#### StemPlayer 1.8.5, StemTagger 1.2.1
 - Linux: Minimieren-Knopf und richtiges Symbol im Dock (wie oben).
 - **CD-Player mit glatten Kreisen** (Meldung Speedy): Jogwheel und die runden Knöpfe CUE und Play hatten Treppenstufen am Rand, unter Linux deutlich, unter Windows beim Knopf-Ring leicht. Die Kanten werden jetzt vom StemPlayer selbst geglättet und sehen überall gleich weich aus.
+- **CD-Player passt nach dem Umschalten ins Fenster** (Meldung Speedy, 1.8.5): Wer während dem Abspielen von „Wellenform“ oder „Kompakt“ auf „CD-Player“ umschaltete, bekam ein zu breites und zu niedriges Fenster; CUE, Play und der Master-Regler waren unten abgeschnitten, rechts blieb ein leerer Streifen. Der Fehler war schon in 1.8.2 drin.
 
 ## 2.2 – 4. November 2026
 

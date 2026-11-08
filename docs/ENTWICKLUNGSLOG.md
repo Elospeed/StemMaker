@@ -6,6 +6,12 @@ Neueste Einträge oben.
 
 ---
 
+## StemPlayer 1.8.5: CD-Player nach dem Umschalten abgeschnitten (November 2026)
+
+**Fehler:** Windows-Gegentest 2.2.1 (100 %): Startet der StemPlayer in „Wellenform“ (836x821) und schaltet man auf „CD-Player“, wird das Fenster 1196x673 statt 1016x747. CUE/Play und der Master-Bereich sind unten abgeschnitten, rechts bleibt ein leerer Streifen. Direkt im CD-Player gestartet stimmt es. Schon in 1.8.2 so.
+**Ursache:** `FitDesignWindow` setzt `ClientWidth/ClientHeight` und misst danach mit `GetClientRect` die echte Innenfläche, um die Differenz auf `Width/Height` zu legen (Korrektur für 125 %). Beim Umschalten läuft das in `EnterDesign` unter `DisableAlign`: die LCL-Werte `Width/Height` sind schon neu, das echte Fenster hat aber noch die alte Grösse. Die Differenz zur alten Innenfläche (+180 / −74) kam so ein zweites Mal dazu.
+**Lösung:** Den Rahmen am echten Fenster messen (`GetWindowRect` minus `GetClientRect`, unabhängig von der Grösse) und die Fenstergrösse direkt als Designgrösse plus Rahmen setzen.
+
 ## Wine: Turbo-Vortest versuchte die Grafikkarte (2.2.1, November 2026)
 
 **Fehler:** Test von David GJ (Bazzite Linux, RTX 3090, Linux-ZIP unter Wine): Der Vortest zeigte eine „NVIDIA GeForce GTX 470“, die es nicht gibt, versuchte zweimal DirectML (Fehler 80004001 = E_NOTIMPL) und fiel dann auf die CPU zurück. Die Zusammenfassung nach dem Trennen zeigte dagegen „RTX 3090 (24 GB), llvmpipe“. Die Zeile „Grafikkarte einschalten“ blieb im Vortest-Fenster deutsch.

@@ -137,6 +137,10 @@
                        sauber geglätteten Kanten, auch unter Linux (Wine
                        glättete StretchBlt/HALFTONE nicht). Das Mitteln der
                        Pixel rechnet jetzt SmoothDownsample in djcontrols.
+    1.8.5 (08.11.2026) CD-Player: beim Umschalten aus Wellenform/Kompakt war
+                       das Fenster zu breit und zu niedrig (CUE/Play und
+                       Master abgeschnitten). FitDesignWindow misst jetzt den
+                       Rahmen und setzt die Grösse direkt.
   ============================================================================ }
 unit playerform;
 
@@ -152,7 +156,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.4';
+  APP_VER   = '1.8.5';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -1436,7 +1440,7 @@ end;
   Bildschirm halten (das Design ist breiter als die klassische Ansicht) }
 procedure TMainForm.FitDesignWindow;
 var
-  R: TRect;
+  R, WR: TRect;
   DW, DH: Integer;
 begin
   FFitting := True;
@@ -1452,13 +1456,20 @@ begin
     { Unter Windows bei 125 % war die echte Innenfläche ein paar Pixel
       kleiner als verlangt (Lazarus rechnet den Rahmen beim ersten Anzeigen
       noch mit dem alten Wert) -> Ko-fi-Knopf unten abgeschnitten.
-      Darum die echte Innengrösse messen und die Differenz nachlegen. }
-    if HandleAllocated and LCLIntf.GetClientRect(Handle, R) then
+      Darum den echten Rahmen am Fenster messen (Aussen- minus Innengrösse)
+      und die Fenstergrösse daraus direkt setzen.
+      Nicht "Width + Differenz zur Innenfläche": beim Umschalten aus der
+      Wellenform läuft das hier unter DisableAlign, das Fenster hat dann
+      noch die alte Grösse, die Differenz kam doppelt dazu (1196x673 statt
+      1016x747, CUE/Play und Master unten abgeschnitten, 1.8.5). }
+    if HandleAllocated and LCLIntf.GetClientRect(Handle, R) and
+       LCLIntf.GetWindowRect(Handle, WR) then
     begin
-      DW := Scale96ToForm(DESIGN_W) - (R.Right - R.Left);
-      DH := Scale96ToForm(DESIGN_H) + PnlBottom.Height - (R.Bottom - R.Top);
-      if (DW <> 0) or (DH <> 0) then
-        SetBounds(Left, Top, Width + DW, Height + DH);
+      DW := (WR.Right - WR.Left) - (R.Right - R.Left);
+      DH := (WR.Bottom - WR.Top) - (R.Bottom - R.Top);
+      if (DW >= 0) and (DH >= 0) then
+        SetBounds(Left, Top, Scale96ToForm(DESIGN_W) + DW,
+                  Scale96ToForm(DESIGN_H) + PnlBottom.Height + DH);
     end;
     Constraints.MinWidth := Width;
     Constraints.MinHeight := Height;

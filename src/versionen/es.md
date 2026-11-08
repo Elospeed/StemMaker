@@ -10,6 +10,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 ### Mejorado
 - StemPlayer 1.8.4: bordes suaves en el jog wheel y los botones redondos del reproductor CD
 ### Corregido
+- StemPlayer 1.8.5: el reproductor CD ya no aparece cortado al cambiar desde la vista de forma de onda
 - Linux (AppImage): StemMaker, StemPlayer y StemTagger se pueden minimizar, el dock muestra el icono del programa
 - Linux (Wine): Turbo indica desde el principio que funciona con la CPU en lugar de probar la tarjeta gráfica
 - Prueba previa de Turbo: los mensajes de error cortos ya están traducidos
