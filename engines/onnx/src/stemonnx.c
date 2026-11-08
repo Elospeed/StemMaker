@@ -600,11 +600,22 @@ static double snr_db(const float *ref, const float *x)
 static const GUID MY_IID_IDXGIFactory1 = {0x770aae78, 0xf26f, 0x4dba, {0xa8, 0x29, 0x25, 0x3c, 0x83, 0xd1, 0xb3, 0x87}};
 static const GUID MY_IID_IDXGIDevice = {0x54ec77fa, 0x1377, 0x44e6, {0x8c, 0x32, 0x88, 0xfd, 0x5f, 0x44, 0xc8, 0x4c}};
 
+/* Läuft StemOnnx unter Wine (Linux-AppImage)? ntdll.dll hat dann
+   "wine_get_version". Unter Wine gibt es kein DirectML (Fehler 80004001),
+   und DXGI meldet oft eine Platzhalter-Karte (z. B. "GeForce GTX 470"),
+   die es gar nicht gibt. Darum rechnet Turbo dort gleich auf der CPU. */
+static int unter_wine(void)
+{
+  HMODULE h = GetModuleHandleA("ntdll.dll");
+  return h && GetProcAddress(h, "wine_get_version") != NULL;
+}
+
 /* Schlüssel aus allen echten Grafikkarten: "Name|Treiber;Name|Treiber".
-   Leer = keine Grafikkarte (nur Software-Anzeige, z. B. in einer VM). */
+   Leer = keine Grafikkarte (nur Software-Anzeige, z. B. in einer VM) oder Wine. */
 static void gpu_key(char *key, size_t size)
 {
   key[0] = 0;
+  if (unter_wine()) return;
   HMODULE d = LoadLibraryA("dxgi.dll");
   if (!d) return;
   typedef HRESULT (WINAPI *CreateFn)(REFIID, void **);
@@ -966,7 +977,8 @@ static int run_vortest(const wchar_t *model_file, int gpu_id, const wchar_t *erg
   step(60, "Grafikkarte suchen");
   char key[512], merk[256] = "keine";
   gpu_key(key, sizeof key);
-  say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
+  if (unter_wine()) snprintf(merk, sizeof merk, "wine");
+  say("Grafikkarte: %s\n", key[0] ? key : unter_wine() ? "wine" : "keine gefunden");
   int dev = DEV_CPU;
   double t_gpu = 0, snr = 0, t_open = 0, wall_gpu = 0, t_first = 0;
   if (key[0]) {
@@ -1175,7 +1187,7 @@ int wmain(int argc, wchar_t **argv)
   int bewaehrt = 0;            /* Grafikkarte hat die volle Prüfung schon bestanden */
   gpu_key(key, sizeof key);
   if (!strcmp(geraet, "auto")) {
-    say("Grafikkarte: %s\n", key[0] ? key : "keine gefunden");
+    say("Grafikkarte: %s\n", key[0] ? key : unter_wine() ? "wine" : "keine gefunden");
     if (!key[0]) try_gpu_now = 0;
     else if (!neu_pruefen && cache_read(key, merk, sizeof merk) && strncmp(merk, "aus", 3) == 0) {
       say("Grafikkarte übersprungen, frühere Prüfung: %s (neu prüfen mit --neu-pruefen)\n", merk);

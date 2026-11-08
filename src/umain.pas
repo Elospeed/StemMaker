@@ -39,7 +39,7 @@ uses
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
   uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar,
-  uSkalierung;
+  uSkalierung, uWine;
 
 {$I version.inc}   // APP_VERSION
 
@@ -2290,6 +2290,9 @@ begin
   if W.TurboCount = 0 then
     AddLog(_('  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)'));
   AddLog(Format(_('                   vorhanden: %s'), [SysGPUInfo]));
+  { unter Wine (Linux) kann Turbo die Karte nicht nutzen, siehe uWine }
+  if UnterWine then
+    AddLog(_('                   Wine erkannt: Turbo läuft auf der CPU'));
   AddLog(Format(_('  Energie        : %s'), [PowerSummaryText(FPower)]));
   Slept := PowerSleptMS(FPower);
   if Slept > 0 then

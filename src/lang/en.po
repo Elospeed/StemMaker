@@ -5,6 +5,10 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
+#: umain.pas:2295
+msgid "                   Wine erkannt: Turbo läuft auf der CPU"
+msgstr "                   Wine detected: Turbo runs on the CPU"
+
 #: umain.pas:2292
 msgid "                   vorhanden: %s"
 msgstr "                      installed: %s"
@@ -33,7 +37,7 @@ msgstr "        [-t parts] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgid "  -  von Elospeed"
 msgstr "  -  by Elospeed"
 
-#: umain.pas:2296
+#: umain.pas:2299
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  WARNING           : The PC was asleep for approx. %s - the times above are too long by this amount."
 
@@ -57,7 +61,7 @@ msgstr "  Files             : %d  (OK %d, skipped %d, errors %d)"
 msgid "  Dauer: %s"
 msgstr "  Duration: %s"
 
-#: umain.pas:2293
+#: umain.pas:2296
 msgid "  Energie        : %s"
 msgstr "  Power             : %s"
 
@@ -109,7 +113,7 @@ msgstr "  RAM separation : max. %d MB  (total RAM %.1f GB)"
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  Computing power   : %d parts x %d cores = %d of %d physical cores (%d logical), demucs version %s"
 
-#: umain.pas:2299
+#: umain.pas:2302
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  Sleep             : none during the conversion"
 
@@ -125,7 +129,7 @@ msgstr "  Stem metadata: %s"
 msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
 msgstr "  Speed             : %.1f s per minute of music (statistics: logs\\statistik.csv)"
 
-#: umain.pas:2593
+#: umain.pas:2596
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d lengths still unknown"
 
@@ -161,7 +165,7 @@ msgstr "%d files OK"
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr "%d files filled in from the file name - not saved yet"
 
-#: umain.pas:2460
+#: umain.pas:2463
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "%d files from the saved list no longer exist - left out."
 
@@ -177,11 +181,11 @@ msgstr "%d files saved, %d with errors. The files with errors are unchanged, det
 msgid "%d Dateien in der Liste."
 msgstr "%d files in the list."
 
-#: umain.pas:2570
+#: umain.pas:2573
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d files pending - reading lengths ..."
 
-#: umain.pas:2577
+#: umain.pas:2580
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d files pending, %s of music - approx. %s"
 
@@ -217,7 +221,7 @@ msgstr "%d tracks loaded  ·  length %s  ·  ffmpeg: %s"
 msgid "%d Stunden"
 msgstr "%d hours"
 
-#: umain.pas:2767
+#: umain.pas:2770
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr "%d succeeded, %d skipped, %d failed - total time %s"
 
@@ -241,7 +245,7 @@ msgstr "%s %s  -  Traktor stems (*.stem.mp4) from audio files"
 msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
 msgstr "%s %s - ready. Add files or drag them into the window."
 
-#: umain.pas:2683
+#: umain.pas:2686
 msgid "%s - %d %% (Datei %d von %d)"
 msgstr "%s - %d %% (file %d of %d)"
 
@@ -309,7 +313,7 @@ msgstr "&Close"
 msgid "&Wiederholen"
 msgstr "&Retry"
 
-#: umain.pas:2583
+#: umain.pas:2586
 msgid "(Tempo dieses PCs)"
 msgstr "(this PC's speed)"
 
@@ -321,7 +325,7 @@ msgstr "(current run)"
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(applies after the next start)"
 
-#: umain.pas:2588
+#: umain.pas:2591
 msgid "(grob geschätzt)"
 msgstr "(rough estimate)"
 
@@ -329,7 +333,7 @@ msgstr "(rough estimate)"
 msgid "(kein Log gefunden)"
 msgstr "(no log found)"
 
-#: uturbotest.pas:689
+#: uturbotest.pas:696
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(preliminary, gets more precise with every measurement)"
 
@@ -501,11 +505,11 @@ msgstr "All files"
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "All files in the list are already done. Convert them again?"
 
-#: umain.pas:2565
+#: umain.pas:2568
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "All files in the list are done."
 
-#: umain.pas:2827 umain.pas:2853
+#: umain.pas:2830 umain.pas:2856
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "All files are done. The PC will shut down in %d seconds."
 
@@ -633,7 +637,7 @@ msgstr "Bass fix: low bass below %s Hz moved from Other to Bass"
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr "Bass fix: move low bass from Other to Bass"
 
-#: uinit.pas:604 ulicenseui.pas:89 umain.pas:2647
+#: uinit.pas:604 ulicenseui.pas:89 umain.pas:2650
 msgid "Beenden"
 msgstr "Quit"
 
@@ -885,7 +889,7 @@ msgstr "The low bass below 80 Hz that the separation leaves in the \"Other\" ste
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "The version history is missing in this version."
 
-#: uturbotest.pas:709
+#: uturbotest.pas:716
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "The pre-test did not work (code %s). StemMaker still tries Turbo and otherwise uses demucs.cpp (Classic). The details are in the log."
 
@@ -905,11 +909,11 @@ msgstr "The guide is normally in the StemMaker folder next to StemMaker.exe. Ple
 msgid "Die Details stehen im Log:"
 msgstr "The details are in the log:"
 
-#: uturbotest.pas:731
+#: uturbotest.pas:742
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "The graphics card (%s) %s. StemMaker separates with the CPU: about %s of computing time per minute of music."
 
-#: uturbotest.pas:724
+#: uturbotest.pas:731
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "The graphics card (%s) would work, but \"CPU only\" is selected. StemMaker separates with the CPU: about %s per minute of music."
 
@@ -953,7 +957,7 @@ msgstr "The waveforms do not fit on the screen at this Windows scaling."
 msgid "Die alte Version wurde wiederhergestellt."
 msgstr "The previous version has been restored."
 
-#: umain.pas:2458
+#: umain.pas:2461
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "The file that was being processed was interrupted - it will be redone when you click \"Start\"."
 
@@ -1005,7 +1009,7 @@ msgstr "Download incomplete"
 msgid "Du hast die neueste Version (%s)."
 msgstr "You have the latest version (%s)."
 
-#: uturbotest.pas:686
+#: uturbotest.pas:693
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "A 3-minute track takes about %s here with htdemucs (default) and %s with htdemucs_ft (best quality)."
 
@@ -1109,11 +1113,11 @@ msgstr "ERROR: "
 msgid "Farbe wählen"
 msgstr "Choose colour"
 
-#: ulangui.pas:202 umain.pas:1135 umain.pas:2430
+#: ulangui.pas:202 umain.pas:1135 umain.pas:2433
 msgid "Fehler"
 msgstr "Error"
 
-#: uturbotest.pas:618
+#: uturbotest.pas:623
 msgid "Fehler %s"
 msgstr "error %s"
 
@@ -1149,7 +1153,7 @@ msgstr "Send error report..."
 msgid "Fehlt: %s"
 msgstr "Missing: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:717 uturbotest.pas:718
+#: ustemjob.pas:2124 uturbotest.pas:724 uturbotest.pas:725
 msgid "Fertig"
 msgstr "Done"
 
@@ -1197,7 +1201,7 @@ msgstr "Total (file %d of %d):  remaining %s"
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "Total (file %d of %d):  elapsed %s   |   remaining %s"
 
-#: umain.pas:2584
+#: umain.pas:2587
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "Estimated with the speed measured on this PC."
 
@@ -1209,7 +1213,7 @@ msgstr "Saved"
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "GitHub issues are public, anyone can read them. Check the report first for anything you do not want to show (e.g. song names). You need a GitHub account."
 
-#: uturbotest.pas:614
+#: uturbotest.pas:617
 msgid "Grafikkarte einschalten"
 msgstr "switching on graphics card"
 
@@ -1225,7 +1229,7 @@ msgstr "Checking graphics card (can take up to 30 s)"
 msgid "Grafikkarte suchen"
 msgstr "Looking for graphics card"
 
-#: umain.pas:2589
+#: umain.pas:2592
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "Rough estimate - after the first finished track StemMaker knows the speed of this PC."
 
@@ -1405,7 +1409,7 @@ msgstr "Cannot write %s"
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "Cannot write target file: %s"
 
-#: uturbotest.pas:728
+#: uturbotest.pas:739
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "No graphics card found. StemMaker separates with the CPU: about %s of computing time per minute of music."
 
@@ -1537,7 +1541,7 @@ msgstr "Lights up red when the sum clips (then turn the master down)"
 msgid "Liste leeren"
 msgstr "Clear list"
 
-#: umain.pas:2455
+#: umain.pas:2458
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Restored the list from last time: %d files, %d of them still pending."
 
@@ -1973,7 +1977,7 @@ msgstr "STEMS  S"
 msgid "STUMM"
 msgstr "MUTED"
 
-#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:776
+#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:787
 msgid "Schliessen"
 msgstr "Close"
 
@@ -2001,7 +2005,7 @@ msgstr "Resets the values in this window to the defaults (language stays)."
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "Create backup copy (.bak)"
 
-#: uturbotest.pas:615
+#: uturbotest.pas:618
 msgid "Sitzung vorbereiten"
 msgstr "preparing session"
 
@@ -2141,7 +2145,7 @@ msgstr "StemMaker %s is installed. StemMaker will now restart."
 msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
 msgstr "StemMaker %s is available - the update will be offered after the conversion."
 
-#: umain.pas:2642
+#: umain.pas:2645
 msgid "StemMaker anzeigen"
 msgstr "Show StemMaker"
 
@@ -2153,7 +2157,7 @@ msgstr "StemMaker is open source under the MIT License (© 2026 Elospeed). Third
 msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
 msgstr "StemMaker is already open. Only one StemMaker can run at a time, because two would share the queue, the settings and the finished files."
 
-#: umain.pas:2766
+#: umain.pas:2769
 msgid "StemMaker ist fertig"
 msgstr "StemMaker is done"
 
@@ -2173,7 +2177,7 @@ msgstr "StemMaker will keep running. If something no longer works properly, plea
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "StemMaker measures once how fast this PC separates stems: first the CPU, then the graphics card. This takes about one minute."
 
-#: uturbotest.pas:720
+#: uturbotest.pas:727
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr "StemMaker separates with the graphics card on this PC (%s): about %s of computing time per minute of music (CPU: %s)."
 
@@ -2329,7 +2333,7 @@ msgstr "Traktor and STEMS are trademarks of Native Instruments GmbH. StemMaker i
 msgid "Traktor-Farben"
 msgstr "Traktor colours"
 
-#: uturbotest.pas:593
+#: uturbotest.pas:595
 msgid "Treiber"
 msgstr "driver"
 
@@ -2337,11 +2341,11 @@ msgstr "driver"
 msgid "Trenn-Modell:"
 msgstr "Separation model:"
 
-#: uturbotest.pas:617
+#: uturbotest.pas:620
 msgid "Trennen"
 msgstr "separating"
 
-#: uturbotest.pas:616
+#: uturbotest.pas:619
 msgid "Trennen auf der Grafikkarte"
 msgstr "separating on graphics card"
 
@@ -2441,7 +2445,7 @@ msgstr "Preparing"
 msgid "Vortest ..."
 msgstr "Pre-test ..."
 
-#: uturbotest.pas:704
+#: uturbotest.pas:711
 msgid "Vortest fehlgeschlagen"
 msgstr "Pre-test failed"
 
@@ -2489,6 +2493,14 @@ msgstr "Tools"
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "How many parts of the song demucs processes at the same time. Each part also uses several cores and needs a good 2 GB of RAM."
 
+#: uturbotest.pas:735
+msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
+msgstr "Wine detected (Linux): the graphics card cannot be used under Wine. StemMaker separates on the CPU: about %s of computing time per minute of music."
+
+#: uturbotest.pas:591
+msgid "Wine erkannt: Turbo läuft auf der CPU"
+msgstr "Wine detected: Turbo runs on the CPU"
+
 #: playerform.pas:1223
 msgid "ZEIT"
 msgstr "TIME"
@@ -2517,7 +2529,7 @@ msgstr "Target path too long (%d characters, Windows allows at most %d). Please 
 msgid "Zuerst die Dateien markieren, die dieses Cover bekommen sollen."
 msgstr "First select the files that should get this cover."
 
-#: umain.pas:1133 umain.pas:2431 ustemjob.pas:2145
+#: umain.pas:1133 umain.pas:2434 ustemjob.pas:2145
 msgid "abgebrochen"
 msgstr "cancelled"
 
@@ -2553,7 +2565,7 @@ msgstr "demucs: %s (%s), %d parts x %d cores each"
 msgid "eigener Plan %s"
 msgstr "custom plan %s"
 
-#: umain.pas:1132 umain.pas:2429
+#: umain.pas:1132 umain.pas:2432
 msgid "existiert schon"
 msgstr "already exists"
 
@@ -2737,7 +2749,7 @@ msgstr "Spanish translation"
 msgid "startet nicht: %s"
 msgstr "does not start: %s"
 
-#: ulog.pas:565 upower.pas:297 upower.pas:318
+#: ulog.pas:568 upower.pas:297 upower.pas:318
 msgid "unbekannt"
 msgstr "unknown"
 
@@ -2761,7 +2773,7 @@ msgstr "overwrite existing stem files"
 msgid "wartet"
 msgstr "waiting"
 
-#: umain.pas:2432
+#: umain.pas:2435
 msgid "wartet (unterbrochen)"
 msgstr "waiting (interrupted)"
 

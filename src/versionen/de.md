@@ -11,6 +11,8 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 - StemPlayer 1.8.4: Jogwheel und runde Knöpfe im CD-Player mit glatten Kanten
 ### Behoben
 - Linux (AppImage): StemMaker, StemPlayer und StemTagger lassen sich minimieren, das Dock zeigt das Programmsymbol
+- Linux (Wine): Turbo sagt gleich, dass es auf der CPU rechnet, statt die Grafikkarte zu versuchen
+- Turbo-Vortest: kurze Fehlermeldungen jetzt übersetzt
 
 ## 2.2 – 4. November 2026
 ### Neu
