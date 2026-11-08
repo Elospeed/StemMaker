@@ -1463,7 +1463,7 @@ begin
       noch die alte Grösse, die Differenz kam doppelt dazu (1196x673 statt
       1016x747, CUE/Play und Master unten abgeschnitten, 1.8.5). }
     if HandleAllocated and LCLIntf.GetClientRect(Handle, R) and
-       LCLIntf.GetWindowRect(Handle, WR) then
+       (LCLIntf.GetWindowRect(Handle, WR) <> 0) then
     begin
       DW := (WR.Right - WR.Left) - (R.Right - R.Left);
       DH := (WR.Bottom - WR.Top) - (R.Bottom - R.Top);
