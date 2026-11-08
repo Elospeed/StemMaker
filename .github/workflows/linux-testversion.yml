@@ -1,0 +1,64 @@
+name: Linux-Testversion packen
+# Baut die Linux-Testversion (AppImage) aus der letzten Beta-AppImage und
+# einem fertigen Windows-Release-ZIP neu: alle Programmdateien aus dem
+# Release-ZIP kommen in die AppImage. Ergebnis als Artefakt, das Vor-Release
+# legt danach Elospeed selbst an.
+on:
+  workflow_dispatch:
+    inputs:
+      alte_beta:
+        description: "Tag der alten Beta (AppImage-Quelle)"
+        default: "v2.2.1-linux-beta1"
+      release:
+        description: "Tag des Windows-Releases"
+        default: "v2.2.1"
+      version:
+        description: "Version der Testversion"
+        default: "2.2.1-beta2"
+  push:
+    branches: [elospeed/linux-beta2]
+    paths: [".github/workflows/linux-testversion.yml"]
+permissions:
+  contents: read
+jobs:
+  packen:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ALT: ${{ inputs.alte_beta || 'v2.2.1-linux-beta1' }}
+      REL: ${{ inputs.release || 'v2.2.1' }}
+      VER: ${{ inputs.version || '2.2.1-beta2' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Werkzeuge
+        run: sudo apt-get update -q && sudo apt-get install -y -q squashfs-tools zip
+      - name: Dateien holen
+        run: |
+          mkdir -p alt rel
+          gh release download "$ALT" -R "$GITHUB_REPOSITORY" -p '*Linux-Test.zip' -D alt
+          gh release download "$REL" -R "$GITHUB_REPOSITORY" -p 'StemMaker-*.zip' -D rel
+          ls -la alt rel
+          (cd alt && unzip -q *.zip) && (cd rel && unzip -q StemMaker-*.zip)
+      - name: AppImage neu packen
+        run: |
+          A=$(ls alt/*/*.AppImage)
+          OFF=$(python3 -c "import struct,sys;k=open(sys.argv[1],'rb').read(64);s=struct.unpack_from('<Q',k,0x28)[0];a,b=struct.unpack_from('<HH',k,0x3A);print(s+a*b)" "$A")
+          unsquashfs -q -o "$OFF" -d sq "$A" >/dev/null
+          head -c "$OFF" "$A" > runtime
+          (cd rel/StemMaker && tar cf - --exclude=./src --exclude=./demucs-build --exclude=./lang-tools .) | (cd sq/StemMaker && tar xf -)
+          echo "${VER/-/\~}" > sq/StemMaker/APPIMAGE_VERSION
+          N="StemMaker-$VER-Linux-Test"
+          mkdir -p "out/$N"
+          mksquashfs sq neu.sqfs -comp zstd -b 131072 -root-owned -noappend -quiet >/dev/null
+          cat runtime neu.sqfs > "out/$N/StemMaker-$VER-x86_64.AppImage"
+          chmod +x "out/$N/StemMaker-$VER-x86_64.AppImage"
+          cp installer/linux/beta-test/Linux-Beta-Test-DE.md installer/linux/beta-test/Linux-Beta-Test-EN.md "out/$N/"
+          (cd "out/$N" && sha256sum "StemMaker-$VER-x86_64.AppImage" > SHA256SUMS.txt)
+          (cd out && zip -q -r -X "$N.zip" "$N")
+          sha256sum "out/$N.zip" | tee -a "$GITHUB_STEP_SUMMARY"
+          cat "out/$N/SHA256SUMS.txt" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StemMaker-${{ env.VER }}-Linux-Test
+          path: out/*.zip
+          compression-level: 0
