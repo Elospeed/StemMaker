@@ -7,6 +7,16 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.2.1 – 7. November 2026
+
+### Behoben
+- **Linux (AppImage, Beta):** StemMaker, StemPlayer und StemTagger liessen sich unter Ubuntu nicht minimieren, und das Dock zeigte ein Zahnrad statt des Programmsymbols. Unter Wine besitzt jetzt das Hauptfenster selbst den Taskleisten-Knopf, damit gilt es als normales Fenster. Unter Windows ändert sich nichts.
+- **Linux (Wine): Turbo-Vortest ohne Grafikkarten-Versuch.** StemMaker erkennt Wine und sagt gleich „Wine erkannt: Turbo läuft auf der CPU“. Bisher versuchte der Vortest die Grafikkarte (DirectML geht unter Wine nicht, Fehler 80004001) und zeigte dabei eine Platzhalter-Karte von Wine (z. B. „GeForce GTX 470“) statt der echten. In der Zusammenfassung erscheint „llvmpipe“ (Software-Treiber) nicht mehr als Grafikkarte. Gemeldet von David GJ (Bazzite Linux).
+- **Übersetzung:** Kurze Fehlermeldungen im Turbo-Vortest (z. B. „Grafikkarte einschalten“) blieben auf Deutsch.
+
+#### StemPlayer 1.8.3, StemTagger 1.2.1
+- Linux: Minimieren-Knopf und richtiges Symbol im Dock (wie oben).
+
 ## 2.2 – 4. November 2026
 
 ### Neu

@@ -6,6 +6,12 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.2.1 – 7 November 2026
+### Fixed
+- Linux (AppImage): StemMaker, StemPlayer and StemTagger can be minimized, the dock shows the program icon
+- Linux (Wine): Turbo says right away that it runs on the CPU instead of trying the graphics card
+- Turbo pre-test: short error messages are now translated
+
 ## 2.2 – 4 November 2026
 ### New
 - Six new languages: French, Portuguese (Brazil), Italian, Japanese, Dutch, Polish

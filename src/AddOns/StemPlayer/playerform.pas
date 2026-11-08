@@ -130,6 +130,9 @@
                        (Branch elospeed/stemplayer-plattenspieler). Die vorhandenen Bedienelemente werden dafür nur
                        umgesetzt (PlaceCtl), neu sind die Teile in designviews.pas.
                        Wahl in StemPlayer.ini [Ansicht] Design.
+    1.8.3 (07.11.2026) Linux (AppImage mit Wine): das Fenster hat jetzt einen
+                       Minimieren-Knopf und im Dock das richtige Symbol
+                       (uWine, Hauptfenster besitzt dort den Taskleisten-Knopf).
   ============================================================================ }
 unit playerform;
 
@@ -145,7 +148,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.2';
+  APP_VER   = '1.8.3';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';

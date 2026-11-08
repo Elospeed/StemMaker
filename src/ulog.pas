@@ -549,6 +549,9 @@ begin
     Key := UnicodeString(DISPLAY_CLASS + Format('%.4d', [I]));
     Name := RegReadString(Key, 'DriverDesc');
     if Name = '' then Continue;
+    { Linux/Wine: "llvmpipe" ist Mesas Software-Treiber (rechnet auf der CPU),
+      keine Grafikkarte }
+    if Pos('llvmpipe', LowerCase(Name)) > 0 then Continue;
     { neuere Treiber: 8-Byte-Wert, ältere: 4-Byte-Wert }
     Mem := RegReadNumber(Key, 'HardwareInformation.qwMemorySize');
     if Mem = 0 then

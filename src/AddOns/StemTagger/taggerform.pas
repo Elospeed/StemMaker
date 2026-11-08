@@ -44,6 +44,8 @@
     1.2.0 (30.10.2026)  Französisch, Portugiesisch (BR), Italienisch, Japanisch,
                        Niederländisch, Polnisch (wie StemMaker 2.2); Windows-
                        Sprache wird genommen, wenn es eine .po dazu gibt
+    1.2.1 (07.11.2026)  Linux (AppImage mit Wine): Fenster hat einen Minimieren-
+                       Knopf und im Dock das richtige Symbol (uwine.pas)
   ============================================================================ }
 unit taggerform;
 
@@ -59,7 +61,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemTagger';
-  APP_VER   = '1.2.0';
+  APP_VER   = '1.2.1';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type

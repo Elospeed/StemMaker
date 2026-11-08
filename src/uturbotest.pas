@@ -587,6 +587,8 @@ begin
     Txt := Trim(Copy(Line, 14, MaxInt));
     if Txt = 'keine gefunden' then
       AddStep('  ' + _('keine Grafikkarte gefunden'))
+    else if Txt = 'wine' then
+      AddStep('  ' + _('Wine erkannt: Turbo läuft auf der CPU'))
     else
     begin
       { "Name|Treiber;Name|Treiber" -> "Name (Treiber ...), ..." }
@@ -607,15 +609,20 @@ begin
         ganz stehen sie im Log }
       Txt := Trim(Copy(Line, 8, MaxInt));
       P := Pos(': ', Txt);
-      if (P > 0) and (Length(Txt) > 80) then
+      if P > 0 then
       begin
-        { was StemOnnx gerade tat (deutsch) für andere Sprachen übersetzen }
+        { was StemOnnx gerade tat (deutsch) für andere Sprachen übersetzen,
+          auch bei kurzen Meldungen (unter Wine z. B. nur "80004001 ...") }
         Act := Copy(Txt, 1, P - 1);
         if Act = 'Grafikkarte einschalten' then Act := _('Grafikkarte einschalten')
         else if Act = 'Sitzung vorbereiten' then Act := _('Sitzung vorbereiten')
         else if Act = 'Trennen auf der Grafikkarte' then Act := _('Trennen auf der Grafikkarte')
         else if Act = 'Trennen' then Act := _('Trennen');
-        Txt := Act + ': ' + Format(_('Fehler %s'), [HexCode(Line)]);
+        { lange DirectML-Meldungen: nur den Fehlercode, ganz stehen sie im Log }
+        if (Length(Txt) > 80) or (HexCode(Line) <> '?') then
+          Txt := Act + ': ' + Format(_('Fehler %s'), [HexCode(Line)])
+        else
+          Txt := Act + Copy(Txt, P, MaxInt);
       end;
       Txt := '! ' + Txt;
     end;
@@ -724,6 +731,10 @@ begin
     S := Format(_('Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber ' +
       '"Nur CPU". StemMaker trennt mit der CPU: etwa %s pro Minute Musik.'),
       [Gpu, SecText(Num('cpu_s_pro_min'))])
+  else if Status = 'wine' then
+    S := Format(_('Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht ' +
+      'genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik.'),
+      [SecText(Num('cpu_s_pro_min'))])
   else if (Status = 'keine') or (Gpu = '') then
     S := Format(_('Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: ' +
       'etwa %s Rechenzeit pro Minute Musik.'), [SecText(Num('cpu_s_pro_min'))])

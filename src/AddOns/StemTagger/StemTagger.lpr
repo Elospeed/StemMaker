@@ -14,6 +14,7 @@
     ulang.pas        Übersetzungen (lang\*.po)
     ustatusdraw.pas  Ko-fi-Knopf zeichnen
     uskalierung.pas  Hilfen für die Windows-Skalierung (DPI)
+    uwine.pas        unter Wine (Linux) normales Fenster mit Minimieren
     StemTagger.ico   Programmsymbol (wird über die .lpi eingebunden)
   ============================================================================ }
 program StemTagger;
@@ -22,7 +23,8 @@ program StemTagger;
 
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
-  Interfaces, Forms, taggerform;
+  Interfaces, Forms, taggerform,
+  uWine;   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -31,6 +33,7 @@ begin
   Application.Scaled := True;
   Application.Title := 'Elospeed StemTagger';
   Application.Initialize;
+  WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
