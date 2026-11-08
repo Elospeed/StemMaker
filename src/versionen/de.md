@@ -6,7 +6,7 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
-## 2.2.1 – 7. November 2026
+## 2.2.1 – 8. November 2026
 ### Verbessert
 - StemPlayer 1.8.5: Jogwheel und runde Knöpfe im CD-Player mit glatten Kanten
 ### Behoben

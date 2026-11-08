@@ -6,7 +6,7 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.2.1 – 7 November 2026
+## 2.2.1 – 8 November 2026
 ### Improved
 - StemPlayer 1.8.5: smooth edges for the jog wheel and round buttons in the CD player
 ### Fixed

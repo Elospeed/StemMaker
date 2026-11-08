@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.2.1 – 7. November 2026
+## 2.2.1 – 8. November 2026
 
 ### Behoben
 - **Linux (AppImage, Beta):** StemMaker, StemPlayer und StemTagger liessen sich unter Ubuntu nicht minimieren, und das Dock zeigte ein Zahnrad statt des Programmsymbols. Unter Wine besitzt jetzt das Hauptfenster selbst den Taskleisten-Knopf, damit gilt es als normales Fenster. Unter Windows ändert sich nichts.
