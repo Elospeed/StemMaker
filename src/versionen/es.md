@@ -6,7 +6,7 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.2.1 – 7 de noviembre de 2026
+## 2.2.1 – 8 de noviembre de 2026
 ### Mejorado
 - StemPlayer 1.8.5: bordes suaves en el jog wheel y los botones redondos del reproductor CD
 ### Corregido
