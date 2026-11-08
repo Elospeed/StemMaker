@@ -123,10 +123,17 @@ jobs:
         # Das Setup braucht den ganzen Programmordner (demucs, Sprachdateien ...).
         # Dafür nehmen wir das aktuelle Release-ZIP aus update.json (Prüfsumme wird
         # kontrolliert) und ersetzen darin die Exes durch die frisch gebauten.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           read -r VERSION URL SHA < <(python -c "import json; d=json.load(open('update.json', encoding='utf-8')); print(d['version'], d['zip_url'], d['zip_sha256'])" | tr -d '\r')
-          curl -sSfL -o release.zip "$URL"
+          # Direkter Link zuerst; bei Störung (z. B. 504) über die GitHub-API holen
+          if ! curl -sSfL -o release.zip "$URL"; then
+            echo "::warning::Direkter Download gescheitert, hole die Datei über die GitHub-API"
+            gh release download "$(basename "$(dirname "$URL")")" -R "$GITHUB_REPOSITORY" \
+              -p "$(basename "$URL")" -O release.zip --clobber
+          fi
           echo "$SHA  release.zip" | sha256sum -c -
           bash installer/setup-bauen.sh release.zip "$VERSION-test" StemMaker-Setup-Test ausgabe
           pwsh -File installer/setup-testen.ps1 installer/Output/StemMaker-Setup-Test.exe
@@ -136,6 +143,8 @@ jobs:
       - name: Download-ZIP für das Test-Tool "5.1 -> Stem" bauen
         # Komplettes ZIP für Leute ohne StemMaker: Stem51.exe, Anleitung DE/EN,
         # ffmpeg (LGPL, aus unserem Release) und eine kleine 5.1-Testdatei.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           VER=$(sed -n "s/^ *APP_VER *= *'\(.*\)';.*/\1/p" src/AddOns/StemDecks/stem51form.pas | head -n 1 | tr -d '\r')
