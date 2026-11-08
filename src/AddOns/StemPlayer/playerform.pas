@@ -133,6 +133,10 @@
     1.8.3 (07.11.2026) Linux (AppImage mit Wine): das Fenster hat jetzt einen
                        Minimieren-Knopf und im Dock das richtige Symbol
                        (uWine, Hauptfenster besitzt dort den Taskleisten-Knopf).
+    1.8.4 (07.11.2026) CD-Player: Jogwheel und runde CUE/Play-Knöpfe mit
+                       sauber geglätteten Kanten, auch unter Linux (Wine
+                       glättete StretchBlt/HALFTONE nicht). Das Mitteln der
+                       Pixel rechnet jetzt SmoothDownsample in djcontrols.
   ============================================================================ }
 unit playerform;
 
@@ -148,7 +152,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.3';
+  APP_VER   = '1.8.4';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';

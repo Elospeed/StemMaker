@@ -7,6 +7,8 @@ Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
 ## 2.2.1 – 7. November 2026
+### Verbessert
+- StemPlayer 1.8.4: Jogwheel und runde Knöpfe im CD-Player mit glatten Kanten
 ### Behoben
 - Linux (AppImage): StemMaker, StemPlayer und StemTagger lassen sich minimieren, das Dock zeigt das Programmsymbol
 - Linux (Wine): Turbo sagt gleich, dass es auf der CPU rechnet, statt die Grafikkarte zu versuchen

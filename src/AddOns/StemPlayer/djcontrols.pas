@@ -33,7 +33,8 @@ unit djcontrols;
 interface
 
 uses
-  Classes, SysUtils, Math, Controls, Graphics, ExtCtrls, LCLType;
+  Classes, SysUtils, Math, Controls, Graphics, ExtCtrls, LCLType,
+  IntfGraphics, GraphType;
 
 const
   { Farbpalette "Traktor Dark" (siehe Design-Vorschlag A) }
@@ -167,7 +168,69 @@ function BlendColor(A, B: TColor; T: Single): TColor;
 procedure DrawLedBar(ACanvas: TCanvas; const R: TRect; Frac: Single;
   LitColor: TColor; Zones: Boolean);
 
+{ Kantenglättung: Big ist dasselbe Bild in n-facher Grösse (n = Big.Width
+  div Small.Width). Je n x n Pixel werden zu einem gemittelt und nach
+  Small geschrieben. Wird selbst gerechnet statt mit StretchBlt/HALFTONE,
+  weil Wine (Linux-AppImage) HALFTONE nicht weich umsetzt: die Kreise
+  blieben dort treppig. So sieht es unter Windows und Linux gleich aus. }
+procedure SmoothDownsample(Big, Small: TBitmap);
+
 implementation
+
+procedure SmoothDownsample(Big, Small: TBitmap);
+var
+  BI, SI: TLazIntfImage;
+  N, Bpp, RowLen, X, Y, J, K, B, Div2: Integer;
+  Sum: array of Cardinal;
+  Src, Dst: PByte;
+begin
+  if (Small.Width <= 0) or (Small.Height <= 0) then Exit;
+  N := Big.Width div Small.Width;
+  if N < 1 then N := 1;
+  BI := Big.CreateIntfImage;
+  SI := TLazIntfImage.Create(0, 0);
+  try
+    Bpp := BI.DataDescription.BitsPerPixel div 8;
+    if (BI.DataDescription.Format <> ricfRGBA) or (Bpp < 3) or
+       (BI.DataDescription.BitsPerPixel mod 8 <> 0) then
+    begin
+      { unbekanntes Pixelformat: einfach verkleinern (ungeglättet) }
+      Small.Canvas.StretchDraw(Rect(0, 0, Small.Width, Small.Height), Big);
+      Exit;
+    end;
+    SI.DataDescription := BI.DataDescription;
+    SI.SetSize(Small.Width, Small.Height);
+    RowLen := Small.Width * Bpp;
+    SetLength(Sum, RowLen);
+    Div2 := N * N;
+    for Y := 0 to Small.Height - 1 do
+    begin
+      { Jedes Byte für sich mitteln - die Reihenfolge der Farbkanäle ist
+        dabei egal (BGRA, RGBA ...) }
+      FillChar(Sum[0], RowLen * SizeOf(Cardinal), 0);
+      for J := 0 to N - 1 do
+      begin
+        if Y * N + J >= BI.Height then Break;
+        Src := BI.GetDataLineStart(Y * N + J);
+        { die Quellzeile einmal der Reihe nach durchlaufen (schnell) }
+        for X := 0 to Small.Width - 1 do
+          for K := 0 to N - 1 do
+            for B := 0 to Bpp - 1 do
+            begin
+              Inc(Sum[X * Bpp + B], Src^);
+              Inc(Src);
+            end;
+      end;
+      Dst := SI.GetDataLineStart(Y);
+      for X := 0 to RowLen - 1 do
+        Dst[X] := (Sum[X] + Cardinal(Div2 div 2)) div Cardinal(Div2);
+    end;
+    Small.LoadFromIntfImage(SI);
+  finally
+    SI.Free;
+    BI.Free;
+  end;
+end;
 
 function BlendColor(A, B: TColor; T: Single): TColor;
 var
@@ -351,11 +414,14 @@ end;
 { Achtung: innerhalb von "with Canvas do" bedeuten Width/Height die Grösse
   des Canvas (nicht die des Buttons) - darum immer Self.Width/Self.Height. }
 procedure TDJButton.Paint;
+const
+  AA = 3;   // runder Knopf: so viel grösser vorzeichnen (Kantenglättung)
 var
   R: TRect;
-  Bg, Bd, Fg: TColor;
+  Bg, Bd, Fg, Back: TColor;
   CX, CY, S: Integer;
   TS: TTextStyle;
+  Big, Small: TBitmap;
 begin
   R := ClientRect;
 
@@ -409,12 +475,28 @@ begin
   begin
     if FRound then
     begin
-      { Hintergrund nicht füllen: die Ecken zeigen die Fläche dahinter }
-      Brush.Color := Bg;
-      Pen.Color := Bd;
-      Pen.Width := 3;
-      Ellipse(R.Left + 2, R.Top + 2, R.Right - 1, R.Bottom - 1);
-      Pen.Width := 1;
+      { Kreis in dreifacher Grösse vorzeichnen und geglättet verkleinern.
+        Die Ecken bekommen die Farbe der Fläche dahinter (Parent.Color). }
+      Back := DJ_BG;
+      if Parent <> nil then Back := ColorToRGB(Parent.Color);
+      Big := TBitmap.Create;
+      Small := TBitmap.Create;
+      try
+        Big.SetSize(Self.Width * AA, Self.Height * AA);
+        Big.Canvas.Brush.Color := Back;
+        Big.Canvas.FillRect(0, 0, Big.Width, Big.Height);
+        Big.Canvas.Brush.Color := Bg;
+        Big.Canvas.Pen.Color := Bd;
+        Big.Canvas.Pen.Width := 3 * AA;
+        Big.Canvas.Ellipse((R.Left + 2) * AA, (R.Top + 2) * AA,
+                           (R.Right - 1) * AA, (R.Bottom - 1) * AA);
+        Small.SetSize(Self.Width, Self.Height);
+        SmoothDownsample(Big, Small);
+        Draw(0, 0, Small);
+      finally
+        Small.Free;
+        Big.Free;
+      end;
     end
     else
     begin
