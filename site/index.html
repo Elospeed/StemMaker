@@ -38,7 +38,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Elospeed StemMaker",
-  "operatingSystem": "Windows 10, Windows 11 (64-bit)",
+  "operatingSystem": "Windows 10, Windows 11 (64-bit), Linux (beta, AppImage)",
   "applicationCategory": "MultimediaApplication",
   "description": "Converts MP3, WAV, FLAC, AIFF, M4A, AAC, OGG and Opus files into Traktor stem files (.stem.mp4) with four stems: drums, bass, other (melody) and vocals.",
   "url": "https://elospeed.github.io/StemMaker/",
@@ -83,6 +83,7 @@
     <ul class="facts">
       <li>Free &amp; MIT licensed</li>
       <li>Windows 10 / 11</li>
+      <li><a href="#linux">Linux (beta)</a></li>
       <li>No Python, graphics card optional</li>
       <li>Runs locally on your PC</li>
       <li>Whole folders in one go</li>
@@ -283,6 +284,25 @@
       </div>
       <p class="note">Separation time only, with htdemucs (default), measured on our own PCs. Packing into the stem file comes on top (a few seconds per minute of music). htdemucs_ft (best quality) takes about three to four times as long. The pre-test shows how fast it is on your PC, and StemMaker learns the speed and shows how long the list will take.</p>
     </div>
+  </div>
+</section>
+
+<section id="linux" class="alt">
+  <div class="wrap">
+    <span class="badge">Public beta</span>
+    <h2>StemMaker on Linux</h2>
+    <p class="sub">The regular StemMaker in a single AppImage with Wine built in. Nothing to install, not even Wine. StemPlayer and StemTagger are included. It is still a beta: Turbo runs on the processor only for now, and dialogs look like Windows.</p>
+    <ul class="ticks">
+      <li>Download the ZIP from the release page and unzip it.</li>
+      <li>Make the AppImage executable (right-click → Properties → “Run as program”) and start it. The first start takes about 30 seconds.</li>
+      <li>The ZIP contains a short guide with everything worth knowing.</li>
+    </ul>
+    <p class="note"><strong>AppImage won't start?</strong> Install <code>libfuse2</code> (Ubuntu 24.04 and newer: <code>sudo apt install libfuse2t64</code>).</p>
+    <div class="cta" style="justify-content:flex-start;margin-top:22px">
+      <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/tag/v2.2.1-linux-beta2">⬇ Download Linux beta</a>
+      <a class="btn" href="https://github.com/Elospeed/StemMaker/discussions">Give feedback</a>
+    </div>
+    <p class="sub" style="margin:18px 0 0">A big thank you to David GJ and ptrex from the Mixxx forum, who tested the Linux version thoroughly.</p>
   </div>
 </section>
 
