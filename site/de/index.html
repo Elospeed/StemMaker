@@ -44,7 +44,7 @@
   "inLanguage": "de",
   "url": "https://elospeed.github.io/StemMaker/de/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "2.2.1",
+  "softwareVersion": "2.3",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
@@ -91,7 +91,7 @@
       <li>Bis 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.2.1 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <div class="bar"><img src="../img/icon-32.png" alt=""><span>Elospeed StemMaker 2.3 - Traktor Stems (*.stem.mp4) aus Audiodateien</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
       <img src="../img/stemmaker-de.png" width="860" height="724" alt="StemMaker-Hauptfenster mit einer Liste von MP3-Dateien, die in Traktor-Stem-Dateien umgewandelt werden, rechts die AddOn-Leiste mit StemPlayer und StemTagger">
     </figure>
   </div>
@@ -122,7 +122,7 @@
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Nativ statt Python-Installation</h3><p>Die Trennung läuft nativ mit ONNX Runtime (Turbo) oder demucs.cpp statt über Python und PyTorch. Kein Python, kein CUDA und keine Treiber zu installieren, nichts im Hintergrund, kein Konto, keine Cloud. Startet in einer Sekunde, und deine Musik verlässt den PC nie.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club-Pegel und Bass-Fix</h3><p>Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, damit die Wellenformen gut lesbar sind und ein Stem im Set nicht plötzlich im Pegel abfällt. Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem, so wie bei Traktor. Kick und Bass bleiben dadurch satt.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Passt sich deinem PC an</h3><p>Prüft beim ersten Start, ob deine Grafikkarte hilft, und nimmt sie nur, wenn sie richtig und schneller rechnet, sonst rechnet der Prozessor. Hält den PC bei langen Läufen wach und fährt ihn am Ende auf Wunsch herunter.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Neun Sprachen</h3><p>StemMaker, StemPlayer und StemTagger sprechen <strong>Deutsch, English, Español, Français, Português (Brasil), Italiano, 日本語, Nederlands und Polski</strong>, ausgewählt beim ersten Start. Ein besonderer Dank geht an <strong>David GJ</strong> für die spanische Übersetzung! Alle Helfer stehen unter „Info“ im Reiter „Danke“.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Neun Sprachen</h3><p>StemMaker, StemPlayer, StemTagger und StemPacker sprechen <strong>Deutsch, English, Español, Français, Português (Brasil), Italiano, 日本語, Nederlands und Polski</strong>, ausgewählt beim ersten Start. Ein besonderer Dank geht an <strong>David GJ</strong> für die spanische Übersetzung! Alle Helfer stehen unter „Info“ im Reiter „Danke“.</p></div>
     </div>
   </div>
 </section>
@@ -187,9 +187,20 @@
 <section id="neu" class="alt">
   <div class="wrap">
     <div style="margin-bottom:56px">
-      <span class="badge">Neu in 2.2</span>
+      <span class="badge">Neu in 2.3</span>
+      <h2>Der StemPacker kommt als AddOn dazu</h2>
+      <p class="sub">Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.3 mit einem Klick.</p>
+      <div class="soon">
+        <ul class="ticks">
+          <li><strong>StemPacker 0.3:</strong> packt fertige Einzelspuren ohne KI und im Stapel zu Traktor-Stem-Dateien: pro Song ein Master und bis zu vier Stems, zum Beispiel aus der DAW, von einer 5.1-DVD oder aus einem anderen Trennprogramm. Er erkennt selbst, wie die Dateien benannt sind. Start über die neue Kachel in der AddOn-Leiste oder im Startmenü; er nimmt das ffmpeg und die Sprachen von StemMaker. Es gibt ihn auch einzeln auf der <a href="https://elospeed.github.io/StemPacker/de/">StemPacker-Seite</a></li>
+          <li><strong>Lange Übersetzungen</strong> (z. B. Japanisch oder Spanisch) laufen im Prüffenster und in der roten Zeile „Fehlt: …“ nicht mehr aus dem Feld; sie enden mit „…“, der ganze Text steht im Tooltip</li>
+          <li><strong>StemTagger 1.2.2:</strong> japanische Spaltenköpfe in gut lesbarer Schrift</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-bottom:56px">
+      <span class="badge">Seit 2.2</span>
       <h2>Neun Sprachen und eine Seitenspalte für AddOns</h2>
-      <p class="sub">Du nutzt StemMaker schon? Das eingebaute Update bringt dir Version 2.2.1 mit einem Klick. 2.2.1 glättet die runden Bedienelemente im CD-Player des StemPlayers und verbessert die Linux-Testversion (Minimieren, Turbo unter Wine).</p>
       <div class="soon">
         <ul class="ticks">
           <li><strong>Sechs neue Sprachen:</strong> Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch, für StemMaker, StemPlayer, StemTagger und das Setup. Beim ersten Start schlägt StemMaker die Sprache von Windows vor. Die neuen Übersetzungen sind maschinell erstellt, Verbesserungen von Muttersprachlern sind willkommen</li>
