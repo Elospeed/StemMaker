@@ -43,7 +43,7 @@
   "description": "Converts MP3, WAV, FLAC, AIFF, M4A, AAC, OGG and Opus files into Traktor stem files (.stem.mp4) with four stems: drums, bass, other (melody) and vocals.",
   "url": "https://elospeed.github.io/StemMaker/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "2.2.1",
+  "softwareVersion": "2.3",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -90,7 +90,7 @@
       <li>Up to 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 2.2.1 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 2.3 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
       <img src="img/stemmaker-en.png" width="860" height="724" alt="StemMaker main window with a list of MP3 files being converted into Traktor stem files, with the add-on bar for StemPlayer and StemTagger on the right">
     </figure>
   </div>
@@ -121,7 +121,7 @@
       <div class="card"><h3><span class="dot" style="background:var(--other)"></span>Native, not a Python setup</h3><p>The separation runs natively with ONNX Runtime (Turbo) or demucs.cpp instead of Python and PyTorch. No Python, CUDA or drivers to install, nothing in the background, no account and no cloud. Starts in a second and your music never leaves the PC.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--drums)"></span>Club level and bass fix</h3><p>Quiet files are raised to club level without a limiter, so the stem waveforms are easy to read and a stem does not drop in volume when you bring it into your set. Low bass that the model leaves in the melody stem is moved into the bass stem, like Traktor does, so the kick and bass stay solid.</p></div>
       <div class="card"><h3><span class="dot" style="background:var(--bass)"></span>Plays nicely with your PC</h3><p>Tests on the first start whether your graphics card helps and uses it only if it computes correctly and faster, otherwise the processor does the work. Keeps the PC awake during long runs and can shut it down when done.</p></div>
-      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Nine languages</h3><p>StemMaker, StemPlayer and StemTagger speak <strong>English, Deutsch, Español, Français, Português (Brasil), Italiano, 日本語, Nederlands and Polski</strong>, picked on the first start. Special thanks to <strong>David GJ</strong> for the Spanish translation! Everyone who helped is listed under Info in the “Thanks” tab.</p></div>
+      <div class="card"><h3><span class="dot" style="background:var(--vox)"></span>Nine languages</h3><p>StemMaker, StemPlayer, StemTagger and StemPacker speak <strong>English, Deutsch, Español, Français, Português (Brasil), Italiano, 日本語, Nederlands and Polski</strong>, picked on the first start. Special thanks to <strong>David GJ</strong> for the Spanish translation! Everyone who helped is listed under Info in the “Thanks” tab.</p></div>
     </div>
   </div>
 </section>
@@ -186,9 +186,20 @@
 <section id="new" class="alt">
   <div class="wrap">
     <div style="margin-bottom:56px">
-      <span class="badge">New in 2.2</span>
+      <span class="badge">New in 2.3</span>
+      <h2>StemPacker joins as an add-on</h2>
+      <p class="sub">Already using StemMaker? The built-in update brings you version 2.3 with one click.</p>
+      <div class="soon">
+        <ul class="ticks">
+          <li><strong>StemPacker 0.3:</strong> packs finished tracks into Traktor stem files, without AI and in batches: a master plus up to four stems, for example from your DAW, a 5.1 DVD or another separation tool. It recognises how the files are named. Start it from the new tile in the add-on panel or from the Start menu; it uses StemMaker's ffmpeg and languages. Also available on its own on the <a href="https://elospeed.github.io/StemPacker/">StemPacker page</a></li>
+          <li><strong>Long translations</strong> (for example Japanese or Spanish) no longer run out of the check window and the red "Missing" line; they end with "…" and the full text is in the tooltip</li>
+          <li><strong>StemTagger 1.2.2:</strong> Japanese column headers in a readable font</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-bottom:56px">
+      <span class="badge">Since 2.2</span>
       <h2>Nine languages and a side panel for add-ons</h2>
-      <p class="sub">Already using StemMaker? The built-in update brings you version 2.2.1 with one click. 2.2.1 smooths the round CD player controls in the StemPlayer and fixes the Linux test version (minimize, Turbo under Wine).</p>
       <div class="soon">
         <ul class="ticks">
           <li><strong>Six new languages:</strong> French, Portuguese (Brazil), Italian, Japanese, Dutch and Polish, for StemMaker, StemPlayer, StemTagger and the setup. On the first start StemMaker suggests your Windows language. The new translations are machine-made, improvements from native speakers are welcome</li>
