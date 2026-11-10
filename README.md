@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.2.1
+# Elospeed StemMaker 2.3
 
 **by Elospeed**
 
@@ -17,6 +17,7 @@ It works the same way as [Stemgen](https://github.com/axeldelafosse/stemgen), ju
 - **Built for whole collections:** add complete folders, see the expected time beforehand, let it run overnight. The list is saved after every file, so a crash or a power cut costs one track instead of the run, and subfolders are rebuilt in the output folder.
 - **Check before you play:** `AddOns\StemPlayer.exe` plays a finished stem file with mute, solo, volume and level meters per stem and A/B against the original, so you don't have to import into Traktor just to listen.
 - **Tags and cover for stem files:** `AddOns\StemTagger.exe` sets title, artist, album, genre, cover and more in `.stem.mp4` files, also for many files at once. The stems stay untouched (tested in Traktor Pro 4 and Mixxx 2.6 beta).
+- **Already have the stems?** `AddOns\StemPacker.exe` packs finished single tracks (master + up to four stems, e.g. from a producer or a multitrack export) into `.stem.mp4` files, without AI and in batches.
 - **Level and bass sorted out:** quiet files are raised to club level without a limiter, and low bass that the model leaves in the melody stem is moved into the bass stem.
 - **Quality:** in a side-by-side test against a stem file made by Traktor Pro 4 from the same track, drums, kick, vocals and level came out practically the same.
 - **Your music stays local:** no account, no cloud, no telemetry, nothing running in the background.
@@ -55,7 +56,7 @@ If you pick a model in the main window that isn't installed yet (e.g. htdemucs_f
 
 ## Windows warning ("Windows protected your PC")
 
-StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe` or `AddOns\StemTagger.exe`. Many small open-source tools do the same.
+StemMaker is not digitally signed. Signing certificates cost money every year, which doesn't pay off for a free hobby project. That's why Windows shows a blue SmartScreen window ("Windows protected your PC", publisher "Unknown") the first time you start the installer `StemMaker-<version>-Setup.exe`, `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe`, `AddOns\StemTagger.exe` or `AddOns\StemPacker.exe`. Many small open-source tools do the same.
 
 **To start it anyway:**
 1. Click **"More info"** in the blue window.
@@ -95,6 +96,8 @@ StemMaker\
     StemCLI.exe          command-line version (batch files, Task Scheduler)
     StemPlayer.exe       test player for .stem.mp4 files (mute/solo per stem)
     StemTagger.exe       tags and cover for .stem.mp4 files
+    StemPacker.exe       packs finished stems into .stem.mp4 (no AI)
+    StemPacker-User-Guide.pdf  StemPacker manual
   tools\
     onnx\                       Turbo engine: StemOnnx.exe, ONNX Runtime, DirectML, network graph without weights
     demucs_mt.cpp.main.exe      separation "Classic", Demucs v4 (AVX2 build)
@@ -203,6 +206,10 @@ Listen to a finished `.stem.mp4` without Traktor: mute, solo (also several at on
 
 Set title, artist, album, genre, year, label, comment and cover in `.stem.mp4` and MP3 files (what Traktor and Mixxx show and search), e.g. for stem files from other tools that come without any tags. Load single files or whole folders, select several rows to set album or cover for all of them at once, paste a cover with Ctrl+V or drag an image onto the window, or fill artist and title from the file name. Large covers are scaled down to 1000 px if you like, and a `.bak` backup can be switched on. Only the tag list inside the file is rewritten: audio, the four stems and Traktor's own data stay byte-for-byte the same. Start it from StemMaker with the **StemTagger** button in the AddOns bar (opens the selected finished files) or by right-clicking finished files and choosing **Edit tags...**, or as a parameter: `AddOns\StemTagger.exe "track.stem.mp4"`. In MP3s, Traktor's cue points, beatgrid and analysis are kept. The StemTagger has its own project page and repository ([Elospeed/StemTagger](https://github.com/Elospeed/StemTagger)), where it is also available on its own. Nine languages. Source here: `src/AddOns/StemTagger/` (copy of the StemTagger repository).
 
+### Stem packer (AddOns\StemPacker.exe)
+
+For songs whose stems already exist as single files: StemPacker turns a master and up to four stems per song into one `.stem.mp4`, without AI and for whole folders at once. Drop a folder onto the window; it detects common naming like `Song_drums` / `Song_bass` or `_1` ... `_4` by itself, even when master and stems sit in different subfolders. If there is no master, it is mixed from the stems. For unusual names you set folder and name pattern per track yourself. Start it from StemMaker with the **StemPacker** button in the AddOns bar. It uses StemMaker's `tools\ffmpeg.exe`. Manual: `AddOns\StemPacker-User-Guide.pdf`. The StemPacker has its own project page and repository ([Elospeed/StemPacker](https://github.com/Elospeed/StemPacker)). Nine languages. Source here: `src/AddOns/StemPacker/` (copy of the StemPacker repository).
+
 ## Processing time
 
 With the **Turbo engine** (default since 2.0) the pre-test on first start measures your PC and shows the expected time for a 3-minute track. Separation time measured with the engine:
@@ -266,7 +273,7 @@ Normally the download addresses come from [`update.json`](update.json) in this r
 
 ## Languages
 
-StemMaker, StemPlayer and StemTagger speak **German, English, Spanish, French, Portuguese (Brazil), Italian, Japanese, Dutch and Polish**. Thanks to **David GJ** for the Spanish translation! The six newest languages (since 2.2) are machine translations; corrections from native speakers are very welcome (GitHub issue or discussion).
+StemMaker, StemPlayer, StemTagger and StemPacker speak **German, English, Spanish, French, Portuguese (Brazil), Italian, Japanese, Dutch and Polish**. Thanks to **David GJ** for the Spanish translation! The six newest languages (since 2.2) are machine translations; corrections from native speakers are very welcome (GitHub issue or discussion).
 
 On first start, StemMaker asks for the language; your Windows language is preselected. You can change it at any time under **More settings** (gear button) → "Language:". The new language applies from the next start.
 

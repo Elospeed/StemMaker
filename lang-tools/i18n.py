@@ -135,9 +135,10 @@ def main():
     src_dir, lang_dir = sys.argv[1], sys.argv[2]
     tools_dir = os.path.dirname(os.path.abspath(__file__))
     found, errors = {}, []
-    # StemPlayer und StemTagger (AddOns) nutzen dieselben Sprachdateien wie StemMaker
+    # StemPlayer, StemTagger und StemPacker (AddOns) nutzen dieselben Sprachdateien wie StemMaker
     addon_dirs = [os.path.join(src_dir, 'AddOns', 'StemPlayer'),
-                  os.path.join(src_dir, 'AddOns', 'StemTagger')]
+                  os.path.join(src_dir, 'AddOns', 'StemTagger'),
+                  os.path.join(src_dir, 'AddOns', 'StemPacker')]
     pas_files = glob.glob(os.path.join(src_dir, '*.pas')) + glob.glob(os.path.join(src_dir, '*.lpr'))
     for d in addon_dirs:
         pas_files += glob.glob(os.path.join(d, '*.pas'))

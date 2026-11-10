@@ -6,6 +6,13 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.3 – 10 November 2026
+### New
+- StemPacker add-on: pack finished tracks (master + stems) into stem files without AI
+### Fixed
+- Long translations no longer run out of the field in the startup check and the "Missing" line
+- StemTagger 1.2.2: Japanese column headers easier to read
+
 ## 2.2.1 – 8 November 2026
 ### Improved
 - StemPlayer 1.8.5: smooth edges for the jog wheel and round buttons in the CD player

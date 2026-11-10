@@ -169,6 +169,8 @@ type
     procedure FormShowPlatz(Sender: TObject);
     procedure LogKleinerBeiPlatzmangel(Data: PtrInt);
     procedure FormResizeDrop(Sender: TObject);
+    { rote „Fehlt: …“-Zeile auf die Breite des Rahmens kürzen }
+    procedure ZeigeToolsText;
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
@@ -217,8 +219,10 @@ type
     FAddOnBar: TAddOnBar;
     FInhalt: TPanel;               // Liste bis Log, links neben der Leiste
     FZeigtSchaetzung: Boolean;     // lblTotal zeigt gerade die Schätzung vor dem Start
+    FToolsText: string;   // ganzer Text der roten „Fehlt“-Zeile ('' = alles da)
     procedure SetupAddOnBar;
     procedure AddOnTaggerClick(Sender: TObject);
+    procedure AddOnPackerClick(Sender: TObject);
     function  SelectedOutFiles: TStringList;
     procedure SetupListMenu;
     procedure ListMenuPopup(Sender: TObject);
@@ -992,13 +996,16 @@ begin
         lblTools.Caption := _('Tools: ffmpeg, demucs.cpp und Modell gefunden');
       lblTools.Font.Color := clGreen;
       lblTools.Hint := '';
+      FToolsText := '';
     end
     else
     begin
-      lblTools.Caption := Format(_('Fehlt: %s'), [StringReplace(Trim(Problems),
+      FToolsText := Format(_('Fehlt: %s'), [StringReplace(Trim(Problems),
         LineEnding, '  |  ', [rfReplaceAll])]);
       lblTools.Font.Color := clRed;
       lblTools.Hint := Trim(Problems);
+      lblTools.ShowHint := True;
+      ZeigeToolsText;
     end;
   finally
     Job.Free;
@@ -1925,6 +1932,10 @@ begin
        _('Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten'),
        @AddOnTaggerClick) <> nil then
     Inc(N);
+  if FAddOnBar.AddTile(Dir + ExeName('StemPacker'), 'StemPacker',
+       _('Fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen'),
+       @AddOnPackerClick) <> nil then
+    Inc(N);
   FAddOnBar.Visible := N > 0;
   { Einstellungen brauchen ihre volle Breite neben der Leiste }
   if FAddOnBar.Visible then
@@ -1932,6 +1943,33 @@ begin
     Constraints.MinWidth := Constraints.MinWidth + FAddOnBar.Width;
     if Width < Constraints.MinWidth then
       Width := Constraints.MinWidth;
+  end;
+end;
+
+{ StemPacker aus der Seitenleiste starten. Er arbeitet mit eigenen Ordnern
+  (Master + Stems), darum ohne Dateien; ffmpeg und die Sprachdateien findet er
+  selbst im StemMaker-Ordner. Läuft unabhängig von StemMaker weiter. }
+procedure TfrmMain.AddOnPackerClick(Sender: TObject);
+var
+  Exe: string;
+  P: TProcessUTF8;
+begin
+  Exe := AppBaseDir + 'AddOns' + PathDelim + ExeName('StemPacker');
+  if not FileExists(Exe) then Exit;   // ohne Exe gibt es die Kachel gar nicht
+  P := TProcessUTF8.Create(nil);
+  try
+    P.Executable := Exe;
+    P.CurrentDirectory := ExtractFilePath(Exe);
+    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+    try
+      P.Execute;
+      LogLine('StemPacker gestartet');
+    except
+      on E: Exception do
+        AddLog(Format(_('StemPacker konnte nicht gestartet werden: %s'), [E.Message]));
+    end;
+  finally
+    P.Free;
   end;
 end;
 
@@ -2902,9 +2940,18 @@ end;
 
 { "oder hierher ziehen" ausblenden, wenn das Fenster dafür zu schmal ist
   (Mindestbreite), statt es abzuschneiden }
+procedure TfrmMain.ZeigeToolsText;
+begin
+  if FToolsText = '' then Exit;
+  lblTools.Canvas.Font := lblTools.Font;
+  lblTools.Caption := TextMitAuslassung(lblTools.Canvas, FToolsText,
+    lblTools.Parent.ClientWidth - lblTools.Left - Scale96ToForm(8));
+end;
+
 procedure TfrmMain.FormResizeDrop(Sender: TObject);
 begin
   lblDrop.Visible := lblDrop.Left + lblDrop.Width <= lblDrop.Parent.ClientWidth;
+  ZeigeToolsText;
   { breiteres Fenster: passt "fertig ca. ..." jetzt in die Zeile?
     Während der Arbeit macht das der Sekunden-Timer (UpdateTimes). }
   if (FWorker = nil) and FZeigtSchaetzung then

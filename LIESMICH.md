@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.2.1
+# Elospeed StemMaker 2.3
 
 **by Elospeed**
 
@@ -17,6 +17,7 @@ Das Prinzip ist dasselbe wie bei [Stemgen](https://github.com/axeldelafosse/stem
 - **Für ganze Sammlungen gebaut:** ganze Ordner hinzufügen, vorher die geschätzte Dauer sehen, über Nacht laufen lassen. Die Liste wird nach jeder Datei gespeichert, ein Absturz oder Stromausfall kostet also einen Track und nicht den ganzen Lauf. Unterordner werden im Ausgabeordner nachgebaut.
 - **Vorher reinhören:** `AddOns\StemPlayer.exe` spielt eine fertige Stem-Datei mit Stumm, Solo, Lautstärke und Pegelanzeige pro Stem und A/B gegen das Original. Kein Testimport in Traktor nötig.
 - **Tags und Cover für Stem-Dateien:** `AddOns\StemTagger.exe` setzt Titel, Interpret, Album, Genre, Cover und mehr in `.stem.mp4`-Dateien, auch für viele Dateien auf einmal. Die Stems bleiben unangetastet (getestet in Traktor Pro 4 und Mixxx 2.6 Beta).
+- **Stems schon vorhanden?** `AddOns\StemPacker.exe` packt fertige Einzelspuren (Master + bis zu vier Stems, z.B. vom Produzenten oder aus einem Mehrspur-Export) zu `.stem.mp4`-Dateien, ohne KI und stapelweise.
 - **Pegel und Bass sitzen:** Leise Dateien werden ohne Limiter auf Club-Pegel angehoben, und Tiefbass, den das Modell im Melodie-Stem lässt, wandert in den Bass-Stem.
 - **Qualität:** Im direkten Vergleich mit einer Stem-Datei, die Traktor Pro 4 aus demselben Track gemacht hat, waren Drums, Kick, Gesang und Pegel praktisch gleich.
 - **Deine Musik bleibt lokal:** kein Konto, keine Cloud, keine Telemetrie, nichts, was im Hintergrund läuft.
@@ -53,7 +54,7 @@ Wählst du im Hauptfenster ein Modell, das noch nicht installiert ist (z. B. htd
 
 ## Windows-Warnung („Der Computer wurde durch Windows geschützt“)
 
-StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe` oder `AddOns\StemTagger.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
+StemMaker ist nicht digital signiert. Signier-Zertifikate kosten jedes Jahr Geld, und das lohnt sich für ein kostenloses Hobby-Projekt nicht. Deshalb zeigt Windows beim ersten Start des Installers `StemMaker-<Version>-Setup.exe`, von `StemMaker.exe`, `StemCLI.exe`, `AddOns\StemPlayer.exe`, `AddOns\StemTagger.exe` oder `AddOns\StemPacker.exe` ein blaues SmartScreen-Fenster („Der Computer wurde durch Windows geschützt“, Herausgeber „Unbekannt“). Das ist bei vielen kleinen Open-Source-Programmen so.
 
 **So startest du es trotzdem:**
 1. Im blauen Fenster auf **„Weitere Informationen“** klicken.
@@ -93,6 +94,8 @@ StemMaker\
     StemCLI.exe          Kommandozeilen-Version (Batch/Skripte, Aufgabenplanung)
     StemPlayer.exe       Testplayer für .stem.mp4-Dateien (Mute/Solo pro Stem)
     StemTagger.exe       Tags und Cover für .stem.mp4-Dateien
+    StemPacker.exe       fertige Stems zu .stem.mp4 packen (ohne KI)
+    StemPacker-User-Guide.pdf  Anleitung zum StemPacker
   tools\
     onnx\                       Turbo-Engine: StemOnnx.exe, ONNX Runtime, DirectML, Netz-Gerüst ohne Gewichte
     demucs_mt.cpp.main.exe      Trennung „Klassisch“, Demucs v4 (AVX2-Version)
@@ -201,6 +204,10 @@ Eine fertige `.stem.mp4` ohne Traktor anhören: jeden Stem stummschalten, solo h
 
 Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und Cover in `.stem.mp4`- und MP3-Dateien setzen (das, was Traktor und Mixxx anzeigen und durchsuchen), z.B. für Stem-Dateien aus anderen Programmen, die ganz ohne Tags kommen. Einzelne Dateien oder ganze Ordner laden, mehrere Zeilen markieren und Album oder Cover für alle auf einmal setzen, ein Cover mit Strg+V einfügen oder ein Bild aufs Fenster ziehen, oder Interpret und Titel aus dem Dateinamen übernehmen. Grosse Cover werden auf Wunsch auf 1000 px verkleinert, eine Sicherungskopie `.bak` lässt sich einschalten. Neu geschrieben wird nur die Tag-Liste in der Datei: Audio, die vier Stems und Traktors eigene Daten bleiben bytegenau gleich. Aus StemMaker startet er mit dem Knopf **StemTagger** in der AddOn-Leiste (öffnet die markierten fertigen Dateien) oder per Rechtsklick auf fertige Dateien und **Tags bearbeiten...**, sonst als Parameter: `AddOns\StemTagger.exe "Track.stem.mp4"`. In MP3s bleiben Traktors Cue-Punkte, Beatgrid und Analyse erhalten. Der StemTagger hat eine eigene Projektseite und ein eigenes Repository ([Elospeed/StemTagger](https://github.com/Elospeed/StemTagger)), dort gibt es ihn auch einzeln. Neun Sprachen. Quellcode hier: `src/AddOns/StemTagger/` (Kopie aus dem StemTagger-Repository).
 
+### Stem-Packer (AddOns\StemPacker.exe)
+
+Für Songs, deren Stems schon als einzelne Dateien vorliegen: StemPacker macht aus einem Master und bis zu vier Stems pro Song eine `.stem.mp4`, ohne KI und für ganze Ordner auf einmal. Ordner aufs Fenster ziehen; übliche Benennungen wie `Song_drums` / `Song_bass` oder `_1` ... `_4` erkennt er selbst, auch wenn Master und Stems in verschiedenen Unterordnern liegen. Fehlt der Master, wird er aus den Stems gemischt. Bei ungewöhnlichen Namen legst du Ordner und Namensmuster pro Spur selbst fest. Aus StemMaker startet er mit dem Knopf **StemPacker** in der AddOn-Leiste. Er nutzt `tools\ffmpeg.exe` von StemMaker. Anleitung: `AddOns\StemPacker-User-Guide.pdf`. Der StemPacker hat eine eigene Projektseite und ein eigenes Repository ([Elospeed/StemPacker](https://github.com/Elospeed/StemPacker)). Neun Sprachen. Quellcode hier: `src/AddOns/StemPacker/` (Kopie aus dem StemPacker-Repository).
+
 ## Dauer
 
 Mit der **Turbo-Engine** (Standard ab 2.0) misst der Vortest beim ersten Start den PC und zeigt, wie lange ein 3-Minuten-Track etwa dauert. Gemessene Trennzeit der Engine:
@@ -264,7 +271,7 @@ Normalerweise kommen die Download-Adressen aus [`update.json`](update.json) im R
 
 ## Sprachen
 
-StemMaker, StemPlayer und StemTagger sprechen **Deutsch, Englisch, Spanisch, Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch**. Danke an **David GJ** für die spanische Übersetzung! Die sechs neuesten Sprachen (seit 2.2) sind maschinell übersetzt; Verbesserungen von Muttersprachlern sind sehr willkommen (GitHub-Issue oder Diskussion).
+StemMaker, StemPlayer, StemTagger und StemPacker sprechen **Deutsch, Englisch, Spanisch, Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch**. Danke an **David GJ** für die spanische Übersetzung! Die sechs neuesten Sprachen (seit 2.2) sind maschinell übersetzt; Verbesserungen von Muttersprachlern sind sehr willkommen (GitHub-Issue oder Diskussion).
 
 Beim ersten Start fragt StemMaker nach der Sprache; die Windows-Sprache ist vorausgewählt. Ändern lässt sie sich jederzeit unter **Weitere Einstellungen** (Zahnrad) → „Sprache:“. Die neue Sprache gilt ab dem nächsten Start.
 

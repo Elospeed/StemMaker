@@ -49,10 +49,14 @@ uses
   Rückgabe  = True, wenn StemMaker (weiter)laufen soll. }
 function RunStartupCheck(Model: TStemModel; AutoClose: Boolean): Boolean;
 
+{ Text, der nicht in MaxW Pixel passt, hinten mit „…“ kürzen (auch fürs
+  Hauptfenster) }
+function TextMitAuslassung(C: TCanvas; const S: string; MaxW: Integer): string;
+
 implementation
 
 uses
-  uLang;
+  LazUTF8, uLang;
 
 const
   { Download-Adressen (lassen sich in der INI überschreiben, siehe DownloadURL) }
@@ -652,6 +656,20 @@ begin
   SetRow(Result, csWait, '');
 end;
 
+{ Text, der nicht in MaxW Pixel passt, hinten mit „…“ kürzen (den ganzen
+  Text zeigt der Tooltip). Nötig v. a. für Japanisch und Spanisch, wo die
+  Übersetzungen länger sind als das Feld. }
+function TextMitAuslassung(C: TCanvas; const S: string; MaxW: Integer): string;
+var
+  N: Integer;
+begin
+  Result := S;
+  if (MaxW <= 0) or (C.TextWidth(S) <= MaxW) then Exit;
+  N := UTF8Length(S);
+  while (N > 0) and (C.TextWidth(UTF8Copy(S, 1, N) + '…') > MaxW) do Dec(N);
+  Result := UTF8Copy(S, 1, N) + '…';
+end;
+
 { setzt Symbol, Farbe und Text einer Prüfzeile }
 procedure TfrmInit.SetRow(I: Integer; State: TCheckState; const ADetail: string);
 begin
@@ -665,7 +683,8 @@ begin
       csFail   : begin Icon.Caption := '✗';  Icon.Font.Color := clRed;      end;
       csInfo   : begin Icon.Caption := 'i';  Icon.Font.Color := clNavy;     end;
     end;
-    Detail.Caption := ADetail;
+    Detail.Canvas.Font := Detail.Font;
+    Detail.Caption := TextMitAuslassung(Detail.Canvas, ADetail, Detail.Width);
     Detail.Hint := ADetail;
   end;
 end;

@@ -86,29 +86,38 @@ Name: "pl"; MessagesFile: "compiler:Languages\Polish.isl"
 de.StartPlayer=StemPlayer (Stem-Dateien anhören)
 en.StartPlayer=StemPlayer (listen to stem files)
 de.StartTagger=StemTagger (Titel und Cover in Stem-Dateien setzen)
+de.StartPacker=StemPacker (fertige Spuren zu Stem-Dateien packen)
 en.StartTagger=StemTagger (set title and cover in stem files)
+en.StartPacker=StemPacker (pack finished tracks into stem files)
 de.AskDeleteData=Sollen auch die heruntergeladenen Modelle, ffmpeg, die Einstellungen und die Logs gelöscht werden?%n%nBei „Nein“ bleiben sie im Ordner%n%1%nund werden bei einer späteren Installation wieder benutzt.
 en.AskDeleteData=Also delete the downloaded models, ffmpeg, the settings and the logs?%n%nIf you choose "No", they stay in the folder%n%1%nand are used again by a later installation.
 es.StartPlayer=StemPlayer (escuchar archivos stem)
 es.StartTagger=StemTagger (poner título y portada en archivos stem)
+es.StartPacker=StemPacker (empaquetar pistas terminadas en archivos stem)
 es.AskDeleteData=¿Borrar también los modelos descargados, ffmpeg, los ajustes y los registros?%n%nSi eliges «No», se quedan en la carpeta%n%1%ny se vuelven a usar en una instalación posterior.
 fr.StartPlayer=StemPlayer (écouter des fichiers stem)
 fr.StartTagger=StemTagger (titre et pochette des fichiers stem)
+fr.StartPacker=StemPacker (assembler des pistes finies en fichiers stem)
 fr.AskDeleteData=Supprimer aussi les modèles téléchargés, ffmpeg, les paramètres et les journaux ?%n%nSi vous choisissez « Non », ils restent dans le dossier%n%1%net seront réutilisés lors d'une installation ultérieure.
 ptbr.StartPlayer=StemPlayer (ouvir arquivos stem)
 ptbr.StartTagger=StemTagger (título e capa em arquivos stem)
+ptbr.StartPacker=StemPacker (empacotar faixas prontas em arquivos stem)
 ptbr.AskDeleteData=Excluir também os modelos baixados, o ffmpeg, as configurações e os logs?%n%nSe você escolher "Não", eles ficam na pasta%n%1%ne serão usados de novo em uma instalação futura.
 it.StartPlayer=StemPlayer (ascoltare file stem)
 it.StartTagger=StemTagger (titolo e copertina nei file stem)
+it.StartPacker=StemPacker (unire tracce finite in file stem)
 it.AskDeleteData=Eliminare anche i modelli scaricati, ffmpeg, le impostazioni e i log?%n%nScegliendo "No" restano nella cartella%n%1%ne verranno riutilizzati in un'installazione successiva.
 ja.StartPlayer=StemPlayer (ステムファイルを再生)
 ja.StartTagger=StemTagger (ステムファイルのタイトルとカバーを設定)
+ja.StartPacker=StemPacker (完成したトラックをステムファイルにまとめる)
 ja.AskDeleteData=ダウンロードしたモデル、ffmpeg、設定、ログも削除しますか?%n%n「いいえ」を選ぶと、それらはフォルダー%n%1%nに残り、次回のインストールで再び使われます。
 nl.StartPlayer=StemPlayer (stem-bestanden beluisteren)
 nl.StartTagger=StemTagger (titel en hoes in stem-bestanden zetten)
+nl.StartPacker=StemPacker (kant-en-klare sporen tot stem-bestanden verpakken)
 nl.AskDeleteData=Ook de gedownloade modellen, ffmpeg, de instellingen en de logs verwijderen?%n%nBij "Nee" blijven ze in de map%n%1%nen worden ze bij een latere installatie opnieuw gebruikt.
 pl.StartPlayer=StemPlayer (odsłuch plików stem)
 pl.StartTagger=StemTagger (tytuł i okładka w plikach stem)
+pl.StartPacker=StemPacker (pakowanie gotowych ścieżek do plików stem)
 pl.AskDeleteData=Czy usunąć także pobrane modele, ffmpeg, ustawienia i logi?%n%nPo wybraniu „Nie” pozostaną w folderze%n%1%ni zostaną ponownie użyte przy późniejszej instalacji.
 
 [Tasks]
@@ -127,6 +136,7 @@ Source: "{#SourceDir}\*"; DestDir: "{app}"; \
 Name: "{autoprograms}\StemMaker"; Filename: "{app}\StemMaker.exe"
 Name: "{autoprograms}\{cm:StartPlayer}"; Filename: "{app}\AddOns\StemPlayer.exe"
 Name: "{autoprograms}\{cm:StartTagger}"; Filename: "{app}\AddOns\StemTagger.exe"; Check: TaggerVorhanden
+Name: "{autoprograms}\{cm:StartPacker}"; Filename: "{app}\AddOns\StemPacker.exe"; Check: PackerVorhanden
 Name: "{autodesktop}\StemMaker"; Filename: "{app}\StemMaker.exe"; Tasks: desktopicon
 
 [Run]
@@ -146,6 +156,12 @@ begin
   Result := FileExists(ExpandConstant('{app}\AddOns\StemTagger.exe'));
 end;
 
+{ dasselbe für den StemPacker (ab 2.3) }
+function PackerVorhanden: Boolean;
+begin
+  Result := FileExists(ExpandConstant('{app}\AddOns\StemPacker.exe'));
+end;
+
 { Beim Deinstallieren: Die grossen Downloads (Modelle, ffmpeg) und die Einstellungen
   hat StemMaker selbst angelegt, nicht das Setup. Ohne Nachfrage bleiben sie liegen.
   Wer von Hand deinstalliert, wird gefragt. Bei einer stillen Deinstallation
@@ -160,6 +176,7 @@ begin
   DeleteFile(AppDir + '\StemMaker.ini');
   DeleteFile(AppDir + '\AddOns\StemPlayer.ini');
   DeleteFile(AppDir + '\AddOns\StemTagger.ini');
+  DeleteFile(AppDir + '\AddOns\StemPacker.ini');
   DeleteFile(AppDir + '\StemMaker_queue.txt');
   { Turbo merkt sich hier, ob die Grafikkarte mitmacht (StemOnnx) }
   DelTree(ExpandConstant('{localappdata}\StemOnnx'), True, True, True);
