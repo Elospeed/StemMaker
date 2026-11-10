@@ -6,6 +6,15 @@ Neueste Einträge oben.
 
 ---
 
+## Lange Übersetzungen abgeschnitten (2.3, November 2026)
+
+**Problem:** Auf Japanisch lief im Prüffenster die Detailspalte rechts aus dem Fenster, und die rote Zeile „Fehlt:“ im Hauptfenster war breiter als das Fenster. Im StemTagger waren die fetten 8-pt-Spaltenköpfe in japanischer Schrift kaum lesbar.
+**Lösung:** `TextMitAuslassung` in `uinit.pas` kürzt einen Text auf die verfügbare Breite und hängt „…“ an; der volle Text steht im Tooltip. Das Hauptfenster kürzt die Zeile bei jeder Grössenänderung neu (`ZeigeToolsText`). StemTagger 1.2.2 zeichnet die Spaltenköpfe auf Japanisch normal statt fett und eine Stufe grösser.
+
+## StemPacker als AddOn (2.3, November 2026)
+
+`src/AddOns/StemPacker/` ist eine Kopie aus dem Repository Elospeed/StemPacker (wie beim StemTagger). Im StemMaker-Paket liegt `StemPacker.exe` in `AddOns\` und findet über den Programmordner `..\tools\ffmpeg.exe` und `..\lang\` von StemMaker. Seine Texte stehen in den gemeinsamen Sprachdateien (`i18n.py` liest `AddOns/StemPacker` mit). Setup, ZIP und Startmenü-Eintrag nehmen ihn nur mit, wenn die Exe vorhanden ist.
+
 ## Wine: Turbo-Vortest versuchte die Grafikkarte (2.2.1, November 2026)
 
 **Fehler:** Test von David GJ (Bazzite Linux, RTX 3090, Linux-ZIP unter Wine): Der Vortest zeigte eine „NVIDIA GeForce GTX 470“, die es nicht gibt, versuchte zweimal DirectML (Fehler 80004001 = E_NOTIMPL) und fiel dann auf die CPU zurück. Die Zusammenfassung nach dem Trennen zeigte dagegen „RTX 3090 (24 GB), llvmpipe“. Die Zeile „Grafikkarte einschalten“ blieb im Vortest-Fenster deutsch.

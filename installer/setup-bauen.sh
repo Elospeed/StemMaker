@@ -38,6 +38,8 @@ if [ -n "$NEU" ]; then
   cp "$NEU/StemCLI.exe" "$NEU/StemPlayer.exe" "$QUELLE/AddOns/"
   # StemTagger gibt es erst ab 2.1 - in älteren Release-ZIPs fehlt er
   if [ -f "$NEU/StemTagger.exe" ]; then cp "$NEU/StemTagger.exe" "$QUELLE/AddOns/"; fi
+  # StemPacker gibt es erst ab 2.3
+  if [ -f "$NEU/StemPacker.exe" ]; then cp "$NEU/StemPacker.exe" "$QUELLE/AddOns/"; fi
   cp ../src/lang/*.po ../src/lang/*.pot "$QUELLE/lang/"
 fi
 

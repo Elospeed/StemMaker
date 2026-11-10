@@ -1,4 +1,4 @@
-Elospeed StemTagger 1.2.1  -  by Elospeed  (ko-fi.com/elospeed)
+Elospeed StemTagger 1.2.2  -  by Elospeed  (ko-fi.com/elospeed)
 ================================================================
 
 Sets title, artist, album, genre, year, label, comment and cover art in

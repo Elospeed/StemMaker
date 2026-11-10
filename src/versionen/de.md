@@ -6,6 +6,13 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.3 – 10. November 2026
+### Neu
+- AddOn StemPacker: fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen
+### Behoben
+- Lange Übersetzungen laufen im Prüffenster und in der Zeile „Fehlt“ nicht mehr aus dem Feld
+- StemTagger 1.2.2: japanische Spaltenköpfe besser lesbar
+
 ## 2.2.1 – 8. November 2026
 ### Verbessert
 - StemPlayer 1.8.5: Jogwheel und runde Knöpfe im CD-Player mit glatten Kanten

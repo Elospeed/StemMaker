@@ -6,6 +6,13 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.3 – 10 de noviembre de 2026
+### Nuevo
+- AddOn StemPacker: empaquetar pistas terminadas (máster + stems) en archivos stem sin IA
+### Corregido
+- Las traducciones largas ya no se salen del campo en la comprobación inicial y en la línea «Falta»
+- StemTagger 1.2.2: encabezados de columna en japonés más legibles
+
 ## 2.2.1 – 8 de noviembre de 2026
 ### Mejorado
 - StemPlayer 1.8.5: bordes suaves en el jog wheel y los botones redondos del reproductor CD

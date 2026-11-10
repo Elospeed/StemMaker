@@ -46,6 +46,8 @@
                        Sprache wird genommen, wenn es eine .po dazu gibt
     1.2.1 (07.11.2026)  Linux (AppImage mit Wine): Fenster hat einen Minimieren-
                        Knopf und im Dock das richtige Symbol (uwine.pas)
+    1.2.2 (10.11.2026)  Japanisch: Spaltenköpfe in normaler Schrift (fett und klein
+                       war das Kanji kaum lesbar)
   ============================================================================ }
 unit taggerform;
 
@@ -61,7 +63,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemTagger';
-  APP_VER   = '1.2.1';
+  APP_VER   = '1.2.2';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type
@@ -774,6 +776,12 @@ begin
   FHead.Align := alClient;
   FHead.Font.Style := [fsBold];
   FHead.Font.Size := 8;
+  { Japanisch: fett und klein verschwimmen die Kanji (z. B. 状態) }
+  if LangCode = 'ja' then
+  begin
+    FHead.Font.Style := [];
+    FHead.Font.Size := 9;
+  end;
   FHead.Hint := _('Klick sortiert, nochmal klicken sortiert umgekehrt') + LineEnding +
     _('Rand zwischen zwei Spalten ziehen ändert die Breite') + LineEnding +
     _('Doppelklick auf den Rand passt die Spalte an den Text an');

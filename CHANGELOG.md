@@ -7,6 +7,17 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.3 – 10. November 2026
+
+### Neu
+- **AddOn StemPacker 0.3:** packt fertige Einzelspuren (Master und bis zu vier Stems, z. B. aus der DAW, von einer 5.1-DVD oder aus einem anderen Trennprogramm) ohne KI und im Stapel zu Traktor-Stem-Dateien. Er erkennt die Benennung der Dateien selbst. Start über die neue Kachel in der AddOn-Leiste oder im Startmenü; er nimmt das ffmpeg und die Sprachdateien von StemMaker. Die englische Anleitung liegt als `AddOns\StemPacker-User-Guide.pdf` bei. Den StemPacker gibt es auch einzeln (Repository Elospeed/StemPacker).
+
+### Behoben
+- **Lange Übersetzungen** (z. B. Japanisch, Spanisch): Im Prüffenster beim Start und in der roten Zeile „Fehlt: …“ im Hauptfenster lief der Text rechts aus dem Feld. Er endet jetzt mit „…“, der ganze Text steht im Tooltip.
+
+#### StemTagger 1.2.2
+- Japanisch: Spaltenköpfe in normaler Schrift, fett und klein waren die Kanji kaum lesbar.
+
 ## 2.2.1 – 8. November 2026
 
 ### Behoben
