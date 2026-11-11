@@ -8,13 +8,13 @@ on:
     inputs:
       alte_beta:
         description: "Tag der alten Beta (AppImage-Quelle)"
-        default: "v2.2.1-linux-beta1"
+        default: "v2.2.1-linux-beta2"
       release:
         description: "Tag des Windows-Releases"
-        default: "v2.2.1"
+        default: "v2.3"
       version:
         description: "Version der Testversion"
-        default: "2.2.1-beta2"
+        default: "2.3"
   push:
     branches: [elospeed/linux-beta2]
     paths: [".github/workflows/linux-testversion.yml"]
@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ALT: ${{ inputs.alte_beta || 'v2.2.1-linux-beta1' }}
-      REL: ${{ inputs.release || 'v2.2.1' }}
-      VER: ${{ inputs.version || '2.2.1-beta2' }}
+      ALT: ${{ inputs.alte_beta || 'v2.2.1-linux-beta2' }}
+      REL: ${{ inputs.release || 'v2.3' }}
+      VER: ${{ inputs.version || '2.3' }}
     steps:
       - uses: actions/checkout@v4
       - name: Werkzeuge
@@ -57,8 +57,14 @@ jobs:
           (cd out && zip -q -r -X "$N.zip" "$N")
           sha256sum "out/$N.zip" | tee -a "$GITHUB_STEP_SUMMARY"
           cat "out/$N/SHA256SUMS.txt" | tee -a "$GITHUB_STEP_SUMMARY"
+          cp "out/$N/StemMaker-$VER-x86_64.AppImage" out/
       - uses: actions/upload-artifact@v4
         with:
           name: StemMaker-${{ env.VER }}-Linux-Test
           path: out/*.zip
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StemMaker-${{ env.VER }}-x86_64.AppImage
+          path: out/*.AppImage
           compression-level: 0
