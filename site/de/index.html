@@ -76,10 +76,13 @@
 <section class="hero">
   <div class="wrap">
     <h1>Aus deinen MP3s werden<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden. Neu in 2.2: neun Sprachen, eine AddOn-Seitenspalte und der StemTagger jetzt auch für MP3.</p>
+    <p class="lead">StemMaker zerlegt einen Track in Drums, Bass, Melodie und Gesang und speichert ihn als fertige <code>.stem.mp4</code> für Traktor. Ein kleines Windows-Programm, kostenlos und Open Source: kein Python, kein PyTorch, keine Grafiktreiber, nichts einzurichten. Die Turbo-Engine trennt einen Song auf einem normalen PC in etwa einer Minute, mit Grafikkarte in Sekunden. Neu in 2.3: das AddOn StemPacker packt fertige Einzelspuren zu Stem-Dateien. Jetzt auch für Linux (Beta).</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download für Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">Quellcode auf GitHub</a>
+    </div>
+    <div class="cta" style="margin-top:12px">
+      <a class="btn" href="#linux">⬇ Download für Linux (Beta)</a>
     </div>
     <ul class="facts">
       <li>Kostenlos, MIT-Lizenz</li>
@@ -301,17 +304,17 @@
 
 <section id="linux" class="alt">
   <div class="wrap">
-    <span class="badge">Öffentliche Beta</span>
+    <span class="badge">Beta</span>
     <h2>StemMaker unter Linux</h2>
-    <p class="sub">Der normale StemMaker in einer einzigen AppImage mit eingebautem Wine. Nichts zu installieren, auch kein Wine. StemPlayer und StemTagger sind dabei. Es ist noch eine Beta: Turbo rechnet vorerst nur auf dem Prozessor, und die Dialoge sehen aus wie unter Windows.</p>
+    <p class="sub">Der normale StemMaker in einer einzigen AppImage mit eingebautem Wine. Nichts zu installieren, auch kein Wine. StemPlayer, StemTagger und StemPacker sind dabei, und es ist dieselbe Version wie für Windows (2.3). Es ist noch eine Beta: Turbo rechnet vorerst nur auf dem Prozessor, und die Dialoge sehen aus wie unter Windows.</p>
     <ul class="ticks">
-      <li>ZIP von der Release-Seite herunterladen und entpacken.</li>
-      <li>Die AppImage ausführbar machen (Rechtsklick → Eigenschaften → „Als Programm ausführen“) und starten. Der erste Start dauert etwa 30 Sekunden.</li>
-      <li>Im ZIP liegt eine kurze Anleitung mit allem Wissenswerten.</li>
+      <li>Die AppImage herunterladen (etwa 110 MB).</li>
+      <li>Ausführbar machen (Rechtsklick → Eigenschaften → „Als Programm ausführen“) und starten. Der erste Start dauert etwa 30 Sekunden.</li>
+      <li>Updates kommen über das eingebaute Update von StemMaker, wie unter Windows.</li>
     </ul>
     <p class="note"><strong>AppImage startet nicht?</strong> <code>libfuse2</code> installieren (ab Ubuntu 24.04: <code>sudo apt install libfuse2t64</code>).</p>
     <div class="cta" style="justify-content:flex-start;margin-top:22px">
-      <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/tag/v2.2.1-linux-beta2">⬇ Linux-Beta herunterladen</a>
+      <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/download/v2.3/StemMaker-2.3-x86_64.AppImage">⬇ Download für Linux (AppImage)</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker/discussions">Rückmeldung geben</a>
     </div>
     <p class="sub" style="margin:18px 0 0">Herzlichen Dank an David GJ und ptrex aus dem Mixxx-Forum, die die Linux-Version gründlich getestet haben.</p>
