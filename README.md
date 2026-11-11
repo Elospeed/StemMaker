@@ -40,6 +40,8 @@ There are two downloads on the [release page](https://github.com/Elospeed/StemMa
 - **`StemMaker-<version>-Setup.exe`** (installer): installs for your Windows user only, without admin rights, to `%LOCALAPPDATA%\Programs\StemMaker`, with a Start menu entry and an uninstall entry under "Apps & features". When you uninstall by hand, it asks whether the downloaded models, ffmpeg and settings should be deleted too.
 - **`StemMaker-<version>.zip`** (portable): unzip anywhere, e.g. to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
 
+**Linux (beta):** since 2.3 the release also contains `StemMaker-<version>-x86_64.AppImage`, the same program with Wine built in. Make it executable and start it; Turbo runs on the processor only. More on the [project page](https://elospeed.github.io/StemMaker/#linux).
+
 1. Run the installer, or unzip the archive.
 2. Run `StemMaker.exe` (Start menu entry "StemMaker" after the installer). If Windows shows a blue warning window, see [Windows warning](#windows-warning-windows-protected-your-pc).
 
