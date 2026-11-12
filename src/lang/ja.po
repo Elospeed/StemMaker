@@ -361,7 +361,7 @@ msgstr "(おおよその見積もり)"
 msgid "(kein Log gefunden)"
 msgstr "(ログが見つかりません)"
 
-#: uturbotest.pas:696
+#: uturbotest.pas:732
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(暫定値、測定するたびに正確になります)"
 
@@ -825,15 +825,15 @@ msgstr "CD プレーヤー"
 msgid "CLIP"
 msgstr "CLIP"
 
-#: uturbotest.pas:542
+#: uturbotest.pas:578
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr "CPU を準備中 (%d / %d 回目)"
 
-#: uturbotest.pas:544
+#: uturbotest.pas:580
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr "CPU を測定中 (%d / %d 回目)"
 
-#: uturbotest.pas:540
+#: uturbotest.pas:576
 msgid "CPU vorbereiten"
 msgstr "CPU を準備"
 
@@ -989,7 +989,7 @@ msgstr "分離で「Other」ステムに残った 80 Hz 未満の重低音を Ba
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "このバージョンにはバージョン履歴がありません。"
 
-#: uturbotest.pas:716
+#: uturbotest.pas:749
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "事前テストがうまくいきませんでした (コード %s)。StemMaker はそれでも Turbo を試し、だめな場合は demucs.cpp (クラシック) を使います。詳細はログにあります。"
 
@@ -1017,11 +1017,11 @@ msgstr "ファイルはそのまま Traktor に読み込めます。今フォル
 msgid "Die Details stehen im Log:"
 msgstr "詳細はログにあります:"
 
-#: uturbotest.pas:742
+#: uturbotest.pas:205
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "グラフィックカード (%s) は%s。StemMaker は CPU で分離します: 音楽1分あたり約 %s の計算時間です。"
 
-#: uturbotest.pas:731
+#: uturbotest.pas:194
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "グラフィックカード (%s) は使用可能ですが、「CPU のみ」が設定されています。StemMaker は CPU で分離します: 音楽1分あたり約 %s です。"
 
@@ -1121,7 +1121,7 @@ msgstr "最新バージョンです (%s)。"
 msgid "Eigene Muster"
 msgstr "カスタムパターン"
 
-#: uturbotest.pas:693
+#: uturbotest.pas:729
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "このPCでは 3 分の曲が htdemucs (標準) で約 %s、htdemucs_ft (最高品質) で約 %s かかります。"
 
@@ -1185,7 +1185,7 @@ msgstr "認識:「%s」…「%s」、%s。"
 msgid "Erneut prüfen"
 msgstr "再チェック"
 
-#: uturbotest.pas:403
+#: uturbotest.pas:439
 msgid "Erneut testen"
 msgstr "再テスト"
 
@@ -1249,7 +1249,7 @@ msgstr "足りないステムを無音で埋める"
 msgid "Fehler"
 msgstr "エラー"
 
-#: uturbotest.pas:623
+#: uturbotest.pas:659
 msgid "Fehler %s"
 msgstr "エラー %s"
 
@@ -1305,7 +1305,7 @@ msgstr "ステムが足りないときは、曲をスキップせずに無音ト
 msgid "Fehlt: %s"
 msgstr "不足: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:724 uturbotest.pas:725
+#: ustemjob.pas:2124 uturbotest.pas:757 uturbotest.pas:758
 msgid "Fertig"
 msgstr "完了"
 
@@ -1353,7 +1353,7 @@ msgstr "認識されない名前の場合: トラックごとにフォルダー�
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "マスターがない場合: 4 つのステムを音量を変えずにミックスします。"
 
-#: uturbotest.pas:465
+#: uturbotest.pas:501
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "テストには htdemucs または htdemucs_ft モデルが必要です。StemMaker の起動時にダウンロードされます。"
 
@@ -1385,19 +1385,19 @@ msgstr "保存しました"
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "GitHub の Issue は公開され、誰でも閲覧できます。見せたくない情報 (例: 曲名) が含まれていないか、事前にレポートを確認してください。GitHub アカウントが必要です。"
 
-#: uturbotest.pas:617
+#: uturbotest.pas:653
 msgid "Grafikkarte einschalten"
 msgstr "グラフィックカードを有効化"
 
-#: uturbotest.pas:547
+#: uturbotest.pas:583
 msgid "Grafikkarte messen"
 msgstr "グラフィックカードを測定中"
 
-#: uturbotest.pas:546
+#: uturbotest.pas:582
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr "グラフィックカードを確認中 (最大 30 秒かかります)"
 
-#: uturbotest.pas:545
+#: uturbotest.pas:581
 msgid "Grafikkarte suchen"
 msgstr "グラフィックカードを検索中"
 
@@ -1589,7 +1589,7 @@ msgstr "%s を書き込めません"
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "出力ファイルを書き込めません: %s"
 
-#: uturbotest.pas:739
+#: uturbotest.pas:202
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "グラフィックカードが見つかりません。StemMaker は CPU で分離します: 音楽1分あたり約 %s の計算時間です。"
 
@@ -1625,7 +1625,7 @@ msgstr "クリックで並べ替え、もう一度クリックで逆順"
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "クリックまたはドラッグでこの位置へジャンプします。"
 
-#: uturbotest.pas:318
+#: uturbotest.pas:354
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr "エンコードを測定中 (ffmpeg、5 トラック)"
 
@@ -1901,7 +1901,7 @@ msgstr "このレポートで Elospeed がエラーを特定できます。自�
 msgid "Modell %s"
 msgstr "モデル %s"
 
-#: uturbotest.pas:464
+#: uturbotest.pas:500
 msgid "Modell fehlt"
 msgstr "モデルがありません"
 
@@ -1909,7 +1909,7 @@ msgstr "モデルがありません"
 msgid "Modell fehlt: %s"
 msgstr "モデルがありません: %s"
 
-#: uturbotest.pas:539
+#: uturbotest.pas:575
 msgid "Modell lesen"
 msgstr "モデルを読み込み中"
 
@@ -2253,7 +2253,7 @@ msgstr "ステム  S"
 msgid "STUMM"
 msgstr "ミュート"
 
-#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:787
+#: uturbotest.pas:495 uturbotest.pas:506 uturbotest.pas:808
 msgid "Schliessen"
 msgstr "閉じる"
 
@@ -2281,7 +2281,7 @@ msgstr "このウィンドウの値を初期設定に戻します (言語はそ�
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "バックアップを作成 (.bak)"
 
-#: uturbotest.pas:618
+#: uturbotest.pas:654
 msgid "Sitzung vorbereiten"
 msgstr "セッションを準備"
 
@@ -2477,11 +2477,11 @@ msgstr "StemMaker は既に実行中です"
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr "StemMaker はこのまま動作を続けます。正しく動かなくなった場合は、プログラムを再起動してください。"
 
-#: uturbotest.pas:359
+#: uturbotest.pas:395
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "StemMaker はこのPCのステム分離速度を一度だけ測定します: まず CPU、次にグラフィックカード。約 1 分かかります。"
 
-#: uturbotest.pas:727
+#: uturbotest.pas:190
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr "このPCでは StemMaker はグラフィックカード (%s) で分離します: 音楽1分あたり約 %s の計算時間です (CPU: %s)。"
 
@@ -2493,7 +2493,7 @@ msgstr "StemMaker は無料で、いかなる保証もなく (「現状のまま
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "前回 StemMaker が予期せず終了しました。"
 
-#: uturbotest.pas:454
+#: uturbotest.pas:490
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe が見つかりませんでした (%s)。StemMaker は demucs.cpp (クラシック) で分離します。"
 
@@ -2585,7 +2585,7 @@ msgstr "速度比較、テスト、不具合報告"
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr "5.1ステムのテストとアイデア"
 
-#: uturbotest.pas:538
+#: uturbotest.pas:574
 msgid "Testsignal erzeugen"
 msgstr "テスト信号を生成中"
 
@@ -2645,7 +2645,7 @@ msgstr "Traktor および STEMS は Native Instruments GmbH の商標です。St
 msgid "Traktor-Farben"
 msgstr "Traktor の色"
 
-#: uturbotest.pas:595
+#: uturbotest.pas:631
 msgid "Treiber"
 msgstr "ドライバー"
 
@@ -2653,15 +2653,15 @@ msgstr "ドライバー"
 msgid "Trenn-Modell:"
 msgstr "分離モデル:"
 
-#: uturbotest.pas:620
+#: uturbotest.pas:656
 msgid "Trennen"
 msgstr "分離"
 
-#: uturbotest.pas:619
+#: uturbotest.pas:655
 msgid "Trennen auf der Grafikkarte"
 msgstr "グラフィックカードで分離"
 
-#: uturbotest.pas:548
+#: uturbotest.pas:584
 msgid "Trennen gemessen"
 msgstr "分離を測定しました"
 
@@ -2681,7 +2681,7 @@ msgstr "Turbo (StemOnnx)、CPU のみ"
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (高速、標準)"
 
-#: uturbotest.pas:453
+#: uturbotest.pas:489
 msgid "Turbo fehlt"
 msgstr "Turbo がありません"
 
@@ -2693,7 +2693,7 @@ msgstr "Turbo がうまくいきませんでした (コード %d)。このファ
 msgid "Turbo rechnet auf: %s"
 msgstr "Turbo の計算先: %s"
 
-#: uturbotest.pas:347
+#: uturbotest.pas:383
 msgid "Turbo-Vortest"
 msgstr "Turbo 事前テスト"
 
@@ -2753,7 +2753,7 @@ msgstr "スリープを防ぎ、省電力設定を一時的に停止します。
 msgid "Versionen"
 msgstr "バージョン"
 
-#: uturbotest.pas:371
+#: uturbotest.pas:407
 msgid "Vorbereiten"
 msgstr "準備"
 
@@ -2769,7 +2769,7 @@ msgstr "テンプレート:"
 msgid "Vortest ..."
 msgstr "事前テスト ..."
 
-#: uturbotest.pas:711
+#: uturbotest.pas:744
 msgid "Vortest fehlgeschlagen"
 msgstr "事前テストに失敗しました"
 
@@ -2817,11 +2817,11 @@ msgstr "ツール"
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "demucs が曲を何分割して同時に計算するか。各分割はさらに複数のコアを使い、2 GB 強のメモリが必要です。"
 
-#: uturbotest.pas:735
+#: uturbotest.pas:198
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Wine を検出 (Linux): Wine ではグラフィックカードを使用できません。StemMaker は CPU で分離します: 音楽 1 分あたり約 %s の処理時間。"
 
-#: uturbotest.pas:591
+#: uturbotest.pas:627
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine を検出: Turbo は CPU で動作します"
 
@@ -3061,7 +3061,7 @@ msgstr "AVX なし (互換版)"
 msgid "kein Cover"
 msgstr "カバーなし"
 
-#: uturbotest.pas:589
+#: uturbotest.pas:625
 msgid "keine Grafikkarte gefunden"
 msgstr "グラフィックカードが見つかりません"
 

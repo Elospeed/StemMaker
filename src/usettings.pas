@@ -255,7 +255,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 728;
+  Height := 752;
   ShowHint := True;
 
   { Bei 150-200 % Anzeigeskalierung ist das Fenster höher als der
@@ -308,7 +308,7 @@ begin
     'eingestellt wie vorher. Der Bildschirm darf ausgehen.'));
 
   { --- Engine (ab 2.0) --- }
-  gb := NewGroup(_('Engine (trennt die Stems)'), 106);
+  gb := NewGroup(_('Engine (trennt die Stems)'), 130);
   NewLabel(gb, 12, 10, _('Engine:'));
   cbEngine := TComboBox.Create(Self);
   cbEngine.Parent := gb;
@@ -339,12 +339,12 @@ begin
     'auf diesem PC etwa dauert');
   btnTest.ShowHint := True;
   btnTest.OnClick := @btnVortestClick;
-  { Ergebnis des Vortests, bis zwei Zeilen (auf Windows war eine Zeile
-    zu kurz und unten abgeschnitten) }
+  { Ergebnis des Vortests, bis drei Zeilen (englische und spanische
+    Texte sind länger, die Windows-Schrift ist höher als unter Wine) }
   lblTurbo := NewLabel(gb, 12, 64, '');
   lblTurbo.AutoSize := False;
   lblTurbo.WordWrap := True;
-  lblTurbo.SetBounds(12, 64, 560, 30);
+  lblTurbo.SetBounds(12, 64, 560, 46);
   lblTurbo.Font.Color := clGrayText;
   lblTurbo.ShowHint := True;
 
@@ -461,7 +461,7 @@ end;
   nichts abgeschnitten wird }
 procedure TfrmSettings.FormShowSettings(Sender: TObject);
 begin
-  if Height < Scale96ToForm(728) then
+  if Height < Scale96ToForm(752) then
     Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 

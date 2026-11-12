@@ -361,7 +361,7 @@ msgstr "(estimativa aproximada)"
 msgid "(kein Log gefunden)"
 msgstr "(nenhum log encontrado)"
 
-#: uturbotest.pas:696
+#: uturbotest.pas:732
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(provisório, fica mais preciso a cada medição)"
 
@@ -825,15 +825,15 @@ msgstr "CD PLAYER"
 msgid "CLIP"
 msgstr "CLIP"
 
-#: uturbotest.pas:542
+#: uturbotest.pas:578
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr "Preparando a CPU (passada %d de %d)"
 
-#: uturbotest.pas:544
+#: uturbotest.pas:580
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr "Medindo a CPU (passada %d de %d)"
 
-#: uturbotest.pas:540
+#: uturbotest.pas:576
 msgid "CPU vorbereiten"
 msgstr "Preparar CPU"
 
@@ -989,7 +989,7 @@ msgstr "Os subgraves abaixo de 80 Hz que a separação deixa no stem \"Other\" s
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "O histórico de versões está faltando nesta versão."
 
-#: uturbotest.pas:716
+#: uturbotest.pas:749
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "O pré-teste não funcionou (código %s). O StemMaker tenta o Turbo mesmo assim e, se não der, usa o demucs.cpp (Clássica). Os detalhes estão no log."
 
@@ -1017,11 +1017,11 @@ msgstr "Os arquivos podem ser carregados direto no Traktor. Abrir a pasta agora?
 msgid "Die Details stehen im Log:"
 msgstr "Os detalhes estão no log:"
 
-#: uturbotest.pas:742
+#: uturbotest.pas:205
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "A placa de vídeo (%s) %s. O StemMaker separa com a CPU: cerca de %s de processamento por minuto de música."
 
-#: uturbotest.pas:731
+#: uturbotest.pas:194
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "A placa de vídeo (%s) funcionaria, mas está selecionado \"Só CPU\". O StemMaker separa com a CPU: cerca de %s por minuto de música."
 
@@ -1121,7 +1121,7 @@ msgstr "Você tem a versão mais recente (%s)."
 msgid "Eigene Muster"
 msgstr "Padrões próprios"
 
-#: uturbotest.pas:693
+#: uturbotest.pas:729
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "Aqui uma faixa de 3 minutos leva cerca de %s com htdemucs (padrão) e %s com htdemucs_ft (melhor qualidade)."
 
@@ -1185,7 +1185,7 @@ msgstr "Reconhecido: \"%s\" … \"%s\", %s."
 msgid "Erneut prüfen"
 msgstr "Verificar de novo"
 
-#: uturbotest.pas:403
+#: uturbotest.pas:439
 msgid "Erneut testen"
 msgstr "Testar de novo"
 
@@ -1249,7 +1249,7 @@ msgstr "Preencher stems ausentes com silêncio"
 msgid "Fehler"
 msgstr "Erro"
 
-#: uturbotest.pas:623
+#: uturbotest.pas:659
 msgid "Fehler %s"
 msgstr "erro %s"
 
@@ -1305,7 +1305,7 @@ msgstr "Se faltar um stem, uma faixa silenciosa é usada em vez de pular a músi
 msgid "Fehlt: %s"
 msgstr "Faltando: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:724 uturbotest.pas:725
+#: ustemjob.pas:2124 uturbotest.pas:757 uturbotest.pas:758
 msgid "Fertig"
 msgstr "Pronto"
 
@@ -1353,7 +1353,7 @@ msgstr "Para nomes que não são reconhecidos: informe você mesmo a pasta, o pa
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "Para faixas sem master pronto: os quatro stems são mixados juntos sem alterar o volume."
 
-#: uturbotest.pas:465
+#: uturbotest.pas:501
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "O teste precisa do modelo htdemucs ou htdemucs_ft. Ele é baixado quando o StemMaker inicia."
 
@@ -1385,19 +1385,19 @@ msgstr "Salvo"
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "As issues do GitHub são públicas, qualquer pessoa pode lê-las. Verifique antes se o relatório contém algo que você não quer mostrar (ex.: nomes de músicas). Você precisa de uma conta no GitHub."
 
-#: uturbotest.pas:617
+#: uturbotest.pas:653
 msgid "Grafikkarte einschalten"
 msgstr "ativando a placa de vídeo"
 
-#: uturbotest.pas:547
+#: uturbotest.pas:583
 msgid "Grafikkarte messen"
 msgstr "Medindo a placa de vídeo"
 
-#: uturbotest.pas:546
+#: uturbotest.pas:582
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr "Verificando a placa de vídeo (pode levar até 30 s)"
 
-#: uturbotest.pas:545
+#: uturbotest.pas:581
 msgid "Grafikkarte suchen"
 msgstr "Procurando placa de vídeo"
 
@@ -1589,7 +1589,7 @@ msgstr "Não é possível gravar %s"
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "Não é possível gravar o arquivo de destino: %s"
 
-#: uturbotest.pas:739
+#: uturbotest.pas:202
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Nenhuma placa de vídeo encontrada. O StemMaker separa com a CPU: cerca de %s de processamento por minuto de música."
 
@@ -1625,7 +1625,7 @@ msgstr "Clique para ordenar, clique de novo para inverter"
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Clique ou arraste para saltar para esta posição."
 
-#: uturbotest.pas:318
+#: uturbotest.pas:354
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr "Medindo a codificação (ffmpeg, 5 faixas)"
 
@@ -1901,7 +1901,7 @@ msgstr "Com este relatório a Elospeed pode encontrar o erro. NADA é enviado au
 msgid "Modell %s"
 msgstr "Modelo %s"
 
-#: uturbotest.pas:464
+#: uturbotest.pas:500
 msgid "Modell fehlt"
 msgstr "Modelo faltando"
 
@@ -1909,7 +1909,7 @@ msgstr "Modelo faltando"
 msgid "Modell fehlt: %s"
 msgstr "Modelo faltando: %s"
 
-#: uturbotest.pas:539
+#: uturbotest.pas:575
 msgid "Modell lesen"
 msgstr "Lendo o modelo"
 
@@ -2253,7 +2253,7 @@ msgstr "STEMS  S"
 msgid "STUMM"
 msgstr "MUDO"
 
-#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:787
+#: uturbotest.pas:495 uturbotest.pas:506 uturbotest.pas:808
 msgid "Schliessen"
 msgstr "Fechar"
 
@@ -2281,7 +2281,7 @@ msgstr "Volta os valores desta janela ao padrão de fábrica (o idioma fica)."
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "Criar cópia de segurança (.bak)"
 
-#: uturbotest.pas:618
+#: uturbotest.pas:654
 msgid "Sitzung vorbereiten"
 msgstr "preparando a sessão"
 
@@ -2477,11 +2477,11 @@ msgstr "O StemMaker já está em execução"
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr "O StemMaker continua rodando. Se algo não funcionar mais direito, reinicie o programa."
 
-#: uturbotest.pas:359
+#: uturbotest.pas:395
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "O StemMaker mede uma vez a velocidade com que este PC separa stems: primeiro a CPU, depois a placa de vídeo. Isso leva cerca de um minuto."
 
-#: uturbotest.pas:727
+#: uturbotest.pas:190
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr "Neste PC o StemMaker separa com a placa de vídeo (%s): cerca de %s de processamento por minuto de música (CPU: %s)."
 
@@ -2493,7 +2493,7 @@ msgstr "O StemMaker é fornecido gratuitamente e sem qualquer garantia (\"no est
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "O StemMaker foi encerrado inesperadamente da última vez."
 
-#: uturbotest.pas:454
+#: uturbotest.pas:490
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe não foi encontrado (%s). O StemMaker separa com o demucs.cpp (Clássica)."
 
@@ -2585,7 +2585,7 @@ msgstr "comparação de velocidade, testes e relatórios de erros"
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr "testes e ideias sobre stems 5.1"
 
-#: uturbotest.pas:538
+#: uturbotest.pas:574
 msgid "Testsignal erzeugen"
 msgstr "Gerando sinal de teste"
 
@@ -2645,7 +2645,7 @@ msgstr "Traktor e STEMS são marcas da Native Instruments GmbH. O StemMaker é u
 msgid "Traktor-Farben"
 msgstr "Cores do Traktor"
 
-#: uturbotest.pas:595
+#: uturbotest.pas:631
 msgid "Treiber"
 msgstr "driver"
 
@@ -2653,15 +2653,15 @@ msgstr "driver"
 msgid "Trenn-Modell:"
 msgstr "Modelo:"
 
-#: uturbotest.pas:620
+#: uturbotest.pas:656
 msgid "Trennen"
 msgstr "separando"
 
-#: uturbotest.pas:619
+#: uturbotest.pas:655
 msgid "Trennen auf der Grafikkarte"
 msgstr "separando na placa de vídeo"
 
-#: uturbotest.pas:548
+#: uturbotest.pas:584
 msgid "Trennen gemessen"
 msgstr "Separação medida"
 
@@ -2681,7 +2681,7 @@ msgstr "Turbo (StemOnnx), só CPU"
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (rápido, padrão)"
 
-#: uturbotest.pas:453
+#: uturbotest.pas:489
 msgid "Turbo fehlt"
 msgstr "Turbo faltando"
 
@@ -2693,7 +2693,7 @@ msgstr "O Turbo não funcionou (código %d), o demucs.cpp agora separa este arqu
 msgid "Turbo rechnet auf: %s"
 msgstr "O Turbo roda em: %s"
 
-#: uturbotest.pas:347
+#: uturbotest.pas:383
 msgid "Turbo-Vortest"
 msgstr "Pré-teste do Turbo"
 
@@ -2753,7 +2753,7 @@ msgstr "Impede a suspensão e desativa temporariamente o modo de economia de ene
 msgid "Versionen"
 msgstr "Versões"
 
-#: uturbotest.pas:371
+#: uturbotest.pas:407
 msgid "Vorbereiten"
 msgstr "Preparar"
 
@@ -2769,7 +2769,7 @@ msgstr "Modelo:"
 msgid "Vortest ..."
 msgstr "Pré-teste ..."
 
-#: uturbotest.pas:711
+#: uturbotest.pas:744
 msgid "Vortest fehlgeschlagen"
 msgstr "Pré-teste falhou"
 
@@ -2817,11 +2817,11 @@ msgstr "Ferramentas"
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "Quantas partes da música o demucs calcula ao mesmo tempo. Cada parte usa ainda vários núcleos e precisa de pouco mais de 2 GB de RAM."
 
-#: uturbotest.pas:735
+#: uturbotest.pas:198
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Wine detectado (Linux): a placa de vídeo não pode ser usada no Wine. O StemMaker separa com a CPU: cerca de %s de processamento por minuto de música."
 
-#: uturbotest.pas:591
+#: uturbotest.pas:627
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine detectado: o Turbo roda na CPU"
 
@@ -3061,7 +3061,7 @@ msgstr "sem AVX (versão compatível)"
 msgid "kein Cover"
 msgstr "sem capa"
 
-#: uturbotest.pas:589
+#: uturbotest.pas:625
 msgid "keine Grafikkarte gefunden"
 msgstr "nenhuma placa de vídeo encontrada"
 

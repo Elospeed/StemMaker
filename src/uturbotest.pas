@@ -171,6 +171,42 @@ begin
     Result := Status;
 end;
 
+{ Kartenname für die Anzeige:
+  "NVIDIA GeForce RTX 4060 Ti|32.0.15.6094" -> nur der Name }
+function GpuDisplayName(const Raw: string): string;
+begin
+  Result := StringReplace(Raw, ';', ', ', [rfReplaceAll]);
+  if Pos('|', Result) > 0 then
+    Result := Copy(Result, 1, Pos('|', Result) - 1);
+end;
+
+{ Ergebnis des Vortests als Satz in der aktuellen Sprache. Gespeichert
+  werden nur die Messwerte, damit der Satz nach einem Sprachwechsel
+  nicht in der alten Sprache stehen bleibt. }
+function VerdictText(const Status, Gpu: string; GpuUsed: Boolean;
+  CpuSPM, GpuSPM: Double): string;
+begin
+  if GpuUsed then
+    Result := Format(_('StemMaker trennt auf diesem PC mit der Grafikkarte (%s): ' +
+      'etwa %s Rechenzeit pro Minute Musik (CPU: %s).'),
+      [Gpu, SecText(GpuSPM), SecText(CpuSPM)])
+  else if Status = 'ein' then
+    Result := Format(_('Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber ' +
+      '"Nur CPU". StemMaker trennt mit der CPU: etwa %s pro Minute Musik.'),
+      [Gpu, SecText(CpuSPM)])
+  else if Status = 'wine' then
+    Result := Format(_('Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht ' +
+      'genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik.'),
+      [SecText(CpuSPM)])
+  else if (Status = 'keine') or (Gpu = '') then
+    Result := Format(_('Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: ' +
+      'etwa %s Rechenzeit pro Minute Musik.'), [SecText(CpuSPM)])
+  else
+    Result := Format(_('Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: ' +
+      'etwa %s Rechenzeit pro Minute Musik.'),
+      [Gpu, ReasonText(Status), SecText(CpuSPM)]);
+end;
+
 { Modell für den Test: htdemucs, sonst das erste von htdemucs_ft (gleicher
   Aufbau, rechnet gleich schnell) }
 function TestModelFile(const S: TStemSettings): string;
@@ -702,10 +738,7 @@ var
   Status, Gpu, S: string;
 begin
   Status := FValues.Values['gpu_status'];
-  Gpu := StringReplace(FValues.Values['gpu_name'], ';', ', ', [rfReplaceAll]);
-  { "NVIDIA GeForce RTX 4060 Ti|32.0.15.6094" -> nur der Name }
-  if Pos('|', Gpu) > 0 then
-    Gpu := Copy(Gpu, 1, Pos('|', Gpu) - 1);
+  Gpu := GpuDisplayName(FValues.Values['gpu_name']);
   if (FThread = nil) or (FThread.ExitCode <> 0) or (FValues.Count = 0) then
   begin
     lblStep.Caption := _('Vortest fehlgeschlagen');
@@ -723,25 +756,7 @@ begin
   pbTest.Position := 100;
   lblStep.Caption := _('Fertig');
   AddStep('• ' + _('Fertig'));
-  if GpuUsed then
-    S := Format(_('StemMaker trennt auf diesem PC mit der Grafikkarte (%s): ' +
-      'etwa %s Rechenzeit pro Minute Musik (CPU: %s).'),
-      [Gpu, SecText(Num('gpu_s_pro_min')), SecText(Num('cpu_s_pro_min'))])
-  else if Status = 'ein' then
-    S := Format(_('Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber ' +
-      '"Nur CPU". StemMaker trennt mit der CPU: etwa %s pro Minute Musik.'),
-      [Gpu, SecText(Num('cpu_s_pro_min'))])
-  else if Status = 'wine' then
-    S := Format(_('Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht ' +
-      'genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik.'),
-      [SecText(Num('cpu_s_pro_min'))])
-  else if (Status = 'keine') or (Gpu = '') then
-    S := Format(_('Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: ' +
-      'etwa %s Rechenzeit pro Minute Musik.'), [SecText(Num('cpu_s_pro_min'))])
-  else
-    S := Format(_('Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: ' +
-      'etwa %s Rechenzeit pro Minute Musik.'),
-      [Gpu, ReasonText(Status), SecText(Num('cpu_s_pro_min'))]);
+  S := VerdictText(Status, Gpu, GpuUsed, Num('cpu_s_pro_min'), Num('gpu_s_pro_min'));
   lblVerdict.Caption := S;
   ShowForecast;
   LogLine('  Vortest | Ergebnis: ' + S);
@@ -764,6 +779,12 @@ begin
       Ini.WriteString('Turbo', 'VortestKarten', FValues.Values['gpu_name']);
       Ini.WriteString('Turbo', 'VortestDatum', FormatDateTime('yyyy-mm-dd hh:nn', Now));
       Ini.WriteString('Turbo', 'VortestErgebnis', lblVerdict.Caption);
+      { Messwerte, daraus entsteht die Anzeige in der jeweiligen Sprache }
+      Ini.WriteString('Turbo', 'VortestStatus', FValues.Values['gpu_status']);
+      Ini.WriteString('Turbo', 'VortestKarte', GpuDisplayName(FValues.Values['gpu_name']));
+      Ini.WriteBool('Turbo', 'VortestGpuGenutzt', GpuUsed);
+      Ini.WriteString('Turbo', 'VortestCpuSProMin', FValues.Values['cpu_s_pro_min']);
+      Ini.WriteString('Turbo', 'VortestGpuSProMin', FValues.Values['gpu_s_pro_min']);
     finally
       Ini.Free;
     end;
@@ -911,8 +932,18 @@ begin
     Ini := TIniFile.Create(StemIniFileName);
     try
       if Ini.ValueExists('Turbo', 'VortestDatum') then
-        Result := Ini.ReadString('Turbo', 'VortestErgebnis', '') + ' (' +
-          Ini.ReadString('Turbo', 'VortestDatum', '') + ')';
+      begin
+        if Ini.ValueExists('Turbo', 'VortestStatus') then
+          Result := VerdictText(Ini.ReadString('Turbo', 'VortestStatus', ''),
+            Ini.ReadString('Turbo', 'VortestKarte', ''),
+            Ini.ReadBool('Turbo', 'VortestGpuGenutzt', False),
+            DotFloat(Ini.ReadString('Turbo', 'VortestCpuSProMin', ''), 0),
+            DotFloat(Ini.ReadString('Turbo', 'VortestGpuSProMin', ''), 0))
+        else
+          { Vortest einer älteren Version: nur der fertige Satz ist da }
+          Result := Ini.ReadString('Turbo', 'VortestErgebnis', '');
+        Result := Result + ' (' + Ini.ReadString('Turbo', 'VortestDatum', '') + ')';
+      end;
     finally
       Ini.Free;
     end;

@@ -7,6 +7,12 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.3.1 – noch nicht veröffentlicht
+
+### Behoben
+- **Weitere Einstellungen → Engine:** Das Ergebnis des Vortests war auf Englisch und Spanisch unten abgeschnitten. Der Bereich ist jetzt höher, der Text hat Platz für drei Zeilen.
+- **Vortest-Ergebnis in der gewählten Sprache:** Der graue Text unter „Gerät“ blieb in der Sprache stehen, die beim Vortest eingestellt war. StemMaker speichert jetzt nur die Messwerte und zeigt den Satz in der aktuellen Sprache. Ergebnisse aus älteren Versionen erscheinen bis zum nächsten Vortest wie bisher.
+
 ## 2.3 – 10. November 2026
 
 ### Neu
