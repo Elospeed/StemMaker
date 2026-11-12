@@ -361,7 +361,7 @@ msgstr ""
 msgid "(kein Log gefunden)"
 msgstr ""
 
-#: uturbotest.pas:696
+#: uturbotest.pas:732
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr ""
 
@@ -825,15 +825,15 @@ msgstr ""
 msgid "CLIP"
 msgstr ""
 
-#: uturbotest.pas:542
+#: uturbotest.pas:578
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr ""
 
-#: uturbotest.pas:544
+#: uturbotest.pas:580
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr ""
 
-#: uturbotest.pas:540
+#: uturbotest.pas:576
 msgid "CPU vorbereiten"
 msgstr ""
 
@@ -989,7 +989,7 @@ msgstr ""
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr ""
 
-#: uturbotest.pas:716
+#: uturbotest.pas:749
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr ""
 
@@ -1017,11 +1017,11 @@ msgstr ""
 msgid "Die Details stehen im Log:"
 msgstr ""
 
-#: uturbotest.pas:742
+#: uturbotest.pas:205
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr ""
 
-#: uturbotest.pas:731
+#: uturbotest.pas:194
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr ""
 
@@ -1121,7 +1121,7 @@ msgstr ""
 msgid "Eigene Muster"
 msgstr ""
 
-#: uturbotest.pas:693
+#: uturbotest.pas:729
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Erneut prüfen"
 msgstr ""
 
-#: uturbotest.pas:403
+#: uturbotest.pas:439
 msgid "Erneut testen"
 msgstr ""
 
@@ -1249,7 +1249,7 @@ msgstr ""
 msgid "Fehler"
 msgstr ""
 
-#: uturbotest.pas:623
+#: uturbotest.pas:659
 msgid "Fehler %s"
 msgstr ""
 
@@ -1305,7 +1305,7 @@ msgstr ""
 msgid "Fehlt: %s"
 msgstr ""
 
-#: ustemjob.pas:2124 uturbotest.pas:724 uturbotest.pas:725
+#: ustemjob.pas:2124 uturbotest.pas:757 uturbotest.pas:758
 msgid "Fertig"
 msgstr ""
 
@@ -1353,7 +1353,7 @@ msgstr ""
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr ""
 
-#: uturbotest.pas:465
+#: uturbotest.pas:501
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr ""
 
@@ -1385,19 +1385,19 @@ msgstr ""
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr ""
 
-#: uturbotest.pas:617
+#: uturbotest.pas:653
 msgid "Grafikkarte einschalten"
 msgstr ""
 
-#: uturbotest.pas:547
+#: uturbotest.pas:583
 msgid "Grafikkarte messen"
 msgstr ""
 
-#: uturbotest.pas:546
+#: uturbotest.pas:582
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr ""
 
-#: uturbotest.pas:545
+#: uturbotest.pas:581
 msgid "Grafikkarte suchen"
 msgstr ""
 
@@ -1589,7 +1589,7 @@ msgstr ""
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr ""
 
-#: uturbotest.pas:739
+#: uturbotest.pas:202
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr ""
 
@@ -1625,7 +1625,7 @@ msgstr ""
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr ""
 
-#: uturbotest.pas:318
+#: uturbotest.pas:354
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr ""
 
@@ -1901,7 +1901,7 @@ msgstr ""
 msgid "Modell %s"
 msgstr ""
 
-#: uturbotest.pas:464
+#: uturbotest.pas:500
 msgid "Modell fehlt"
 msgstr ""
 
@@ -1909,7 +1909,7 @@ msgstr ""
 msgid "Modell fehlt: %s"
 msgstr ""
 
-#: uturbotest.pas:539
+#: uturbotest.pas:575
 msgid "Modell lesen"
 msgstr ""
 
@@ -2253,7 +2253,7 @@ msgstr ""
 msgid "STUMM"
 msgstr ""
 
-#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:787
+#: uturbotest.pas:495 uturbotest.pas:506 uturbotest.pas:808
 msgid "Schliessen"
 msgstr ""
 
@@ -2281,7 +2281,7 @@ msgstr ""
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr ""
 
-#: uturbotest.pas:618
+#: uturbotest.pas:654
 msgid "Sitzung vorbereiten"
 msgstr ""
 
@@ -2477,11 +2477,11 @@ msgstr ""
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr ""
 
-#: uturbotest.pas:359
+#: uturbotest.pas:395
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr ""
 
-#: uturbotest.pas:727
+#: uturbotest.pas:190
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr ""
 
@@ -2493,7 +2493,7 @@ msgstr ""
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr ""
 
-#: uturbotest.pas:454
+#: uturbotest.pas:490
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr ""
 
@@ -2585,7 +2585,7 @@ msgstr ""
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr ""
 
-#: uturbotest.pas:538
+#: uturbotest.pas:574
 msgid "Testsignal erzeugen"
 msgstr ""
 
@@ -2645,7 +2645,7 @@ msgstr ""
 msgid "Traktor-Farben"
 msgstr ""
 
-#: uturbotest.pas:595
+#: uturbotest.pas:631
 msgid "Treiber"
 msgstr ""
 
@@ -2653,15 +2653,15 @@ msgstr ""
 msgid "Trenn-Modell:"
 msgstr ""
 
-#: uturbotest.pas:620
+#: uturbotest.pas:656
 msgid "Trennen"
 msgstr ""
 
-#: uturbotest.pas:619
+#: uturbotest.pas:655
 msgid "Trennen auf der Grafikkarte"
 msgstr ""
 
-#: uturbotest.pas:548
+#: uturbotest.pas:584
 msgid "Trennen gemessen"
 msgstr ""
 
@@ -2681,7 +2681,7 @@ msgstr ""
 msgid "Turbo (schnell, Standard)"
 msgstr ""
 
-#: uturbotest.pas:453
+#: uturbotest.pas:489
 msgid "Turbo fehlt"
 msgstr ""
 
@@ -2693,7 +2693,7 @@ msgstr ""
 msgid "Turbo rechnet auf: %s"
 msgstr ""
 
-#: uturbotest.pas:347
+#: uturbotest.pas:383
 msgid "Turbo-Vortest"
 msgstr ""
 
@@ -2753,7 +2753,7 @@ msgstr ""
 msgid "Versionen"
 msgstr ""
 
-#: uturbotest.pas:371
+#: uturbotest.pas:407
 msgid "Vorbereiten"
 msgstr ""
 
@@ -2769,7 +2769,7 @@ msgstr ""
 msgid "Vortest ..."
 msgstr ""
 
-#: uturbotest.pas:711
+#: uturbotest.pas:744
 msgid "Vortest fehlgeschlagen"
 msgstr ""
 
@@ -2817,11 +2817,11 @@ msgstr ""
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr ""
 
-#: uturbotest.pas:735
+#: uturbotest.pas:198
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr ""
 
-#: uturbotest.pas:591
+#: uturbotest.pas:627
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr ""
 
@@ -3061,7 +3061,7 @@ msgstr ""
 msgid "kein Cover"
 msgstr ""
 
-#: uturbotest.pas:589
+#: uturbotest.pas:625
 msgid "keine Grafikkarte gefunden"
 msgstr ""
 

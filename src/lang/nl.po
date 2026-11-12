@@ -361,7 +361,7 @@ msgstr "(ruwe schatting)"
 msgid "(kein Log gefunden)"
 msgstr "(geen log gevonden)"
 
-#: uturbotest.pas:696
+#: uturbotest.pas:732
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(voorlopig, wordt met elke meting nauwkeuriger)"
 
@@ -825,15 +825,15 @@ msgstr "CD-SPELER"
 msgid "CLIP"
 msgstr "CLIP"
 
-#: uturbotest.pas:542
+#: uturbotest.pas:578
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr "Cpu instellen (ronde %d van %d)"
 
-#: uturbotest.pas:544
+#: uturbotest.pas:580
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr "Cpu meten (ronde %d van %d)"
 
-#: uturbotest.pas:540
+#: uturbotest.pas:576
 msgid "CPU vorbereiten"
 msgstr "Cpu voorbereiden"
 
@@ -989,7 +989,7 @@ msgstr "De diepe bas onder 80 Hz die de scheiding in de stem \"Other\" laat, wor
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "De versiegeschiedenis ontbreekt in deze versie."
 
-#: uturbotest.pas:716
+#: uturbotest.pas:749
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "De voortest is niet gelukt (code %s). StemMaker probeert Turbo toch en gebruikt anders demucs.cpp (Klassiek). De details staan in het log."
 
@@ -1017,11 +1017,11 @@ msgstr "De bestanden kun je direct in Traktor laden. Map nu openen?"
 msgid "Die Details stehen im Log:"
 msgstr "De details staan in het log:"
 
-#: uturbotest.pas:742
+#: uturbotest.pas:205
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "De videokaart (%s) %s. StemMaker scheidt met de cpu: ongeveer %s rekentijd per minuut muziek."
 
-#: uturbotest.pas:731
+#: uturbotest.pas:194
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "De videokaart (%s) zou werken, maar \"Alleen cpu\" is ingesteld. StemMaker scheidt met de cpu: ongeveer %s per minuut muziek."
 
@@ -1121,7 +1121,7 @@ msgstr "Je hebt de nieuwste versie (%s)."
 msgid "Eigene Muster"
 msgstr "Eigen patronen"
 
-#: uturbotest.pas:693
+#: uturbotest.pas:729
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "Een track van 3 minuten duurt hier ongeveer %s met htdemucs (standaard) en %s met htdemucs_ft (beste kwaliteit)."
 
@@ -1185,7 +1185,7 @@ msgstr "Herkend: ‘%s’ … ‘%s’, %s."
 msgid "Erneut prüfen"
 msgstr "Opnieuw controleren"
 
-#: uturbotest.pas:403
+#: uturbotest.pas:439
 msgid "Erneut testen"
 msgstr "Opnieuw testen"
 
@@ -1249,7 +1249,7 @@ msgstr "Ontbrekende stems met stilte vullen"
 msgid "Fehler"
 msgstr "Fout"
 
-#: uturbotest.pas:623
+#: uturbotest.pas:659
 msgid "Fehler %s"
 msgstr "fout %s"
 
@@ -1305,7 +1305,7 @@ msgstr "Ontbreekt er een stem, dan wordt een stil spoor gebruikt in plaats van h
 msgid "Fehlt: %s"
 msgstr "Ontbreekt: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:724 uturbotest.pas:725
+#: ustemjob.pas:2124 uturbotest.pas:757 uturbotest.pas:758
 msgid "Fertig"
 msgstr "Klaar"
 
@@ -1353,7 +1353,7 @@ msgstr "Voor naamgeving die niet wordt herkend: vul per spoor zelf map, naampatr
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "Voor sporen zonder kant-en-klare master: de vier stems worden zonder niveauwijziging samengemixt."
 
-#: uturbotest.pas:465
+#: uturbotest.pas:501
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "Voor de test is het model htdemucs of htdemucs_ft nodig. Het wordt bij het starten van StemMaker gedownload."
 
@@ -1385,19 +1385,19 @@ msgstr "Opgeslagen"
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "GitHub-issues zijn openbaar, iedereen kan ze lezen. Controleer het rapport vooraf op dingen die je niet wilt laten zien (bijv. namen van nummers). Je hebt een GitHub-account nodig."
 
-#: uturbotest.pas:617
+#: uturbotest.pas:653
 msgid "Grafikkarte einschalten"
 msgstr "videokaart inschakelen"
 
-#: uturbotest.pas:547
+#: uturbotest.pas:583
 msgid "Grafikkarte messen"
 msgstr "Videokaart meten"
 
-#: uturbotest.pas:546
+#: uturbotest.pas:582
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr "Videokaart controleren (kan tot 30 s duren)"
 
-#: uturbotest.pas:545
+#: uturbotest.pas:581
 msgid "Grafikkarte suchen"
 msgstr "Videokaart zoeken"
 
@@ -1589,7 +1589,7 @@ msgstr "Kan %s niet schrijven"
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "Kan doelbestand niet schrijven: %s"
 
-#: uturbotest.pas:739
+#: uturbotest.pas:202
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Geen videokaart gevonden. StemMaker scheidt met de cpu: ongeveer %s rekentijd per minuut muziek."
 
@@ -1625,7 +1625,7 @@ msgstr "Klik om te sorteren, nogmaals klikken sorteert omgekeerd"
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Klik of sleep om naar deze positie te springen."
 
-#: uturbotest.pas:318
+#: uturbotest.pas:354
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr "Coderen meten (ffmpeg, 5 sporen)"
 
@@ -1901,7 +1901,7 @@ msgstr "Met dit rapport kan Elospeed de fout vinden. Er wordt NIETS automatisch 
 msgid "Modell %s"
 msgstr "Model %s"
 
-#: uturbotest.pas:464
+#: uturbotest.pas:500
 msgid "Modell fehlt"
 msgstr "Model ontbreekt"
 
@@ -1909,7 +1909,7 @@ msgstr "Model ontbreekt"
 msgid "Modell fehlt: %s"
 msgstr "Model ontbreekt: %s"
 
-#: uturbotest.pas:539
+#: uturbotest.pas:575
 msgid "Modell lesen"
 msgstr "Model lezen"
 
@@ -2253,7 +2253,7 @@ msgstr "STEMS  S"
 msgid "STUMM"
 msgstr "STIL"
 
-#: uturbotest.pas:459 uturbotest.pas:470 uturbotest.pas:787
+#: uturbotest.pas:495 uturbotest.pas:506 uturbotest.pas:808
 msgid "Schliessen"
 msgstr "Sluiten"
 
@@ -2281,7 +2281,7 @@ msgstr "Zet de waarden in dit venster terug naar de standaardinstellingen (taal 
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "Back-up maken (.bak)"
 
-#: uturbotest.pas:618
+#: uturbotest.pas:654
 msgid "Sitzung vorbereiten"
 msgstr "sessie voorbereiden"
 
@@ -2477,11 +2477,11 @@ msgstr "StemMaker draait al"
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr "StemMaker blijft draaien. Als iets niet meer goed werkt, start het programma dan opnieuw."
 
-#: uturbotest.pas:359
+#: uturbotest.pas:395
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "StemMaker meet één keer hoe snel deze pc stems scheidt: eerst de cpu, dan de videokaart. Dat duurt ongeveer een minuut."
 
-#: uturbotest.pas:727
+#: uturbotest.pas:190
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr "StemMaker scheidt op deze pc met de videokaart (%s): ongeveer %s rekentijd per minuut muziek (cpu: %s)."
 
@@ -2493,7 +2493,7 @@ msgstr "StemMaker wordt gratis en zonder enige garantie geleverd (\"zoals het is
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "StemMaker is de vorige keer onverwacht beëindigd."
 
-#: uturbotest.pas:454
+#: uturbotest.pas:490
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe is niet gevonden (%s). StemMaker scheidt met demucs.cpp (Klassiek)."
 
@@ -2585,7 +2585,7 @@ msgstr "snelheidsvergelijking, tests en foutmeldingen"
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr "tests en ideeën voor 5.1-stems"
 
-#: uturbotest.pas:538
+#: uturbotest.pas:574
 msgid "Testsignal erzeugen"
 msgstr "Testsignaal maken"
 
@@ -2645,7 +2645,7 @@ msgstr "Traktor en STEMS zijn merken van Native Instruments GmbH. StemMaker is e
 msgid "Traktor-Farben"
 msgstr "Traktor-kleuren"
 
-#: uturbotest.pas:595
+#: uturbotest.pas:631
 msgid "Treiber"
 msgstr "stuurprogramma"
 
@@ -2653,15 +2653,15 @@ msgstr "stuurprogramma"
 msgid "Trenn-Modell:"
 msgstr "Model:"
 
-#: uturbotest.pas:620
+#: uturbotest.pas:656
 msgid "Trennen"
 msgstr "scheiden"
 
-#: uturbotest.pas:619
+#: uturbotest.pas:655
 msgid "Trennen auf der Grafikkarte"
 msgstr "scheiden op de videokaart"
 
-#: uturbotest.pas:548
+#: uturbotest.pas:584
 msgid "Trennen gemessen"
 msgstr "Scheiden gemeten"
 
@@ -2681,7 +2681,7 @@ msgstr "Turbo (StemOnnx), alleen cpu"
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (snel, standaard)"
 
-#: uturbotest.pas:453
+#: uturbotest.pas:489
 msgid "Turbo fehlt"
 msgstr "Turbo ontbreekt"
 
@@ -2693,7 +2693,7 @@ msgstr "Turbo is niet gelukt (code %d), dit bestand wordt nu door demucs.cpp ges
 msgid "Turbo rechnet auf: %s"
 msgstr "Turbo rekent op: %s"
 
-#: uturbotest.pas:347
+#: uturbotest.pas:383
 msgid "Turbo-Vortest"
 msgstr "Turbo-voortest"
 
@@ -2753,7 +2753,7 @@ msgstr "Voorkomt de slaapstand en schakelt de energiebesparing tijdelijk uit."
 msgid "Versionen"
 msgstr "Versies"
 
-#: uturbotest.pas:371
+#: uturbotest.pas:407
 msgid "Vorbereiten"
 msgstr "Voorbereiden"
 
@@ -2769,7 +2769,7 @@ msgstr "Sjabloon:"
 msgid "Vortest ..."
 msgstr "Voortest ..."
 
-#: uturbotest.pas:711
+#: uturbotest.pas:744
 msgid "Vortest fehlgeschlagen"
 msgstr "Voortest mislukt"
 
@@ -2817,11 +2817,11 @@ msgstr "Tools"
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "Hoeveel delen van het nummer demucs tegelijk berekent. Elk deel gebruikt daarnaast meerdere kernen en heeft ruim 2 GB RAM nodig."
 
-#: uturbotest.pas:735
+#: uturbotest.pas:198
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Wine gedetecteerd (Linux): de videokaart kan onder Wine niet worden gebruikt. StemMaker scheidt met de CPU: ongeveer %s rekentijd per minuut muziek."
 
-#: uturbotest.pas:591
+#: uturbotest.pas:627
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine gedetecteerd: Turbo draait op de CPU"
 
@@ -3061,7 +3061,7 @@ msgstr "geen AVX (compatibele versie)"
 msgid "kein Cover"
 msgstr "geen hoes"
 
-#: uturbotest.pas:589
+#: uturbotest.pas:625
 msgid "keine Grafikkarte gefunden"
 msgstr "geen videokaart gevonden"
 
