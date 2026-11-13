@@ -2,9 +2,9 @@
 titel: Elospeed StemMaker
 untertitel: Benutzerhandbuch
 versionstext: Version
-version: "2.0"
-datum: Oktober 2026
-umfang: "Musik in Traktor-Stems zerlegen, vorher reinhören und auflegen. Mit dem StemPlayer zum Probehören."
+version: "2.4"
+datum: November 2026
+umfang: "Musik in Traktor-Stems zerlegen, vorher reinhören und auflegen. Mit StemPlayer, StemTagger und StemPacker."
 fusszeile: "Kostenlos und quelloffen (MIT-Lizenz) · © 2026 Elospeed"
 inhalt: Inhalt
 ---
@@ -85,10 +85,14 @@ Das beste Modell (htdemucs_ft) braucht etwa dreimal so lang wie das Standard-Mod
 
 Auf der Projektseite <https://elospeed.github.io/StemMaker/> und auf der GitHub-Release-Seite gibt es zwei Downloads mit demselben Programm:
 
-- **`StemMaker-2.0-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
-- **`StemMaker-2.0.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
+- **`StemMaker-2.4-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
+- **`StemMaker-2.4.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
 
 Gestartet wird in beiden Fällen `StemMaker.exe` (nach dem Installer über den Startmenü-Eintrag „StemMaker“).
+
+## Linux (Beta) {#linux}
+
+Für Linux liegt auf der Release-Seite eine **AppImage**-Datei. Sie bringt alles mit, was StemMaker unter Linux braucht (Wine), installiert wird nichts: Datei ausführbar machen und starten. Turbo rechnet unter Linux immer auf der CPU. Startet die AppImage nicht, das Paket `libfuse2` installieren.
 
 ## Windows-Warnung beim ersten Start {#smartscreen}
 
@@ -103,9 +107,9 @@ Windows merkt sich das, die Warnung kommt pro Programm nur einmal.
 **Tipp für die ZIP-Version:** Vor dem Entpacken mit der rechten Maustaste auf die ZIP-Datei → **Eigenschaften** → unten das Häkchen **Zulassen** setzen → OK. Dann warnt Windows meist gar nicht.
 :::
 
-## Sprache und Lizenz bestätigen
+## Sprache und Lizenz bestätigen {#sprache-lizenz}
 
-Beim allerersten Start fragt StemMaker nach der Sprache: **Deutsch**, **English** oder **Español**. Die Windows-Sprache ist schon ausgewählt. Später lässt sie sich unter **Weitere Einstellungen** ändern.
+Beim allerersten Start fragt StemMaker nach der Sprache. Zur Wahl stehen Deutsch, Englisch, Spanisch, Französisch, Portugiesisch (Brasilien), Italienisch, Japanisch, Niederländisch und Polnisch; die Windows-Sprache ist schon ausgewählt. Später lässt sie sich unter **Weitere Einstellungen** ändern. Diese Anleitung gibt es auf Deutsch, Englisch und Spanisch, für die anderen Sprachen öffnet sich die englische.
 
 ![Sprachwahl beim ersten Start](img/sprache.png){.klein}
 
@@ -129,22 +133,23 @@ Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (
 
 ## Überblick
 
-Oben ist die Liste der Dateien, darunter die Einstellungen für die nächste Umwandlung, ganz unten der Fortschritt und das Protokoll.
+Oben ist die Liste der Dateien mit der AddOn-Leiste rechts daneben, darunter die Einstellungen für die nächste Umwandlung, ganz unten der Fortschritt und das Protokoll.
 
 ![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
 
 ::: marken
-1. **Info**: Version, Anleitung, Handbuch, Updates, Fehlerbericht und Logs (Kapitel [§](#info)).
+1. **Info**: Version, Updates, Fehlerbericht und Logs (Kapitel [§](#info)). Daneben **?**: öffnet diese Anleitung. Die Taste [F1]{.taste} tut das in jedem Fenster, jeweils beim passenden Abschnitt.
 2. **Dateien hinzufügen…** und **Ordner…**: einzelne Songs oder ganze Ordner (mit Unterordnern) in die Liste holen. Einfacher: Dateien und Ordner aus dem Explorer direkt ins Fenster ziehen.
 3. **Entfernen** und **Liste leeren**: markierte Einträge oder die ganze Liste löschen. Die Musikdateien selbst bleiben unangetastet.
 4. **Stem prüfen…** und **Log kopieren**: eine fertige Stem-Datei kontrollieren (Abschnitt [§](#stem-pruefen)) und das Protokoll in die Zwischenablage legen.
-5. **Die Dateiliste** mit Name, Status und Pfad jeder Datei. Ein Doppelklick auf eine fertige Datei öffnet sie im StemPlayer.
+5. **Die Dateiliste** mit Name, Status und Pfad jeder Datei. Ein Doppelklick auf eine fertige Datei spielt sie im StemPlayer ab, ein Rechtsklick öffnet ein Menü (Abschnitt [§](#dateiliste)).
 6. **Einstellungen** für die nächste Umwandlung: Ausgabeordner, Trenn-Modell, Audio-Format und die Schalter Club-Pegel, Bass-Fix und Herunterfahren (Kapitel [§](#einstellungen)).
 7. **Weitere Einstellungen…** (Zahnrad): alles, was man einmal einstellt.
-8. **Start**, **Abbrechen**, **Ordner öffnen** und **Anhören**: Umwandlung starten oder stoppen, den Ordner mit den fertigen Dateien öffnen oder den StemPlayer starten.
-9. **Zwei Fortschrittsbalken**: oben die aktuelle Datei, unten die ganze Liste, jeweils mit vergangener und geschätzter Restzeit.
+8. **Start**, **Abbrechen** und **Ordner öffnen**: Umwandlung starten oder stoppen, den Ordner mit den fertigen Dateien öffnen.
+9. **Zwei Fortschrittsbalken**: oben die aktuelle Datei, unten die ganze Liste, jeweils mit vergangener und geschätzter Restzeit und der Uhrzeit, wann alles fertig ist.
 10. **Protokoll**: was StemMaker gerade tut. Bei einem Problem steht hier, warum.
 11. **Kaffee spendieren**: öffnet die Ko-fi-Seite von Elospeed. Ganz freiwillig, StemMaker bleibt kostenlos.
+12. **AddOn-Leiste**: StemPlayer, StemTagger und StemPacker mit einem Klick (Abschnitt [§](#addons)).
 :::
 
 ## Die Dateiliste {#dateiliste}
@@ -161,11 +166,25 @@ In der Spalte **Status** steht, wie weit jede Datei ist:
 | wartet (unterbrochen) | StemMaker wurde mitten in dieser Datei beendet, sie wird neu gemacht |
 | Fehler | hat nicht geklappt, der Grund steht im Protokoll |
 
+**Rechtsklick** auf eine Zeile bietet **Anhören** (fertige Datei im StemPlayer abspielen), **Tags bearbeiten...** (markierte fertige Dateien im StemTagger öffnen) und **Aus Liste entfernen**. Die Taste [Entf]{.taste} entfernt die markierten Zeilen ebenfalls; fertige Stem-Dateien bleiben dabei erhalten.
+
 Die Liste wird laufend gespeichert. Schliesst du StemMaker oder fällt der Strom aus, ist sie beim nächsten Start wieder da, und **Start** macht dort weiter, wo aufgehört wurde.
 
 ::: tipp
 **Tipp:** Lieber eine lange Liste über Nacht laufen lassen als einzelne Songs zwischendurch. Unter dem unteren Balken steht schon vor dem Start, wie lange die ganze Liste ungefähr dauert.
 :::
+
+## Die AddOn-Leiste {#addons}
+
+Rechts neben der Dateiliste stehen die AddOns, je ein Knopf mit Symbol und Namen. Sie liegen im Ordner `AddOns` und kommen mit StemMaker mit:
+
+| AddOn | Was ein Klick tut |
+|---|---|
+| **StemPlayer** | spielt die markierte oder die zuletzt umgewandelte Stem-Datei ab (Kapitel [§](#stemplayer)) |
+| **StemTagger** | öffnet die markierten fertigen Dateien, um Titel, Interpret, Cover und mehr zu setzen (Kapitel [§](#stemtagger)) |
+| **StemPacker** | packt fertige Einzelspuren ohne KI zu Stem-Dateien (Kapitel [§](#stempacker)) |
+
+Ist das Fenster klein oder die Anzeigeskalierung gross, werden die Knöpfe kleiner; der Name steht dann im Tooltip.
 
 # Dateien umwandeln {#umwandeln}
 
@@ -175,7 +194,7 @@ Die Liste wird laufend gespeichert. Schliesst du StemMaker oder fällt der Strom
 2. **Ausgabeordner wählen:** Standardmässig landet jede Stem-Datei neben ihrem Song. Möchtest du alle Stems an einem Ort, nimm das Häkchen **neben der Originaldatei speichern** weg und wähle mit dem Ordner-Knopf einen Ausgabeordner.
 3. **Einstellungen prüfen:** Für den Anfang passen die Standardwerte (Modell htdemucs, AAC automatisch, Club-Pegel und Bass-Fix an).
 4. **Start klicken.** StemMaker arbeitet die Liste von oben nach unten ab. Unter den Balken siehst du, wie lange es noch dauert.
-5. **Fertig:** Ist das Häkchen **Ordner nach der Umwandlung öffnen** gesetzt, geht der Explorer mit der fertigen Datei auf. Von dort ziehst du sie direkt in Traktor.
+5. **Fertig:** Die Zeile zeigt „OK“ und die vier Stem-Farben. **Ordner öffnen** zeigt die fertigen Dateien im Explorer, von dort ziehst du sie direkt in Traktor. Soll der Explorer jedes Mal von selbst aufgehen, setze das Häkchen **Ordner nach der Umwandlung öffnen**.
 
 Mit **Abbrechen** stoppst du sofort. Die angefangene Datei wird verworfen und die Temp-Dateien werden aufgeräumt; die fertigen Dateien bleiben.
 
@@ -194,7 +213,7 @@ StemMaker übernimmt die Tags und das **Cover** aus der Quelldatei: Titel, Artis
 
 ## Ganze Sammlung über Nacht {#sammlung}
 
-- **Zeitschätzung vor dem Start:** Unter dem unteren Balken steht zum Beispiel „87 Dateien offen, 6:12:40 Musik - Dauer ca. 11:30:00“. Steht dahinter „(grob geschätzt)“, kennt StemMaker das Tempo deines PCs noch nicht; nach dem ersten fertigen Song steht dort „(Tempo dieses PCs)“, und die Schätzung wird mit jedem Song genauer.
+- **Zeitschätzung vor dem Start:** Unter dem unteren Balken steht zum Beispiel „87 Dateien offen, 6:12:40 Musik - Dauer ca. 11:30:00“ und dahinter, wann die Liste fertig ist, etwa „fertig ca. 06:40“ oder „morgen 03:10“. Steht dahinter „(grob geschätzt)“, kennt StemMaker das Tempo deines PCs noch nicht; nach dem ersten fertigen Song steht dort „(Tempo dieses PCs)“, und die Schätzung wird mit jedem Song genauer.
 - **Liste wird gemerkt:** Absturz, Stromausfall oder Programm geschlossen kostet höchstens den gerade laufenden Song. Beim nächsten Start ist die Liste wieder da, **Start** macht weiter.
 - **PC nach Abschluss herunterfahren:** Sind alle Dateien fertig, läuft ein Countdown von 60 Sekunden mit **Abbrechen**, danach fährt Windows herunter. Das Häkchen gilt nur für den nächsten Durchlauf. Wurde die Umwandlung abgebrochen, fährt der PC nicht herunter.
 - **PC wach halten** (unter **Weitere Einstellungen**, Standard an): Windows geht während der Umwandlung nicht in den Ruhezustand; der Bildschirm darf ausgehen.
@@ -272,10 +291,22 @@ Alles, was man einmal einstellt, liegt hinter dem Zahnrad **Weitere Einstellunge
 2. **Überschreiben, Unterordner, PC wach halten**: vorhandene Stem-Dateien neu machen, Ordnerstruktur im Ausgabeordner nachbauen, Ruhezustand während der Umwandlung verhindern.
 3. **Engine**: Turbo oder Klassisch, das Gerät (Automatisch oder Nur CPU) und **Vortest ...**; darunter das Ergebnis des letzten Vortests (Kapitel [§](#turbo)).
 4. **Stems**: Name und Farbe der vier Stems, so wie Traktor sie anzeigt. **Traktor-Farben** übernimmt die Farben aus Traktors eigenen Stem-Dateien. Die Symbole (Trommel, Lautsprecher, Welle, Mikrofon) zeigt Traktor fest nach Platz 1 bis 4.
-5. **Programm**: Sprache (gilt ab dem nächsten Start), Update-Prüfung beim Start, Symbol neben der Uhr beim Minimieren und Meldung, wenn die Umwandlung fertig ist.
+5. **Programm**: Sprache und Design (hell oder dunkel, beides gilt ab dem nächsten Start), Update-Prüfung beim Start, Symbol neben der Uhr beim Minimieren und Meldung, wenn die Umwandlung fertig ist.
 6. **Werkzeuge**: wo ffmpeg, die Trennprogramme und die Modelle liegen (nur Anzeige; ändern geht in `StemMaker.ini`, siehe Anhang).
-7. **Standard wiederherstellen** setzt alle Werte in diesem Fenster zurück; **INI-Ordner öffnen** zeigt, wo `StemMaker.ini` liegt.
+7. **Standard wiederherstellen** setzt alle Werte in diesem Fenster zurück; **INI-Ordner öffnen** zeigt, wo `StemMaker.ini` liegt; **?** öffnet diesen Abschnitt.
 :::
+
+## Hell oder dunkel {#design}
+
+Unter **Weitere Einstellungen → Programm → Design** wählst du, wie StemMaker aussieht:
+
+| Design | Bedeutung |
+|---|---|
+| Automatisch (wie Windows) | Standard. StemMaker folgt der Windows-Einstellung *Personalisierung → Farben → Standard-App-Modus*. |
+| Hell | immer hell |
+| Dunkel | immer dunkel: Fenster, Listen, Knöpfe und Titelleisten |
+
+Die Wahl gilt ab dem nächsten Start. Das dunkle Design braucht Windows 10 ab Version 1809 oder Windows 11; auf älteren Windows und unter Linux bleibt StemMaker hell. StemPlayer und StemTagger haben ihr eigenes dunkles Aussehen.
 
 ## Welches Trenn-Modell? {#modelle}
 
@@ -315,18 +346,20 @@ Der **StemPlayer** (`AddOns\StemPlayer.exe`) spielt eine fertige Stem-Datei ohne
 
 ## Öffnen
 
-- Im Hauptfenster auf **Anhören** klicken: Der Öffnen-Dialog zeigt gleich den Ordner der zuletzt umgewandelten Datei.
-- Oder in der Dateiliste doppelt auf eine fertige Datei klicken.
+- In der AddOn-Leiste auf **StemPlayer** klicken: Er spielt die markierte oder die zuletzt umgewandelte Datei gleich ab.
+- Oder in der Dateiliste doppelt auf eine fertige Datei klicken (oder Rechtsklick → **Anhören**).
 - Oder im StemPlayer auf **ÖFFNEN** klicken (Strg+O) bzw. eine `.stem.mp4` auf das Fenster ziehen.
 
 Der StemPlayer spricht dieselbe Sprache wie StemMaker. Er braucht `tools\ffmpeg.exe` aus dem StemMaker-Ordner.
+
+Oben rechts wählst du die **Ansicht**: **KOMPAKT** (nur Regler), **WELLENFORM** (mit Welle unter jedem Stem, das Fenster lässt sich vergrössern) oder **CD-PLAYER** (DJ-Look mit Jogwheel, CUE, Play und grossen Stem-Pads). Alle drei können dasselbe, die Wahl bleibt beim nächsten Start erhalten.
 
 ## Überblick
 
 ![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
-1. **ÖFFNEN** und Dateiname, rechts die **Ansicht**: KOMPAKT (nur Regler) oder WELLENFORM (mit Welle unter jedem Stem).
+1. **ÖFFNEN** und Dateiname, rechts die **Ansicht** (KOMPAKT, WELLENFORM oder CD-PLAYER).
 2. **Wiedergabe**: Play/Pause, Stop (zurück an den Anfang), Zeit und Länge.
 3. **Original-Wellenform**: klicken oder ziehen springt an diese Stelle; der rote Strich zeigt die aktuelle Position.
 4. **Lupe**: zeigt einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops und zum Scrubbing.
@@ -390,6 +423,28 @@ Ziehst du die Welle in der **Lupe** mit der linken Maustaste nach links oder rec
 | [W]{.taste} | Ansicht Kompakt / Wellenform |
 | [Strg]{.taste} + [O]{.taste} | Datei öffnen |
 
+# StemTagger: Tags und Cover {#stemtagger}
+
+Der **StemTagger** (`AddOns\StemTagger.exe`) setzt in fertigen Stem-Dateien und MP3s, was Traktor und Mixxx anzeigen und wonach man dort sucht: Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und das Cover. Gedacht vor allem für Dateien ohne Tags, zum Beispiel aus dem StemPacker.
+
+- **Öffnen:** in der AddOn-Leiste auf **StemTagger** klicken oder Rechtsklick in der Dateiliste → **Tags bearbeiten...**. Er lädt die markierten fertigen Dateien. Im StemTagger selbst lädst du Dateien oder ganze Ordner.
+- **Viele Dateien auf einmal:** mehrere Zeilen markieren und zum Beispiel Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange du sie nicht änderst.
+- **Cover:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit [Strg]{.taste} + [V]{.taste} einfügen oder eine Datei wählen. Grosse Bilder werden auf Wunsch verkleinert.
+- **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
+- **Die Stems bleiben unangetastet:** Neu geschrieben werden nur die Tags. Audio, Stems, Stem-Infos und Traktors eigene Daten (Cues, Beatgrid) bleiben gleich. Auf Wunsch legt der StemTagger eine Sicherungskopie `.bak` an.
+
+BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst. Den StemTagger gibt es auch einzeln als kleines ZIP auf der Release-Seite.
+
+# StemPacker: fertige Spuren packen {#stempacker}
+
+Der **StemPacker** (`AddOns\StemPacker.exe`) macht Stem-Dateien aus Spuren, die schon getrennt vorliegen, ganz ohne KI: zum Beispiel Einzelspuren aus der eigenen DAW, von einer 5.1-DVD oder aus einem anderen Trennprogramm. Pro Song braucht er den Master und bis zu vier Stems.
+
+- **Öffnen:** in der AddOn-Leiste auf **StemPacker** klicken oder im Startmenü.
+- **Ordner hineinziehen:** Er erkennt an den Dateinamen selbst, welche Datei der Master ist und welche Spur Drums, Bass, Other oder Vox (zum Beispiel `Song - Drums.wav`). Was er nicht sicher erkennt, zeigt er an.
+- **Im Stapel:** Viele Songs auf einmal, mit denselben Stem-Namen, Farben und dem Audio-Format wie in StemMaker.
+
+Er nimmt ffmpeg und die Sprachdateien von StemMaker. Eine ausführliche englische Anleitung liegt als `AddOns\StemPacker-User-Guide.pdf` bei.
+
 # Info, Updates und Hilfe {#info}
 
 ## Das Info-Fenster
@@ -399,14 +454,23 @@ Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum 
 ![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
 
 ::: marken
-1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzanleitung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
+1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzfassung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
 2. **Nach Updates suchen**: sofort nachsehen, ob es eine neuere Version gibt.
 3. **Fehlerbericht senden…**: ein Log an Elospeed schicken (Abschnitt [§](#fehlerbericht)).
-4. **Handbuch (PDF)**: öffnet dieses Handbuch in deiner Sprache im Browser, immer in der neuesten Fassung.
+4. **Hilfe (F1)**: öffnet diese Anleitung im Browser (Abschnitt [§](#hilfe)).
 5. **Logs-Ordner öffnen**, **Jetzt spenden** und **Schliessen**.
 :::
 
-## Updates
+## Hilfe und Handbuch {#hilfe}
+
+Diese Anleitung liegt im Ordner `hilfe` neben `StemMaker.exe` und geht ohne Internet auf, in deinem Browser:
+
+- **?** oben links im Hauptfenster und in den Einstellungen, **Hilfe (F1)** im Info-Fenster.
+- Die Taste [F1]{.taste} in jedem StemMaker-Fenster springt gleich zum passenden Abschnitt, zum Beispiel im Vortest zum Abschnitt über den Vortest.
+
+Es gibt sie auf Deutsch, Englisch und Spanisch; bei den anderen Sprachen kommt die englische. Fehlt der Ordner `hilfe` (zum Beispiel, weil nur die Exe kopiert wurde), öffnet sich dieselbe Seite auf der Projektseite. Zum Drucken gibt es die Anleitung dort auch als PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-de.pdf>
+
+## Updates {#updates}
 
 Beim Start schaut StemMaker im Hintergrund nach, ob es eine neuere Version gibt. Wenn ja, kannst du wählen: **Jetzt aktualisieren**, **Später** oder **Diese Version überspringen**. Das Update wird mit seiner Prüfsumme kontrolliert. Einstellungen, Dateiliste, Logs, Modelle und ffmpeg bleiben erhalten. Während einer Umwandlung wird nie aktualisiert, und geht beim Kopieren etwas schief, bleibt die alte Version.
 
@@ -452,6 +516,12 @@ Der Vortest sagt, warum (Abschnitt [§](#vortest)): Die Karte ist nicht schnelle
 **Im Protokoll steht „Turbo hat nicht geklappt“.**
 Dann hat StemMaker diese Datei automatisch mit Klassisch getrennt, die Stem-Datei ist trotzdem in Ordnung. Passiert das bei jeder Datei, bitte einen Fehlerbericht schicken (Abschnitt [§](#fehlerbericht)).
 
+**Das dunkle Design kommt nicht.**
+Unter **Weitere Einstellungen** steht das Design auf **Automatisch** und Windows ist hell? Dann auf **Dunkel** stellen und StemMaker neu starten. Dunkel braucht Windows 10 ab Version 1809 oder Windows 11.
+
+**Die Linux-AppImage startet nicht.**
+Das Paket `libfuse2` installieren (Ubuntu, Debian, Mint: `sudo apt install libfuse2`).
+
 **Mein Musikplayer spielt nur den normalen Song.**
 Das ist richtig so: Normale Player spielen nur die Master-Spur. Die Stems hörst du in Traktor, Mixxx oder im StemPlayer.
 
@@ -471,8 +541,11 @@ StemMaker\
   StemMaker.ini          Einstellungen
   StemMaker_queue.txt    gespeicherte Dateiliste
   logs\                  Protokolle und statistik.csv
+  hilfe\                 diese Anleitung (de.html, en.html, es.html)
   AddOns\
     StemPlayer.exe       Testplayer für Stem-Dateien
+    StemTagger.exe       Tags und Cover setzen
+    StemPacker.exe       fertige Spuren zu Stem-Dateien packen
     StemCLI.exe          Kommandozeilen-Version
   tools\                 ffmpeg.exe und die Trennprogramme (demucs.cpp)
     onnx\                Turbo-Engine: StemOnnx.exe, ONNX Runtime, DirectML
@@ -499,6 +572,9 @@ Optionen: `-o ordner`, `-m ht|ft|v3`, `-t teile`, `-f aac|alac`, `-b auto|kbit`,
 FFmpeg=D:\Programme\ffmpeg\bin\ffmpeg.exe   ; vorhandenes ffmpeg nutzen
 ModelsDir=D:\Modelle                         ; Modelle woanders ablegen
 
+[Main]
+Design=dunkel                                ; auto (Standard), hell oder dunkel
+
 [Update]
 AutoCheck=0                                  ; beim Start nicht nach Updates suchen
 
@@ -511,6 +587,7 @@ Geraet=cpu                                   ; auto (Standard) oder cpu
 
 - StemMaker: © 2026 Elospeed, MIT-Lizenz.
 - demucs.cpp von Sevag Hanssian (MIT); Demucs-Modelle von Meta AI Research (werden von ihrem Originalort geladen, nicht von StemMaker weiterverteilt); ONNX Runtime (MIT) und DirectML (Microsoft-Lizenz) von Microsoft für Turbo; FFmpeg (LGPL); Prinzip und Metadaten nach Stemgen von axeldelafosse (MIT).
+- Dunkles Design mit metadarkstyle von Andrey Zubarev (LGPL mit Ausnahme für das Linken), teils aus Double Commander.
 - Traktor und STEMS sind Marken von Native Instruments. StemMaker ist ein unabhängiges Projekt.
 - Danke an **David GJ** für die spanische Übersetzung.
 - StemMaker wird ohne jede Gewährleistung bereitgestellt. Bitte nur Musik umwandeln, an der du die Rechte hast.
