@@ -57,6 +57,15 @@ const
   CLR_KOFI_FACE_DARK = TColor($00302C2A);   // auf dunklem Grund    #2A2C30
   CLR_KOFI_HOVER     = TColor($00443F3C);   // Maus darüber         #3C3F44
 
+var
+  { True = Programm läuft im dunklen Design (setzt uDesign beim Start) }
+  DunklesDesign: Boolean = False;
+
+{ Schriftfarben, die im hellen und im dunklen Design gut lesbar sind }
+function FarbeOK: TColor;       // Grün für "fertig"
+function FarbeFehler: TColor;   // Rot für Fehler
+function FarbeInfo: TColor;     // Blau für Hinweise
+
 { Streifen in den vier Stem-Farben, gleich breite Teile von links nach rechts }
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
 
@@ -86,6 +95,30 @@ procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
   Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon = nil);
 
 implementation
+
+const
+  { dunkles Design: Farben wie Windows 11 im Dunkelmodus }
+  CLR_BAR_BORDER_DARK = TColor($00606060);
+  CLR_BAR_BACK_DARK   = TColor($00383838);
+  CLR_OK_TEXT_DARK    = TColor($005FCB6C);   // #6CCB5F
+  CLR_FAIL_TEXT_DARK  = TColor($00A499FF);   // #FF99A4
+  CLR_INFO_TEXT       = TColor($00800000);   // clNavy
+  CLR_INFO_TEXT_DARK  = TColor($00FFC060);   // #60C0FF
+
+function FarbeOK: TColor;
+begin
+  if DunklesDesign then Result := CLR_OK_TEXT_DARK else Result := CLR_OK_TEXT;
+end;
+
+function FarbeFehler: TColor;
+begin
+  if DunklesDesign then Result := CLR_FAIL_TEXT_DARK else Result := CLR_FAIL_TEXT;
+end;
+
+function FarbeInfo: TColor;
+begin
+  if DunklesDesign then Result := CLR_INFO_TEXT_DARK else Result := CLR_INFO_TEXT;
+end;
 
 { 96-dpi-Mass auf den Bildschirm umrechnen }
 function ScalePx(V, PPI: Integer): Integer;
@@ -280,7 +313,11 @@ var
   X, CY, BarW, FillW, I, D, Gap: Integer;
   Bar: TRect;
   Col: TColor;
+  Dunkel: Boolean;
 begin
+  { dunkler Hintergrund (dunkles Design): hellere Schrift, dunkler Balken }
+  Dunkel := IsDarkColor(BackColor);
+
   { Hintergrund der ganzen Zelle }
   C.Brush.Style := bsSolid;
   C.Brush.Color := BackColor;
@@ -298,10 +335,12 @@ begin
         if BarW >= S(30) then
         begin
           Bar := Rect(X, CY - S(6), X + BarW, CY + S(6));
-          C.Brush.Color := CLR_BAR_BORDER;
+          if Dunkel then C.Brush.Color := CLR_BAR_BORDER_DARK
+          else C.Brush.Color := CLR_BAR_BORDER;
           C.FillRect(Bar);
           InflateRect(Bar, -1, -1);
-          C.Brush.Color := CLR_BAR_BACK;
+          if Dunkel then C.Brush.Color := CLR_BAR_BACK_DARK
+          else C.Brush.Color := CLR_BAR_BACK;
           C.FillRect(Bar);
           FillW := ((Bar.Right - Bar.Left) * Percent) div 100;
           if FillW > 0 then
@@ -317,7 +356,9 @@ begin
 
     slOK:
       begin
-        if Highlighted then Col := TextColor else Col := CLR_OK_TEXT;
+        if Highlighted then Col := TextColor
+        else if Dunkel then Col := CLR_OK_TEXT_DARK
+        else Col := CLR_OK_TEXT;
         { Häkchen als zwei Linien (nicht als Zeichen "✓" - das fehlt in
           manchen Windows-Schriften) }
         C.Pen.Style := psSolid;
@@ -346,7 +387,9 @@ begin
 
     slFail:
       begin
-        if Highlighted then Col := TextColor else Col := CLR_FAIL_TEXT;
+        if Highlighted then Col := TextColor
+        else if Dunkel then Col := CLR_FAIL_TEXT_DARK
+        else Col := CLR_FAIL_TEXT;
         PutText(X, Text, Col);
       end;
 

@@ -56,7 +56,7 @@ function TextMitAuslassung(C: TCanvas; const S: string; MaxW: Integer): string;
 implementation
 
 uses
-  LazUTF8, uLang;
+  LazUTF8, uLang, uStatusDraw;
 
 const
   { Download-Adressen (lassen sich in der INI überschreiben, siehe DownloadURL) }
@@ -678,10 +678,10 @@ begin
     case State of
       csWait   : begin Icon.Caption := '·';  Icon.Font.Color := clGrayText; end;
       csRunning: begin Icon.Caption := '…';  Icon.Font.Color := clGrayText; end;
-      csOK     : begin Icon.Caption := '✓';  Icon.Font.Color := clGreen;    end;
+      csOK     : begin Icon.Caption := '✓';  Icon.Font.Color := FarbeOK;    end;
       csWarn   : begin Icon.Caption := '!';  Icon.Font.Color := $0080FF;    end; // orange
-      csFail   : begin Icon.Caption := '✗';  Icon.Font.Color := clRed;      end;
-      csInfo   : begin Icon.Caption := 'i';  Icon.Font.Color := clNavy;     end;
+      csFail   : begin Icon.Caption := '✗';  Icon.Font.Color := FarbeFehler; end;
+      csInfo   : begin Icon.Caption := 'i';  Icon.Font.Color := FarbeInfo;  end;
     end;
     Detail.Canvas.Font := Detail.Font;
     Detail.Caption := TextMitAuslassung(Detail.Canvas, ADetail, Detail.Width);

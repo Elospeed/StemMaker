@@ -162,6 +162,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uReport"/>
       </Unit>
+      <Unit>
+        <Filename Value="udesign.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uDesign"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -171,6 +176,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="darkstyle"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

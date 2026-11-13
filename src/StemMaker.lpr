@@ -32,6 +32,7 @@
     uInfo      Info-Fenster (Anleitung, Version, Spenden, Logs)
     uPower     PC wach halten, Energiesparplan, Akku, Standby-Erkennung
     uSingleInstance  nur ein StemMaker gleichzeitig (Sperre beim Start)
+    uDesign    helles oder dunkles Design (Bibliothek im Ordner darkstyle)
   ============================================================================ }
 program StemMaker;
 
@@ -45,6 +46,7 @@ uses
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
   uSettings, uReport, uStatusDraw, uTurboTest, uLoad,
+  uDesign,           // hell / dunkel / wie Windows (ab 2.4)
   uSkalierung,       // kein Fenster grösser als der freie Bildschirm (DPI)
   uWine;             // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
@@ -59,6 +61,9 @@ begin
   RequireDerivedFormResource := True;
   Application.Scaled := True;
   Application.Title := APP_NAME;
+  { Hell/Dunkel (ab 2.4): muss vor dem ersten Fenster gesetzt werden,
+    darum ganz am Anfang (siehe uDesign) }
+  DesignAnwenden(StemIniFileName);
   Application.Initialize;
   WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
 

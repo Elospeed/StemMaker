@@ -994,7 +994,7 @@ begin
         lblTools.Caption := _('Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden')
       else
         lblTools.Caption := _('Tools: ffmpeg, demucs.cpp und Modell gefunden');
-      lblTools.Font.Color := clGreen;
+      lblTools.Font.Color := FarbeOK;
       lblTools.Hint := '';
       FToolsText := '';
     end
@@ -1002,7 +1002,7 @@ begin
     begin
       FToolsText := Format(_('Fehlt: %s'), [StringReplace(Trim(Problems),
         LineEnding, '  |  ', [rfReplaceAll])]);
-      lblTools.Font.Color := clRed;
+      lblTools.Font.Color := FarbeFehler;
       lblTools.Hint := Trim(Problems);
       lblTools.ShowHint := True;
       ZeigeToolsText;
@@ -2176,9 +2176,9 @@ begin
     lblTotal.Caption := Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
       [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]);
     if FWorker.FailCount > 0 then
-      lblTotal.Font.Color := CLR_FAIL_TEXT
+      lblTotal.Font.Color := FarbeFehler
     else
-      lblTotal.Font.Color := CLR_OK_TEXT;
+      lblTotal.Font.Color := FarbeOK;
   end;
   EndPower;                       // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);

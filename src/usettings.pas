@@ -17,7 +17,7 @@
     - Engine:     Turbo (StemOnnx) oder Klassisch (demucs.cpp), Gerät für
                   Turbo, Knopf "Vortest ..." (ab 2.0, siehe uTurboTest)
     - Stems:      Namen und Farben der 4 Stems (so zeigt Traktor sie an)
-    - Programm:   Sprache, beim Start nach Updates suchen, Symbol im
+    - Programm:   Sprache, Design (hell/dunkel), nach Updates suchen, Symbol im
                   Infobereich (neben der Uhr, siehe uMain)
     - Werkzeuge:  wo ffmpeg, demucs.cpp und die Modelle liegen (nur Anzeige,
                   ändern geht wie bisher in StemMaker.ini, Abschnitt [Tools])
@@ -74,7 +74,7 @@ procedure LoadGearGlyph(Btn: TBitBtn);
 implementation
 
 uses
-  uLang, uLangUI, uUpdate, uTurboTest;
+  uLang, uLangUI, uUpdate, uTurboTest, uDesign;
 
 {$I gearicon.inc}
 
@@ -91,6 +91,7 @@ type
     edtStem: array[0..3] of TEdit;
     clrStem: array[0..3] of TColorButton;
     cbLang: TComboBox;
+    cbDesign: TComboBox;          // Automatisch / Hell / Dunkel (ab 2.4)
     chkAutoUpdate: TCheckBox;
     chkTrayMinimize, chkTrayNotify: TCheckBox;
     cbEngine, cbDevice: TComboBox;
@@ -255,7 +256,7 @@ begin
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
   Width := 600;
-  Height := 752;
+  Height := 786;
   ShowHint := True;
 
   { Bei 150-200 % Anzeigeskalierung ist das Fenster höher als der
@@ -380,7 +381,7 @@ begin
   btnTraktor.OnClick := @btnTraktorColorsClick;
 
   { --- Programm --- }
-  gb := NewGroup(_('Programm'), 140);
+  gb := NewGroup(_('Programm'), 174);
   lbl := NewLabel(gb, 12, 10, _('Sprache:'));
   cbLang := TComboBox.Create(Self);
   cbLang.Parent := gb;
@@ -392,14 +393,29 @@ begin
   cbLang.ItemIndex := FLangCodes.IndexOf(LangCode);
   lbl := NewLabel(gb, 300, 10, _('(gilt ab dem nächsten Start)'));
   lbl.Font.Color := clGrayText;
-  chkAutoUpdate := NewCheck(gb, 12, 40, _('Beim Start nach Updates suchen'), '');
+  NewLabel(gb, 12, 44, _('Design:'));
+  cbDesign := TComboBox.Create(Self);
+  cbDesign.Parent := gb;
+  cbDesign.Style := csDropDownList;
+  cbDesign.SetBounds(110, 40, 180, 25);
+  cbDesign.Items.Add(_('Automatisch (wie Windows)'));
+  cbDesign.Items.Add(_('Hell'));
+  cbDesign.Items.Add(_('Dunkel'));
+  cbDesign.ItemIndex := Ord(DesignLesen(StemIniFileName));
+  cbDesign.Hint := _('Automatisch folgt der Windows-Einstellung ' +
+    '"Standard-App-Modus" (Personalisierung > Farben).') + LineEnding +
+    _('Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11.');
+  cbDesign.ShowHint := True;
+  lbl := NewLabel(gb, 300, 44, _('(gilt ab dem nächsten Start)'));
+  lbl.Font.Color := clGrayText;
+  chkAutoUpdate := NewCheck(gb, 12, 74, _('Beim Start nach Updates suchen'), '');
   chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);
-  chkTrayMinimize := NewCheck(gb, 12, 64,
+  chkTrayMinimize := NewCheck(gb, 12, 98,
     _('Beim Minimieren nur das Symbol neben der Uhr zeigen'),
     _('Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol ' +
     'neben der Uhr holt es zurück.') + LineEnding + _('Fährt man mit der ' +
     'Maus über das Symbol, steht dort der Fortschritt.'));
-  chkTrayNotify := NewCheck(gb, 12, 88,
+  chkTrayNotify := NewCheck(gb, 12, 122,
     _('Meldung neben der Uhr, wenn die Umwandlung fertig ist'),
     _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
@@ -461,7 +477,7 @@ end;
   nichts abgeschnitten wird }
 procedure TfrmSettings.FormShowSettings(Sender: TObject);
 begin
-  if Height < Scale96ToForm(752) then
+  if Height < Scale96ToForm(786) then
     Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 
@@ -523,16 +539,32 @@ end;
 
 { Sprache und Update-Prüfung haben eigene Speicher-Funktionen }
 procedure TfrmSettings.SaveProgramPrefs;
+var
+  Neustart: Boolean;
 begin
+  Neustart := False;
   UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
+  if (cbDesign.ItemIndex >= 0) and
+     (TDesignWahl(cbDesign.ItemIndex) <> DesignLesen(StemIniFileName)) then
+  begin
+    DesignSpeichern(StemIniFileName, TDesignWahl(cbDesign.ItemIndex));
+    Neustart := True;
+  end;
   SaveTurboSettings(TStemEngine(cbEngine.ItemIndex), TTurboDevice(cbDevice.ItemIndex));
   if (cbLang.ItemIndex >= 0) and (cbLang.ItemIndex < FLangCodes.Count) and
      (FLangCodes[cbLang.ItemIndex] <> LangCode) then
   begin
     LangSaveChoice(StemIniFileName, FLangCodes[cbLang.ItemIndex]);
-    MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
+    if Neustart then
+      MessageDlg(_('Sprache und Design werden beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0)
+    else
+      MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0);
+  end
+  else if Neustart then
+    MessageDlg(_('Das Design wird beim nächsten Start übernommen.'),
       mtInformation, [mbOK], 0);
-  end;
 end;
 
 { "Auto" an: Wert ausrechnen und Eingabefeld sperren }
@@ -600,6 +632,7 @@ procedure TfrmSettings.btnDefaultsClick(Sender: TObject);
 begin
   ShowPrefs(DefaultStemPrefs);
   chkAutoUpdate.Checked := True;
+  cbDesign.ItemIndex := Ord(dwAuto);
 end;
 
 { Farben aus einer echten Traktor-Pro-4-Stem-Datei (Atom 'stem', Version 2):

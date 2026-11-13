@@ -349,7 +349,7 @@ msgstr "(velocidad de este PC)"
 msgid "(aktueller Lauf)"
 msgstr "(ejecución actual)"
 
-#: usettings.pas:393
+#: usettings.pas:394 usettings.pas:409
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(se aplica tras el próximo inicio)"
 
@@ -661,19 +661,27 @@ msgstr "Elegir carpeta de salida"
 msgid "Ausgabeordner:"
 msgstr "Carpeta de salida:"
 
-#: usettings.pas:287
+#: usettings.pas:288
 msgid "Auto"
 msgstr "Auto"
 
-#: usettings.pas:288
+#: usettings.pas:289
 msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
 msgstr "Auto: tantas partes como núcleos físicos tenga el procesador (máximo 4) y la RAM pueda manejar"
 
-#: usettings.pas:329
+#: usettings.pas:330
 msgid "Automatisch (Grafikkarte, wenn sie mitmacht)"
 msgstr "Automático (tarjeta gráfica si funciona)"
 
-#: usettings.pas:331
+#: usettings.pas:401
+msgid "Automatisch (wie Windows)"
+msgstr "Automático (como Windows)"
+
+#: usettings.pas:405
+msgid "Automatisch folgt der Windows-Einstellung \"Standard-App-Modus\" (Personalisierung > Farben)."
+msgstr "Automático sigue el ajuste de Windows \"Elegir el modo de aplicación predeterminado\" (Personalización > Colores)."
+
+#: usettings.pas:332
 msgid "Automatisch: Die Grafikkarte wird nur genommen, wenn sie im Test gleiche Stems liefert und schneller ist als die CPU (Beta)."
 msgstr "Automático: la tarjeta gráfica solo se usa si en la prueba da los mismos stems y es más rápida que la CPU (beta)."
 
@@ -705,11 +713,11 @@ msgstr "Bass fix: mover graves profundos de Other a Bass"
 msgid "Beenden"
 msgstr "Salir"
 
-#: usettings.pas:295
+#: usettings.pas:296
 msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
 msgstr "Con carpetas completas: Música\\House\\2024\\track.mp3 pasa a ser <carpeta de salida>\\House\\2024\\track.stem.mp4"
 
-#: usettings.pas:319
+#: usettings.pas:320
 msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
 msgstr "Ambos calculan el mismo modelo, los stems son iguales. Turbo es unas 5-8 veces más rápido en la CPU y puede usar la tarjeta gráfica."
 
@@ -717,11 +725,11 @@ msgstr "Ambos calculan el mismo modelo, los stems son iguales. Turbo es unas 5-8
 msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
 msgstr "Al cargar no se modifica nada. Los archivos solo se escriben al pulsar «Guardar», y solo los que tienen cambios."
 
-#: usettings.pas:398
+#: usettings.pas:414
 msgid "Beim Minimieren nur das Symbol neben der Uhr zeigen"
 msgstr "Al minimizar, mostrar solo el icono junto al reloj"
 
-#: usettings.pas:395 uupdateui.pas:445
+#: usettings.pas:411 uupdateui.pas:445
 msgid "Beim Start nach Updates suchen"
 msgstr "Buscar actualizaciones al inicio"
 
@@ -861,7 +869,7 @@ msgstr "Elegir imagen de portada"
 msgid "DAW-Export: „Song“ + „Song_drums“ … „_vocals“"
 msgstr "Exportación DAW: «Canción» + «Canción_drums» … «_vocals»"
 
-#: usettings.pas:307
+#: usettings.pas:308
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "Después de esto, todo se restablecerá a como estaba antes. La pantalla puede apagarse."
 
@@ -881,7 +889,11 @@ msgstr "¡Gracias a todos los que apoyan StemMaker con traducciones, pruebas, id
 msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
 msgstr "No se puede leer la imagen del portapapeles."
 
-#: usettings.pas:399
+#: usettings.pas:566
+msgid "Das Design wird beim nächsten Start übernommen."
+msgstr "El tema se aplicará en el próximo inicio."
+
+#: usettings.pas:415
 msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
 msgstr "La ventana desaparece de la barra de tareas. Haz clic en el icono junto al reloj para recuperarla."
 
@@ -997,6 +1009,10 @@ msgstr "La prueba previa no ha funcionado (código %s). StemMaker intentará usa
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "El anillo azul muestra el tiempo restante."
 
+#: usettings.pas:396
+msgid "Design:"
+msgstr "Tema:"
+
 #: playerform.pas:776
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "Los 4 stems mezclados - con mute / solo / volumen (tecla S)"
@@ -1045,7 +1061,7 @@ msgstr "La lista muestra las tres, se guarda la clásica (p. ej. Am)."
 msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
 msgstr "La suma de comprobación (SHA-256) de la actualización no coincide. El archivo fue descartado, no se ha realizado ningún cambio en StemMaker."
 
-#: usettings.pas:533
+#: usettings.pas:562
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "El idioma se aplicará en el próximo inicio."
 
@@ -1053,7 +1069,7 @@ msgstr "El idioma se aplicará en el próximo inicio."
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "La búsqueda de actualizaciones falló: %s"
 
-#: usettings.pas:377
+#: usettings.pas:378
 msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
 msgstr "Traktor asigna los iconos de forma fija a las posiciones 1-4; no se pueden cambiar."
 
@@ -1117,6 +1133,14 @@ msgstr "Descarga incompleta"
 msgid "Du hast die neueste Version (%s)."
 msgstr "Tienes la última versión (%s)."
 
+#: usettings.pas:403
+msgid "Dunkel"
+msgstr "Oscuro"
+
+#: usettings.pas:407
+msgid "Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11."
+msgstr "Oscuro necesita Windows 10 (versión 1809 o posterior) o Windows 11."
+
 #: packerform.pas:494
 msgid "Eigene Muster"
 msgstr "Patrones propios"
@@ -1129,7 +1153,7 @@ msgstr "Una pista de 3 minutos tarda aquí unos %s con htdemucs (estándar) y %s
 msgid "Einfügen"
 msgstr "Pegar"
 
-#: usettings.pas:254 umain.lfm:148
+#: usettings.pas:255 umain.lfm:148
 msgid "Einstellungen"
 msgstr "Configuración"
 
@@ -1153,11 +1177,11 @@ msgstr "Plan de energía cambiado temporalmente de \"%s\" a \"%s\"; se restaurar
 msgid "Energiesparplan vorübergehend: %s -> %s"
 msgstr "Plan de energía temporalmente: %s -> %s"
 
-#: usettings.pas:311
+#: usettings.pas:312
 msgid "Engine (trennt die Stems)"
 msgstr "Motor (separa los stems)"
 
-#: usettings.pas:312
+#: usettings.pas:313
 msgid "Engine:"
 msgstr "Motor:"
 
@@ -1237,7 +1261,7 @@ msgstr "Color"
 msgid "Farbe des Stems in Traktor (klicken zum Ändern)"
 msgstr "Color del stem en Traktor (clic para cambiar)"
 
-#: usettings.pas:365
+#: usettings.pas:366
 msgid "Farbe wählen"
 msgstr "Elegir color"
 
@@ -1337,7 +1361,7 @@ msgstr "Libre bajo la licencia MIT. Incluye ffmpeg (LGPL)."
 msgid "Freier Text, z.B. Notizen fürs Auflegen"
 msgstr "Texto libre, p. ej. notas para pinchar"
 
-#: usettings.pas:400
+#: usettings.pas:416
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "Al pasar el ratón sobre el icono se muestra el progreso."
 
@@ -1361,7 +1385,7 @@ msgstr "La prueba necesita el modelo htdemucs o htdemucs_ft. Se descarga al inic
 msgid "Genre"
 msgstr "Género"
 
-#: usettings.pas:324
+#: usettings.pas:325
 msgid "Gerät:"
 msgstr "Dispositivo:"
 
@@ -1425,6 +1449,10 @@ msgstr "Si el archivo master no tiene portada, se usa cover.jpg, folder.jpg, fro
 msgid "Helfende"
 msgstr "Colaboradores"
 
+#: usettings.pas:402
+msgid "Hell"
+msgstr "Claro"
+
 #: umain.pas:2267
 msgid "Herunterfahren abgebrochen."
 msgstr "Apagado cancelado."
@@ -1481,7 +1509,7 @@ msgstr "OÍR"
 msgid "Höchstleistung"
 msgstr "Alto rendimiento"
 
-#: usettings.pas:433
+#: usettings.pas:449
 msgid "INI-Ordner öffnen"
 msgstr "Abrir carpeta INI"
 
@@ -1609,11 +1637,11 @@ msgstr "No es un archivo stem: "
 msgid "Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen."
 msgstr "No se ha encontrado ningún nombre conocido. Ajusta tú mismo las carpetas y los patrones."
 
-#: usettings.pas:321
+#: usettings.pas:322
 msgid "Klappt Turbo bei einer Datei nicht, nimmt StemMaker für diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch."
 msgstr "Si Turbo falla con un archivo, StemMaker usa automáticamente Clásico para ese archivo. htdemucs v3 siempre usa Clásico."
 
-#: usettings.pas:318
+#: usettings.pas:319
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr "Clásico (demucs.cpp, como hasta la 1.9)"
 
@@ -1877,7 +1905,7 @@ msgstr "máster «%s»"
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "Rueda del ratón: zoom. Clic: saltar."
 
-#: usettings.pas:403
+#: usettings.pas:419
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "Notificación junto al reloj cuando la conversión haya terminado"
 
@@ -1889,7 +1917,7 @@ msgstr "Mensaje de ffmpeg:"
 msgid "Mindestens eine Prüfung ist fehlgeschlagen (rot). Details erscheinen beim Überfahren der Zeile mit der Maus."
 msgstr "Al menos una comprobación ha fallado (rojo). Pasa el ratón sobre la línea para ver los detalles."
 
-#: usettings.pas:338
+#: usettings.pas:339
 msgid "Misst CPU und Grafikkarte und sagt, wie lange ein Track auf diesem PC etwa dauert"
 msgstr "Mide la CPU y la tarjeta gráfica y te dice cuánto tarda más o menos una pista en este PC"
 
@@ -1917,7 +1945,7 @@ msgstr "Leyendo el modelo"
 msgid "Modell nicht installiert"
 msgstr "Modelo no instalado"
 
-#: usettings.pas:410
+#: usettings.pas:426
 msgid "Modelle:"
 msgstr "Modelos:"
 
@@ -1977,7 +2005,7 @@ msgstr "No volver a preguntar"
 msgid "Nicht senden"
 msgstr "No enviar"
 
-#: usettings.pas:583
+#: usettings.pas:615
 msgid "Noch kein Vortest auf diesem PC."
 msgstr "Todavía no hay prueba previa en este PC."
 
@@ -1993,7 +2021,7 @@ msgstr "Número en el álbum, p. ej. 3 o 3/12 (pista 3 de 12)"
 msgid "Nummern: „Song_0“ (Master) bis „Song_4“"
 msgstr "Números: «Canción_0» (master) a «Canción_4»"
 
-#: usettings.pas:330
+#: usettings.pas:331
 msgid "Nur CPU"
 msgstr "Solo CPU"
 
@@ -2001,15 +2029,15 @@ msgstr "Solo CPU"
 msgid "Nur lesen (alter oder beschädigter ID3-Tag)"
 msgstr "Solo lectura (etiqueta ID3 antigua o dañada)"
 
-#: usettings.pas:301
+#: usettings.pas:302
 msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
 msgstr "Solo con carpeta de salida propia (no si en la ventana principal está activado \"guardar junto al archivo original\")."
 
-#: usettings.pas:404
+#: usettings.pas:420
 msgid "Nur wenn StemMaker gerade nicht im Vordergrund ist."
 msgstr "Solo cuando StemMaker no esté en primer plano."
 
-#: usettings.pas:449
+#: usettings.pas:465
 msgid "OK"
 msgstr "OK"
 
@@ -2125,7 +2153,7 @@ msgstr "Apagar el PC al finalizar"
 msgid "PC wird heruntergefahren ..."
 msgstr "Apagando el PC..."
 
-#: usettings.pas:305
+#: usettings.pas:306
 msgid "PC während der Konvertierung wach halten (kein Standby)"
 msgstr "Mantener el PC despierto durante la conversión (sin suspensión)"
 
@@ -2165,7 +2193,7 @@ msgstr "Play / pausa (Espacio)"
 msgid "Problem gefunden"
 msgstr "Problema encontrado"
 
-#: usettings.pas:383
+#: usettings.pas:384
 msgid "Programm"
 msgstr "Programa"
 
@@ -2193,7 +2221,7 @@ msgstr "Fuente: %s -> archivo stem AAC %d kbit/s"
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "Fuente: %s -> archivo stem AAC %d kbit/s (automático)"
 
-#: usettings.pas:567
+#: usettings.pas:599
 msgid "RAM knapp!"
 msgstr "¡Poca RAM!"
 
@@ -2269,11 +2297,11 @@ msgstr "Ya has convertido %d pistas en stems"
 msgid "Server meldet HTTP %d"
 msgstr "El servidor devolvió HTTP %d"
 
-#: usettings.pas:375
+#: usettings.pas:376
 msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
 msgstr "Establece los 4 colores según los valores de los propios archivos stem de Traktor (naranja, morado, verde, azul claro). Los nombres se mantienen."
 
-#: usettings.pas:426
+#: usettings.pas:442
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr "Restaura los valores de esta ventana a los valores por defecto (el idioma se mantiene)."
 
@@ -2321,7 +2349,11 @@ msgstr "Guardar..."
 msgid "Spender"
 msgstr "Donantes"
 
-#: usettings.pas:384
+#: usettings.pas:559
+msgid "Sprache und Design werden beim nächsten Start übernommen."
+msgstr "El idioma y el tema se aplicarán en el próximo inicio."
+
+#: usettings.pas:385
 msgid "Sprache:"
 msgstr "Idioma:"
 
@@ -2337,7 +2369,7 @@ msgstr "Pistas : "
 msgid "Später"
 msgstr "Más tarde"
 
-#: usettings.pas:425
+#: usettings.pas:441
 msgid "Standard wiederherstellen"
 msgstr "Restablecer valores por defecto"
 
@@ -2517,7 +2549,7 @@ msgstr "No se pudo iniciar StemTagger: %s"
 msgid "StemTagger nicht gefunden:%s%s"
 msgstr "No se encontró StemTagger:%s%s"
 
-#: usettings.pas:352
+#: usettings.pas:353
 msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
 msgstr "Stems (nombres y colores como se muestran en Traktor)"
 
@@ -2557,7 +2589,7 @@ msgstr "Etiquetas de la fuente: BPM %s, sin tonalidad"
 msgid "Tags lesen"
 msgstr "Leyendo etiquetas"
 
-#: usettings.pas:276
+#: usettings.pas:277
 msgid "Teile:"
 msgstr "Partes:"
 
@@ -2641,7 +2673,7 @@ msgstr "De todos modos, Traktor mide el tempo al analizar."
 msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
 msgstr "Traktor y STEMS son marcas de Native Instruments GmbH. StemMaker es un proyecto independiente y no está afiliado a Native Instruments."
 
-#: usettings.pas:374
+#: usettings.pas:375
 msgid "Traktor-Farben"
 msgstr "Colores de Traktor"
 
@@ -2677,7 +2709,7 @@ msgstr "Turbo (StemOnnx), tarjeta gráfica si funciona"
 msgid "Turbo (StemOnnx), nur CPU"
 msgstr "Turbo (StemOnnx), solo CPU"
 
-#: usettings.pas:317
+#: usettings.pas:318
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (rápido, estándar)"
 
@@ -2701,7 +2733,7 @@ msgstr "Prueba previa de Turbo"
 msgid "Ultimative Leistung"
 msgstr "Máximo rendimiento"
 
-#: usettings.pas:273
+#: usettings.pas:274
 msgid "Umwandlung"
 msgstr "Conversión"
 
@@ -2721,7 +2753,7 @@ msgstr "Error inesperado"
 msgid "Unterordner durchsuchen"
 msgstr "Buscar en subcarpetas"
 
-#: usettings.pas:294
+#: usettings.pas:295
 msgid "Unterordner im Ausgabeordner nachbauen"
 msgstr "Recrear subcarpetas en la carpeta de salida"
 
@@ -2745,7 +2777,7 @@ msgstr "No se pudo instalar la actualización: %s"
 msgid "Verbindung fehlgeschlagen (Fehler %d)"
 msgstr "Conexión fallida (error %d)"
 
-#: usettings.pas:306
+#: usettings.pas:307
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "Evita la suspensión y desactiva temporalmente el modo de ahorro de energía."
 
@@ -2765,7 +2797,7 @@ msgstr "Sobrescribir existentes"
 msgid "Vorlage:"
 msgstr "Plantilla:"
 
-#: usettings.pas:337
+#: usettings.pas:338
 msgid "Vortest ..."
 msgstr "Prueba previa ..."
 
@@ -2809,11 +2841,11 @@ msgstr "Otros modelos"
 msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
 msgstr "Cuando todos los archivos estén listos, el PC se apagará tras 60 segundos (se puede cancelar)."
 
-#: usettings.pas:407
+#: usettings.pas:423
 msgid "Werkzeuge"
 msgstr "Herramientas"
 
-#: usettings.pas:274
+#: usettings.pas:275
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "Cuántas partes de la canción procesa demucs al mismo tiempo. Cada parte también utiliza varios núcleos y requiere unos 2 GB de RAM."
 
@@ -3045,11 +3077,11 @@ msgstr "no es más rápida que la CPU"
 msgid "ja"
 msgstr "sí"
 
-#: usettings.pas:562
+#: usettings.pas:594
 msgid "je %d Kerne (%d von %d)"
 msgstr "%d núcleos cada una (%d de %d)"
 
-#: usettings.pas:560
+#: usettings.pas:592
 msgid "je 1 Kern (%d von %d)"
 msgstr "1 núcleo cada una (%d de %d)"
 
@@ -3153,7 +3185,7 @@ msgstr "transcurrido %s   |   restante %s   |   %.1f MB/s"
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "por %s  ·  stems de Traktor desde archivos de audio  ·  gratis && código abierto  ·  Build: %s"
 
-#: usettings.pas:292
+#: usettings.pas:293
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "sobrescribir archivos stem existentes"
 
@@ -3181,7 +3213,7 @@ msgstr "empaquetando ..."
 msgid "z.B. die von Elospeed StemMaker erzeugten."
 msgstr "p. ej. los creados con Elospeed StemMaker."
 
-#: usettings.pas:411
+#: usettings.pas:427
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "Cámbialo solo si hace falta: StemMaker.ini, sección [Tools] (con StemMaker cerrado)."
 
@@ -3193,7 +3225,7 @@ msgstr "Descartar cambios"
 msgid "ÖFFNEN"
 msgstr "ABRIR"
 
-#: usettings.pas:434
+#: usettings.pas:450
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Abre la carpeta donde se encuentra StemMaker.ini"
 
