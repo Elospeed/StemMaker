@@ -6,6 +6,13 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.4 – aún no publicada
+### Nuevo
+- Claro u oscuro: el tema se elige en los ajustes, por defecto como Windows
+- Ayuda: el botón «?» y la tecla F1 abren la guía ilustrada en el lugar correcto
+### Corregido
+- Ajustes: el resultado de la prueba previa ya no se corta y aparece en el idioma elegido
+
 ## 2.3 – 10 de noviembre de 2026
 ### Nuevo
 - AddOn StemPacker: empaquetar pistas terminadas (máster + stems) en archivos stem sin IA

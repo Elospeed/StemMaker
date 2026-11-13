@@ -135,7 +135,7 @@ On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (ap
 
 At the top is the list of files with the AddOn bar next to it on the right, below it the settings for the next conversion, and at the bottom the progress and the log.
 
-![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
+![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
 
 ::: marken
 1. **Info**: version, updates, error report and logs (chapter [§](#info)). Next to it **?**: opens this guide. The [F1]{.taste} key does the same in every window, each time at the matching section.
@@ -284,7 +284,7 @@ The main window only holds what you change per conversion:
 
 Everything you set up once is behind the gear button **More settings…**.
 
-![The "Settings" window](img/en/einstellungen.png){marken="1:2.3,9.9 2:2.3,15.4 3:2.3,27.9 4:51.5,40.4 5:15,56.2 6:16.6,75.3 7:2.3,96.6"}
+![The "Settings" window](img/en/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
 
 ::: marken
 1. **Parts / Auto**: how many parts of the song are separated at the same time. **Auto** (default) uses as many parts as the processor has real cores (at most 4), and only as many as the RAM can handle (a good 2 GB per part). Next to it you see how the cores are shared out. This only applies to Classic; Turbo spreads the work over all cores by itself.
@@ -451,7 +451,7 @@ It uses StemMaker's ffmpeg and language files. A detailed English guide comes as
 
 The **Info** button at the top left opens the Info window with version, build date and the name of the current log.
 
-![The Info window](img/en/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![The Info window](img/en/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
 
 ::: marken
 1. **Guide**, **Versions**, **Thanks** and **Licenses**: the short version (README), what each version brought, everyone who helped, and the disclaimer and license texts.

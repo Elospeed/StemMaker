@@ -6,6 +6,13 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.4 – noch nicht veröffentlicht
+### Neu
+- Hell oder dunkel: Design in den Einstellungen wählbar, Standard wie Windows
+- Hilfe: Knopf „?“ und Taste F1 öffnen die bebilderte Anleitung an der passenden Stelle
+### Behoben
+- Einstellungen: Vortest-Ergebnis nicht mehr abgeschnitten und in der gewählten Sprache
+
 ## 2.3 – 10. November 2026
 ### Neu
 - AddOn StemPacker: fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen

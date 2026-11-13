@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.3
+# Elospeed StemMaker 2.4
 
 **by Elospeed**
 
@@ -118,6 +118,10 @@ StemMaker\
 The demucs programs are fully statically linked; they need no DLLs and no installation. StemMaker detects which instructions your CPU supports and picks the fastest matching build: AVX2, AVX or generic. In testing, the AVX build was a good 30 % faster than generic.
 
 ## Usage
+
+**Illustrated guide:** in StemMaker the **?** button or the **F1** key opens it in your browser, right at the matching section (German, English, Spanish; it comes in the `hilfe` folder and works offline). Online: [English](https://elospeed.github.io/StemMaker/hilfe/en.html) · [Deutsch](https://elospeed.github.io/StemMaker/hilfe/de.html) · [Español](https://elospeed.github.io/StemMaker/hilfe/es.html), also as [PDF](https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-en.pdf).
+
+**Light or dark:** More settings → Program → Theme: Automatic (like Windows, default), Light or Dark.
 
 - **Drag** files or whole folders **into the window**, or use "Add files..." or "Folder...". You can also drop them straight onto `StemMaker.exe`.
 - **Start** processes the list one file after another. "Cancel" stops immediately and cleans up the temp files.

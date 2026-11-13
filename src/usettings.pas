@@ -388,18 +388,18 @@ begin
   cbLang := TComboBox.Create(Self);
   cbLang.Parent := gb;
   cbLang.Style := csDropDownList;
-  cbLang.SetBounds(110, 6, 180, 25);
+  cbLang.SetBounds(110, 6, 210, 25);
   FLangCodes := LangAvailable;
   for I := 0 to FLangCodes.Count - 1 do
     cbLang.Items.Add(LangDisplayName(FLangCodes[I]));
   cbLang.ItemIndex := FLangCodes.IndexOf(LangCode);
-  lbl := NewLabel(gb, 300, 10, _('(gilt ab dem nächsten Start)'));
+  lbl := NewLabel(gb, 330, 10, _('(gilt ab dem nächsten Start)'));
   lbl.Font.Color := clGrayText;
   NewLabel(gb, 12, 44, _('Design:'));
   cbDesign := TComboBox.Create(Self);
   cbDesign.Parent := gb;
   cbDesign.Style := csDropDownList;
-  cbDesign.SetBounds(110, 40, 180, 25);
+  cbDesign.SetBounds(110, 40, 210, 25);
   cbDesign.Items.Add(_('Automatisch (wie Windows)'));
   cbDesign.Items.Add(_('Hell'));
   cbDesign.Items.Add(_('Dunkel'));
@@ -408,7 +408,7 @@ begin
     '"Standard-App-Modus" (Personalisierung > Farben).') + LineEnding +
     _('Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11.');
   cbDesign.ShowHint := True;
-  lbl := NewLabel(gb, 300, 44, _('(gilt ab dem nächsten Start)'));
+  lbl := NewLabel(gb, 330, 44, _('(gilt ab dem nächsten Start)'));
   lbl.Font.Color := clGrayText;
   chkAutoUpdate := NewCheck(gb, 12, 74, _('Beim Start nach Updates suchen'), '');
   chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);

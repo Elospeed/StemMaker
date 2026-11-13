@@ -6,6 +6,13 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.4 – not released yet
+### New
+- Light or dark: choose the theme in the settings, default follows Windows
+- Help: the "?" button and the F1 key open the illustrated guide at the right place
+### Fixed
+- Settings: pre-test result no longer cut off and shown in the chosen language
+
 ## 2.3 – 10 November 2026
 ### New
 - StemPacker add-on: pack finished tracks (master + stems) into stem files without AI

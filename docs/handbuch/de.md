@@ -135,7 +135,7 @@ Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (
 
 Oben ist die Liste der Dateien mit der AddOn-Leiste rechts daneben, darunter die Einstellungen für die nächste Umwandlung, ganz unten der Fortschritt und das Protokoll.
 
-![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
+![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
 
 ::: marken
 1. **Info**: Version, Updates, Fehlerbericht und Logs (Kapitel [§](#info)). Daneben **?**: öffnet diese Anleitung. Die Taste [F1]{.taste} tut das in jedem Fenster, jeweils beim passenden Abschnitt.
@@ -284,7 +284,7 @@ Im Hauptfenster steht nur, was man pro Umwandlung ändert:
 
 Alles, was man einmal einstellt, liegt hinter dem Zahnrad **Weitere Einstellungen…**.
 
-![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:2.3,9.9 2:2.3,15.4 3:2.3,27.9 4:51.5,40.4 5:15,56.2 6:16.6,75.3 7:2.3,96.6"}
+![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
 
 ::: marken
 1. **Teile / Auto**: wie viele Teile des Songs gleichzeitig getrennt werden. **Auto** (Standard) nimmt so viele Teile, wie der Prozessor echte Kerne hat (höchstens 4), und nur so viele, wie der Arbeitsspeicher verkraftet (pro Teil gut 2 GB). Daneben steht, wie die Kerne verteilt werden. Das gilt nur für Klassisch; Turbo verteilt die Arbeit selbst auf alle Kerne.
@@ -451,7 +451,7 @@ Er nimmt ffmpeg und die Sprachdateien von StemMaker. Eine ausführliche englisch
 
 Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum und dem Namen des aktuellen Logs.
 
-![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
 
 ::: marken
 1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzfassung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.

@@ -135,7 +135,7 @@ En el **primer inicio** aún faltan ffmpeg (aprox. 60 MB) y el modelo de separac
 
 Arriba está la lista de archivos con la barra de AddOns a su derecha, debajo los ajustes para la próxima conversión y abajo del todo el progreso y el registro.
 
-![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.4,5.3 2:10.2,5.3 3:36.5,5.3 4:58.6,5.3 5:49.9,39.6 6:11,48.7 7:14.5,63.9 8:1.4,71.6 9:50.6,71.2 10:49.9,87.7 11:81.8,98.3"}
+![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
 
 ::: marken
 1. **Info**: versión, actualizaciones, informe de error y registros (capítulo [§](#info)). Al lado **?**: abre esta guía. La tecla [F1]{.taste} hace lo mismo en cualquier ventana, siempre en la sección correspondiente.
@@ -284,7 +284,7 @@ En la ventana principal solo está lo que se cambia en cada conversión:
 
 Todo lo que se configura una sola vez está detrás del botón del engranaje **Más ajustes…**.
 
-![La ventana «Configuración»](img/es/einstellungen.png){marken="1:2.3,9.9 2:2.3,15.4 3:2.3,27.9 4:51.5,40.4 5:15,56.2 6:16.6,75.3 7:2.3,96.6"}
+![La ventana «Configuración»](img/es/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
 
 ::: marken
 1. **Partes / Auto**: cuántas partes de la canción se separan a la vez. **Auto** (por defecto) usa tantas partes como núcleos reales tenga el procesador (como máximo 4), y solo tantas como aguante la RAM (algo más de 2 GB por parte). Al lado se ve cómo se reparten los núcleos. Esto solo vale para Clásico; Turbo reparte el trabajo él solo entre todos los núcleos.
@@ -451,7 +451,7 @@ Usa el ffmpeg y los archivos de idioma de StemMaker. Una guía detallada en ingl
 
 El botón **Info** de arriba a la izquierda abre la ventana Info con la versión, la fecha de compilación y el nombre del registro actual.
 
-![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:2.2,88.2 3:31.3,88.2 4:60.4,88.2 5:2.2,95.6"}
+![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
 
 ::: marken
 1. **Guía**, **Versiones**, **Gracias** y **Licencias**: la versión breve (README), qué trajo cada versión, todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.
