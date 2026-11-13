@@ -185,6 +185,7 @@ var
   Want: string;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'fehlerbericht';   // F1 öffnet die Hilfe hier (uHilfe)
   { auch der Anlass (Fehlermeldung) kann Pfade enthalten }
   FReason := AnonymizeReport(Reason, GetEnvironmentVariableUTF8('USERPROFILE'),
     GetEnvironmentVariableUTF8('USERNAME'));

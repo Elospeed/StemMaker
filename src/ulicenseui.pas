@@ -50,6 +50,7 @@ var
   btnQuit: TButton;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'sprache-lizenz';   // F1 öffnet die Hilfe hier (uHilfe)
   Caption := APP_NAME + ' - ' + TermsTitle;
   BorderStyle := bsSizeable;
   BorderIcons := [biSystemMenu];

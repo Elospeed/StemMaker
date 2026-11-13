@@ -74,7 +74,7 @@ procedure LoadGearGlyph(Btn: TBitBtn);
 implementation
 
 uses
-  uLang, uLangUI, uUpdate, uTurboTest, uDesign;
+  uLang, uLangUI, uUpdate, uTurboTest, uDesign, uHilfe;
 
 {$I gearicon.inc}
 
@@ -105,6 +105,7 @@ type
     procedure btnDefaultsClick(Sender: TObject);
     procedure btnTraktorColorsClick(Sender: TObject);
     procedure btnProgDirClick(Sender: TObject);
+    procedure btnHilfeClick(Sender: TObject);
     function NewGroup(const ACaption: string; AHeight: Integer): TGroupBox;
     function NewCheck(AParent: TWinControl; X, Y: Integer;
       const ACaption, AHint: string): TCheckBox;
@@ -231,7 +232,7 @@ const
 var
   gb: TGroupBox;
   pnlBottom: TPanel;
-  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor, btnTest: TButton;
+  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor, btnTest, btnHilfe: TButton;
   lbl: TLabel;
   edt: TEdit;
   I: Integer;
@@ -252,10 +253,11 @@ var
 
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'weitere-einstellungen';   // F1 öffnet die Hilfe hier (uHilfe)
   Caption := _('Einstellungen');
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
-  Width := 600;
+  Width := 630;
   Height := 786;
   ShowHint := True;
 
@@ -450,6 +452,14 @@ begin
   btnProgDir.Hint := _('Öffnet den Ordner, in dem StemMaker.ini liegt');
   btnProgDir.OnClick := @btnProgDirClick;
 
+  { "?" = Hilfe zu diesem Fenster (wie F1, uHilfe) }
+  btnHilfe := TButton.Create(Self);
+  btnHilfe.Parent := pnlBottom;
+  btnHilfe.SetBounds(362, 8, 32, 32);
+  btnHilfe.Caption := '?';
+  btnHilfe.Hint := _('Hilfe zu diesem Fenster (F1)');
+  btnHilfe.OnClick := @btnHilfeClick;
+
   btnCancel := TButton.Create(Self);
   btnCancel.Parent := pnlBottom;
   btnCancel.SetBounds(pnlBottom.ClientWidth - 110, 8, 100, 32);
@@ -478,7 +488,7 @@ end;
 procedure TfrmSettings.FormShowSettings(Sender: TObject);
 begin
   if Height < Scale96ToForm(786) then
-    Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
+    Width := Scale96ToForm(630) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 
 destructor TfrmSettings.Destroy;
@@ -652,6 +662,11 @@ end;
 procedure TfrmSettings.btnProgDirClick(Sender: TObject);
 begin
   OpenDocument(ExtractFilePath(StemIniFileName));
+end;
+
+procedure TfrmSettings.btnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen(HelpKeyword);
 end;
 
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;

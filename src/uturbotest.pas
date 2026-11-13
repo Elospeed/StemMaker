@@ -378,6 +378,7 @@ var
   pnl: TPanel;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'vortest';   // F1 öffnet die Hilfe hier (uHilfe)
   FSettings := S;
   FValues := TStringList.Create;
   Caption := _('Turbo-Vortest');

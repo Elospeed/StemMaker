@@ -547,6 +547,7 @@ constructor TfrmInit.CreateInit(AModel: TStemModel; AAutoClose: Boolean);
 begin
   { CreateNew statt Create: dieses Fenster hat keine .lfm-Datei }
   inherited CreateNew(nil);
+  HelpKeyword := 'pruefen';   // F1 öffnet die Hilfe hier (uHilfe)
   FAutoClose := AAutoClose;
   { Pfade genauso ermitteln wie das Hauptprogramm (Standard + INI) }
   FSettings := DefaultStemSettings;

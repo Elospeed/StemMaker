@@ -38,7 +38,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar,
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar, uHilfe,
   uSkalierung, uWine;
 
 {$I version.inc}   // APP_VERSION
@@ -103,6 +103,7 @@ type
   TfrmMain = class(TForm)
     btnAddFiles: TButton;
     btnInfo: TButton;
+    btnHelp: TButton;
     btnCopyLog: TButton;
     btnAddFolder: TButton;
     btnRemove: TButton;
@@ -174,6 +175,7 @@ type
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
     procedure btnCopyLogClick(Sender: TObject);
   private
     FWorker: TStemWorker;          // nil = gerade keine Umwandlung
@@ -626,6 +628,7 @@ var
   I: Integer;
 begin
   TranslateComponent(Self);   // Texte aus umain.lfm übersetzen (uLangUI)
+  HelpKeyword := 'hauptfenster';   // F1 öffnet die Hilfe hier (uHilfe)
   memLog.Font.Name := MonoFontName;   // Consolas hat keine japanischen Zeichen
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
@@ -793,6 +796,12 @@ end;
 procedure TfrmMain.btnInfoClick(Sender: TObject);
 begin
   ShowInfoDialog(APP_VERSION, APP_AUTHOR, @UpdateFound);
+end;
+
+{ "?" oben links: Anleitung beim Hauptfenster öffnen (F1 geht überall, uHilfe) }
+procedure TfrmMain.btnHelpClick(Sender: TObject);
+begin
+  HilfeZeigen('hauptfenster');
 end;
 
 procedure TfrmMain.btnCopyLogClick(Sender: TObject);

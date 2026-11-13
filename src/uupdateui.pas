@@ -306,6 +306,7 @@ var
   btnCancel: TButton;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'updates';   // F1 öffnet die Hilfe hier (uHilfe)
   Caption := APP_NAME + ' - ' + Format(_('Update auf %s'), [Version]);
   BorderStyle := bsDialog;
   Position := poScreenCenter;

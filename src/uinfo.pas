@@ -16,7 +16,8 @@
         "Danke"    : Spender und Helfende (ab 1.9)
         "Lizenzen" : Haftungsausschluss (uLicense), LICENSE und
                      THIRD-PARTY-NOTICES.md (ab 1.7)
-    - darüber: "Nach Updates suchen" (ab 1.7)
+    - darüber: "Nach Updates suchen" (ab 1.7), "Fehlerbericht senden..."
+      und "Hilfe" (ab 2.4, öffnet die bebilderte Anleitung, uHilfe)
     - unten: "Logs-Ordner öffnen", "Jetzt spenden", "Schließen"
 
   Die Anleitung wird aus dem Programmordner gelesen:
@@ -47,7 +48,7 @@ procedure ShowInfoDialog(const Version, Author: string;
 implementation
 
 uses
-  Dialogs, uStemJob, uLang, uLicense, uReport;
+  Dialogs, uStemJob, uLang, uLicense, uReport, uHilfe;
 
 type
   TfrmInfo = class(TForm)
@@ -58,6 +59,7 @@ type
     procedure btnDonateClick(Sender: TObject);
     procedure btnLogsClick(Sender: TObject);
     procedure btnReportClick(Sender: TObject);
+    procedure btnHilfeClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure lblChangelogClick(Sender: TObject);
   public
@@ -383,9 +385,10 @@ var
   pcText: TPageControl;
   tsHelp, tsVersions, tsThanks, tsLic: TTabSheet;
   pnlBottom, pnlUpdate: TPanel;
-  btnDonate, btnLogs, btnClose, btnReport: TButton;
+  btnDonate, btnLogs, btnClose, btnReport, btnHilfe: TButton;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'info';   // F1 öffnet die Hilfe hier (uHilfe)
   FVersion := Version;
   Caption := _('Info') + ' - ' + APP_NAME + ' ' + Version;
   Position := poMainFormCenter;
@@ -474,6 +477,15 @@ begin
     'an Elospeed zu schicken. Nichts wird automatisch gesendet.');
   btnReport.ShowHint := True;
   btnReport.OnClick := @btnReportClick;
+
+  { Bebilderte Anleitung im Browser (liegt im Ordner hilfe, ab 2.4) }
+  btnHilfe := TButton.Create(Self);
+  btnHilfe.Parent := pnlUpdate;
+  btnHilfe.SetBounds(430, 8, 150, 32);
+  btnHilfe.Caption := _('Hilfe (F1)');
+  btnHilfe.Hint := _('Öffnet die bebilderte Anleitung im Browser.');
+  btnHilfe.ShowHint := True;
+  btnHilfe.OnClick := @btnHilfeClick;
 
   { --- Mitte: vier Reiter (Anleitung, Versionen, Danke, Lizenzen) --- }
   pcText := TPageControl.Create(Self);
@@ -596,6 +608,11 @@ end;
 procedure TfrmInfo.btnReportClick(Sender: TObject);
 begin
   ShowErrorReport('', '');
+end;
+
+procedure TfrmInfo.btnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('info');
 end;
 
 procedure TfrmInfo.btnCloseClick(Sender: TObject);

@@ -5,11 +5,11 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
-#: umain.pas:2333
+#: umain.pas:2342
 msgid "                   Wine erkannt: Turbo läuft auf der CPU"
 msgstr "                   Wine を検出: Turbo は CPU で動作します"
 
-#: umain.pas:2330
+#: umain.pas:2339
 msgid "                   vorhanden: %s"
 msgstr "                      インストール済み: %s"
 
@@ -37,15 +37,15 @@ msgstr "        [-t 分割数] [-f aac|alac] [-b auto|kbit] [--overwrite] [--kee
 msgid "  -  von Elospeed"
 msgstr "  -  作者 Elospeed"
 
-#: umain.pas:2337
+#: umain.pas:2346
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  注意              : PCが約 %s スリープしていました - 上の時間はその分だけ長くなっています。"
 
-#: umain.pas:2304
+#: umain.pas:2313
 msgid "  Abgebrochen    : %d"
 msgstr "  キャンセル        : %d"
 
-#: umain.pas:1468
+#: umain.pas:1477
 msgid "  Audiospuren: %d (Stem = 5)"
 msgstr "  オーディオトラック: %d (ステム = 5)"
 
@@ -53,43 +53,43 @@ msgstr "  オーディオトラック: %d (ステム = 5)"
 msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
 msgstr "  Camelot (Mixed In Key):  8A = イ短調、8B = ハ長調 (A = 短調、B = 長調)"
 
-#: umain.pas:2301
+#: umain.pas:2310
 msgid "  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)"
 msgstr "  ファイル          : %d  (OK %d、スキップ %d、エラー %d)"
 
-#: umain.pas:1135
+#: umain.pas:1144
 msgid "  Dauer: %s"
 msgstr "  長さ: %s"
 
-#: umain.pas:2334
+#: umain.pas:2343
 msgid "  Energie        : %s"
 msgstr "  電源              : %s"
 
-#: umain.pas:2320
+#: umain.pas:2329
 msgid "  Engine         : Klassisch (demucs.cpp) für %d Datei(en)"
 msgstr "  エンジン          : クラシック (demucs.cpp)、%d ファイル"
 
-#: umain.pas:2316
+#: umain.pas:2325
 msgid "  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s"
 msgstr "  エンジン          : Turbo (StemOnnx)、%d ファイル、最後の実行: %s"
 
-#: umain.pas:1475
+#: umain.pas:1484
 msgid "  Fehler: %s"
 msgstr "  エラー: %s"
 
-#: umain.pas:2313
+#: umain.pas:2322
 msgid "  Format         : %s"
 msgstr "  フォーマット      : %s"
 
-#: umain.pas:2305
+#: umain.pas:2314
 msgid "  Gesamtzeit     : %s"
 msgstr "  合計時間          : %s"
 
-#: umain.pas:2329
+#: umain.pas:2338
 msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
 msgstr "  グラフィックカード: 未使用 (demucs.cpp は CPU のみで計算)"
 
-#: umain.pas:1470
+#: umain.pas:1479
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr "  ステムのメタデータブロックが見つかりません - 有効なステムファイルではありません"
 
@@ -97,7 +97,7 @@ msgstr "  ステムのメタデータブロックが見つかりません - 有�
 msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
 msgstr "  クラシック:  Am = イ短調、C = ハ長調 (m = 短調、m なし = 長調)"
 
-#: umain.pas:2312
+#: umain.pas:2321
 msgid "  Modell         : %s"
 msgstr "  モデル            : %s"
 
@@ -105,31 +105,31 @@ msgstr "  モデル            : %s"
 msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
 msgstr "  Open Key (Traktor):  1m = イ短調、1d = ハ長調 (m = 短調、d = 長調)"
 
-#: umain.pas:2326
+#: umain.pas:2335
 msgid "  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)"
 msgstr "  分離時のメモリ    : 最大 %d MB  (総メモリ %.1f GB)"
 
-#: umain.pas:2321
+#: umain.pas:2330
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  計算能力          : %d 分割 x %d コア = 物理コア %d / %d (論理 %d)、demucs バージョン %s"
 
-#: umain.pas:2340
+#: umain.pas:2349
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  スリープ          : 変換中はなし"
 
-#: umain.pas:2306
+#: umain.pas:2315
 msgid "  Schnitt/Track  : %s  (nur erfolgreiche Tracks)"
 msgstr "  1曲あたり平均     : %s  (成功したトラックのみ)"
 
-#: umain.pas:1472
+#: umain.pas:1481
 msgid "  Stem-Metadaten: %s"
 msgstr "  ステムのメタデータ: %s"
 
-#: umain.pas:2310
+#: umain.pas:2319
 msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
 msgstr "  速度              : 音楽1分あたり %.1f 秒 (統計: logs\\statistik.csv)"
 
-#: umain.pas:2634
+#: umain.pas:2643
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d 件の長さがまだ不明"
 
@@ -145,19 +145,19 @@ msgstr " [タイムアウト]"
 msgid "\"Interpret - Titel.stem.mp4\" füllt Interpret und Titel"
 msgstr "「アーティスト - タイトル.stem.mp4」からアーティストとタイトルを入力"
 
-#: ureport.pas:215
+#: ureport.pas:216
 msgid "\"Per E-Mail senden\" speichert den Bericht als Datei, zeigt sie im Explorer und öffnet eine fertige Mail. Bitte die markierte Datei in die Mail ziehen. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an %s. Der ganze Bericht liegt zusätzlich in der Zwischenablage (Strg+V)."
 msgstr "「メールで送信」はレポートをファイルに保存してエクスプローラーで表示し、作成済みのメールを開きます。選択されたファイルをメールにドラッグしてください。メールが開かない場合 (例: Web メール)、ファイルを %s に送ってください。レポート全体はクリップボードにもコピーされています (Ctrl+V)。"
 
-#: uupdateui.pas:352
+#: uupdateui.pas:353
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: uupdateui.pas:347
+#: uupdateui.pas:348
 msgid "%.1f von %.1f MB"
 msgstr "%.1f / %.1f MB"
 
-#: uinit.pas:828
+#: uinit.pas:829
 msgid "%d Dateien OK"
 msgstr "%d ファイル OK"
 
@@ -165,7 +165,7 @@ msgstr "%d ファイル OK"
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr "%d ファイルにファイル名から入力しました - まだ保存されていません"
 
-#: umain.pas:2501
+#: umain.pas:2510
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "保存されたリストの %d ファイルが見つからないため、除外しました。"
 
@@ -181,11 +181,11 @@ msgstr "%d ファイルを保存、%d ファイルでエラー。エラーのフ
 msgid "%d Dateien in der Liste."
 msgstr "リストに %d 個のファイル。"
 
-#: umain.pas:2611
+#: umain.pas:2620
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d ファイル待機中 - 長さを読み込み中 ..."
 
-#: umain.pas:2618
+#: umain.pas:2627
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d ファイル待機中、音楽 %s - 所要時間 約 %s"
 
@@ -197,7 +197,7 @@ msgstr "%d ファイルが変更されます。"
 msgid "%d Dateien, %d geändert"
 msgstr "%d ファイル、%d 件変更"
 
-#: uinit.pas:738
+#: uinit.pas:739
 msgid "%d Kerne (%d logisch), %s"
 msgstr "%d コア (論理 %d)、%s"
 
@@ -205,7 +205,7 @@ msgstr "%d コア (論理 %d)、%s"
 msgid "%d Minuten"
 msgstr "%d 分"
 
-#: umain.pas:1372
+#: umain.pas:1381
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d 個のフォルダーはパスが %d 文字を超えるため読み込めませんでした。その中の音楽はリストに含まれていません。"
 
@@ -229,7 +229,7 @@ msgstr "ステムファイル %d 個作成、エラー %d、スキップ %d。"
 msgid "%d Stunden"
 msgstr "%d 時間"
 
-#: umain.pas:2808
+#: umain.pas:2817
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr "成功 %d、スキップ %d、失敗 %d - 合計時間 %s"
 
@@ -249,23 +249,23 @@ msgstr "%d 秒"
 msgid "%d:%.2d min"
 msgstr "%d:%.2d 分"
 
-#: umain.pas:638
+#: umain.pas:641
 msgid "%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien"
 msgstr "%s %s  -  オーディオファイルから Traktor ステム (*.stem.mp4) を作成"
 
-#: umain.pas:665
+#: umain.pas:668
 msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
 msgstr "%s %s - 準備完了。ファイルを追加するか、ウィンドウにドラッグしてください。"
 
-#: umain.pas:2724
+#: umain.pas:2733
 msgid "%s - %d %% (Datei %d von %d)"
 msgstr "%s - %d %% (ファイル %d / %d)"
 
-#: uinit.pas:556
+#: uinit.pas:557
 msgid "%s - Start"
 msgstr "%s - 開始"
 
-#: uinit.pas:822
+#: uinit.pas:823
 msgid "%s - wird heruntergeladen (ca. %d MB)"
 msgstr "%s - ダウンロードします (約 %d MB)"
 
@@ -281,19 +281,19 @@ msgstr "%0:s は %2:s より %1:s 秒長い"
 msgid "%s nicht im ZIP gefunden"
 msgstr "ZIP 内に %s が見つかりません"
 
-#: uinit.pas:794
+#: uinit.pas:795
 msgid "%s startet (%s-Version)"
 msgstr "%s を起動します (%s 版)"
 
-#: uinit.pas:799
+#: uinit.pas:800
 msgid "%s startet nicht (Code %d) %s"
 msgstr "%s が起動しません (コード %d) %s"
 
-#: uinit.pas:891
+#: uinit.pas:892
 msgid "%s wird gestartet ..."
 msgstr "%s を起動しています ..."
 
-#: uinfo.pas:159 uinfo.pas:192
+#: uinfo.pas:161 uinfo.pas:194
 msgid "%s wurde nicht gefunden."
 msgstr "%s が見つかりませんでした。"
 
@@ -341,27 +341,27 @@ msgstr "再試行(&R)"
 msgid "(Tags und Cover)"
 msgstr "（タグとカバー）"
 
-#: umain.pas:2624
+#: umain.pas:2633
 msgid "(Tempo dieses PCs)"
 msgstr "(このPCの速度)"
 
-#: ureport.pas:297
+#: ureport.pas:298
 msgid "(aktueller Lauf)"
 msgstr "(現在の実行)"
 
-#: usettings.pas:394 usettings.pas:409
+#: usettings.pas:396 usettings.pas:411
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(次回起動時から有効)"
 
-#: umain.pas:2629
+#: umain.pas:2638
 msgid "(grob geschätzt)"
 msgstr "(おおよその見積もり)"
 
-#: ureport.pas:335
+#: ureport.pas:336
 msgid "(kein Log gefunden)"
 msgstr "(ログが見つかりません)"
 
-#: uturbotest.pas:732
+#: uturbotest.pas:733
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(暫定値、測定するたびに正確になります)"
 
@@ -421,19 +421,23 @@ msgstr "5.1 DVD:「Song (DOWNMIX #1)」+「Song (A)」…「(D)」"
 msgid "<verschieden>"
 msgstr "<複数の値>"
 
-#: umain.pas:1467
+#: umain.pas:1476
 msgid "== Prüfung: %s"
 msgstr "== チェック: %s"
 
-#: umain.pas:2300
+#: umain.pas:2309
 msgid "=== Zusammenfassung ==="
 msgstr "=== 概要 ==="
 
-#: umain.lfm:214
+#: umain.lfm:90
+msgid "?"
+msgstr "?"
+
+#: umain.lfm:224
 msgid "AAC 256 kbit/s (NI-Standard)"
 msgstr "AAC 256 kbit/s (NI 標準)"
 
-#: umain.lfm:215
+#: umain.lfm:225
 msgid "AAC 320 kbit/s"
 msgstr "AAC 320 kbit/s"
 
@@ -441,15 +445,15 @@ msgstr "AAC 320 kbit/s"
 msgid "AAC 320 kbit/s (wie Traktor-Stems)"
 msgstr "AAC 320 kbit/s（Traktor のステムと同じ）"
 
-#: umain.pas:2294
+#: umain.pas:2303
 msgid "AAC automatisch (wie die Quelle, max. %d kbit/s) - Bitrate pro Datei siehe \"Quelle:\" oben"
 msgstr "AAC 自動 (元ファイルと同じ、最大 %d kbit/s) - ファイルごとのビットレートは上の「元ファイル:」を参照"
 
-#: umain.lfm:213
+#: umain.lfm:223
 msgid "AAC automatisch (wie die Quelle, max. 320 kbit/s)"
 msgstr "AAC 自動 (元ファイルと同じ、最大 320 kbit/s)"
 
-#: umain.pas:2291
+#: umain.pas:2300
 msgid "ALAC (verlustfrei)"
 msgstr "ALAC (ロスレス)"
 
@@ -457,7 +461,7 @@ msgstr "ALAC (ロスレス)"
 msgid "ALAC 24 Bit, Original-Abtastrate (Test)"
 msgstr "ALAC 24 ビット、元のサンプルレート（テスト）"
 
-#: umain.lfm:216
+#: umain.lfm:226
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr "ALAC ロスレス (ファイルサイズ大)"
 
@@ -481,19 +485,19 @@ msgstr "OFF (ソロ)"
 msgid "AUSGANG L / R"
 msgstr "出力 L / R"
 
-#: uinit.pas:736
+#: uinit.pas:737
 msgid "AVX (mittlere Version)"
 msgstr "AVX (中速版)"
 
-#: uinit.pas:735
+#: uinit.pas:736
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (高速版)"
 
-#: packerform.pas:652 uinit.pas:604 ulangui.pas:192
+#: packerform.pas:652 uinit.pas:605 ulangui.pas:192
 msgid "Abbrechen"
 msgstr "キャンセル"
 
-#: umain.pas:2148
+#: umain.pas:2157
 msgid "Abbruch angefordert..."
 msgstr "キャンセルを要求しました..."
 
@@ -501,11 +505,11 @@ msgstr "キャンセルを要求しました..."
 msgid "Abgebrochen"
 msgstr "キャンセルしました"
 
-#: umain.pas:2164
+#: umain.pas:2173
 msgid "Abgebrochen: %d Datei(en)"
 msgstr "キャンセル: %d ファイル"
 
-#: umain.pas:1374
+#: umain.pas:1383
 msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
 msgstr "対処法: フォルダーを上の階層に移動する (例: D:\\Music の直下) か、フォルダー名を短くしてください。該当フォルダーはログに記録されています。"
 
@@ -521,7 +525,7 @@ msgstr "バッテリー"
 msgid "Akku (%d %%)"
 msgstr "バッテリー (%d %%)"
 
-#: uinfo.pas:417
+#: uinfo.pas:420
 msgid "Aktuelles Log: %s"
 msgstr "現在のログ: %s"
 
@@ -537,7 +541,7 @@ msgstr "トラックが収録されたアルバム、EP、シングル"
 msgid "Album-Interpret"
 msgstr "アルバムアーティスト"
 
-#: umain.pas:1439
+#: umain.pas:1448
 msgid "Alle %d Dateien aus der Liste entfernen?"
 msgstr "リストから %d ファイルをすべて削除しますか?"
 
@@ -545,19 +549,19 @@ msgstr "リストから %d ファイルをすべて削除しますか?"
 msgid "Alle Audiodateien eines Ordners (inkl. Unterordner) hinzufügen"
 msgstr "フォルダー内のすべてのオーディオファイルを追加 (サブフォルダーを含む)"
 
-#: umain.pas:635 umain.pas:1463
+#: umain.pas:638 umain.pas:1472
 msgid "Alle Dateien"
 msgstr "すべてのファイル"
 
-#: umain.pas:2073
+#: umain.pas:2082
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "リスト内のファイルはすべて完了しています。もう一度変換しますか?"
 
-#: umain.pas:2606
+#: umain.pas:2615
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "リスト内のファイルはすべて完了しました。"
 
-#: umain.pas:2868 umain.pas:2894
+#: umain.pas:2877 umain.pas:2903
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "すべてのファイルが完了しました。%d 秒後にPCをシャットダウンします。"
 
@@ -565,7 +569,7 @@ msgstr "すべてのファイルが完了しました。%d 秒後にPCをシャ�
 msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
 msgstr "詳細: 情報 -> ライセンス、および StemMaker フォルダー内の LICENSE と THIRD-PARTY-NOTICES.md。"
 
-#: uinfo.pas:513
+#: uinfo.pas:525
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "詳細は GitHub の CHANGELOG にあります (ドイツ語)"
 
@@ -577,7 +581,7 @@ msgstr "すべてパック"
 msgid "Alle verneinen"
 msgstr "すべていいえ"
 
-#: uinit.pas:890
+#: uinit.pas:891
 msgid "Alles bereit"
 msgstr "準備完了"
 
@@ -585,19 +589,19 @@ msgstr "準備完了"
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr "すべてリセット: ミュート/ソロ OFF、フェーダー 100 %、ステムモード (0 キー)"
 
-#: ureport.pas:444
+#: ureport.pas:445
 msgid "Als GitHub-Issue"
 msgstr "GitHub Issue として"
 
-#: ureport.pas:255
+#: ureport.pas:256
 msgid "Als GitHub-Issue (öffentlich)"
 msgstr "GitHub Issue として (公開)"
 
-#: umain.pas:1829 umain.lfm:325
+#: umain.pas:1838 umain.lfm:335
 msgid "Anhören"
 msgstr "試聴"
 
-#: uinfo.pas:486
+#: uinfo.pas:498
 msgid "Anleitung"
 msgstr "説明書"
 
@@ -621,11 +625,11 @@ msgstr "サブフォルダーも検索します。サブフォルダー名はす
 msgid "Audio, Stems und Traktors eigene Daten (auch in MP3s) bleiben immer unverändert, neu geschrieben werden nur die Tags."
 msgstr "オーディオ、ステム、Traktor 独自のデータ（MP3 内のものも含む）は常にそのまま残り、書き換えられるのはタグだけです。"
 
-#: umain.lfm:203
+#: umain.lfm:213
 msgid "Audio-Format:"
 msgstr "オーディオ形式:"
 
-#: umain.pas:632
+#: umain.pas:635
 msgid "Audiodateien wählen"
 msgstr "オーディオファイルを選択"
 
@@ -637,7 +641,7 @@ msgstr "オーディオデバイスを開けませんでした (waveOutOpen エ�
 msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
 msgstr "使い方: StemCLI <ファイル|フォルダー> [...] [-o 出力フォルダー] [-m ht|ft|v3]"
 
-#: umain.pas:1838
+#: umain.pas:1847
 msgid "Aus Liste entfernen"
 msgstr "リストから削除"
 
@@ -657,35 +661,35 @@ msgstr "出力フォルダーを作成できません"
 msgid "Ausgabeordner wählen"
 msgstr "出力フォルダーを選択"
 
-#: umain.lfm:157
+#: umain.lfm:167
 msgid "Ausgabeordner:"
 msgstr "出力フォルダー:"
 
-#: usettings.pas:288
+#: usettings.pas:290
 msgid "Auto"
 msgstr "自動"
 
-#: usettings.pas:289
+#: usettings.pas:291
 msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
 msgstr "自動: プロセッサの物理コア数 (最大 4) とメモリが許す範囲で分割数を決めます"
 
-#: usettings.pas:330
+#: usettings.pas:332
 msgid "Automatisch (Grafikkarte, wenn sie mitmacht)"
 msgstr "自動 (対応していればグラフィックカード)"
 
-#: usettings.pas:401
+#: usettings.pas:403
 msgid "Automatisch (wie Windows)"
 msgstr "自動 (Windows と同じ)"
 
-#: usettings.pas:405
+#: usettings.pas:407
 msgid "Automatisch folgt der Windows-Einstellung \"Standard-App-Modus\" (Personalisierung > Farben)."
 msgstr "自動は Windows の設定「既定のアプリ モードを選択します」(個人用設定 > 色) に従います。"
 
-#: usettings.pas:332
+#: usettings.pas:334
 msgid "Automatisch: Die Grafikkarte wird nur genommen, wenn sie im Test gleiche Stems liefert und schneller ist als die CPU (Beta)."
 msgstr "自動: テストで同じステムを出力し、かつ CPU より速い場合のみグラフィックカードを使用します (ベータ)。"
 
-#: umain.lfm:220
+#: umain.lfm:230
 msgid "Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).\nGrösser bringt nichts - besser als die Quelle wird es nie.\nSehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht."
 msgstr "自動: ステムファイルは元ファイルのビットレートになります (例: MP3 256 -> AAC 256)。\nそれ以上にしても意味はありません - 元ファイルより良くなることはありません。\n非常に低いビットレート (192 未満) は 192 にして、再エンコードによる余計な劣化を防ぎます。"
 
@@ -705,19 +709,19 @@ msgstr "低音補正をスキップ: ファイルが長すぎる (20 分超) か
 msgid "Bass-Fix: Tiefbass unter %s Hz von Other nach Bass"
 msgstr "低音補正: %s Hz 未満の重低音を Other から Bass へ移動"
 
-#: umain.lfm:271
+#: umain.lfm:281
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr "低音補正: 重低音を Other から Bass へ移動"
 
-#: uinit.pas:608 ulicenseui.pas:89 umain.pas:2688
+#: uinit.pas:609 ulicenseui.pas:90 umain.pas:2697
 msgid "Beenden"
 msgstr "終了"
 
-#: usettings.pas:296
+#: usettings.pas:298
 msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
 msgstr "フォルダーごとの場合: Music\\House\\2024\\track.mp3 は <出力フォルダー>\\House\\2024\\track.stem.mp4 になります"
 
-#: usettings.pas:320
+#: usettings.pas:322
 msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
 msgstr "どちらも同じモデルで計算し、ステムは同一です。Turbo は CPU で約 5～8 倍速く、グラフィックカードも使用できます。"
 
@@ -725,11 +729,11 @@ msgstr "どちらも同じモデルで計算し、ステムは同一です。Tur
 msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
 msgstr "読み込みでは何も変更しません。ファイルに書き込むのは「保存」を押したときだけで、変更のあるファイルのみです。"
 
-#: usettings.pas:414
+#: usettings.pas:416
 msgid "Beim Minimieren nur das Symbol neben der Uhr zeigen"
 msgstr "最小化したら時計の横のアイコンだけを表示"
 
-#: usettings.pas:411 uupdateui.pas:445
+#: usettings.pas:413 uupdateui.pas:446
 msgid "Beim Start nach Updates suchen"
 msgstr "起動時に更新を確認"
 
@@ -741,11 +745,11 @@ msgstr "例:「* (A)」は「Hello (A).wav」を見つけ、曲名は「Hello」
 msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
 msgstr "隣り合う数字同士はミックスの相性が良いです (例: 8A と 7A、9A、8B)。"
 
-#: umain.pas:1440
+#: umain.pas:1449
 msgid "Bereits erstellte Stem-Dateien bleiben erhalten."
 msgstr "作成済みのステムファイルはそのまま残ります。"
 
-#: umain.pas:789
+#: umain.pas:792
 msgid "Bericht ansehen..."
 msgstr "レポートを表示..."
 
@@ -785,7 +789,7 @@ msgstr "画像..."
 msgid "Bilder"
 msgstr "画像"
 
-#: ureport.pas:457
+#: ureport.pas:458
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr "エクスプローラーのウィンドウからファイルをここにドラッグしてください:"
 
@@ -797,7 +801,7 @@ msgstr "フォルダーではなく、ステムファイル (.stem.mp4) をド�
 msgid "Bitte einen Ausgabeordner angeben (oder „neben die Master-Datei“ wählen)."
 msgstr "出力フォルダーを指定してください（または「マスターファイルの隣」を選択）。"
 
-#: umain.pas:2034
+#: umain.pas:2043
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "出力フォルダーを選択するか、「元ファイルと同じ場所」をオンにしてください。"
 
@@ -813,7 +817,7 @@ msgstr "次のウィンドウで ffmpeg.exe を選択してください（例: S
 msgid "Bitte vor der ersten Benutzung lesen"
 msgstr "初めて使う前にお読みください"
 
-#: ureport.pas:256
+#: ureport.pas:257
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr "GitHub アカウントが必要です。Issue は誰でも閲覧できます。"
 
@@ -821,7 +825,7 @@ msgstr "GitHub アカウントが必要です。Issue は誰でも閲覧でき�
 msgid "Breche Dekodieren ab ..."
 msgstr "デコードをキャンセル中 ..."
 
-#: packerform.pas:1716 packerform.pas:1802 uinit.pas:1106
+#: packerform.pas:1716 packerform.pas:1802 uinit.pas:1107
 msgid "Breche ab ..."
 msgstr "キャンセル中 ..."
 
@@ -833,15 +837,15 @@ msgstr "CD プレーヤー"
 msgid "CLIP"
 msgstr "CLIP"
 
-#: uturbotest.pas:578
+#: uturbotest.pas:579
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr "CPU を準備中 (%d / %d 回目)"
 
-#: uturbotest.pas:580
+#: uturbotest.pas:581
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr "CPU を測定中 (%d / %d 回目)"
 
-#: uturbotest.pas:576
+#: uturbotest.pas:577
 msgid "CPU vorbereiten"
 msgstr "CPU を準備"
 
@@ -869,11 +873,11 @@ msgstr "カバー画像を選択"
 msgid "DAW-Export: „Song“ + „Song_drums“ … „_vocals“"
 msgstr "DAW 書き出し:「Song」+「Song_drums」…「_vocals」"
 
-#: usettings.pas:308
+#: usettings.pas:310
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "終了後はすべて元の設定に戻ります。画面はオフになってもかまいません。"
 
-#: uinfo.pas:519
+#: uinfo.pas:531
 msgid "Danke"
 msgstr "謝辞"
 
@@ -881,7 +885,7 @@ msgstr "謝辞"
 msgid "Danke an Cuiusquemodi für die Idee, den Test mit 178 Songs und die vielen Rückmeldungen."
 msgstr "アイデア、178 曲でのテスト、たくさんのフィードバックをくれた Cuiusquemodi に感謝します。"
 
-#: uinfo.pas:282
+#: uinfo.pas:284
 msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
 msgstr "翻訳、テスト、アイデア、バグ報告、寄付で StemMaker を支えてくださる皆さまに感謝します!"
 
@@ -889,11 +893,11 @@ msgstr "翻訳、テスト、アイデア、バグ報告、寄付で StemMaker �
 msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
 msgstr "クリップボードの画像を読み込めません。"
 
-#: usettings.pas:566
+#: usettings.pas:576
 msgid "Das Design wird beim nächsten Start übernommen."
 msgstr "テーマは次回の起動時に変更されます。"
 
-#: usettings.pas:415
+#: usettings.pas:417
 msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
 msgstr "ウィンドウがタスクバーから消えます。時計の横のアイコンをクリックすると元に戻ります。"
 
@@ -917,7 +921,7 @@ msgstr "開いているウィンドウを前面に表示します。そこでリ
 msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
 msgstr "約 %s の音楽を、ご自身のPCで分離しました - サブスクなし、アップロードなし、広告なし。"
 
-#: taggerform.pas:763 umain.lfm:122
+#: taggerform.pas:763 umain.lfm:132
 msgid "Datei"
 msgstr "ファイル"
 
@@ -929,7 +933,7 @@ msgstr "ファイルを保存できません: %s"
 msgid "Datei nicht gefunden: %s"
 msgstr "ファイルが見つかりません: %s"
 
-#: umain.pas:1239
+#: umain.pas:1248
 msgid "Datei:  vergangen %s   |   verbleibend %s"
 msgstr "ファイル:  経過 %s   |   残り %s"
 
@@ -973,7 +977,7 @@ msgstr "デコード"
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr "A から B までの区間が繰り返し再生されます。"
 
-#: ureport.pas:363
+#: ureport.pas:364
 msgid "Der Bericht konnte nicht gespeichert werden: %s"
 msgstr "レポートを保存できませんでした: %s"
 
@@ -993,15 +997,15 @@ msgstr "サーバーが応答しません。"
 msgid "Der StemPlayer spielt nur Traktor-Stem-Dateien (.stem.mp4) ab,"
 msgstr "StemPlayer が再生できるのは Traktor ステムファイル (.stem.mp4) のみです。"
 
-#: umain.lfm:274
+#: umain.lfm:284
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
 msgstr "分離で「Other」ステムに残った 80 Hz 未満の重低音を Bass ステムへ移動します。\nBass ステムが厚くなり (Traktor 純正のステムと同様)、全ステムを合わせた音は変わりません。"
 
-#: uinfo.pas:346
+#: uinfo.pas:348
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "このバージョンにはバージョン履歴がありません。"
 
-#: uturbotest.pas:749
+#: uturbotest.pas:750
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "事前テストがうまくいきませんでした (コード %s)。StemMaker はそれでも Turbo を試し、だめな場合は demucs.cpp (クラシック) を使います。詳細はログにあります。"
 
@@ -1009,7 +1013,7 @@ msgstr "事前テストがうまくいきませんでした (コード %s)。Ste
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "青いリングは残り時間を示します。"
 
-#: usettings.pas:396
+#: usettings.pas:398
 msgid "Design:"
 msgstr "テーマ:"
 
@@ -1017,7 +1021,7 @@ msgstr "テーマ:"
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "4 つのステムをミックス - ミュート / ソロ / 音量付き (S キー)"
 
-#: uinfo.pas:161
+#: uinfo.pas:163
 msgid "Die Anleitung liegt normalerweise im StemMaker-Ordner neben StemMaker.exe. Bitte das ZIP komplett entpacken."
 msgstr "説明書は通常、StemMaker フォルダー内の StemMaker.exe の横にあります。ZIP をすべて展開してください。"
 
@@ -1041,7 +1045,7 @@ msgstr "グラフィックカード (%s) は%s。StemMaker は CPU で分離し�
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "グラフィックカード (%s) は使用可能ですが、「CPU のみ」が設定されています。StemMaker は CPU で分離します: 音楽1分あたり約 %s です。"
 
-#: umain.pas:814
+#: umain.pas:823
 msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
 msgstr "変換はまだ実行中です。キャンセルして終了しますか?"
 
@@ -1049,7 +1053,7 @@ msgstr "変換はまだ実行中です。キャンセルして終了しますか
 msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
 msgstr "コピーは上書きされないため、本当のオリジナルとして残ります。"
 
-#: umain.pas:2095
+#: umain.pas:2104
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr "リストが空です - まずファイルを追加してください。"
 
@@ -1057,19 +1061,19 @@ msgstr "リストが空です - まずファイルを追加してください。
 msgid "Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am)."
 msgstr "リストには 3 つすべてを表示し、保存するのはクラシック表記 (例: Am) です。"
 
-#: uupdateui.pas:561
+#: uupdateui.pas:562
 msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
 msgstr "更新のチェックサム (SHA-256) が一致しません。ファイルは破棄され、StemMaker は変更されていません。"
 
-#: usettings.pas:562
+#: usettings.pas:572
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "言語は次回起動時に反映されます。"
 
-#: uinfo.pas:581
+#: uinfo.pas:593
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "更新の確認に失敗しました: %s"
 
-#: usettings.pas:378
+#: usettings.pas:380
 msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
 msgstr "アイコンは Traktor が位置 1-4 ごとに固定で表示するため、変更できません。"
 
@@ -1081,7 +1085,7 @@ msgstr "このWindowsの拡大率では波形が画面に収まりません。"
 msgid "Die alte Version wurde wiederhergestellt."
 msgstr "以前のバージョンに戻しました。"
 
-#: umain.pas:2499
+#: umain.pas:2508
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "最後に処理していたファイルが中断されました - 「開始」で最初からやり直します。"
 
@@ -1089,11 +1093,11 @@ msgstr "最後に処理していたファイルが中断されました - 「開
 msgid "Diese Bestätigung gilt für diesen PC. Wird der StemMaker-Ordner auf einen anderen PC kopiert, kommt diese Frage dort noch einmal."
 msgstr "この同意はこのPCに対してのみ有効です。StemMaker フォルダーを別のPCにコピーすると、そこでもう一度確認されます。"
 
-#: uinit.pas:908
+#: uinit.pas:909
 msgid "Diese Dateien werden einmalig aus dem Internet geladen: %s. Danach startet StemMaker automatisch."
 msgstr "次のファイルをインターネットから一度だけダウンロードします: %s。その後 StemMaker が自動的に起動します。"
 
-#: uupdateui.pas:473
+#: uupdateui.pas:474
 msgid "Diese Version überspringen"
 msgstr "このバージョンをスキップ"
 
@@ -1101,7 +1105,7 @@ msgstr "このバージョンをスキップ"
 msgid "Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden."
 msgstr "この画像形式には対応していません。JPEG、PNG、BMP、GIF を使用してください。"
 
-#: uupdateui.pas:527
+#: uupdateui.pas:528
 msgid "Dieses Update kann nicht automatisch installiert werden. Die Download-Seite wird im Browser geöffnet."
 msgstr "この更新は自動でインストールできません。ダウンロードページをブラウザーで開きます。"
 
@@ -1109,7 +1113,7 @@ msgstr "この更新は自動でインストールできません。ダウンロ
 msgid "Doppelklick auf den Rand passt die Spalte an den Text an"
 msgstr "境界をダブルクリックすると列幅を文字に合わせます"
 
-#: uinit.pas:1065
+#: uinit.pas:1066
 msgid "Download fehlgeschlagen"
 msgstr "ダウンロードに失敗しました"
 
@@ -1117,11 +1121,11 @@ msgstr "ダウンロードに失敗しました"
 msgid "Download fehlgeschlagen (curl %d)"
 msgstr "ダウンロードに失敗しました (curl %d)"
 
-#: uinit.pas:981
+#: uinit.pas:982
 msgid "Download läuft ..."
 msgstr "ダウンロード中 ..."
 
-#: uinit.pas:1027
+#: uinit.pas:1028
 msgid "Download läuft ...  %s"
 msgstr "ダウンロード中 ...  %s"
 
@@ -1129,15 +1133,15 @@ msgstr "ダウンロード中 ...  %s"
 msgid "Download unvollständig"
 msgstr "ダウンロードが不完全です"
 
-#: uinfo.pas:578
+#: uinfo.pas:590
 msgid "Du hast die neueste Version (%s)."
 msgstr "最新バージョンです (%s)。"
 
-#: usettings.pas:403
+#: usettings.pas:405
 msgid "Dunkel"
 msgstr "ダーク"
 
-#: usettings.pas:407
+#: usettings.pas:409
 msgid "Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11."
 msgstr "ダークには Windows 10 (バージョン 1809 以降) または Windows 11 が必要です。"
 
@@ -1145,7 +1149,7 @@ msgstr "ダークには Windows 10 (バージョン 1809 以降) または Windo
 msgid "Eigene Muster"
 msgstr "カスタムパターン"
 
-#: uturbotest.pas:729
+#: uturbotest.pas:730
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "このPCでは 3 分の曲が htdemucs (標準) で約 %s、htdemucs_ft (最高品質) で約 %s かかります。"
 
@@ -1153,11 +1157,11 @@ msgstr "このPCでは 3 分の曲が htdemucs (標準) で約 %s、htdemucs_ft 
 msgid "Einfügen"
 msgstr "貼り付け"
 
-#: usettings.pas:255 umain.lfm:148
+#: usettings.pas:257 umain.lfm:158
 msgid "Einstellungen"
 msgstr "設定"
 
-#: ulicenseui.pas:97
+#: ulicenseui.pas:98
 msgid "Einverstanden - StemMaker starten"
 msgstr "同意する - StemMaker を起動"
 
@@ -1169,7 +1173,7 @@ msgstr "同意しますか? その場合は StemCLI を一度 --accept 付きで
 msgid "Energiesparmodus"
 msgstr "省電力"
 
-#: umain.pas:2115
+#: umain.pas:2124
 msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
 msgstr "電源プラン「%s」を一時的に「%s」に変更しました - 変換後に元に戻します。"
 
@@ -1177,11 +1181,11 @@ msgstr "電源プラン「%s」を一時的に「%s」に変更しました - �
 msgid "Energiesparplan vorübergehend: %s -> %s"
 msgstr "電源プランを一時変更: %s -> %s"
 
-#: usettings.pas:312
+#: usettings.pas:314
 msgid "Engine (trennt die Stems)"
 msgstr "エンジン (ステムを分離)"
 
-#: usettings.pas:313
+#: usettings.pas:315
 msgid "Engine:"
 msgstr "エンジン:"
 
@@ -1193,7 +1197,7 @@ msgstr "削除"
 msgid "Entpacken fehlgeschlagen"
 msgstr "展開に失敗しました"
 
-#: ureport.pas:364
+#: ureport.pas:365
 msgid "Er liegt aber in der Zwischenablage (Strg+V)."
 msgstr "ただしクリップボードにはコピーされています (Ctrl+V)。"
 
@@ -1205,11 +1209,11 @@ msgstr "結果のオーディオトラックが 5 つではありません"
 msgid "Erkannt: „%s“ … „%s“, %s."
 msgstr "認識:「%s」…「%s」、%s。"
 
-#: uinit.pas:606
+#: uinit.pas:607
 msgid "Erneut prüfen"
 msgstr "再チェック"
 
-#: uturbotest.pas:439
+#: uturbotest.pas:440
 msgid "Erneut testen"
 msgstr "再テスト"
 
@@ -1217,11 +1221,11 @@ msgstr "再テスト"
 msgid "Erscheinungsjahr, z.B. 2016"
 msgstr "リリース年 (例: 2016)"
 
-#: umain.pas:2044
+#: umain.pas:2053
 msgid "Es fehlen Programmteile:"
 msgstr "プログラムの構成要素が不足しています:"
 
-#: uinit.pas:901
+#: uinit.pas:902
 msgid "Es fehlen noch Dateien"
 msgstr "まだ不足しているファイルがあります"
 
@@ -1245,7 +1249,7 @@ msgstr "予期しないエラーが発生しました:"
 msgid "Extras:"
 msgstr "その他:"
 
-#: umain.pas:614
+#: umain.pas:616
 msgid "FEHLER im Hintergrund: %s (Details im Log)"
 msgstr "バックグラウンドでエラー: %s (詳細はログ)"
 
@@ -1261,7 +1265,7 @@ msgstr "色"
 msgid "Farbe des Stems in Traktor (klicken zum Ändern)"
 msgstr "Traktor でのステムの色（クリックで変更）"
 
-#: usettings.pas:366
+#: usettings.pas:368
 msgid "Farbe wählen"
 msgstr "色を選択"
 
@@ -1269,11 +1273,11 @@ msgstr "色を選択"
 msgid "Fehlende Stems still füllen"
 msgstr "足りないステムを無音で埋める"
 
-#: ulangui.pas:202 umain.pas:1142 umain.pas:2471
+#: ulangui.pas:202 umain.pas:1151 umain.pas:2480
 msgid "Fehler"
 msgstr "エラー"
 
-#: uturbotest.pas:659
+#: uturbotest.pas:660
 msgid "Fehler %s"
 msgstr "エラー %s"
 
@@ -1309,15 +1313,15 @@ msgstr "エラー: ステムブロック"
 msgid "Fehler: ffmpeg Code %d (siehe Log)"
 msgstr "エラー: ffmpeg コード %d（ログを参照）"
 
-#: ureport.pas:363
+#: ureport.pas:364
 msgid "Fehlerbericht"
 msgstr "エラーレポート"
 
-#: ureport.pas:191
+#: ureport.pas:192
 msgid "Fehlerbericht senden"
 msgstr "エラーレポートを送信"
 
-#: uinfo.pas:472 ulogui.pas:60
+#: uinfo.pas:475 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "エラーレポートを送信..."
 
@@ -1325,15 +1329,15 @@ msgstr "エラーレポートを送信..."
 msgid "Fehlt ein Stem, wird eine stille Spur eingesetzt, statt den Song zu überspringen."
 msgstr "ステムが足りないときは、曲をスキップせずに無音トラックを入れます。"
 
-#: umain.pas:1003
+#: umain.pas:1012
 msgid "Fehlt: %s"
 msgstr "不足: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:757 uturbotest.pas:758
+#: ustemjob.pas:2124 uturbotest.pas:758 uturbotest.pas:759
 msgid "Fertig"
 msgstr "完了"
 
-#: umain.pas:2172
+#: umain.pas:2181
 msgid "Fertig - Gesamtzeit %s"
 msgstr "完了 - 合計時間 %s"
 
@@ -1341,11 +1345,11 @@ msgstr "完了 - 合計時間 %s"
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
 msgstr "完了: 成功 %d、スキップ %d、失敗 %d"
 
-#: umain.pas:2161 umain.pas:2176
+#: umain.pas:2170 umain.pas:2185
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr "完了: 成功 %d、スキップ %d、失敗 %d  -  合計時間 %s"
 
-#: umain.pas:1936
+#: umain.pas:1945
 msgid "Fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen"
 msgstr "完成したトラック（マスター＋ステム）をAIなしでステムファイルにまとめる"
 
@@ -1361,11 +1365,11 @@ msgstr "MIT ライセンスで無料。ffmpeg（LGPL）を含みます。"
 msgid "Freier Text, z.B. Notizen fürs Auflegen"
 msgstr "自由なテキスト (例: DJ プレイ用のメモ)"
 
-#: usettings.pas:416
+#: usettings.pas:418
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "アイコンにマウスを重ねると進行状況が表示されます。"
 
-#: umain.pas:1030
+#: umain.pas:1039
 msgid "Für \"%s\" fehlen noch Dateien."
 msgstr "「%s」のファイルがまだ不足しています。"
 
@@ -1377,7 +1381,7 @@ msgstr "認識されない名前の場合: トラックごとにフォルダー�
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "マスターがない場合: 4 つのステムを音量を変えずにミックスします。"
 
-#: uturbotest.pas:501
+#: uturbotest.pas:502
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "テストには htdemucs または htdemucs_ft モデルが必要です。StemMaker の起動時にダウンロードされます。"
 
@@ -1385,19 +1389,19 @@ msgstr "テストには htdemucs または htdemucs_ft モデルが必要です�
 msgid "Genre"
 msgstr "ジャンル"
 
-#: usettings.pas:325
+#: usettings.pas:327
 msgid "Gerät:"
 msgstr "デバイス:"
 
-#: umain.pas:1282
+#: umain.pas:1291
 msgid "Gesamt (Datei %d von %d):  verbleibend %s"
 msgstr "全体 (ファイル %d / %d):  残り %s"
 
-#: umain.pas:1280
+#: umain.pas:1289
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "全体 (ファイル %d / %d):  経過 %s   |   残り %s"
 
-#: umain.pas:2625
+#: umain.pas:2634
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "このPCで測定した速度から見積もりました。"
 
@@ -1405,27 +1409,27 @@ msgstr "このPCで測定した速度から見積もりました。"
 msgid "Gespeichert"
 msgstr "保存しました"
 
-#: ureport.pas:445
+#: ureport.pas:446
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "GitHub の Issue は公開され、誰でも閲覧できます。見せたくない情報 (例: 曲名) が含まれていないか、事前にレポートを確認してください。GitHub アカウントが必要です。"
 
-#: uturbotest.pas:653
+#: uturbotest.pas:654
 msgid "Grafikkarte einschalten"
 msgstr "グラフィックカードを有効化"
 
-#: uturbotest.pas:583
+#: uturbotest.pas:584
 msgid "Grafikkarte messen"
 msgstr "グラフィックカードを測定中"
 
-#: uturbotest.pas:582
+#: uturbotest.pas:583
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr "グラフィックカードを確認中 (最大 30 秒かかります)"
 
-#: uturbotest.pas:581
+#: uturbotest.pas:582
 msgid "Grafikkarte suchen"
 msgstr "グラフィックカードを検索中"
 
-#: umain.pas:2630
+#: umain.pas:2639
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "おおよその見積もりです - 最初のトラックが完了すると、StemMaker はこのPCの速度を把握します。"
 
@@ -1437,7 +1441,7 @@ msgstr "大きなカバーを %d px に縮小"
 msgid "HAFTUNGSAUSSCHLUSS"
 msgstr "免責事項"
 
-#: ureport.pas:429
+#: ureport.pas:430
 msgid "Hallo Elospeed,"
 msgstr "Elospeed さん、こんにちは。"
 
@@ -1445,35 +1449,47 @@ msgstr "Elospeed さん、こんにちは。"
 msgid "Hat die Master-Datei kein Cover, wird cover.jpg, folder.jpg, front.jpg oder <Song>.jpg aus ihrem Ordner genommen."
 msgstr "マスターファイルにカバーがない場合、同じフォルダーの cover.jpg、folder.jpg、front.jpg または <曲名>.jpg を使います。"
 
-#: uinfo.pas:290
+#: uinfo.pas:292
 msgid "Helfende"
 msgstr "協力者"
 
-#: usettings.pas:402
+#: usettings.pas:404
 msgid "Hell"
 msgstr "ライト"
 
-#: umain.pas:2267
+#: umain.pas:2276
 msgid "Herunterfahren abgebrochen."
 msgstr "シャットダウンをキャンセルしました。"
 
-#: uinit.pas:605
+#: uinit.pas:606
 msgid "Herunterladen"
 msgstr "ダウンロード"
 
-#: uinit.pas:884
+#: uinit.pas:885
 msgid "Herunterladen (ca. %d MB)"
 msgstr "ダウンロード (約 %d MB)"
 
-#: uinfo.pas:535
+#: uinfo.pas:547
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "ここには同意いただいた方のみ掲載しています。ご協力いただいて掲載をご希望の方は elospeed.dev@gmail.com までご連絡ください。"
 
-#: umain.pas:683
+#: uinfo.pas:485
+msgid "Hilfe (F1)"
+msgstr "ヘルプ (F1)"
+
+#: usettings.pas:460
+msgid "Hilfe zu diesem Fenster (F1)"
+msgstr "このウィンドウのヘルプ (F1)"
+
+#: umain.lfm:91
+msgid "Hilfe: bebilderte Anleitung im Browser (F1)"
+msgstr "ヘルプ: 図解ガイドをブラウザーで表示 (F1)"
+
+#: umain.pas:686
 msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "注意: 以前の %d 回の実行が予期せず終了しました - 詳細は名前に「_ABSTURZ」を含むログにあります (情報 -> ログフォルダーを開く)。"
 
-#: umain.pas:2109
+#: umain.pas:2118
 msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
 msgstr "注意: PCはバッテリーで動作しています (%s)。この場合 Windows は CPU を制限します - 電源につなぐとかなり速くなります。"
 
@@ -1485,7 +1501,7 @@ msgstr "注意: PCはバッテリーで動作しています - 電源につな�
 msgid "Hinweis: Der PC war ca. %d min im Ruhezustand."
 msgstr "注意: PCは約 %d 分スリープしていました。"
 
-#: umain.pas:680
+#: umain.pas:683
 msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "注意: 前回の実行が予期せず終了しました - 詳細は名前に「_ABSTURZ」を含むログにあります (情報 -> ログフォルダーを開く)。"
 
@@ -1509,11 +1525,11 @@ msgstr "試聴"
 msgid "Höchstleistung"
 msgstr "高パフォーマンス"
 
-#: usettings.pas:449
+#: usettings.pas:451
 msgid "INI-Ordner öffnen"
 msgstr "INI フォルダーを開く"
 
-#: ulicenseui.pas:81
+#: ulicenseui.pas:82
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "免責事項とライセンス情報を読み、同意します。"
 
@@ -1525,7 +1541,7 @@ msgstr "「%s」のパターンに曲名を表す * がありません。"
 msgid "Im Ordner wurden keine Stem- oder MP3-Dateien gefunden:%s%s"
 msgstr "フォルダーにステムファイルまたは MP3 ファイルが見つかりませんでした:%s%s"
 
-#: uupdateui.pas:572
+#: uupdateui.pas:573
 msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
 msgstr "うまくいかない場合は、リリースページの ZIP を手動で展開してください。"
 
@@ -1533,7 +1549,7 @@ msgstr "うまくいかない場合は、リリースページの ZIP を手動�
 msgid "In der Zwischenablage ist kein Bild."
 msgstr "クリップボードに画像がありません。"
 
-#: packerform.pas:667 uinfo.pas:390 umain.lfm:80
+#: packerform.pas:667 uinfo.pas:393 umain.lfm:80
 msgid "Info"
 msgstr "情報"
 
@@ -1541,11 +1557,11 @@ msgstr "情報"
 msgid "Information"
 msgstr "情報"
 
-#: uinit.pas:568 uinit.pas:730
+#: uinit.pas:569 uinit.pas:731
 msgid "Installation wird geprüft ..."
 msgstr "インストールを確認中 ..."
 
-#: uupdateui.pas:429
+#: uupdateui.pas:430
 msgid "Installiert ist %s. Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten."
 msgstr "インストール済み: %s。設定、リスト、ログ、モデル、ffmpeg はそのまま残ります。"
 
@@ -1553,7 +1569,7 @@ msgstr "インストール済み: %s。設定、リスト、ログ、モデル�
 msgid "Internet-Zugriff nicht möglich (WinINet)"
 msgstr "インターネットにアクセスできません (WinINet)"
 
-#: uinit.pas:1067
+#: uinit.pas:1068
 msgid "Internetverbindung prüfen und \"Herunterladen\" erneut klicken."
 msgstr "インターネット接続を確認して、もう一度「ダウンロード」をクリックしてください。"
 
@@ -1573,15 +1589,15 @@ msgstr "ファイル名から取得"
 msgid "Jahr"
 msgstr "年"
 
-#: uupdateui.pas:458
+#: uupdateui.pas:459
 msgid "Jetzt aktualisieren"
 msgstr "今すぐ更新"
 
-#: umain.pas:1031
+#: umain.pas:1040
 msgid "Jetzt herunterladen?"
 msgstr "今すぐダウンロードしますか?"
 
-#: umain.pas:2045
+#: umain.pas:2054
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr "今すぐ確認して、不足しているファイルをダウンロードしますか?"
 
@@ -1589,7 +1605,7 @@ msgstr "今すぐ確認して、不足しているファイルをダウンロー
 msgid "Jetzt speichern?"
 msgstr "今すぐ保存しますか?"
 
-#: uinfo.pas:445
+#: uinfo.pas:448
 msgid "Jetzt spenden"
 msgstr "今すぐ寄付"
 
@@ -1637,11 +1653,11 @@ msgstr "ステムファイルではありません: "
 msgid "Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen."
 msgstr "既知の名前の付け方が見つかりません。フォルダーとパターンを自分で設定してください。"
 
-#: usettings.pas:322
+#: usettings.pas:324
 msgid "Klappt Turbo bei einer Datei nicht, nimmt StemMaker für diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch."
 msgstr "あるファイルで Turbo が失敗した場合、StemMaker はそのファイルを自動的にクラシックで処理します。htdemucs v3 は常にクラシックで計算します。"
 
-#: usettings.pas:319
+#: usettings.pas:321
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr "クラシック (demucs.cpp、1.9 までと同じ)"
 
@@ -1661,15 +1677,15 @@ msgstr "エンコードを測定中 (ffmpeg、5 トラック)"
 msgid "Kommentar"
 msgstr "コメント"
 
-#: umain.pas:813
+#: umain.pas:822
 msgid "Konvertierung läuft"
 msgstr "変換中"
 
-#: umain.lfm:91
+#: umain.lfm:101
 msgid "Kopiert das Protokoll unten in die Zwischenablage"
 msgstr "下のログをクリップボードにコピーします"
 
-#: umain.pas:802
+#: umain.pas:811
 msgid "Kopiert ✓"
 msgstr "コピーしました ✓"
 
@@ -1689,11 +1705,11 @@ msgstr "LOOP"
 msgid "Label"
 msgstr "レーベル"
 
-#: uinit.pas:991
+#: uinit.pas:992
 msgid "Lade %s  (%d von %d)"
 msgstr "%s をダウンロード中  (%d / %d)"
 
-#: uupdateui.pas:319
+#: uupdateui.pas:320
 msgid "Lade StemMaker %s ..."
 msgstr "StemMaker %s をダウンロード中 ..."
 
@@ -1717,7 +1733,7 @@ msgstr "ラウドネスを測定できませんでした: %s"
 msgid "Lautheit messen"
 msgstr "ラウドネス測定"
 
-#: umain.lfm:260
+#: umain.lfm:270
 msgid "Lautstärke angleichen (Club-Pegel)"
 msgstr "音量を揃える (クラブレベル)"
 
@@ -1741,7 +1757,7 @@ msgstr "スペース 再生/一時停止  ·  1-4 ミュート  ·  Shift+1-4 �
 msgid "Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak)."
 msgstr "最初の保存の前に元ファイルのコピー (名前.stem.mp4.bak) を作成します。"
 
-#: umain.lfm:263
+#: umain.lfm:273
 msgid "Leise Dateien werden angehoben, bis die lauteste Stelle knapp unter 0 dB liegt (ca. -1 dB).\nAlle 5 Spuren bekommen denselben Wert, ohne Limiter - die Dynamik bleibt wie im Original.\nLaute Club-Tracks ändern sich kaum. Vorteil in Traktor: größere, besser lesbare Wellenformen."
 msgstr "音量の小さいファイルは、最も大きい部分が 0 dB のわずか下 (約 -1 dB) になるまで持ち上げます。\n5 つのトラックすべてに同じ値を適用し、リミッターは使いません - ダイナミクスは原曲のままです。\n音量の大きいクラブトラックはほとんど変わりません。Traktor での利点: 波形が大きく見やすくなります。"
 
@@ -1757,11 +1773,11 @@ msgstr "合計がクリップすると赤く点灯します (その場合はマ�
 msgid "Liste leeren"
 msgstr "リストをクリア"
 
-#: umain.pas:2496
+#: umain.pas:2505
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "前回のリストを復元しました: %d ファイル、うち %d が未処理です。"
 
-#: uinfo.pas:540
+#: uinfo.pas:552
 msgid "Lizenzen"
 msgstr "ライセンス"
 
@@ -1773,15 +1789,15 @@ msgstr "ログを表示"
 msgid "Log konnte nicht gelesen werden: %s"
 msgstr "ログを読み込めませんでした: %s"
 
-#: umain.pas:805 umain.lfm:90
+#: umain.pas:814 umain.lfm:100
 msgid "Log kopieren"
 msgstr "ログをコピー"
 
-#: ureport.pas:226
+#: ureport.pas:227
 msgid "Log:"
 msgstr "ログ:"
 
-#: uinfo.pas:439
+#: uinfo.pas:442
 msgid "Logs-Ordner öffnen"
 msgstr "ログフォルダーを開く"
 
@@ -1881,7 +1897,7 @@ msgstr "MP4 ファイル"
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "マーカー A と B はマウスで移動できます。左ボタンで波形をドラッグすると位置を移動でき、ドラッグ中は音が聞こえます。"
 
-#: umain.pas:1928 umain.lfm:326
+#: umain.pas:1937 umain.lfm:336
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr "選択したステムファイル、または最後に変換したステムファイルを StemPlayer で再生"
 
@@ -1905,7 +1921,7 @@ msgstr "マスター「%s」"
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "マウスホイール: ズーム。クリック: ジャンプ。"
 
-#: usettings.pas:419
+#: usettings.pas:421
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "変換が終わったら時計の横に通知"
 
@@ -1913,23 +1929,23 @@ msgstr "変換が終わったら時計の横に通知"
 msgid "Meldung von ffmpeg:"
 msgstr "ffmpeg からのメッセージ:"
 
-#: uinit.pas:916
+#: uinit.pas:917
 msgid "Mindestens eine Prüfung ist fehlgeschlagen (rot). Details erscheinen beim Überfahren der Zeile mit der Maus."
 msgstr "少なくとも 1 つのチェックが失敗しました (赤)。行にマウスを重ねると詳細が表示されます。"
 
-#: usettings.pas:339
+#: usettings.pas:341
 msgid "Misst CPU und Grafikkarte und sagt, wie lange ein Track auf diesem PC etwa dauert"
 msgstr "CPU とグラフィックカードを測定し、このPCで1曲にかかるおおよその時間を表示します"
 
-#: ureport.pas:211
+#: ureport.pas:212
 msgid "Mit diesem Bericht kann Elospeed den Fehler finden. Es wird NICHTS automatisch gesendet: Unten steht genau der Text, der den PC verlässt. Dein Benutzername ist bereits entfernt, Dateinamen deiner Songs bleiben drin."
 msgstr "このレポートで Elospeed がエラーを特定できます。自動では何も送信されません: 下に表示されているのが、PCから送られる文章のすべてです。ユーザー名は既に削除済みですが、曲のファイル名は残ります。"
 
-#: uinit.pas:576
+#: uinit.pas:577
 msgid "Modell %s"
 msgstr "モデル %s"
 
-#: uturbotest.pas:500
+#: uturbotest.pas:501
 msgid "Modell fehlt"
 msgstr "モデルがありません"
 
@@ -1937,15 +1953,15 @@ msgstr "モデルがありません"
 msgid "Modell fehlt: %s"
 msgstr "モデルがありません: %s"
 
-#: uturbotest.pas:575
+#: uturbotest.pas:576
 msgid "Modell lesen"
 msgstr "モデルを読み込み中"
 
-#: umain.pas:1029
+#: umain.pas:1038
 msgid "Modell nicht installiert"
 msgstr "モデルがインストールされていません"
 
-#: usettings.pas:426
+#: usettings.pas:428
 msgid "Modelle:"
 msgstr "モデル:"
 
@@ -1957,11 +1973,11 @@ msgstr "音楽ジャンル: リストから選ぶか、直接入力"
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "ミュート: このステムを消音 (%d キー)"
 
-#: umain.pas:787
+#: umain.pas:790
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Elospeed にエラーレポートを送りますか? 送信前にレポートを確認でき、自動では何も送信されません。"
 
-#: uinfo.pas:465 uinfo.pas:567
+#: uinfo.pas:468 uinfo.pas:579
 msgid "Nach Updates suchen"
 msgstr "更新を確認"
 
@@ -1977,7 +1993,7 @@ msgstr "トラック名 (例: 「Clap Your Hands」)"
 msgid "Namensmuster (* = Songname)"
 msgstr "名前のパターン（* = 曲名）"
 
-#: umain.pas:789
+#: umain.pas:792
 msgid "Nein, danke"
 msgstr "いいえ、結構です"
 
@@ -2001,15 +2017,15 @@ msgstr "今後は表示しない"
 msgid "Nicht mehr fragen"
 msgstr "今後は表示しない"
 
-#: ureport.pas:265
+#: ureport.pas:266
 msgid "Nicht senden"
 msgstr "送信しない"
 
-#: usettings.pas:615
+#: usettings.pas:625
 msgid "Noch kein Vortest auf diesem PC."
 msgstr "このPCではまだ事前テストを行っていません。"
 
-#: umain.pas:1815
+#: umain.pas:1824
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr "「%s」のステムファイルはまだありません - 先に変換してください。"
 
@@ -2021,7 +2037,7 @@ msgstr "アルバム内の番号 (例: 3 または 3/12 = 12 曲中 3 曲目)"
 msgid "Nummern: „Song_0“ (Master) bis „Song_4“"
 msgstr "番号:「Song_0」（マスター）～「Song_4」"
 
-#: usettings.pas:331
+#: usettings.pas:333
 msgid "Nur CPU"
 msgstr "CPU のみ"
 
@@ -2029,19 +2045,19 @@ msgstr "CPU のみ"
 msgid "Nur lesen (alter oder beschädigter ID3-Tag)"
 msgstr "読み取り専用（古いまたは破損した ID3 タグ）"
 
-#: usettings.pas:302
+#: usettings.pas:304
 msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
 msgstr "専用の出力フォルダーがある場合のみ (メイン画面で「元ファイルと同じ場所に保存」がオンになっています)。"
 
-#: usettings.pas:420
+#: usettings.pas:422
 msgid "Nur wenn StemMaker gerade nicht im Vordergrund ist."
 msgstr "StemMaker が前面にないときのみ。"
 
-#: usettings.pas:465
+#: usettings.pas:475
 msgid "OK"
 msgstr "OK"
 
-#: umain.pas:1124
+#: umain.pas:1133
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
@@ -2073,7 +2089,7 @@ msgstr "フォルダー"
 msgid "Ordner geladen"
 msgstr "フォルダーを読み込みました"
 
-#: umain.pas:636
+#: umain.pas:639
 msgid "Ordner mit Audiodateien wählen"
 msgstr "オーディオファイルのあるフォルダーを選択"
 
@@ -2101,11 +2117,11 @@ msgstr "トラックのフォルダーを選択"
 msgid "Ordner mit den Stems"
 msgstr "ステムのフォルダー"
 
-#: umain.lfm:314
+#: umain.lfm:324
 msgid "Ordner mit den fertigen Stem-Dateien im Explorer öffnen (zum Hineinziehen in Traktor)"
 msgstr "完成したステムファイルのフォルダーをエクスプローラーで開く (Traktor にドラッグするため)"
 
-#: umain.lfm:381
+#: umain.lfm:391
 msgid "Ordner nach der Umwandlung öffnen"
 msgstr "変換後にフォルダーを開く"
 
@@ -2125,11 +2141,11 @@ msgstr "フォルダーを選択"
 msgid "Ordner wählen …"
 msgstr "フォルダーを選択 …"
 
-#: umain.lfm:313
+#: umain.lfm:323
 msgid "Ordner öffnen"
 msgstr "フォルダーを開く"
 
-#: umain.pas:1355 umain.pas:1365
+#: umain.pas:1364 umain.pas:1374
 msgid "Ordner übersprungen, Pfad zu lang: %s"
 msgstr "パスが長すぎるためフォルダーをスキップ: %s"
 
@@ -2145,15 +2161,15 @@ msgstr "オリジナル - クリックまたはドラッグでこの位置へジ
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr "ファイル内のオリジナルミックス (トラック 0) で A/B 比較 (O キー)"
 
-#: umain.lfm:249
+#: umain.lfm:259
 msgid "PC nach Abschluss herunterfahren"
 msgstr "完了後にPCをシャットダウン"
 
-#: umain.pas:2245
+#: umain.pas:2254
 msgid "PC wird heruntergefahren ..."
 msgstr "PCをシャットダウンしています ..."
 
-#: usettings.pas:306
+#: usettings.pas:308
 msgid "PC während der Konvertierung wach halten (kein Standby)"
 msgstr "変換中はPCをスリープさせない (スタンバイなし)"
 
@@ -2169,11 +2185,11 @@ msgstr "完成した個別トラック（マスターと 4 ステム）を AI �
 msgid "Pegel messen"
 msgstr "レベル測定"
 
-#: ureport.pas:248
+#: ureport.pas:249
 msgid "Per E-Mail senden"
 msgstr "メールで送信"
 
-#: umain.lfm:131
+#: umain.lfm:141
 msgid "Pfad"
 msgstr "パス"
 
@@ -2189,19 +2205,19 @@ msgstr "トラックをリリースしたレーベル"
 msgid "Play / Pause (Leertaste)"
 msgstr "再生 / 一時停止 (スペース)"
 
-#: uinit.pas:915
+#: uinit.pas:916
 msgid "Problem gefunden"
 msgstr "問題が見つかりました"
 
-#: usettings.pas:384
+#: usettings.pas:386
 msgid "Programm"
 msgstr "プログラム"
 
-#: umain.pas:790
+#: umain.pas:793
 msgid "Programm wurde unerwartet beendet"
 msgstr "プログラムが予期せず終了しました"
 
-#: uinit.pas:573
+#: uinit.pas:574
 msgid "Prozessor"
 msgstr "プロセッサ"
 
@@ -2221,7 +2237,7 @@ msgstr "元ファイル: %s -> ステムファイル AAC %d kbit/s"
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "元ファイル: %s -> ステムファイル AAC %d kbit/s (自動)"
 
-#: usettings.pas:599
+#: usettings.pas:609
 msgid "RAM knapp!"
 msgstr "メモリ不足!"
 
@@ -2281,11 +2297,11 @@ msgstr "ステム  S"
 msgid "STUMM"
 msgstr "ミュート"
 
-#: uturbotest.pas:495 uturbotest.pas:506 uturbotest.pas:808
+#: uturbotest.pas:496 uturbotest.pas:507 uturbotest.pas:809
 msgid "Schliessen"
 msgstr "閉じる"
 
-#: uinfo.pas:432
+#: uinfo.pas:435
 msgid "Schließen"
 msgstr "閉じる"
 
@@ -2297,11 +2313,11 @@ msgstr "これまでに %d 曲をステムに変換しました"
 msgid "Server meldet HTTP %d"
 msgstr "サーバーの応答: HTTP %d"
 
-#: usettings.pas:376
+#: usettings.pas:378
 msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
 msgstr "4 色を Traktor 純正のステムファイルの値 (オレンジ、紫、緑、水色) に設定します。名前はそのままです。"
 
-#: usettings.pas:442
+#: usettings.pas:444
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr "このウィンドウの値を初期設定に戻します (言語はそのまま)。"
 
@@ -2309,7 +2325,7 @@ msgstr "このウィンドウの値を初期設定に戻します (言語はそ�
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "バックアップを作成 (.bak)"
 
-#: uturbotest.pas:654
+#: uturbotest.pas:655
 msgid "Sitzung vorbereiten"
 msgstr "セッションを準備"
 
@@ -2345,15 +2361,15 @@ msgstr "保存"
 msgid "Speichern..."
 msgstr "保存..."
 
-#: uinfo.pas:286
+#: uinfo.pas:288
 msgid "Spender"
 msgstr "寄付者"
 
-#: usettings.pas:559
+#: usettings.pas:569
 msgid "Sprache und Design werden beim nächsten Start übernommen."
 msgstr "言語とテーマは次回の起動時に変更されます。"
 
-#: usettings.pas:385
+#: usettings.pas:387
 msgid "Sprache:"
 msgstr "言語:"
 
@@ -2365,23 +2381,23 @@ msgstr "トラック"
 msgid "Spuren : "
 msgstr "トラック : "
 
-#: uupdateui.pas:466
+#: uupdateui.pas:467
 msgid "Später"
 msgstr "後で"
 
-#: usettings.pas:441
+#: usettings.pas:443
 msgid "Standard wiederherstellen"
 msgstr "初期設定に戻す"
 
-#: umain.lfm:293
+#: umain.lfm:303
 msgid "Start"
 msgstr "開始"
 
-#: uinit.pas:892
+#: uinit.pas:893
 msgid "Starten"
 msgstr "開始"
 
-#: packerform.pas:683 taggerform.pas:765 umain.lfm:126
+#: packerform.pas:683 taggerform.pas:765 umain.lfm:136
 msgid "Status"
 msgstr "状態"
 
@@ -2413,7 +2429,7 @@ msgstr "ステムファイルは既に存在します"
 msgid "Stem-Datei kodieren"
 msgstr "ステムファイルをエンコード"
 
-#: umain.pas:1461
+#: umain.pas:1470
 msgid "Stem-Datei prüfen"
 msgstr "ステムファイルをチェック"
 
@@ -2437,7 +2453,7 @@ msgstr "ステムファイル: %.1f MB"
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr "ステムファイル: %.1f MB、速度: 音楽1分あたり %.1f 秒 (%s)"
 
-#: taggerform.pas:1988 umain.pas:1462
+#: taggerform.pas:1988 umain.pas:1471
 msgid "Stem-Dateien"
 msgstr "ステムファイル"
 
@@ -2457,7 +2473,7 @@ msgstr "ステムのメタデータ: %s"
 msgid "Stem-Name"
 msgstr "ステム名"
 
-#: umain.lfm:230
+#: umain.lfm:240
 msgid "Stem-Namen und Farben, Teile/Kerne, Überschreiben, Unterordner, Standby, Sprache, Updates, Werkzeuge"
 msgstr "ステムの名前と色、分割数/コア、上書き、サブフォルダー、スタンバイ、言語、更新、ツール"
 
@@ -2469,19 +2485,19 @@ msgstr "StemCLI %s (Elospeed StemMaker) - Traktor ステムファイル (*.stem.
 msgid "StemMaker"
 msgstr "StemMaker"
 
-#: uupdateui.pas:422
+#: uupdateui.pas:423
 msgid "StemMaker %s ist da"
 msgstr "StemMaker %s が公開されました"
 
-#: uupdateui.pas:578
+#: uupdateui.pas:579
 msgid "StemMaker %s ist installiert. StemMaker startet jetzt neu."
 msgstr "StemMaker %s をインストールしました。StemMaker を再起動します。"
 
-#: umain.pas:730
+#: umain.pas:733
 msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
 msgstr "StemMaker %s が公開されています - 変換が終わったら更新を案内します。"
 
-#: umain.pas:2683
+#: umain.pas:2692
 msgid "StemMaker anzeigen"
 msgstr "StemMaker を表示"
 
@@ -2493,7 +2509,7 @@ msgstr "StemMaker は MIT ライセンスのオープンソースです (© 2026
 msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
 msgstr "StemMaker は既に開いています。2 つ起動するとキュー、設定、完成ファイルを共有してしまうため、同時に起動できる StemMaker は 1 つだけです。"
 
-#: umain.pas:2807
+#: umain.pas:2816
 msgid "StemMaker ist fertig"
 msgstr "StemMaker の処理が完了しました"
 
@@ -2509,7 +2525,7 @@ msgstr "StemMaker は既に実行中です"
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr "StemMaker はこのまま動作を続けます。正しく動かなくなった場合は、プログラムを再起動してください。"
 
-#: uturbotest.pas:395
+#: uturbotest.pas:396
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "StemMaker はこのPCのステム分離速度を一度だけ測定します: まず CPU、次にグラフィックカード。約 1 分かかります。"
 
@@ -2521,35 +2537,35 @@ msgstr "このPCでは StemMaker はグラフィックカード (%s) で分離�
 msgid "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an."
 msgstr "StemMaker は無料で、いかなる保証もなく (「現状のまま」) 提供されます。ご利用は自己責任でお願いします。法律で認められる範囲において、Elospeed は使用によって生じた損害やデータ損失について責任を負いません。大切なファイルは事前にバックアップしてください。"
 
-#: umain.pas:786
+#: umain.pas:789
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "前回 StemMaker が予期せず終了しました。"
 
-#: uturbotest.pas:490
+#: uturbotest.pas:491
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe が見つかりませんでした (%s)。StemMaker は demucs.cpp (クラシック) で分離します。"
 
-#: umain.pas:1969
+#: umain.pas:1978
 msgid "StemPacker konnte nicht gestartet werden: %s"
 msgstr "StemPacker を起動できませんでした: %s"
 
-#: umain.pas:1591
+#: umain.pas:1600
 msgid "StemPlayer konnte nicht gestartet werden: %s"
 msgstr "StemPlayer を起動できませんでした: %s"
 
-#: umain.pas:1572
+#: umain.pas:1581
 msgid "StemPlayer nicht gefunden:%s%s"
 msgstr "StemPlayer が見つかりません:%s%s"
 
-#: umain.pas:1625
+#: umain.pas:1634
 msgid "StemTagger konnte nicht gestartet werden: %s"
 msgstr "StemTagger を起動できませんでした: %s"
 
-#: umain.pas:1609
+#: umain.pas:1618
 msgid "StemTagger nicht gefunden:%s%s"
 msgstr "StemTagger が見つかりません:%s%s"
 
-#: usettings.pas:353
+#: usettings.pas:355
 msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
 msgstr "ステム (Traktor に表示される名前と色)"
 
@@ -2569,11 +2585,11 @@ msgstr "停止して先頭に戻る"
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+クリック: 別のステムを追加 (複数ソロ)"
 
-#: uinfo.pas:561
+#: uinfo.pas:573
 msgid "Suche ..."
 msgstr "確認中 ..."
 
-#: umain.pas:1834
+#: umain.pas:1843
 msgid "Tags bearbeiten..."
 msgstr "タグを編集..."
 
@@ -2589,11 +2605,11 @@ msgstr "元ファイルのタグ: BPM %s、キーなし"
 msgid "Tags lesen"
 msgstr "タグを読み込み中"
 
-#: usettings.pas:277
+#: usettings.pas:279
 msgid "Teile:"
 msgstr "分割数:"
 
-#: uinit.pas:577
+#: uinit.pas:578
 msgid "Temp-Ordner"
 msgstr "一時フォルダー"
 
@@ -2609,15 +2625,15 @@ msgstr "一時フォルダーを作成できません: %s"
 msgid "Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128."
 msgstr "テンポ (1分あたりの拍数)。%d から %d までの整数のみ (例: 128)。"
 
-#: uinfo.pas:292
+#: uinfo.pas:294
 msgid "Tempo-Vergleich, Tests und Fehlerberichte"
 msgstr "速度比較、テスト、不具合報告"
 
-#: uinfo.pas:293
+#: uinfo.pas:295
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr "5.1ステムのテストとアイデア"
 
-#: uturbotest.pas:574
+#: uturbotest.pas:575
 msgid "Testsignal erzeugen"
 msgstr "テスト信号を生成中"
 
@@ -2629,7 +2645,7 @@ msgstr "ヒント: 波形内で右ボタンでドラッグ"
 msgid "Titel"
 msgstr "タイトル"
 
-#: umain.pas:1932
+#: umain.pas:1941
 msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
 msgstr "選択した完成済みステムファイルのタイトル、アーティスト、カバーなどを編集"
 
@@ -2641,15 +2657,15 @@ msgstr "キー"
 msgid "Tonart des Tracks: aus der Liste wählen oder selbst eintippen."
 msgstr "トラックのキー: リストから選ぶか、直接入力してください。"
 
-#: umain.lfm:240
+#: umain.lfm:250
 msgid "Tools: ..."
 msgstr "ツール: ..."
 
-#: umain.pas:994
+#: umain.pas:1003
 msgid "Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden"
 msgstr "ツール: ffmpeg、Turbo、demucs.cpp、モデルが見つかりました"
 
-#: umain.pas:996
+#: umain.pas:1005
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr "ツール: ffmpeg、demucs.cpp、モデルが見つかりました"
 
@@ -2673,31 +2689,31 @@ msgstr "Traktor は解析時にテンポを自分で測定します。"
 msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
 msgstr "Traktor および STEMS は Native Instruments GmbH の商標です。StemMaker は独立したプロジェクトであり、Native Instruments とは一切関係ありません。"
 
-#: usettings.pas:375
+#: usettings.pas:377
 msgid "Traktor-Farben"
 msgstr "Traktor の色"
 
-#: uturbotest.pas:631
+#: uturbotest.pas:632
 msgid "Treiber"
 msgstr "ドライバー"
 
-#: umain.lfm:185
+#: umain.lfm:195
 msgid "Trenn-Modell:"
 msgstr "分離モデル:"
 
-#: uturbotest.pas:656
+#: uturbotest.pas:657
 msgid "Trennen"
 msgstr "分離"
 
-#: uturbotest.pas:655
+#: uturbotest.pas:656
 msgid "Trennen auf der Grafikkarte"
 msgstr "グラフィックカードで分離"
 
-#: uturbotest.pas:584
+#: uturbotest.pas:585
 msgid "Trennen gemessen"
 msgstr "分離を測定しました"
 
-#: uinit.pas:607
+#: uinit.pas:608
 msgid "Trotzdem starten"
 msgstr "このまま開始"
 
@@ -2709,11 +2725,11 @@ msgstr "Turbo (StemOnnx)、対応していればグラフィックカード"
 msgid "Turbo (StemOnnx), nur CPU"
 msgstr "Turbo (StemOnnx)、CPU のみ"
 
-#: usettings.pas:318
+#: usettings.pas:320
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (高速、標準)"
 
-#: uturbotest.pas:489
+#: uturbotest.pas:490
 msgid "Turbo fehlt"
 msgstr "Turbo がありません"
 
@@ -2725,7 +2741,7 @@ msgstr "Turbo がうまくいきませんでした (コード %d)。このファ
 msgid "Turbo rechnet auf: %s"
 msgstr "Turbo の計算先: %s"
 
-#: uturbotest.pas:383
+#: uturbotest.pas:384
 msgid "Turbo-Vortest"
 msgstr "Turbo 事前テスト"
 
@@ -2733,7 +2749,7 @@ msgstr "Turbo 事前テスト"
 msgid "Ultimative Leistung"
 msgstr "究極のパフォーマンス"
 
-#: usettings.pas:274
+#: usettings.pas:276
 msgid "Umwandlung"
 msgstr "変換"
 
@@ -2741,7 +2757,7 @@ msgstr "変換"
 msgid "Und wenn nicht, ist das völlig in Ordnung. Viel Spass beim Auflegen!"
 msgstr "もちろん、しなくてもまったく問題ありません。DJ を楽しんでください!"
 
-#: umain.pas:785
+#: umain.pas:788
 msgid "Unerwartet beendet"
 msgstr "予期せず終了"
 
@@ -2753,23 +2769,23 @@ msgstr "予期しないエラー"
 msgid "Unterordner durchsuchen"
 msgstr "サブフォルダーも検索"
 
-#: usettings.pas:295
+#: usettings.pas:297
 msgid "Unterordner im Ausgabeordner nachbauen"
 msgstr "出力フォルダーにサブフォルダーを再現"
 
-#: uupdateui.pas:413
+#: uupdateui.pas:414
 msgid "Update"
 msgstr "更新"
 
-#: uupdateui.pas:309
+#: uupdateui.pas:310
 msgid "Update auf %s"
 msgstr "%s に更新"
 
-#: uupdateui.pas:548
+#: uupdateui.pas:549
 msgid "Update konnte nicht geladen werden: %s"
 msgstr "更新をダウンロードできませんでした: %s"
 
-#: uupdateui.pas:571
+#: uupdateui.pas:572
 msgid "Update konnte nicht installiert werden: %s"
 msgstr "更新をインストールできませんでした: %s"
 
@@ -2777,15 +2793,15 @@ msgstr "更新をインストールできませんでした: %s"
 msgid "Verbindung fehlgeschlagen (Fehler %d)"
 msgstr "接続に失敗しました (エラー %d)"
 
-#: usettings.pas:307
+#: usettings.pas:309
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "スリープを防ぎ、省電力設定を一時的に停止します。"
 
-#: uinfo.pas:496
+#: uinfo.pas:508
 msgid "Versionen"
 msgstr "バージョン"
 
-#: uturbotest.pas:407
+#: uturbotest.pas:408
 msgid "Vorbereiten"
 msgstr "準備"
 
@@ -2797,11 +2813,11 @@ msgstr "既存のファイルを上書き"
 msgid "Vorlage:"
 msgstr "テンプレート:"
 
-#: usettings.pas:338
+#: usettings.pas:340
 msgid "Vortest ..."
 msgstr "事前テスト ..."
 
-#: uturbotest.pas:744
+#: uturbotest.pas:745
 msgid "Vortest fehlgeschlagen"
 msgstr "事前テストに失敗しました"
 
@@ -2817,7 +2833,7 @@ msgstr "必要な権利を持っている音楽だけを変換してください
 msgid "Warnung"
 msgstr "警告"
 
-#: ureport.pas:433
+#: ureport.pas:434
 msgid "Was habe ich gerade gemacht?"
 msgstr "直前に何をしていましたか?"
 
@@ -2825,27 +2841,27 @@ msgstr "直前に何をしていましたか?"
 msgid "Weiter"
 msgstr "続ける"
 
-#: ureport.pas:448
+#: ureport.pas:449
 msgid "Weiter zu GitHub?"
 msgstr "GitHub に進みますか?"
 
-#: umain.lfm:229
+#: umain.lfm:239
 msgid "Weitere Einstellungen..."
 msgstr "その他の設定..."
 
-#: uinit.pas:578
+#: uinit.pas:579
 msgid "Weitere Modelle"
 msgstr "その他のモデル"
 
-#: umain.lfm:252
+#: umain.lfm:262
 msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
 msgstr "すべてのファイルが完了すると、60 秒後にPCをシャットダウンします (キャンセル可)。"
 
-#: usettings.pas:423
+#: usettings.pas:425
 msgid "Werkzeuge"
 msgstr "ツール"
 
-#: usettings.pas:275
+#: usettings.pas:277
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "demucs が曲を何分割して同時に計算するか。各分割はさらに複数のコアを使い、2 GB 強のメモリが必要です。"
 
@@ -2853,7 +2869,7 @@ msgstr "demucs が曲を何分割して同時に計算するか。各分割は�
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Wine を検出 (Linux): Wine ではグラフィックカードを使用できません。StemMaker は CPU で分離します: 音楽 1 分あたり約 %s の処理時間。"
 
-#: uturbotest.pas:627
+#: uturbotest.pas:628
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine を検出: Turbo は CPU で動作します"
 
@@ -2869,11 +2885,11 @@ msgstr "ZIP エラー: %s"
 msgid "Zeigt Spuren und Stem-Metadaten einer vorhandenen .stem.mp4"
 msgstr "既存の .stem.mp4 のトラックとステムのメタデータを表示します"
 
-#: umain.lfm:382
+#: umain.lfm:392
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "完成したステムファイルをエクスプローラーで表示 - そこから Traktor に直接ドラッグできます"
 
-#: uinfo.pas:473
+#: uinfo.pas:476
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "ログを表示し、メールまたは GitHub で Elospeed に送るのを手伝います。自動では何も送信されません。"
 
@@ -2893,7 +2909,7 @@ msgstr "出力先のパスが長すぎます (%d 文字、Windows の上限は %
 msgid "Zuerst die Dateien markieren, die dieses Cover bekommen sollen."
 msgstr "まず、このカバーを付けるファイルを選択してください。"
 
-#: packerform.pas:1304 umain.pas:1140 umain.pas:2472
+#: packerform.pas:1304 umain.pas:1149 umain.pas:2481
 msgid "abgebrochen"
 msgstr "キャンセル"
 
@@ -2909,7 +2925,7 @@ msgstr "準備完了、無音で補完: "
 msgid "beschädigt (nur %d KB)"
 msgstr "破損 (%d KB のみ)"
 
-#: uinit.pas:1035 umain.pas:1226 umain.pas:1235
+#: uinit.pas:1036 umain.pas:1235 umain.pas:1244
 msgid "ca. %s"
 msgstr "約 %s"
 
@@ -2945,7 +2961,7 @@ msgstr "最も長いトラック"
 msgid "eigener Plan %s"
 msgstr "カスタムプラン %s"
 
-#: umain.pas:1139 umain.pas:2470
+#: umain.pas:1148 umain.pas:2479
 msgid "existiert schon"
 msgstr "既に存在します"
 
@@ -2953,7 +2969,7 @@ msgstr "既に存在します"
 msgid "fehlt"
 msgstr "不足"
 
-#: uinit.pas:749
+#: uinit.pas:750
 msgid "fehlt - wird heruntergeladen (ca. %d MB)"
 msgstr "不足 - ダウンロードします (約 %d MB)"
 
@@ -2961,11 +2977,11 @@ msgstr "不足 - ダウンロードします (約 %d MB)"
 msgid "fehlt: "
 msgstr "不足: "
 
-#: uinit.pas:753
+#: uinit.pas:754
 msgid "fehlt: %s"
 msgstr "不足: %s"
 
-#: uinit.pas:788
+#: uinit.pas:789
 msgid "fehlt: %s - StemMaker-ZIP bitte komplett neu entpacken"
 msgstr "不足: %s - StemMaker の ZIP をもう一度すべて展開してください"
 
@@ -2973,7 +2989,7 @@ msgstr "不足: %s - StemMaker の ZIP をもう一度すべて展開してく�
 msgid "fertig"
 msgstr "完了"
 
-#: umain.pas:414
+#: umain.pas:416
 msgid "fertig ca. %s"
 msgstr "完了予定 %s"
 
@@ -2985,7 +3001,7 @@ msgstr "完了、注意: "
 msgid "fertige Spuren zu Stem-Dateien packen"
 msgstr "完成したトラックをステムファイルにまとめる"
 
-#: uinit.pas:772
+#: uinit.pas:773
 msgid "ffmpeg (neu)"
 msgstr "ffmpeg (新規)"
 
@@ -3053,7 +3069,7 @@ msgstr "htdemucs_ft (最高品質、約 4 倍遅い)"
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr "分離で失われた音や、異なって聞こえる音が"
 
-#: ureport.pas:430
+#: ureport.pas:431
 msgid "in StemMaker ist ein Fehler aufgetreten. Der Bericht ist angehängt (Datei aus dem Explorer-Fenster in diese Mail ziehen):"
 msgstr "StemMaker でエラーが発生しました。レポートを添付します (エクスプローラーのウィンドウからこのメールにファイルをドラッグ):"
 
@@ -3077,15 +3093,15 @@ msgstr "CPU より速くありません"
 msgid "ja"
 msgstr "はい"
 
-#: usettings.pas:594
+#: usettings.pas:604
 msgid "je %d Kerne (%d von %d)"
 msgstr "各 %d コア (%d / %d)"
 
-#: usettings.pas:592
+#: usettings.pas:602
 msgid "je 1 Kern (%d von %d)"
 msgstr "各 1 コア (%d / %d)"
 
-#: uinit.pas:737
+#: uinit.pas:738
 msgid "kein AVX (kompatible Version)"
 msgstr "AVX なし (互換版)"
 
@@ -3093,7 +3109,7 @@ msgstr "AVX なし (互換版)"
 msgid "kein Cover"
 msgstr "カバーなし"
 
-#: uturbotest.pas:625
+#: uturbotest.pas:626
 msgid "keine Grafikkarte gefunden"
 msgstr "グラフィックカードが見つかりません"
 
@@ -3105,7 +3121,7 @@ msgstr "有効なモデルファイルではありません"
 msgid "klingt (ideal: fast Stille)."
 msgstr "わかります (理想: ほぼ無音)。"
 
-#: umain.lfm:423
+#: umain.lfm:433
 msgid "ko-fi.com/elospeed"
 msgstr "ko-fi.com/elospeed"
 
@@ -3121,15 +3137,15 @@ msgstr "空欄 = ステム %d と同じ"
 msgid "lässt sich nicht einschalten"
 msgstr "有効にできません"
 
-#: umain.pas:1093 umain.pas:1113
+#: umain.pas:1102 umain.pas:1122
 msgid "läuft..."
 msgstr "実行中..."
 
-#: umain.pas:378
+#: umain.pas:380
 msgid "morgen %s"
 msgstr "明日 %s"
 
-#: umain.lfm:176
+#: umain.lfm:186
 msgid "neben der Originaldatei speichern"
 msgstr "元ファイルと同じ場所に保存"
 
@@ -3137,7 +3153,7 @@ msgstr "元ファイルと同じ場所に保存"
 msgid "neben die Master-Datei"
 msgstr "マスターファイルの隣"
 
-#: uinit.pas:846
+#: uinit.pas:847
 msgid "nicht beschreibbar: %s"
 msgstr "書き込みできません: %s"
 
@@ -3145,11 +3161,11 @@ msgstr "書き込みできません: %s"
 msgid "nicht lesbar"
 msgstr "読み取れません"
 
-#: umain.lfm:100
+#: umain.lfm:110
 msgid "oder hierher ziehen"
 msgstr "またはここにドラッグ"
 
-#: uinit.pas:744 uinit.pas:783 uinit.pas:806
+#: uinit.pas:745 uinit.pas:784 uinit.pas:807
 msgid "prüfe ..."
 msgstr "確認中 ..."
 
@@ -3161,11 +3177,11 @@ msgstr "計算結果が正しくありません"
 msgid "rechnet ungenau"
 msgstr "計算が不正確です"
 
-#: uinfo.pas:291
+#: uinfo.pas:293
 msgid "spanische Übersetzung"
 msgstr "スペイン語翻訳"
 
-#: uinit.pas:769
+#: uinit.pas:770
 msgid "startet nicht: %s"
 msgstr "起動しません: %s"
 
@@ -3177,23 +3193,23 @@ msgstr "不明"
 msgid "unerlaubter Pfad"
 msgstr "許可されていないパス"
 
-#: uinit.pas:1038
+#: uinit.pas:1039
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "経過 %s   |   残り %s   |   %.1f MB/s"
 
-#: uinfo.pas:415
+#: uinfo.pas:418
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "作者 %s  ·  オーディオファイルから Traktor ステムを作成  ·  無料 && オープンソース  ·  ビルド: %s"
 
-#: usettings.pas:293
+#: usettings.pas:295
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "既存のステムファイルを上書き"
 
-#: umain.pas:1317 umain.pas:2066 umain.pas:2088
+#: umain.pas:1326 umain.pas:2075 umain.pas:2097
 msgid "wartet"
 msgstr "待機中"
 
-#: umain.pas:2473
+#: umain.pas:2482
 msgid "wartet (unterbrochen)"
 msgstr "待機中 (中断)"
 
@@ -3201,7 +3217,7 @@ msgstr "待機中 (中断)"
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "ループの外にある場合は A へジャンプします。"
 
-#: uinit.pas:1037 umain.pas:1238 umain.pas:1274
+#: uinit.pas:1038 umain.pas:1247 umain.pas:1283
 msgid "wird berechnet ..."
 msgstr "計算中 ..."
 
@@ -3213,7 +3229,7 @@ msgstr "パック中 ..."
 msgid "z.B. die von Elospeed StemMaker erzeugten."
 msgstr "例: Elospeed StemMaker で作成したファイル。"
 
-#: usettings.pas:427
+#: usettings.pas:429
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "必要な場合のみ変更: StemMaker.ini の [Tools] セクション (StemMaker を閉じた状態で)。"
 
@@ -3225,11 +3241,15 @@ msgstr "変更を破棄"
 msgid "ÖFFNEN"
 msgstr "開く"
 
-#: usettings.pas:450
+#: usettings.pas:452
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "StemMaker.ini があるフォルダーを開きます"
 
-#: umain.pas:1307
+#: uinfo.pas:486
+msgid "Öffnet die bebilderte Anleitung im Browser."
+msgstr "図解ガイドをブラウザーで開きます。"
+
+#: umain.pas:1316
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "スキップ (非対応の形式): %s"
 

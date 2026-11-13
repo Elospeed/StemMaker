@@ -33,6 +33,7 @@
     uPower     PC wach halten, Energiesparplan, Akku, Standby-Erkennung
     uSingleInstance  nur ein StemMaker gleichzeitig (Sperre beim Start)
     uDesign    helles oder dunkles Design (Bibliothek im Ordner darkstyle)
+    uHilfe     Hilfe im Browser (hilfe\<Sprache>.html, "?" und F1)
   ============================================================================ }
 program StemMaker;
 
@@ -47,6 +48,7 @@ uses
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
   uSettings, uReport, uStatusDraw, uTurboTest, uLoad,
   uDesign,           // hell / dunkel / wie Windows (ab 2.4)
+  uHilfe,            // Hilfe: "?" und F1 öffnen die Anleitung (ab 2.4)
   uSkalierung,       // kein Fenster grösser als der freie Bildschirm (DPI)
   uWine;             // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
@@ -65,6 +67,7 @@ begin
     darum ganz am Anfang (siehe uDesign) }
   DesignAnwenden(StemIniFileName);
   Application.Initialize;
+  HilfeTasteEinrichten;    // F1 öffnet in jedem Fenster die Hilfe (uHilfe)
   WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
 
   { 00. Läuft schon ein StemMaker? Dann Hinweis zeigen, dessen Fenster nach

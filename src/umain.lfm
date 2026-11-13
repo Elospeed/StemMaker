@@ -2,11 +2,11 @@ object frmMain: TfrmMain
   Left = 300
   Height = 724
   Top = 150
-  Width = 860
+  Width = 900
   AllowDropFiles = True
   Caption = 'StemMaker'
   ClientHeight = 724
-  ClientWidth = 860
+  ClientWidth = 900
   Constraints.MinHeight = 560
   Constraints.MinWidth = 800
   OnCloseQuery = FormCloseQuery
@@ -26,7 +26,7 @@ object frmMain: TfrmMain
     ClientWidth = 860
     TabOrder = 0
     object btnAddFiles: TButton
-      Left = 70
+      Left = 104
       Height = 30
       Top = 6
       Width = 150
@@ -35,7 +35,7 @@ object frmMain: TfrmMain
       TabOrder = 0
     end
     object btnAddFolder: TButton
-      Left = 226
+      Left = 260
       Height = 30
       Top = 6
       Width = 80
@@ -45,7 +45,7 @@ object frmMain: TfrmMain
       TabOrder = 1
     end
     object btnRemove: TButton
-      Left = 312
+      Left = 346
       Height = 30
       Top = 6
       Width = 86
@@ -54,7 +54,7 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
     object btnClear: TButton
-      Left = 404
+      Left = 438
       Height = 30
       Top = 6
       Width = 90
@@ -63,7 +63,7 @@ object frmMain: TfrmMain
       TabOrder = 3
     end
     object btnCheck: TButton
-      Left = 500
+      Left = 534
       Height = 30
       Top = 6
       Width = 115
@@ -82,8 +82,18 @@ object frmMain: TfrmMain
       OnClick = btnInfoClick
       TabOrder = 5
     end
+    object btnHelp: TButton
+      Left = 70
+      Height = 30
+      Top = 6
+      Width = 28
+      Caption = '?'
+      Hint = 'Hilfe: bebilderte Anleitung im Browser (F1)'
+      OnClick = btnHelpClick
+      TabOrder = 7
+    end
     object btnCopyLog: TButton
-      Left = 621
+      Left = 655
       Height = 30
       Top = 6
       Width = 105
@@ -93,7 +103,7 @@ object frmMain: TfrmMain
       TabOrder = 6
     end
     object lblDrop: TLabel
-      Left = 734
+      Left = 768
       Height = 15
       Top = 13
       Width = 120
