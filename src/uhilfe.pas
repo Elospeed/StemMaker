@@ -17,6 +17,7 @@
     - Gibt es die eingestellte Sprache nicht, kommt Englisch.
     - Fehlt der Ordner (z. B. nur die Exe kopiert), öffnet sich dieselbe
       Seite auf der Projektseite (Internet nötig).
+    - Unter Wine (Linux) immer die Projektseite, siehe HilfeZeigen.
 
   Welche Stelle? Jedes Fenster trägt den Anker in HelpKeyword (z. B.
   'vortest'). F1 nimmt das HelpKeyword des aktiven Fensters, das
@@ -95,11 +96,21 @@ begin
   Datei := Ordner + Code + '.html';
   if Anker <> '' then Teil := '#' + Anker else Teil := '';
 
+  { Unter Wine (Linux-AppImage) reicht Wine eine .html-Datei an das
+    Linux-Programm weiter, das für HTML eingetragen ist. Das ist oft ein
+    Texteditor, und den Windows-Pfad der Weiterleitung kennt Linux auch
+    nicht. Eine https-Adresse öffnet dagegen sicher den Browser, mit Anker. }
+  if UnterWine then
+  begin
+    Code := LangCode;
+    if (Code <> 'de') and (Code <> 'es') then Code := 'en';
+    OpenURL(HILFE_ONLINE + Code + '.html' + Teil);
+    Exit;
+  end;
+
   if FileExists(Datei) then
   begin
-    { Unter Wine (Linux-AppImage) öffnet ein Linux-Browser die Datei; der
-      kennt den Windows-Pfad in der Weiterleitung nicht. Dann ohne Anker. }
-    if (Teil = '') or UnterWine then
+    if Teil = '' then
     begin
       OpenDocument(Datei);
       Exit;

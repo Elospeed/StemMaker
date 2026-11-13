@@ -468,7 +468,7 @@ This guide is in the `hilfe` folder next to `StemMaker.exe` and opens without in
 - **?** at the top left of the main window and in the settings, **Help (F1)** in the Info window.
 - The [F1]{.taste} key in every StemMaker window jumps straight to the matching section, for example from the pre-test to the section about the pre-test.
 
-It is available in German, English and Spanish; the other languages get the English one. If the `hilfe` folder is missing (for example because only the exe was copied), the same page opens on the project page. For printing, the guide is also available there as a PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-en.pdf>
+It is available in German, English and Spanish; the other languages get the English one. If the `hilfe` folder is missing (for example because only the exe was copied), the same page opens on the project page. On Linux, StemMaker always opens the page on the project page, because that reliably opens the browser. For printing, the guide is also available there as a PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-en.pdf>
 
 ## Updates {#updates}
 

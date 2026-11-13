@@ -468,7 +468,7 @@ Diese Anleitung liegt im Ordner `hilfe` neben `StemMaker.exe` und geht ohne Inte
 - **?** oben links im Hauptfenster und in den Einstellungen, **Hilfe (F1)** im Info-Fenster.
 - Die Taste [F1]{.taste} in jedem StemMaker-Fenster springt gleich zum passenden Abschnitt, zum Beispiel im Vortest zum Abschnitt über den Vortest.
 
-Es gibt sie auf Deutsch, Englisch und Spanisch; bei den anderen Sprachen kommt die englische. Fehlt der Ordner `hilfe` (zum Beispiel, weil nur die Exe kopiert wurde), öffnet sich dieselbe Seite auf der Projektseite. Zum Drucken gibt es die Anleitung dort auch als PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-de.pdf>
+Es gibt sie auf Deutsch, Englisch und Spanisch; bei den anderen Sprachen kommt die englische. Fehlt der Ordner `hilfe` (zum Beispiel, weil nur die Exe kopiert wurde), öffnet sich dieselbe Seite auf der Projektseite. Unter Linux öffnet StemMaker immer die Seite auf der Projektseite, weil dort sicher der Browser aufgeht. Zum Drucken gibt es die Anleitung dort auch als PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-de.pdf>
 
 ## Updates {#updates}
 

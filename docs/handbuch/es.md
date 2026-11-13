@@ -468,7 +468,7 @@ Esta guía está en la carpeta `hilfe`, junto a `StemMaker.exe`, y se abre sin i
 - **?** arriba a la izquierda en la ventana principal y en los ajustes, **Ayuda (F1)** en la ventana Info.
 - La tecla [F1]{.taste} en cualquier ventana de StemMaker salta directamente a la sección correspondiente, por ejemplo desde la prueba previa a la sección sobre la prueba previa.
 
-Existe en alemán, inglés y español; los demás idiomas reciben la inglesa. Si falta la carpeta `hilfe` (por ejemplo, porque solo se copió el exe), se abre la misma página en la web del proyecto. Para imprimir, allí también está la guía en PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-es.pdf>
+Existe en alemán, inglés y español; los demás idiomas reciben la inglesa. Si falta la carpeta `hilfe` (por ejemplo, porque solo se copió el exe), se abre la misma página en la web del proyecto. En Linux, StemMaker abre siempre la página en la web del proyecto, porque así se abre el navegador con seguridad. Para imprimir, allí también está la guía en PDF: <https://elospeed.github.io/StemMaker/handbuch/StemMaker-Handbuch-es.pdf>
 
 ## Actualizaciones {#updates}
 
