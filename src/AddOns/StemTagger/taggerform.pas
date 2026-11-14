@@ -358,6 +358,7 @@ begin
     Result := Trim(Copy(Result, 1, P - 1));
 end;
 
+{ Hell/Dunkel aus StemMaker.ini, unten bei LoadLanguage }
 procedure DesignWieStemMaker; forward;
 
 { leer oder ganze Zahl von BPM_MIN bis BPM_MAX }
@@ -370,6 +371,8 @@ begin
     and (Pos('-', V) = 0) and (Pos('+', V) = 0);
 end;
 
+{ Fenster aufbauen: Sprache und Design wie StemMaker, Einstellungen laden,
+  Dateien von der Befehlszeile übernehmen }
 constructor TMainForm.Create(TheOwner: TComponent);
 var
   I: Integer;
@@ -393,6 +396,7 @@ begin
     DunklerRahmen(Self);
 end;
 
+{ Liste der geladenen Dateien freigeben }
 destructor TMainForm.Destroy;
 begin
   FEntries.Free;

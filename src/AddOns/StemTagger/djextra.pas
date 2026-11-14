@@ -237,6 +237,8 @@ begin
   Invalidate;
 end;
 
+{ Aufgeklappte Liste zeichnen: markierte Zeile mit grünem Streifen,
+  rechts Bildlaufanzeige, wenn nicht alles Platz hat }
 procedure TDJDropList.Paint;
 var
   I, Y, TH, Total, ThumbH, ThumbY: Integer;
@@ -682,6 +684,7 @@ begin
   Result := Scale96ToForm(22) + Canvas.TextWidth(Caption) + Scale96ToForm(4);
 end;
 
+{ Schalter zeichnen: LED grün mit Schein (an) oder rot (aus), daneben Text }
 procedure TDJLedSwitch.Paint;
 var
   R, CX, CY: Integer;

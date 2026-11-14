@@ -793,6 +793,7 @@ begin
     ShowErrorReport(LogLastCrashFile, _('Programm wurde unerwartet beendet'));
 end;
 
+{ "Info": Info-Fenster zeigen (Update-Suche meldet sich über UpdateFound) }
 procedure TfrmMain.btnInfoClick(Sender: TObject);
 begin
   ShowInfoDialog(APP_VERSION, APP_AUTHOR, @UpdateFound);

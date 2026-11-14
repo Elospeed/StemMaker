@@ -27,6 +27,8 @@ uses
   , uDarkStyleParams, uMetaDarkStyle, uDarkStyleSchemes
   {$ENDIF};
 
+{ "Design" aus StemMaker.ini (StemMaker-Ordner, dann %APPDATA%), klein
+  geschrieben; leer = nicht gefunden }
 function DesignWert: string;
 var
   Ini: TIniFile;
@@ -56,6 +58,8 @@ begin
   end;
 end;
 
+{ Wie uDesign.DesignAnwenden in StemMaker: metadarkstyle nach der Wahl
+  einstellen (auto = wie Windows) und DunklesDesign für uStatusDraw setzen }
 procedure PackDesignAnwenden;
 {$IFDEF LCLWIN32}
 var

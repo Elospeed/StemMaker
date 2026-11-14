@@ -227,6 +227,7 @@ begin
   Result.Caption := ACaption;
 end;
 
+{ Fenster "Weitere Einstellungen" im Code aufbauen (Reiter, Felder, Knöpfe) }
 constructor TfrmSettings.CreateSettings(BesideInput: Boolean;
   const FFmpegExe, DemucsDir, ModelsDir: string);
 const
@@ -529,6 +530,7 @@ begin
   ShowPrefs(P);
 end;
 
+{ Werte aus den Feldern als TStemPrefs zurückgeben (Stem-Namen leer = Standard) }
 function TfrmSettings.GetPrefs: TStemPrefs;
 var
   I: Integer;
@@ -666,6 +668,7 @@ begin
   ShowTurboSummary;
 end;
 
+{ "Standard wiederherstellen": alle Felder auf Standard, gilt erst bei OK }
 procedure TfrmSettings.btnDefaultsClick(Sender: TObject);
 begin
   ShowPrefs(DefaultStemPrefs);
@@ -687,16 +690,20 @@ begin
     clrStem[I].ButtonColor := HexToCol(TRAKTOR_COLORS[I]);
 end;
 
+{ Ordner mit StemMaker.ini im Explorer öffnen }
 procedure TfrmSettings.btnProgDirClick(Sender: TObject);
 begin
   OpenDocument(ExtractFilePath(StemIniFileName));
 end;
 
+{ "?": Hilfe zu diesem Fenster öffnen }
 procedure TfrmSettings.btnHilfeClick(Sender: TObject);
 begin
   HilfeZeigen(HelpKeyword);
 end;
 
+{ Einstellungen zeigen; bei OK P übernehmen und Programmwerte speichern.
+  Neustart = Benutzer will wegen Sprache/Design gleich neu starten. }
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
   const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
   out Neustart: Boolean): Boolean;

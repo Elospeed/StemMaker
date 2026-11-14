@@ -734,6 +734,7 @@ begin
   lblForecast.Caption := S;
 end;
 
+{ Ergebnis des Turbo-Tests im Fenster anzeigen (Status, Grafikkarte, Zeiten) }
 procedure TfrmTurboTest.ShowResult;
 var
   Status, Gpu, S: string;
@@ -924,6 +925,7 @@ begin
   end;
 end;
 
+{ Kurzfassung des letzten Turbo-Tests aus der INI (für die Einstellungen) }
 function TurboTestSummary: string;
 var
   Ini: TIniFile;

@@ -52,6 +52,7 @@ uses
 const
   INI_WERTE: array[TDesignWahl] of string = ('auto', 'hell', 'dunkel');
 
+{ Design aus [Main] Design der INI lesen; fehlt oder unbekannt = Automatisch }
 function DesignLesen(const IniName: string): TDesignWahl;
 var
   Ini: TIniFile;
@@ -74,6 +75,7 @@ begin
   end;
 end;
 
+{ Design in die INI schreiben; gilt erst nach einem Neustart }
 procedure DesignSpeichern(const IniName: string; W: TDesignWahl);
 var
   Ini: TIniFile;
@@ -90,6 +92,8 @@ begin
   end;
 end;
 
+{ metadarkstyle nach der Wahl einstellen und DunklesDesign setzen.
+  Nur Windows-Widgetset; muss vor dem ersten Fenster laufen. }
 procedure DesignAnwenden(const IniName: string);
 begin
   {$IFDEF LCLWIN32}

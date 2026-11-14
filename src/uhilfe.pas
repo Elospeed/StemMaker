@@ -85,6 +85,8 @@ begin
   end;
 end;
 
+{ Anleitung in der Programmsprache im Browser öffnen, an der Stelle Anker
+  (leer = Anfang). Lokal aus hilfe\, sonst oder unter Wine online. }
 procedure HilfeZeigen(const Anker: string);
 var
   Code, Ordner, Datei, Teil: string;
@@ -130,6 +132,7 @@ begin
   end;
 end;
 
+{ F1 ohne Umschalttasten: Hilfe zum aktiven Fenster (dessen HelpKeyword) }
 procedure THilfeTaste.KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   F: TCustomForm;
@@ -143,6 +146,7 @@ begin
   Key := 0;
 end;
 
+{ F1 einmal für alle Fenster einrichten (Aufruf beim Start) }
 procedure HilfeTasteEinrichten;
 begin
   if Taste <> nil then Exit;

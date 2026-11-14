@@ -111,16 +111,19 @@ const
   CLR_INFO_TEXT       = TColor($00800000);   // clNavy
   CLR_INFO_TEXT_DARK  = TColor($00FFC060);   // #60C0FF
 
+{ Grün für "fertig", im dunklen Design heller (sonst auf dunklem Grund zu schwach) }
 function FarbeOK: TColor;
 begin
   if DunklesDesign then Result := CLR_OK_TEXT_DARK else Result := CLR_OK_TEXT;
 end;
 
+{ Rot für Fehler, im dunklen Design heller und leicht rosa (besser lesbar) }
 function FarbeFehler: TColor;
 begin
   if DunklesDesign then Result := CLR_FAIL_TEXT_DARK else Result := CLR_FAIL_TEXT;
 end;
 
+{ Blau für Hinweise: hell Navy, dunkel ein helles Blau }
 function FarbeInfo: TColor;
 begin
   if DunklesDesign then Result := CLR_INFO_TEXT_DARK else Result := CLR_INFO_TEXT;
@@ -133,6 +136,7 @@ begin
   Result := (V * PPI + 48) div 96;
 end;
 
+{ Breite des Ko-fi-Knopfs in Pixeln für Text und Bildschirm-DPI (PPI) }
 function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
 begin
   { 6 Rand links, 16 Symbol, 6 Abstand, 10 Herz, 6 Abstand, Text, 12 Rand rechts }
@@ -231,6 +235,8 @@ begin
   end;
 end;
 
+{ Ko-fi-Knopf als Pille zeichnen: Farbe nach Hintergrund (BackColor hell oder
+  dunkel), Hover = Maus darüber, AppIcon = Programmsymbol links (darf nil sein) }
 procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
   Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon);
 var
@@ -303,6 +309,8 @@ begin
   end;
 end;
 
+{ Statuszelle der Dateiliste zeichnen: je nach Look Text, Fortschrittsbalken
+  oder die vier Stem-Farben; Highlighted = Zeile markiert (Textfarbe von Windows) }
 procedure DrawStatusCell(C: TCanvas; const R: TRect; Look: TStatusLook;
   Percent: Integer; const Text: string; const Colors: TStemColorArray;
   BackColor, TextColor: TColor; Highlighted: Boolean; PPI: Integer);

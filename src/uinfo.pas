@@ -376,6 +376,7 @@ begin
   end;
 end;
 
+{ Info-Fenster im Code aufbauen (Knöpfe oben, vier Reiter, Leiste unten) }
 constructor TfrmInfo.CreateInfo(const Version, Author: string);
 var
   lblTitle, lblSub, lblThanksNote: TLabel;
@@ -610,6 +611,7 @@ begin
   ShowErrorReport('', '');
 end;
 
+{ "Hilfe": Anleitung beim Abschnitt Info öffnen }
 procedure TfrmInfo.btnHilfeClick(Sender: TObject);
 begin
   HilfeZeigen('info');

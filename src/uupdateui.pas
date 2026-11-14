@@ -305,6 +305,7 @@ begin
     SysUtils.DeleteFile(FDest);   // kam nach dem Abbruch doch noch an - wegwerfen
 end;
 
+{ Fortschrittsfenster für den Update-Download (URL nach Dest) bauen }
 constructor TfrmUpdateDl.CreateDl(const URL, Dest, Version: string);
 var
   btnCancel: TButton;

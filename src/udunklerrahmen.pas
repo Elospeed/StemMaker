@@ -59,6 +59,8 @@ var
   DwmSet: TDwmSetWindowAttribute = nil;
   DwmGeladen: Boolean = False;
 
+{ DwmSetWindowAttribute aus dwmapi.dll holen (einmal). nil unter Wine oder
+  wenn Windows die Funktion nicht hat; dann bleibt die Titelleiste wie sie ist. }
 function DwmFunktion: TDwmSetWindowAttribute;
 begin
   if not DwmGeladen then
@@ -84,6 +86,8 @@ begin
   Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000 < 100;
 end;
 
+{ Titelleiste von F dunkel schalten (Windows 10 ab 1809) und unter Windows 11
+  genau in der Fensterfarbe einfärben }
 procedure DunklerRahmen(F: TCustomForm);
 {$IFDEF WINDOWS}
 const
@@ -111,12 +115,14 @@ begin
   {$ENDIF}
 end;
 
+{ Jedes neu aktive Fenster mit dunklem Hintergrund bekommt die dunkle Titelleiste }
 procedure TRahmenWache.AktivGewechselt(Sender: TObject; Form: TCustomForm);
 begin
   if (Form <> nil) and IstDunkel(Form.Color) then
     DunklerRahmen(Form);
 end;
 
+{ Wache einmal beim Start anmelden (danach automatisch für alle Fenster) }
 procedure DunkleRahmenEinrichten;
 begin
   if Wache <> nil then Exit;

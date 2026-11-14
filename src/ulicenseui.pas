@@ -42,6 +42,7 @@ type
     constructor CreateTerms;
   end;
 
+{ Fenster mit Haftungsausschluss und Lizenz-Häkchen beim ersten Start bauen }
 constructor TfrmTerms.CreateTerms;
 var
   lblTitle: TLabel;
