@@ -201,7 +201,8 @@ type
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
     LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
-    BtnView       : TDJButton;  // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
+    BtnView       : TDJButton;
+    BtnHilfe      : TDJButton;  // "?": Anleitung beim Kapitel StemPlayer  // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
     MnuView       : TPopupMenu; // Menü mit den Ansichten (Kompakt, Wellenform, CD-Player)
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
@@ -396,6 +397,7 @@ type
     procedure KofiEnter(Sender: TObject);
     procedure KofiLeave(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BtnHilfeClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -413,7 +415,8 @@ implementation
 
 uses
   {$IFDEF WINDOWS}UxTheme,{$ENDIF}
-  uStatusDraw, uDunklerRahmen;   // Ko-fi-Knopf, gleich wie in StemMaker
+  uStatusDraw, uDunklerRahmen,   // Ko-fi-Knopf, gleich wie in StemMaker
+  uHilfe;                        // "?" und F1: Anleitung (src\uhilfe.pas)
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
@@ -446,6 +449,7 @@ var
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
+  HelpKeyword := 'stemplayer';   // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;   // VOR allen Texten, sonst bleibt die Oberfläche deutsch
   Caption := APP_TITLE + ' ' + APP_VER + _('  -  von Elospeed');
   Width := 820;
@@ -666,12 +670,12 @@ begin
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
   LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
-  LblFile.SetBounds(110, 8, W - 110 - 220, 24);
+  LblFile.SetBounds(110, 8, W - 110 - 220, 24);   // rechts: "?" und Ansicht
 
   { Ansicht wählen: ein Knopf mit der aktuellen Ansicht, darunter klappt
     ein Menü mit allen vier Ansichten auf (statt vier Knöpfen nebeneinander,
     damit auf der Fläche selbst nur das Arbeitswerkzeug bleibt) }
-  BtnView := MakeButton(PnlTop, '', W - 200, 14, 200, 28);
+  BtnView := MakeButton(PnlTop, '', W - 170, 14, 170, 28);
   BtnView.Anchors := [akTop, akRight];
   BtnView.DropDown := True;
   BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)');
@@ -689,6 +693,14 @@ begin
     Item.OnClick := @ViewMenuClick;
     MnuView.Items.Add(Item);
   end;
+
+  { "?" links neben der Ansicht: Kapitel StemPlayer in der StemMaker-Anleitung
+    (F1 geht überall, auch im CD-Player, wo diese Leiste ausgeblendet ist) }
+  BtnHilfe := MakeButton(PnlTop, '?', W - 206, 14, 30, 28);
+  BtnHilfe.Anchors := [akTop, akRight];
+  BtnHilfe.Hint := _('Hilfe (F1)');
+  BtnHilfe.ShowHint := True;
+  BtnHilfe.OnClick := @BtnHilfeClick;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -2921,6 +2933,12 @@ procedure TMainForm.KofiEnter(Sender: TObject);
 begin
   FKofiHover := True;
   PbKofi.Invalidate;
+end;
+
+{ "?": Kapitel StemPlayer in der Anleitung öffnen }
+procedure TMainForm.BtnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('stemplayer');
 end;
 
 procedure TMainForm.KofiLeave(Sender: TObject);

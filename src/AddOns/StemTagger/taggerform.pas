@@ -59,7 +59,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, Registry, IntfGraphics, Contnrs, ImgList, Math, uLang, uMp4Tags, uId3Tags, uStatusDraw, djcontrols, djextra, coverbild,
-  uSkalierung, uDunklerRahmen;
+  uSkalierung, uDunklerRahmen, uHilfe;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
@@ -93,7 +93,7 @@ type
     { Knöpfe und Schalter im dunklen Stil des StemPlayers (djcontrols.pas) }
     FBtnAdd, FBtnFolder, FBtnRemove, FBtnClear: TDJButton;
     FBtnCoverLoad, FBtnCoverPaste, FBtnCoverDel, FBtnCoverSave: TDJButton;
-    FBtnFromName, FBtnSave, FBtnRevert: TDJButton;
+    FBtnFromName, FBtnSave, FBtnRevert, FBtnHilfe: TDJButton;
     FChkBackup, FChkShrink: TDJLedSwitch; // Schalter mit LED: Down = eingeschaltet
     { eigene Kopfzeile der Liste (die Windows-Kopfzeile wäre hell) }
     FHead      : TPaintBox;
@@ -178,6 +178,7 @@ type
     procedure BtnCoverSaveClick(Sender: TObject);
     procedure BtnFromNameClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
+    procedure BtnHilfeClick(Sender: TObject);
     procedure BtnRevertClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -381,6 +382,7 @@ begin
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FEntries := TFPObjectList.Create(True);
+  HelpKeyword := 'stemtagger';   // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
   DesignWieStemMaker;   // vor BuildUI: setzt die Farben aus djcontrols
   BuildUI;
@@ -637,12 +639,16 @@ begin
   SaveBox := TPanel.Create(Self);
   SaveBox.Parent := PnlTop;
   SaveBox.Align := alRight;
-  SaveBox.Width := Scale96ToForm(300);
+  SaveBox.Width := Scale96ToForm(334);
   SaveBox.BevelOuter := bvNone;
   SaveBox.Color := DJ_BG;
   SaveBox.ParentBackground := False;
   FBtnRevert := MakeButton(SaveBox, _('Änderungen verwerfen'), 0, 7, 170, @BtnRevertClick);
   FBtnSave   := MakeButton(SaveBox, _('Speichern'), 174, 7, 118, @BtnSaveClick);
+  { "?" ganz rechts: Kapitel StemTagger in der StemMaker-Anleitung (auch F1) }
+  FBtnHilfe  := MakeButton(SaveBox, '?', 296, 7, 30, @BtnHilfeClick);
+  FBtnHilfe.Hint := _('Hilfe (F1)');
+  FBtnHilfe.ShowHint := True;
   { leuchtet grün, sobald es etwas zu speichern gibt (siehe UpdateStatusBar) }
   FBtnSave.LitColor := DJ_GREEN;
 
@@ -2247,6 +2253,12 @@ begin
   finally
     Sel.Free;
   end;
+end;
+
+{ "?": Kapitel StemTagger in der Anleitung öffnen }
+procedure TMainForm.BtnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('stemtagger');
 end;
 
 procedure TMainForm.BtnFromNameClick(Sender: TObject);

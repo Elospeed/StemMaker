@@ -18,7 +18,8 @@ program StemPacker;
 
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
-  Interfaces, Forms, uPackDesign, packerform;
+  Interfaces, Forms, uPackDesign, packerform,
+  uHilfe;   // F1 öffnet das Kapitel StemPacker der Anleitung
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -29,6 +30,7 @@ begin
   { Hell/Dunkel wie StemMaker: vor dem ersten Fenster (siehe uPackDesign) }
   PackDesignAnwenden;
   Application.Initialize;
+  HilfeTasteEinrichten;   // F1 in allen Fenstern (uHilfe)
   Application.CreateForm(TPackerForm, MainPacker);
   Application.Run;
 end.

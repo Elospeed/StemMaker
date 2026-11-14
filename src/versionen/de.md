@@ -14,6 +14,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 - Einstellungen: Vortest-Ergebnis nicht mehr abgeschnitten und in der gewählten Sprache
 - StemPlayer 1.8.6, StemTagger 1.2.3: dunkle Titelleiste statt weisser
 - StemTagger und StemPacker hell oder dunkel wie StemMaker
+- „?“ und F1 auch in StemPlayer, StemTagger und StemPacker
 
 ## 2.3 – 10. November 2026
 ### Neu

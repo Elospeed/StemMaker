@@ -5,11 +5,11 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
-#: umain.pas:2353
+#: umain.pas:2354
 msgid "                   Wine erkannt: Turbo läuft auf der CPU"
 msgstr "                   Wine を検出: Turbo は CPU で動作します"
 
-#: umain.pas:2350
+#: umain.pas:2351
 msgid "                   vorhanden: %s"
 msgstr "                      インストール済み: %s"
 
@@ -33,103 +33,103 @@ msgstr "        [--no-normalize] [--no-bassfix]  (サウンドオプションを
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr "        [-t 分割数] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 
-#: playerform.pas:450
+#: playerform.pas:454
 msgid "  -  von Elospeed"
 msgstr "  -  作者 Elospeed"
 
-#: umain.pas:2357
+#: umain.pas:2358
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  注意              : PCが約 %s スリープしていました - 上の時間はその分だけ長くなっています。"
 
-#: umain.pas:2324
+#: umain.pas:2325
 msgid "  Abgebrochen    : %d"
 msgstr "  キャンセル        : %d"
 
-#: umain.pas:1488
+#: umain.pas:1489
 msgid "  Audiospuren: %d (Stem = 5)"
 msgstr "  オーディオトラック: %d (ステム = 5)"
 
-#: taggerform.pas:738
+#: taggerform.pas:793
 msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
 msgstr "  Camelot (Mixed In Key):  8A = イ短調、8B = ハ長調 (A = 短調、B = 長調)"
 
-#: umain.pas:2321
+#: umain.pas:2322
 msgid "  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)"
 msgstr "  ファイル          : %d  (OK %d、スキップ %d、エラー %d)"
 
-#: umain.pas:1155
+#: umain.pas:1156
 msgid "  Dauer: %s"
 msgstr "  長さ: %s"
 
-#: umain.pas:2354
+#: umain.pas:2355
 msgid "  Energie        : %s"
 msgstr "  電源              : %s"
 
-#: umain.pas:2340
+#: umain.pas:2341
 msgid "  Engine         : Klassisch (demucs.cpp) für %d Datei(en)"
 msgstr "  エンジン          : クラシック (demucs.cpp)、%d ファイル"
 
-#: umain.pas:2336
+#: umain.pas:2337
 msgid "  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s"
 msgstr "  エンジン          : Turbo (StemOnnx)、%d ファイル、最後の実行: %s"
 
-#: umain.pas:1495
+#: umain.pas:1496
 msgid "  Fehler: %s"
 msgstr "  エラー: %s"
 
-#: umain.pas:2333
+#: umain.pas:2334
 msgid "  Format         : %s"
 msgstr "  フォーマット      : %s"
 
-#: umain.pas:2325
+#: umain.pas:2326
 msgid "  Gesamtzeit     : %s"
 msgstr "  合計時間          : %s"
 
-#: umain.pas:2349
+#: umain.pas:2350
 msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
 msgstr "  グラフィックカード: 未使用 (demucs.cpp は CPU のみで計算)"
 
-#: umain.pas:1490
+#: umain.pas:1491
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr "  ステムのメタデータブロックが見つかりません - 有効なステムファイルではありません"
 
-#: taggerform.pas:737
+#: taggerform.pas:792
 msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
 msgstr "  クラシック:  Am = イ短調、C = ハ長調 (m = 短調、m なし = 長調)"
 
-#: umain.pas:2332
+#: umain.pas:2333
 msgid "  Modell         : %s"
 msgstr "  モデル            : %s"
 
-#: taggerform.pas:739
+#: taggerform.pas:794
 msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
 msgstr "  Open Key (Traktor):  1m = イ短調、1d = ハ長調 (m = 短調、d = 長調)"
 
-#: umain.pas:2346
+#: umain.pas:2347
 msgid "  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)"
 msgstr "  分離時のメモリ    : 最大 %d MB  (総メモリ %.1f GB)"
 
-#: umain.pas:2341
+#: umain.pas:2342
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  計算能力          : %d 分割 x %d コア = 物理コア %d / %d (論理 %d)、demucs バージョン %s"
 
-#: umain.pas:2360
+#: umain.pas:2361
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  スリープ          : 変換中はなし"
 
-#: umain.pas:2326
+#: umain.pas:2327
 msgid "  Schnitt/Track  : %s  (nur erfolgreiche Tracks)"
 msgstr "  1曲あたり平均     : %s  (成功したトラックのみ)"
 
-#: umain.pas:1492
+#: umain.pas:1493
 msgid "  Stem-Metadaten: %s"
 msgstr "  ステムのメタデータ: %s"
 
-#: umain.pas:2330
+#: umain.pas:2331
 msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
 msgstr "  速度              : 音楽1分あたり %.1f 秒 (統計: logs\\statistik.csv)"
 
-#: umain.pas:2654
+#: umain.pas:2655
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d 件の長さがまだ不明"
 
@@ -141,7 +141,7 @@ msgstr " - 無料 & オープンソース"
 msgid " [Zeitlimit]"
 msgstr " [タイムアウト]"
 
-#: taggerform.pas:748
+#: taggerform.pas:803
 msgid "\"Interpret - Titel.stem.mp4\" füllt Interpret und Titel"
 msgstr "「アーティスト - タイトル.stem.mp4」からアーティストとタイトルを入力"
 
@@ -149,11 +149,11 @@ msgstr "「アーティスト - タイトル.stem.mp4」からアーティスト
 msgid "\"Per E-Mail senden\" speichert den Bericht als Datei, zeigt sie im Explorer und öffnet eine fertige Mail. Bitte die markierte Datei in die Mail ziehen. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an %s. Der ganze Bericht liegt zusätzlich in der Zwischenablage (Strg+V)."
 msgstr "「メールで送信」はレポートをファイルに保存してエクスプローラーで表示し、作成済みのメールを開きます。選択されたファイルをメールにドラッグしてください。メールが開かない場合 (例: Web メール)、ファイルを %s に送ってください。レポート全体はクリップボードにもコピーされています (Ctrl+V)。"
 
-#: uupdateui.pas:357
+#: uupdateui.pas:358
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: uupdateui.pas:352
+#: uupdateui.pas:353
 msgid "%.1f von %.1f MB"
 msgstr "%.1f / %.1f MB"
 
@@ -161,39 +161,39 @@ msgstr "%.1f / %.1f MB"
 msgid "%d Dateien OK"
 msgstr "%d ファイル OK"
 
-#: taggerform.pas:2230
+#: taggerform.pas:2291
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr "%d ファイルにファイル名から入力しました - まだ保存されていません"
 
-#: umain.pas:2521
+#: umain.pas:2522
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "保存されたリストの %d ファイルが見つからないため、除外しました。"
 
-#: taggerform.pas:1854
+#: taggerform.pas:1909
 msgid "%d Dateien gespeichert"
 msgstr "%d ファイルを保存しました"
 
-#: taggerform.pas:1851
+#: taggerform.pas:1906
 msgid "%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status."
 msgstr "%d ファイルを保存、%d ファイルでエラー。エラーのファイルは変更されていません。詳細は「状態」列を参照してください。"
 
-#: taggerform.pas:1657
+#: taggerform.pas:1712
 msgid "%d Dateien in der Liste."
 msgstr "リストに %d 個のファイル。"
 
-#: umain.pas:2631
+#: umain.pas:2632
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d ファイル待機中 - 長さを読み込み中 ..."
 
-#: umain.pas:2638
+#: umain.pas:2639
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d ファイル待機中、音楽 %s - 所要時間 約 %s"
 
-#: taggerform.pas:1791
+#: taggerform.pas:1846
 msgid "%d Dateien werden geändert."
 msgstr "%d ファイルが変更されます。"
 
-#: taggerform.pas:1463
+#: taggerform.pas:1518
 msgid "%d Dateien, %d geändert"
 msgstr "%d ファイル、%d 件変更"
 
@@ -205,23 +205,23 @@ msgstr "%d コア (論理 %d)、%s"
 msgid "%d Minuten"
 msgstr "%d 分"
 
-#: umain.pas:1392
+#: umain.pas:1393
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d 個のフォルダーはパスが %d 文字を超えるため読み込めませんでした。その中の音楽はリストに含まれていません。"
 
-#: packerform.pas:1159
+#: packerform.pas:1174
 msgid "%d Songs gefunden, %d bereit zum Packen."
 msgstr "%d 曲見つかりました。%d 曲をパックできます。"
 
-#: playerform.pas:2204
+#: playerform.pas:2216
 msgid "%d Spuren  ·  Länge %s"
 msgstr "%d トラック  ·  長さ %s"
 
-#: playerform.pas:2212
+#: playerform.pas:2224
 msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
 msgstr "%d トラック読み込み済み  ·  長さ %s  ·  ffmpeg: %s"
 
-#: packerform.pas:1414
+#: packerform.pas:1429
 msgid "%d Stem-Dateien erstellt, %d Fehler, %d übersprungen."
 msgstr "ステムファイル %d 個作成、エラー %d、スキップ %d。"
 
@@ -229,15 +229,15 @@ msgstr "ステムファイル %d 個作成、エラー %d、スキップ %d。"
 msgid "%d Stunden"
 msgstr "%d 時間"
 
-#: umain.pas:2828
+#: umain.pas:2829
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr "成功 %d、スキップ %d、失敗 %d - 合計時間 %s"
 
-#: packerform.pas:1404
+#: packerform.pas:1419
 msgid "%d fertig, %d Fehler, %d übersprungen."
 msgstr "完了 %d、エラー %d、スキップ %d。"
 
-#: taggerform.pas:2040
+#: taggerform.pas:2095
 msgid "%d markierte Dateien haben ungespeicherte Änderungen. Trotzdem aus der Liste nehmen?"
 msgstr "選択した %d ファイルに未保存の変更があります。それでもリストから外しますか?"
 
@@ -257,7 +257,7 @@ msgstr "%s %s  -  オーディオファイルから Traktor ステム (*.stem.mp
 msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
 msgstr "%s %s - 準備完了。ファイルを追加するか、ウィンドウにドラッグしてください。"
 
-#: umain.pas:2744
+#: umain.pas:2745
 msgid "%s - %d %% (Datei %d von %d)"
 msgstr "%s - %d %% (ファイル %d / %d)"
 
@@ -269,11 +269,11 @@ msgstr "%s - 開始"
 msgid "%s - wird heruntergeladen (ca. %d MB)"
 msgstr "%s - ダウンロードします (約 %d MB)"
 
-#: packerform.pas:1217
+#: packerform.pas:1232
 msgid "%s ist %s s kürzer als %s"
 msgstr "%0:s は %2:s より %1:s 秒短い"
 
-#: packerform.pas:1220
+#: packerform.pas:1235
 msgid "%s ist %s s länger als %s"
 msgstr "%0:s は %2:s より %1:s 秒長い"
 
@@ -297,7 +297,7 @@ msgstr "%s を起動しています ..."
 msgid "%s wurde nicht gefunden."
 msgstr "%s が見つかりませんでした。"
 
-#: packerform.pas:1104
+#: packerform.pas:1119
 msgid "%s „%s“"
 msgstr "%s「%s」"
 
@@ -337,11 +337,11 @@ msgstr "閉じる(&C)"
 msgid "&Wiederholen"
 msgstr "再試行(&R)"
 
-#: packerform.pas:368
+#: packerform.pas:373
 msgid "(Tags und Cover)"
 msgstr "（タグとカバー）"
 
-#: umain.pas:2644
+#: umain.pas:2645
 msgid "(Tempo dieses PCs)"
 msgstr "(このPCの速度)"
 
@@ -349,11 +349,11 @@ msgstr "(このPCの速度)"
 msgid "(aktueller Lauf)"
 msgstr "(現在の実行)"
 
-#: usettings.pas:400 usettings.pas:415
+#: usettings.pas:401 usettings.pas:416
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(次回起動時から有効)"
 
-#: umain.pas:2649
+#: umain.pas:2650
 msgid "(grob geschätzt)"
 msgstr "(おおよその見積もり)"
 
@@ -365,7 +365,7 @@ msgstr "(ログが見つかりません)"
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(暫定値、測定するたびに正確になります)"
 
-#: playerform.pas:2111
+#: playerform.pas:2123
 msgid "(z.B. die von Elospeed StemMaker)."
 msgstr "(例: Elospeed StemMaker のもの)。"
 
@@ -409,23 +409,23 @@ msgstr "- Sevag Hanssian の demucs.cpp (MIT) - tools\\ 内の分離プログラ
 msgid "--- letzte Ausgabe ---"
 msgstr "--- 最後の出力 ---"
 
-#: packerform.pas:583
+#: packerform.pas:588
 msgid "24 Bit / 96 kHz ist noch nicht in Traktor geprüft. Bitte zuerst mit einem Song testen."
 msgstr "24 ビット / 96 kHz は Traktor でまだ確認されていません。まず 1 曲で試してください。"
 
-#: packerform.pas:491
+#: packerform.pas:496
 msgid "5.1-DVD: „Song (DOWNMIX #1)“ + „Song (A)“ … „(D)“"
 msgstr "5.1 DVD:「Song (DOWNMIX #1)」+「Song (A)」…「(D)」"
 
-#: taggerform.pas:1535 taggerform.pas:1564
+#: taggerform.pas:1590 taggerform.pas:1619
 msgid "<verschieden>"
 msgstr "<複数の値>"
 
-#: umain.pas:1487
+#: umain.pas:1488
 msgid "== Prüfung: %s"
 msgstr "== チェック: %s"
 
-#: umain.pas:2320
+#: umain.pas:2321
 msgid "=== Zusammenfassung ==="
 msgstr "=== 概要 ==="
 
@@ -441,11 +441,11 @@ msgstr "AAC 256 kbit/s (NI 標準)"
 msgid "AAC 320 kbit/s"
 msgstr "AAC 320 kbit/s"
 
-#: packerform.pas:580
+#: packerform.pas:585
 msgid "AAC 320 kbit/s (wie Traktor-Stems)"
 msgstr "AAC 320 kbit/s（Traktor のステムと同じ）"
 
-#: umain.pas:2314
+#: umain.pas:2315
 msgid "AAC automatisch (wie die Quelle, max. %d kbit/s) - Bitrate pro Datei siehe \"Quelle:\" oben"
 msgstr "AAC 自動 (元ファイルと同じ、最大 %d kbit/s) - ファイルごとのビットレートは上の「元ファイル:」を参照"
 
@@ -453,11 +453,11 @@ msgstr "AAC 自動 (元ファイルと同じ、最大 %d kbit/s) - ファイル�
 msgid "AAC automatisch (wie die Quelle, max. 320 kbit/s)"
 msgstr "AAC 自動 (元ファイルと同じ、最大 320 kbit/s)"
 
-#: umain.pas:2311
+#: umain.pas:2312
 msgid "ALAC (verlustfrei)"
 msgstr "ALAC (ロスレス)"
 
-#: packerform.pas:582
+#: packerform.pas:587
 msgid "ALAC 24 Bit, Original-Abtastrate (Test)"
 msgstr "ALAC 24 ビット、元のサンプルレート（テスト）"
 
@@ -465,23 +465,23 @@ msgstr "ALAC 24 ビット、元のサンプルレート（テスト）"
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr "ALAC ロスレス (ファイルサイズ大)"
 
-#: packerform.pas:581
+#: packerform.pas:586
 msgid "ALAC verlustfrei, 16 Bit / 44,1 kHz"
 msgstr "ALAC ロスレス、16 ビット / 44.1 kHz"
 
-#: playerform.pas:794
+#: playerform.pas:806
 msgid "AN  L"
 msgstr "ON  L"
 
-#: playerform.pas:1286
+#: playerform.pas:1298
 msgid "ANSICHT"
 msgstr "表示"
 
-#: playerform.pas:2292
+#: playerform.pas:2304
 msgid "AUS (SOLO)"
 msgstr "OFF (ソロ)"
 
-#: playerform.pas:827
+#: playerform.pas:839
 msgid "AUSGANG L / R"
 msgstr "出力 L / R"
 
@@ -493,11 +493,11 @@ msgstr "AVX (中速版)"
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (高速版)"
 
-#: packerform.pas:652 uinit.pas:605 ulangui.pas:192
+#: packerform.pas:657 uinit.pas:605 ulangui.pas:192
 msgid "Abbrechen"
 msgstr "キャンセル"
 
-#: umain.pas:2168
+#: umain.pas:2169
 msgid "Abbruch angefordert..."
 msgstr "キャンセルを要求しました..."
 
@@ -505,15 +505,15 @@ msgstr "キャンセルを要求しました..."
 msgid "Abgebrochen"
 msgstr "キャンセルしました"
 
-#: umain.pas:2184
+#: umain.pas:2185
 msgid "Abgebrochen: %d Datei(en)"
 msgstr "キャンセル: %d ファイル"
 
-#: umain.pas:1394
+#: umain.pas:1395
 msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
 msgstr "対処法: フォルダーを上の階層に移動する (例: D:\\Music の直下) か、フォルダー名を短くしてください。該当フォルダーはログに記録されています。"
 
-#: taggerform.pas:1660
+#: taggerform.pas:1715
 msgid "Achtung bei Mehrfachauswahl: Sind mehrere Zeilen markiert, bekommen alle markierten Dateien den neuen Wert (z.B. alle dasselbe Album oder Cover). Felder mit „<verschieden>“ bleiben pro Datei erhalten, solange du sie nicht änderst."
 msgstr "複数選択にご注意ください: 複数の行を選択していると、選択したすべてのファイルに新しい値が設定されます (例: すべて同じアルバムやカバー)。「<複数の値>」と表示された項目は、変更しない限り各ファイルの値がそのまま残ります。"
 
@@ -525,23 +525,23 @@ msgstr "バッテリー"
 msgid "Akku (%d %%)"
 msgstr "バッテリー (%d %%)"
 
-#: uinfo.pas:420
+#: uinfo.pas:421
 msgid "Aktuelles Log: %s"
 msgstr "現在のログ: %s"
 
-#: taggerform.pas:436 taggerform.pas:766
+#: taggerform.pas:487 taggerform.pas:821
 msgid "Album"
 msgstr "アルバム"
 
-#: taggerform.pas:725
+#: taggerform.pas:780
 msgid "Album, EP oder Single, auf der der Track erschienen ist"
 msgstr "トラックが収録されたアルバム、EP、シングル"
 
-#: taggerform.pas:437
+#: taggerform.pas:488
 msgid "Album-Interpret"
 msgstr "アルバムアーティスト"
 
-#: umain.pas:1459
+#: umain.pas:1460
 msgid "Alle %d Dateien aus der Liste entfernen?"
 msgstr "リストから %d ファイルをすべて削除しますか?"
 
@@ -549,19 +549,19 @@ msgstr "リストから %d ファイルをすべて削除しますか?"
 msgid "Alle Audiodateien eines Ordners (inkl. Unterordner) hinzufügen"
 msgstr "フォルダー内のすべてのオーディオファイルを追加 (サブフォルダーを含む)"
 
-#: umain.pas:638 umain.pas:1483
+#: umain.pas:638 umain.pas:1484
 msgid "Alle Dateien"
 msgstr "すべてのファイル"
 
-#: umain.pas:2093
+#: umain.pas:2094
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "リスト内のファイルはすべて完了しています。もう一度変換しますか?"
 
-#: umain.pas:2626
+#: umain.pas:2627
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "リスト内のファイルはすべて完了しました。"
 
-#: umain.pas:2888 umain.pas:2914
+#: umain.pas:2889 umain.pas:2915
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "すべてのファイルが完了しました。%d 秒後にPCをシャットダウンします。"
 
@@ -569,11 +569,11 @@ msgstr "すべてのファイルが完了しました。%d 秒後にPCをシャ�
 msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
 msgstr "詳細: 情報 -> ライセンス、および StemMaker フォルダー内の LICENSE と THIRD-PARTY-NOTICES.md。"
 
-#: uinfo.pas:525
+#: uinfo.pas:526
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "詳細は GitHub の CHANGELOG にあります (ドイツ語)"
 
-#: packerform.pas:643
+#: packerform.pas:648
 msgid "Alle packen"
 msgstr "すべてパック"
 
@@ -585,7 +585,7 @@ msgstr "すべていいえ"
 msgid "Alles bereit"
 msgstr "準備完了"
 
-#: playerform.pas:815
+#: playerform.pas:827
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr "すべてリセット: ミュート/ソロ OFF、フェーダー 100 %、ステムモード (0 キー)"
 
@@ -597,11 +597,11 @@ msgstr "GitHub Issue として"
 msgid "Als GitHub-Issue (öffentlich)"
 msgstr "GitHub Issue として (公開)"
 
-#: umain.pas:1849 umain.lfm:335
+#: umain.pas:1850 umain.lfm:335
 msgid "Anhören"
 msgstr "試聴"
 
-#: uinfo.pas:498
+#: uinfo.pas:499
 msgid "Anleitung"
 msgstr "説明書"
 
@@ -609,7 +609,7 @@ msgstr "説明書"
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr "説明書、バージョン、寄付、ログ"
 
-#: playerform.pas:677
+#: playerform.pas:681
 msgid "Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)"
 msgstr "表示を選択: コンパクト、波形、CD プレーヤー (W キー: コンパクト/波形)"
 
@@ -617,11 +617,11 @@ msgstr "表示を選択: コンパクト、波形、CD プレーヤー (W キー
 msgid "Antwort zu gross"
 msgstr "応答が大きすぎます"
 
-#: packerform.pas:501
+#: packerform.pas:506
 msgid "Auch in Unterordnern suchen. Die Unterordner müssen in allen Ordnern gleich heissen."
 msgstr "サブフォルダーも検索します。サブフォルダー名はすべてのフォルダーで同じにしてください。"
 
-#: taggerform.pas:1662
+#: taggerform.pas:1717
 msgid "Audio, Stems und Traktors eigene Daten (auch in MP3s) bleiben immer unverändert, neu geschrieben werden nur die Tags."
 msgstr "オーディオ、ステム、Traktor 独自のデータ（MP3 内のものも含む）は常にそのまま残り、書き換えられるのはタグだけです。"
 
@@ -641,7 +641,7 @@ msgstr "オーディオデバイスを開けませんでした (waveOutOpen エ�
 msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
 msgstr "使い方: StemCLI <ファイル|フォルダー> [...] [-o 出力フォルダー] [-m ht|ft|v3]"
 
-#: umain.pas:1858
+#: umain.pas:1859
 msgid "Aus Liste entfernen"
 msgstr "リストから削除"
 
@@ -649,7 +649,7 @@ msgstr "リストから削除"
 msgid "Ausbalanciert"
 msgstr "バランス"
 
-#: packerform.pas:565
+#: packerform.pas:570
 msgid "Ausgabeordner (Unterordner werden übernommen)"
 msgstr "出力フォルダー（サブフォルダーは維持されます）"
 
@@ -657,7 +657,7 @@ msgstr "出力フォルダー（サブフォルダーは維持されます）"
 msgid "Ausgabeordner kann nicht erstellt werden"
 msgstr "出力フォルダーを作成できません"
 
-#: packerform.pas:1666
+#: packerform.pas:1681
 msgid "Ausgabeordner wählen"
 msgstr "出力フォルダーを選択"
 
@@ -665,27 +665,27 @@ msgstr "出力フォルダーを選択"
 msgid "Ausgabeordner:"
 msgstr "出力フォルダー:"
 
-#: usettings.pas:294
+#: usettings.pas:295
 msgid "Auto"
 msgstr "自動"
 
-#: usettings.pas:295
+#: usettings.pas:296
 msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
 msgstr "自動: プロセッサの物理コア数 (最大 4) とメモリが許す範囲で分割数を決めます"
 
-#: usettings.pas:336
+#: usettings.pas:337
 msgid "Automatisch (Grafikkarte, wenn sie mitmacht)"
 msgstr "自動 (対応していればグラフィックカード)"
 
-#: usettings.pas:407
+#: usettings.pas:408
 msgid "Automatisch (wie Windows)"
 msgstr "自動 (Windows と同じ)"
 
-#: usettings.pas:411
+#: usettings.pas:412
 msgid "Automatisch folgt der Windows-Einstellung \"Standard-App-Modus\" (Personalisierung > Farben)."
 msgstr "自動は Windows の設定「既定のアプリ モードを選択します」(個人用設定 > 色) に従います。"
 
-#: usettings.pas:338
+#: usettings.pas:339
 msgid "Automatisch: Die Grafikkarte wird nur genommen, wenn sie im Test gleiche Stems liefert und schneller ist als die CPU (Beta)."
 msgstr "自動: テストで同じステムを出力し、かつ CPU より速い場合のみグラフィックカードを使用します (ベータ)。"
 
@@ -693,11 +693,11 @@ msgstr "自動: テストで同じステムを出力し、かつ CPU より速�
 msgid "Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).\nGrösser bringt nichts - besser als die Quelle wird es nie.\nSehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht."
 msgstr "自動: ステムファイルは元ファイルのビットレートになります (例: MP3 256 -> AAC 256)。\nそれ以上にしても意味はありません - 元ファイルより良くなることはありません。\n非常に低いビットレート (192 未満) は 192 にして、再エンコードによる余計な劣化を防ぎます。"
 
-#: taggerform.pas:441
+#: taggerform.pas:492
 msgid "BPM"
 msgstr "BPM"
 
-#: taggerform.pas:1781
+#: taggerform.pas:1836
 msgid "BPM „%s“ bei %s ist ungültig. Bitte eine ganze Zahl von %d bis %d eingeben oder das Feld leeren."
 msgstr "BPM「%s」(%s) は無効です。%d から %d までの整数を入力するか、空欄にしてください。"
 
@@ -713,39 +713,39 @@ msgstr "低音補正: %s Hz 未満の重低音を Other から Bass へ移動"
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr "低音補正: 重低音を Other から Bass へ移動"
 
-#: uinit.pas:609 ulicenseui.pas:90 umain.pas:2708
+#: uinit.pas:609 ulicenseui.pas:91 umain.pas:2709
 msgid "Beenden"
 msgstr "終了"
 
-#: usettings.pas:302
+#: usettings.pas:303
 msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
 msgstr "フォルダーごとの場合: Music\\House\\2024\\track.mp3 は <出力フォルダー>\\House\\2024\\track.stem.mp4 になります"
 
-#: usettings.pas:326
+#: usettings.pas:327
 msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
 msgstr "どちらも同じモデルで計算し、ステムは同一です。Turbo は CPU で約 5～8 倍速く、グラフィックカードも使用できます。"
 
-#: taggerform.pas:1658
+#: taggerform.pas:1713
 msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
 msgstr "読み込みでは何も変更しません。ファイルに書き込むのは「保存」を押したときだけで、変更のあるファイルのみです。"
 
-#: usettings.pas:420
+#: usettings.pas:421
 msgid "Beim Minimieren nur das Symbol neben der Uhr zeigen"
 msgstr "最小化したら時計の横のアイコンだけを表示"
 
-#: usettings.pas:417 uupdateui.pas:450
+#: usettings.pas:418 uupdateui.pas:451
 msgid "Beim Start nach Updates suchen"
 msgstr "起動時に更新を確認"
 
-#: packerform.pas:380
+#: packerform.pas:385
 msgid "Beispiel: „* (A)“ findet „Hello (A).wav“, der Song heisst dann „Hello“."
 msgstr "例:「* (A)」は「Hello (A).wav」を見つけ、曲名は「Hello」になります。"
 
-#: taggerform.pas:742
+#: taggerform.pas:797
 msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
 msgstr "隣り合う数字同士はミックスの相性が良いです (例: 8A と 7A、9A、8B)。"
 
-#: umain.pas:1460
+#: umain.pas:1461
 msgid "Bereits erstellte Stem-Dateien bleiben erhalten."
 msgstr "作成済みのステムファイルはそのまま残ります。"
 
@@ -773,19 +773,19 @@ msgstr "同意しました - このPCで StemCLI が使用可能になりまし�
 msgid "Bestätigung"
 msgstr "確認"
 
-#: taggerform.pas:681
+#: taggerform.pas:736
 msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
 msgstr "クリップボードから画像を貼り付け (Ctrl+V)"
 
-#: taggerform.pas:1743
+#: taggerform.pas:1798
 msgid "Bild kann nicht gelesen werden:%s%s"
 msgstr "画像を読み込めません:%s%s"
 
-#: taggerform.pas:677
+#: taggerform.pas:732
 msgid "Bild..."
 msgstr "画像..."
 
-#: taggerform.pas:2076
+#: taggerform.pas:2131
 msgid "Bilder"
 msgstr "画像"
 
@@ -793,23 +793,23 @@ msgstr "画像"
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr "エクスプローラーのウィンドウからファイルをここにドラッグしてください:"
 
-#: playerform.pas:2088
+#: playerform.pas:2100
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr "フォルダーではなく、ステムファイル (.stem.mp4) をドロップしてください。"
 
-#: packerform.pas:1046
+#: packerform.pas:1061
 msgid "Bitte einen Ausgabeordner angeben (oder „neben die Master-Datei“ wählen)."
 msgstr "出力フォルダーを指定してください（または「マスターファイルの隣」を選択）。"
 
-#: umain.pas:2054
+#: umain.pas:2055
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "出力フォルダーを選択するか、「元ファイルと同じ場所」をオンにしてください。"
 
-#: playerform.pas:2110
+#: playerform.pas:2122
 msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr "次のダイアログで ffmpeg.exe を選択してください"
 
-#: packerform.pas:1495
+#: packerform.pas:1510
 msgid "Bitte im nächsten Fenster die ffmpeg.exe auswählen (z. B. aus StemMaker\\tools\\)."
 msgstr "次のウィンドウで ffmpeg.exe を選択してください（例: StemMaker\\tools\\ の中）。"
 
@@ -821,19 +821,19 @@ msgstr "初めて使う前にお読みください"
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr "GitHub アカウントが必要です。Issue は誰でも閲覧できます。"
 
-#: playerform.pas:3029
+#: playerform.pas:3047
 msgid "Breche Dekodieren ab ..."
 msgstr "デコードをキャンセル中 ..."
 
-#: packerform.pas:1716 packerform.pas:1802 uinit.pas:1107
+#: packerform.pas:1731 packerform.pas:1823 uinit.pas:1107
 msgid "Breche ab ..."
 msgstr "キャンセル中 ..."
 
-#: playerform.pas:1570
+#: playerform.pas:1582
 msgid "CD-PLAYER"
 msgstr "CD プレーヤー"
 
-#: playerform.pas:846
+#: playerform.pas:858
 msgid "CLIP"
 msgstr "CLIP"
 
@@ -849,39 +849,39 @@ msgstr "CPU を測定中 (%d / %d 回目)"
 msgid "CPU vorbereiten"
 msgstr "CPU を準備"
 
-#: playerform.pas:1369
+#: playerform.pas:1381
 msgid "CUE"
 msgstr "CUE"
 
-#: taggerform.pas:446 taggerform.pas:766
+#: taggerform.pas:497 taggerform.pas:821
 msgid "Cover"
 msgstr "カバー"
 
-#: packerform.pas:598
+#: packerform.pas:603
 msgid "Cover aus dem Ordner, wenn die Datei keins hat"
 msgstr "ファイルにカバーがなければフォルダーから取得"
 
-#: taggerform.pas:2182
+#: taggerform.pas:2237
 msgid "Cover speichern"
 msgstr "カバーを保存"
 
-#: taggerform.pas:2075
+#: taggerform.pas:2130
 msgid "Cover-Bild wählen"
 msgstr "カバー画像を選択"
 
-#: packerform.pas:492
+#: packerform.pas:497
 msgid "DAW-Export: „Song“ + „Song_drums“ … „_vocals“"
 msgstr "DAW 書き出し:「Song」+「Song_drums」…「_vocals」"
 
-#: usettings.pas:314
+#: usettings.pas:315
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "終了後はすべて元の設定に戻ります。画面はオフになってもかまいません。"
 
-#: uinfo.pas:531
+#: uinfo.pas:532
 msgid "Danke"
 msgstr "謝辞"
 
-#: packerform.pas:1736
+#: packerform.pas:1757
 msgid "Danke an Cuiusquemodi für die Idee, den Test mit 178 Songs und die vielen Rückmeldungen."
 msgstr "アイデア、178 曲でのテスト、たくさんのフィードバックをくれた Cuiusquemodi に感謝します。"
 
@@ -889,19 +889,19 @@ msgstr "アイデア、178 曲でのテスト、たくさんのフィードバ�
 msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
 msgstr "翻訳、テスト、アイデア、バグ報告、寄付で StemMaker を支えてくださる皆さまに感謝します!"
 
-#: taggerform.pas:2155
+#: taggerform.pas:2210
 msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
 msgstr "クリップボードの画像を読み込めません。"
 
-#: usettings.pas:591
+#: usettings.pas:593
 msgid "Das Design wird beim nächsten Start übernommen."
 msgstr "テーマは次回の起動時に変更されます。"
 
-#: usettings.pas:603
+#: usettings.pas:605
 msgid "Das Design wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "テーマは再起動後に適用されます。今すぐ StemMaker を再起動しますか？"
 
-#: usettings.pas:421
+#: usettings.pas:422
 msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
 msgstr "ウィンドウがタスクバーから消えます。時計の横のアイコンをクリックすると元に戻ります。"
 
@@ -925,7 +925,7 @@ msgstr "開いているウィンドウを前面に表示します。そこでリ
 msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
 msgstr "約 %s の音楽を、ご自身のPCで分離しました - サブスクなし、アップロードなし、広告なし。"
 
-#: taggerform.pas:765 umain.lfm:132
+#: taggerform.pas:820 umain.lfm:132
 msgid "Datei"
 msgstr "ファイル"
 
@@ -937,11 +937,11 @@ msgstr "ファイルを保存できません: %s"
 msgid "Datei nicht gefunden: %s"
 msgstr "ファイルが見つかりません: %s"
 
-#: umain.pas:1259
+#: umain.pas:1260
 msgid "Datei:  vergangen %s   |   verbleibend %s"
 msgstr "ファイル:  経過 %s   |   残り %s"
 
-#: packerform.pas:682
+#: packerform.pas:697
 msgid "Dateien"
 msgstr "ファイル"
 
@@ -949,11 +949,11 @@ msgstr "ファイル"
 msgid "Dateien hinzufügen..."
 msgstr "ファイルを追加..."
 
-#: taggerform.pas:1988
+#: taggerform.pas:2043
 msgid "Dateien öffnen"
 msgstr "ファイルを開く"
 
-#: taggerform.pas:584
+#: taggerform.pas:635
 msgid "Dateien..."
 msgstr "ファイル..."
 
@@ -961,15 +961,15 @@ msgstr "ファイル..."
 msgid "Dateigröße: %.1f MB"
 msgstr "ファイルサイズ: %.1f MB"
 
-#: packerform.pas:379
+#: packerform.pas:384
 msgid "Dateiname ohne Endung, * steht für den Songnamen."
 msgstr "拡張子なしのファイル名。* は曲名を表します。"
 
-#: playerform.pas:2048
+#: playerform.pas:2060
 msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
 msgstr "ffmpeg で %d トラックをデコード中 ... %.1f 秒"
 
-#: playerform.pas:2154
+#: playerform.pas:2166
 msgid "Dekodiere ..."
 msgstr "デコード中 ..."
 
@@ -977,7 +977,7 @@ msgstr "デコード中 ..."
 msgid "Dekodieren"
 msgstr "デコード"
 
-#: playerform.pas:801
+#: playerform.pas:813
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr "A から B までの区間が繰り返し再生されます。"
 
@@ -985,11 +985,11 @@ msgstr "A から B までの区間が繰り返し再生されます。"
 msgid "Der Bericht konnte nicht gespeichert werden: %s"
 msgstr "レポートを保存できませんでした: %s"
 
-#: playerform.pas:1409 playerform.pas:1652
+#: playerform.pas:1421 playerform.pas:1664
 msgid "Der CD-Player passt bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "このWindowsの拡大率ではCDプレーヤーが画面に収まりません。"
 
-#: packerform.pas:1041
+#: packerform.pas:1056
 msgid "Der Ordner von „%s“ fehlt oder existiert nicht."
 msgstr "「%s」のフォルダーが未指定か、存在しません。"
 
@@ -1009,19 +1009,19 @@ msgstr "分離で「Other」ステムに残った 80 Hz 未満の重低音を Ba
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "このバージョンにはバージョン履歴がありません。"
 
-#: uturbotest.pas:750
+#: uturbotest.pas:751
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "事前テストがうまくいきませんでした (コード %s)。StemMaker はそれでも Turbo を試し、だめな場合は demucs.cpp (クラシック) を使います。詳細はログにあります。"
 
-#: playerform.pas:1256
+#: playerform.pas:1268
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "青いリングは残り時間を示します。"
 
-#: usettings.pas:402
+#: usettings.pas:403
 msgid "Design:"
 msgstr "テーマ:"
 
-#: playerform.pas:778
+#: playerform.pas:790
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "4 つのステムをミックス - ミュート / ソロ / 音量付き (S キー)"
 
@@ -1029,11 +1029,11 @@ msgstr "4 つのステムをミックス - ミュート / ソロ / 音量付き 
 msgid "Die Anleitung liegt normalerweise im StemMaker-Ordner neben StemMaker.exe. Bitte das ZIP komplett entpacken."
 msgstr "説明書は通常、StemMaker フォルダー内の StemMaker.exe の横にあります。ZIP をすべて展開してください。"
 
-#: packerform.pas:474
+#: packerform.pas:479
 msgid "Die Benennung wird erkannt, z. B. „Song_drums“, „Song (Vocals)“, „Song (A)“ oder „Song_1“."
 msgstr "名前の付け方は自動で認識されます（例:「Song_drums」「Song (Vocals)」「Song (A)」「Song_1」）。"
 
-#: packerform.pas:1416
+#: packerform.pas:1431
 msgid "Die Dateien lassen sich direkt in Traktor laden. Ordner jetzt öffnen?"
 msgstr "ファイルはそのまま Traktor に読み込めます。今フォルダーを開きますか?"
 
@@ -1049,43 +1049,43 @@ msgstr "グラフィックカード (%s) は%s。StemMaker は CPU で分離し�
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "グラフィックカード (%s) は使用可能ですが、「CPU のみ」が設定されています。StemMaker は CPU で分離します: 音楽1分あたり約 %s です。"
 
-#: umain.pas:823
+#: umain.pas:824
 msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
 msgstr "変換はまだ実行中です。キャンセルして終了しますか?"
 
-#: taggerform.pas:627
+#: taggerform.pas:682
 msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
 msgstr "コピーは上書きされないため、本当のオリジナルとして残ります。"
 
-#: umain.pas:2115
+#: umain.pas:2116
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr "リストが空です - まずファイルを追加してください。"
 
-#: taggerform.pas:741
+#: taggerform.pas:796
 msgid "Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am)."
 msgstr "リストには 3 つすべてを表示し、保存するのはクラシック表記 (例: Am) です。"
 
-#: uupdateui.pas:566
+#: uupdateui.pas:567
 msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
 msgstr "更新のチェックサム (SHA-256) が一致しません。ファイルは破棄され、StemMaker は変更されていません。"
 
-#: usettings.pas:588
+#: usettings.pas:590
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "言語は次回起動時に反映されます。"
 
-#: usettings.pas:600
+#: usettings.pas:602
 msgid "Die Sprache wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "言語は再起動後に適用されます。今すぐ StemMaker を再起動しますか？"
 
-#: uinfo.pas:593
+#: uinfo.pas:594
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "更新の確認に失敗しました: %s"
 
-#: usettings.pas:384
+#: usettings.pas:385
 msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
 msgstr "アイコンは Traktor が位置 1-4 ごとに固定で表示するため、変更できません。"
 
-#: playerform.pas:1416 playerform.pas:1672
+#: playerform.pas:1428 playerform.pas:1684
 msgid "Die Wellenformen passen bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "このWindowsの拡大率では波形が画面に収まりません。"
 
@@ -1093,7 +1093,7 @@ msgstr "このWindowsの拡大率では波形が画面に収まりません。"
 msgid "Die alte Version wurde wiederhergestellt."
 msgstr "以前のバージョンに戻しました。"
 
-#: umain.pas:2519
+#: umain.pas:2520
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "最後に処理していたファイルが中断されました - 「開始」で最初からやり直します。"
 
@@ -1105,19 +1105,19 @@ msgstr "この同意はこのPCに対してのみ有効です。StemMaker フォ
 msgid "Diese Dateien werden einmalig aus dem Internet geladen: %s. Danach startet StemMaker automatisch."
 msgstr "次のファイルをインターネットから一度だけダウンロードします: %s。その後 StemMaker が自動的に起動します。"
 
-#: uupdateui.pas:478
+#: uupdateui.pas:479
 msgid "Diese Version überspringen"
 msgstr "このバージョンをスキップ"
 
-#: taggerform.pas:1751
+#: taggerform.pas:1806
 msgid "Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden."
 msgstr "この画像形式には対応していません。JPEG、PNG、BMP、GIF を使用してください。"
 
-#: uupdateui.pas:532
+#: uupdateui.pas:533
 msgid "Dieses Update kann nicht automatisch installiert werden. Die Download-Seite wird im Browser geöffnet."
 msgstr "この更新は自動でインストールできません。ダウンロードページをブラウザーで開きます。"
 
-#: taggerform.pas:789
+#: taggerform.pas:844
 msgid "Doppelklick auf den Rand passt die Spalte an den Text an"
 msgstr "境界をダブルクリックすると列幅を文字に合わせます"
 
@@ -1141,19 +1141,19 @@ msgstr "ダウンロード中 ...  %s"
 msgid "Download unvollständig"
 msgstr "ダウンロードが不完全です"
 
-#: uinfo.pas:590
+#: uinfo.pas:591
 msgid "Du hast die neueste Version (%s)."
 msgstr "最新バージョンです (%s)。"
 
-#: usettings.pas:409
+#: usettings.pas:410
 msgid "Dunkel"
 msgstr "ダーク"
 
-#: usettings.pas:413
+#: usettings.pas:414
 msgid "Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11."
 msgstr "ダークには Windows 10 (バージョン 1809 以降) または Windows 11 が必要です。"
 
-#: packerform.pas:494
+#: packerform.pas:499
 msgid "Eigene Muster"
 msgstr "カスタムパターン"
 
@@ -1161,15 +1161,15 @@ msgstr "カスタムパターン"
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "このPCでは 3 分の曲が htdemucs (標準) で約 %s、htdemucs_ft (最高品質) で約 %s かかります。"
 
-#: taggerform.pas:678
+#: taggerform.pas:733
 msgid "Einfügen"
 msgstr "貼り付け"
 
-#: usettings.pas:261 umain.lfm:158
+#: usettings.pas:262 umain.lfm:158
 msgid "Einstellungen"
 msgstr "設定"
 
-#: ulicenseui.pas:98
+#: ulicenseui.pas:99
 msgid "Einverstanden - StemMaker starten"
 msgstr "同意する - StemMaker を起動"
 
@@ -1181,7 +1181,7 @@ msgstr "同意しますか? その場合は StemCLI を一度 --accept 付きで
 msgid "Energiesparmodus"
 msgstr "省電力"
 
-#: umain.pas:2135
+#: umain.pas:2136
 msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
 msgstr "電源プラン「%s」を一時的に「%s」に変更しました - 変換後に元に戻します。"
 
@@ -1189,15 +1189,15 @@ msgstr "電源プラン「%s」を一時的に「%s」に変更しました - �
 msgid "Energiesparplan vorübergehend: %s -> %s"
 msgstr "電源プランを一時変更: %s -> %s"
 
-#: usettings.pas:318
+#: usettings.pas:319
 msgid "Engine (trennt die Stems)"
 msgstr "エンジン (ステムを分離)"
 
-#: usettings.pas:319
+#: usettings.pas:320
 msgid "Engine:"
 msgstr "エンジン:"
 
-#: taggerform.pas:586 taggerform.pas:679 umain.lfm:52
+#: taggerform.pas:637 taggerform.pas:734 umain.lfm:52
 msgid "Entfernen"
 msgstr "削除"
 
@@ -1213,7 +1213,7 @@ msgstr "ただしクリップボードにはコピーされています (Ctrl+V)
 msgid "Ergebnis hat nicht 5 Audiospuren"
 msgstr "結果のオーディオトラックが 5 つではありません"
 
-#: packerform.pas:857
+#: packerform.pas:872
 msgid "Erkannt: „%s“ … „%s“, %s."
 msgstr "認識:「%s」…「%s」、%s。"
 
@@ -1225,11 +1225,11 @@ msgstr "再チェック"
 msgid "Erneut testen"
 msgstr "再テスト"
 
-#: taggerform.pas:729
+#: taggerform.pas:784
 msgid "Erscheinungsjahr, z.B. 2016"
 msgstr "リリース年 (例: 2016)"
 
-#: umain.pas:2064
+#: umain.pas:2065
 msgid "Es fehlen Programmteile:"
 msgstr "プログラムの構成要素が不足しています:"
 
@@ -1237,15 +1237,15 @@ msgstr "プログラムの構成要素が不足しています:"
 msgid "Es fehlen noch Dateien"
 msgstr "まだ不足しているファイルがあります"
 
-#: taggerform.pas:736
+#: taggerform.pas:791
 msgid "Es gibt drei übliche Schreibweisen für dieselbe Tonart:"
 msgstr "同じキーには一般的な表記が 3 つあります:"
 
-#: taggerform.pas:2313
+#: taggerform.pas:2374
 msgid "Es gibt ungespeicherte Änderungen. Jetzt speichern?"
 msgstr "未保存の変更があります。今すぐ保存しますか?"
 
-#: taggerform.pas:2060
+#: taggerform.pas:2115
 msgid "Es gibt ungespeicherte Änderungen. Liste trotzdem leeren?"
 msgstr "未保存の変更があります。それでもリストをクリアしますか?"
 
@@ -1253,7 +1253,7 @@ msgstr "未保存の変更があります。それでもリストをクリアし
 msgid "Es ist ein unerwarteter Fehler aufgetreten:"
 msgstr "予期しないエラーが発生しました:"
 
-#: packerform.pas:594
+#: packerform.pas:599
 msgid "Extras:"
 msgstr "その他:"
 
@@ -1265,23 +1265,23 @@ msgstr "バックグラウンドでエラー: %s (詳細はログ)"
 msgid "FEHLER: "
 msgstr "エラー: "
 
-#: packerform.pas:511
+#: packerform.pas:516
 msgid "Farbe"
 msgstr "色"
 
-#: packerform.pas:348
+#: packerform.pas:353
 msgid "Farbe des Stems in Traktor (klicken zum Ändern)"
 msgstr "Traktor でのステムの色（クリックで変更）"
 
-#: usettings.pas:372
+#: usettings.pas:373
 msgid "Farbe wählen"
 msgstr "色を選択"
 
-#: packerform.pas:595
+#: packerform.pas:600
 msgid "Fehlende Stems still füllen"
 msgstr "足りないステムを無音で埋める"
 
-#: ulangui.pas:202 umain.pas:1162 umain.pas:2491
+#: ulangui.pas:202 umain.pas:1163 umain.pas:2492
 msgid "Fehler"
 msgstr "エラー"
 
@@ -1289,35 +1289,35 @@ msgstr "エラー"
 msgid "Fehler %s"
 msgstr "エラー %s"
 
-#: playerform.pas:2167
+#: playerform.pas:2179
 msgid "Fehler beim Dekodieren"
 msgstr "デコードエラー"
 
-#: playerform.pas:2168
+#: playerform.pas:2180
 msgid "Fehler beim Dekodieren: "
 msgstr "デコードエラー: "
 
-#: taggerform.pas:1839
+#: taggerform.pas:1894
 msgid "Fehler: "
 msgstr "エラー: "
 
-#: packerform.pas:1335
+#: packerform.pas:1350
 msgid "Fehler: Datei konnte nicht gespeichert werden"
 msgstr "エラー: ファイルを保存できませんでした"
 
-#: packerform.pas:1329
+#: packerform.pas:1344
 msgid "Fehler: Ergebnis hat nicht 5 Spuren"
 msgstr "エラー: 結果が 5 トラックになっていません"
 
-#: taggerform.pas:1809
+#: taggerform.pas:1864
 msgid "Fehler: Sicherungskopie nicht möglich"
 msgstr "エラー: バックアップを作成できません"
 
-#: packerform.pas:1323
+#: packerform.pas:1338
 msgid "Fehler: Stem-Block"
 msgstr "エラー: ステムブロック"
 
-#: packerform.pas:1310
+#: packerform.pas:1325
 msgid "Fehler: ffmpeg Code %d (siehe Log)"
 msgstr "エラー: ffmpeg コード %d（ログを参照）"
 
@@ -1329,23 +1329,23 @@ msgstr "エラーレポート"
 msgid "Fehlerbericht senden"
 msgstr "エラーレポートを送信"
 
-#: uinfo.pas:475 ulogui.pas:60
+#: uinfo.pas:476 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "エラーレポートを送信..."
 
-#: packerform.pas:596
+#: packerform.pas:601
 msgid "Fehlt ein Stem, wird eine stille Spur eingesetzt, statt den Song zu überspringen."
 msgstr "ステムが足りないときは、曲をスキップせずに無音トラックを入れます。"
 
-#: umain.pas:1012
+#: umain.pas:1013
 msgid "Fehlt: %s"
 msgstr "不足: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:758 uturbotest.pas:759
+#: ustemjob.pas:2124 uturbotest.pas:759 uturbotest.pas:760
 msgid "Fertig"
 msgstr "完了"
 
-#: umain.pas:2192
+#: umain.pas:2193
 msgid "Fertig - Gesamtzeit %s"
 msgstr "完了 - 合計時間 %s"
 
@@ -1353,39 +1353,39 @@ msgstr "完了 - 合計時間 %s"
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
 msgstr "完了: 成功 %d、スキップ %d、失敗 %d"
 
-#: umain.pas:2181 umain.pas:2196
+#: umain.pas:2182 umain.pas:2197
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr "完了: 成功 %d、スキップ %d、失敗 %d  -  合計時間 %s"
 
-#: umain.pas:1956
+#: umain.pas:1957
 msgid "Fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen"
 msgstr "完成したトラック（マスター＋ステム）をAIなしでステムファイルにまとめる"
 
-#: packerform.pas:572
+#: packerform.pas:577
 msgid "Format:"
 msgstr "形式:"
 
-#: packerform.pas:1738
+#: packerform.pas:1759
 msgid "Frei unter der MIT-Lizenz. Enthält ffmpeg (LGPL)."
 msgstr "MIT ライセンスで無料。ffmpeg（LGPL）を含みます。"
 
-#: taggerform.pas:744
+#: taggerform.pas:799
 msgid "Freier Text, z.B. Notizen fürs Auflegen"
 msgstr "自由なテキスト (例: DJ プレイ用のメモ)"
 
-#: usettings.pas:422
+#: usettings.pas:423
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "アイコンにマウスを重ねると進行状況が表示されます。"
 
-#: umain.pas:1039
+#: umain.pas:1040
 msgid "Für \"%s\" fehlen noch Dateien."
 msgstr "「%s」のファイルがまだ不足しています。"
 
-#: packerform.pas:471
+#: packerform.pas:476
 msgid "Für Benennungen, die nicht erkannt werden: Ordner, Namensmuster, Stem-Namen und Farben je Spur selbst eintragen."
 msgstr "認識されない名前の場合: トラックごとにフォルダー、名前のパターン、ステム名、色を自分で入力します。"
 
-#: packerform.pas:497
+#: packerform.pas:502
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "マスターがない場合: 4 つのステムを音量を変えずにミックスします。"
 
@@ -1393,27 +1393,27 @@ msgstr "マスターがない場合: 4 つのステムを音量を変えずに�
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "テストには htdemucs または htdemucs_ft モデルが必要です。StemMaker の起動時にダウンロードされます。"
 
-#: taggerform.pas:438 taggerform.pas:766
+#: taggerform.pas:489 taggerform.pas:821
 msgid "Genre"
 msgstr "ジャンル"
 
-#: usettings.pas:331
+#: usettings.pas:332
 msgid "Gerät:"
 msgstr "デバイス:"
 
-#: umain.pas:1302
+#: umain.pas:1303
 msgid "Gesamt (Datei %d von %d):  verbleibend %s"
 msgstr "全体 (ファイル %d / %d):  残り %s"
 
-#: umain.pas:1300
+#: umain.pas:1301
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "全体 (ファイル %d / %d):  経過 %s   |   残り %s"
 
-#: umain.pas:2645
+#: umain.pas:2646
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "このPCで測定した速度から見積もりました。"
 
-#: taggerform.pas:1834
+#: taggerform.pas:1889
 msgid "Gespeichert"
 msgstr "保存しました"
 
@@ -1437,11 +1437,11 @@ msgstr "グラフィックカードを確認中 (最大 30 秒かかります)"
 msgid "Grafikkarte suchen"
 msgstr "グラフィックカードを検索中"
 
-#: umain.pas:2650
+#: umain.pas:2651
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "おおよその見積もりです - 最初のトラックが完了すると、StemMaker はこのPCの速度を把握します。"
 
-#: taggerform.pas:631
+#: taggerform.pas:686
 msgid "Grosse Cover auf %d px verkleinern"
 msgstr "大きなカバーを %d px に縮小"
 
@@ -1453,7 +1453,7 @@ msgstr "免責事項"
 msgid "Hallo Elospeed,"
 msgstr "Elospeed さん、こんにちは。"
 
-#: packerform.pas:599
+#: packerform.pas:604
 msgid "Hat die Master-Datei kein Cover, wird cover.jpg, folder.jpg, front.jpg oder <Song>.jpg aus ihrem Ordner genommen."
 msgstr "マスターファイルにカバーがない場合、同じフォルダーの cover.jpg、folder.jpg、front.jpg または <曲名>.jpg を使います。"
 
@@ -1461,11 +1461,11 @@ msgstr "マスターファイルにカバーがない場合、同じフォルダ
 msgid "Helfende"
 msgstr "協力者"
 
-#: usettings.pas:408
+#: usettings.pas:409
 msgid "Hell"
 msgstr "ライト"
 
-#: umain.pas:2287
+#: umain.pas:2288
 msgid "Herunterfahren abgebrochen."
 msgstr "シャットダウンをキャンセルしました。"
 
@@ -1477,15 +1477,15 @@ msgstr "ダウンロード"
 msgid "Herunterladen (ca. %d MB)"
 msgstr "ダウンロード (約 %d MB)"
 
-#: uinfo.pas:547
+#: uinfo.pas:548
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "ここには同意いただいた方のみ掲載しています。ご協力いただいて掲載をご希望の方は elospeed.dev@gmail.com までご連絡ください。"
 
-#: uinfo.pas:485
+#: packerform.pas:681 playerform.pas:701 taggerform.pas:650
 msgid "Hilfe (F1)"
 msgstr "ヘルプ (F1)"
 
-#: usettings.pas:464
+#: usettings.pas:465
 msgid "Hilfe zu diesem Fenster (F1)"
 msgstr "このウィンドウのヘルプ (F1)"
 
@@ -1497,7 +1497,7 @@ msgstr "ヘルプ: 図解ガイドをブラウザーで表示 (F1)"
 msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "注意: 以前の %d 回の実行が予期せず終了しました - 詳細は名前に「_ABSTURZ」を含むログにあります (情報 -> ログフォルダーを開く)。"
 
-#: umain.pas:2129
+#: umain.pas:2130
 msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
 msgstr "注意: PCはバッテリーで動作しています (%s)。この場合 Windows は CPU を制限します - 電源につなぐとかなり速くなります。"
 
@@ -1517,15 +1517,15 @@ msgstr "注意: 前回の実行が予期せず終了しました - 詳細は名�
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr "注意: トゥルーピークが 0 dBFS を超えています - 再生時にマスタートラックがわずかにクリップする可能性があります"
 
-#: playerform.pas:2147
+#: playerform.pas:2159
 msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
 msgstr "注意: Traktor の「stem」ブロックが見つかりません (標準の名前を使用します)。"
 
-#: playerform.pas:2294
+#: playerform.pas:2306
 msgid "HÖRBAR"
 msgstr "聞こえる"
 
-#: playerform.pas:770 playerform.pas:1233 playerform.pas:1288
+#: playerform.pas:782 playerform.pas:1245 playerform.pas:1300
 msgid "HÖREN"
 msgstr "試聴"
 
@@ -1533,31 +1533,31 @@ msgstr "試聴"
 msgid "Höchstleistung"
 msgstr "高パフォーマンス"
 
-#: usettings.pas:455
+#: usettings.pas:456
 msgid "INI-Ordner öffnen"
 msgstr "INI フォルダーを開く"
 
-#: ulicenseui.pas:82
+#: ulicenseui.pas:83
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "免責事項とライセンス情報を読み、同意します。"
 
-#: packerform.pas:1035
+#: packerform.pas:1050
 msgid "Im Muster von „%s“ fehlt der Stern * für den Songnamen."
 msgstr "「%s」のパターンに曲名を表す * がありません。"
 
-#: taggerform.pas:1321
+#: taggerform.pas:1376
 msgid "Im Ordner wurden keine Stem- oder MP3-Dateien gefunden:%s%s"
 msgstr "フォルダーにステムファイルまたは MP3 ファイルが見つかりませんでした:%s%s"
 
-#: uupdateui.pas:577
+#: uupdateui.pas:578
 msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
 msgstr "うまくいかない場合は、リリースページの ZIP を手動で展開してください。"
 
-#: taggerform.pas:2139
+#: taggerform.pas:2194
 msgid "In der Zwischenablage ist kein Bild."
 msgstr "クリップボードに画像がありません。"
 
-#: packerform.pas:667 uinfo.pas:393 umain.lfm:80
+#: packerform.pas:672 uinfo.pas:394 umain.lfm:80
 msgid "Info"
 msgstr "情報"
 
@@ -1569,7 +1569,7 @@ msgstr "情報"
 msgid "Installation wird geprüft ..."
 msgstr "インストールを確認中 ..."
 
-#: uupdateui.pas:434
+#: uupdateui.pas:435
 msgid "Installiert ist %s. Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten."
 msgstr "インストール済み: %s。設定、リスト、ログ、モデル、ffmpeg はそのまま残ります。"
 
@@ -1581,51 +1581,51 @@ msgstr "インターネットにアクセスできません (WinINet)"
 msgid "Internetverbindung prüfen und \"Herunterladen\" erneut klicken."
 msgstr "インターネット接続を確認して、もう一度「ダウンロード」をクリックしてください。"
 
-#: taggerform.pas:435 taggerform.pas:765
+#: taggerform.pas:486 taggerform.pas:820
 msgid "Interpret"
 msgstr "アーティスト"
 
-#: taggerform.pas:726
+#: taggerform.pas:781
 msgid "Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations."
 msgstr "アルバム全体のアーティスト (例: コンピレーションの場合は「Various Artists」)。"
 
-#: taggerform.pas:745
+#: taggerform.pas:800
 msgid "Interpret/Titel aus Dateiname"
 msgstr "ファイル名から取得"
 
-#: taggerform.pas:439
+#: taggerform.pas:490
 msgid "Jahr"
 msgstr "年"
 
-#: uupdateui.pas:463
+#: uupdateui.pas:464
 msgid "Jetzt aktualisieren"
 msgstr "今すぐ更新"
 
-#: umain.pas:1040
+#: umain.pas:1041
 msgid "Jetzt herunterladen?"
 msgstr "今すぐダウンロードしますか?"
 
-#: umain.pas:2065
+#: umain.pas:2066
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr "今すぐ確認して、不足しているファイルをダウンロードしますか?"
 
-#: taggerform.pas:1793
+#: taggerform.pas:1848
 msgid "Jetzt speichern?"
 msgstr "今すぐ保存しますか?"
 
-#: uinfo.pas:448
+#: uinfo.pas:449
 msgid "Jetzt spenden"
 msgstr "今すぐ寄付"
 
-#: playerform.pas:1255
+#: playerform.pas:1267
 msgid "Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand."
 msgstr "ジョグホイール: マウスボタンを押したまま回すと、レコードに手を置いたように音が聞こえます。"
 
-#: playerform.pas:1567
+#: playerform.pas:1579
 msgid "KOMPAKT"
 msgstr "コンパクト"
 
-#: packerform.pas:610 packerform.pas:1753 playerform.pas:885
+#: packerform.pas:615 packerform.pas:1774 playerform.pas:897
 msgid "Kaffee spendieren"
 msgstr "コーヒーをおごる"
 
@@ -1645,35 +1645,35 @@ msgstr "出力ファイルを書き込めません: %s"
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "グラフィックカードが見つかりません。StemMaker は CPU で分離します: 音楽1分あたり約 %s の計算時間です。"
 
-#: packerform.pas:1157
+#: packerform.pas:1172
 msgid "Keine Songs gefunden. Ordner und Muster prüfen (Stern * = Songname)."
 msgstr "曲が見つかりません。フォルダーとパターンを確認してください（* = 曲名）。"
 
-#: taggerform.pas:1378
+#: taggerform.pas:1433
 msgid "Keine Stem-Datei"
 msgstr "ステムファイルではありません"
 
-#: playerform.pas:2099
+#: playerform.pas:2111
 msgid "Keine Stem-Datei: "
 msgstr "ステムファイルではありません: "
 
-#: packerform.pas:799
+#: packerform.pas:814
 msgid "Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen."
 msgstr "既知の名前の付け方が見つかりません。フォルダーとパターンを自分で設定してください。"
 
-#: usettings.pas:328
+#: usettings.pas:329
 msgid "Klappt Turbo bei einer Datei nicht, nimmt StemMaker für diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch."
 msgstr "あるファイルで Turbo が失敗した場合、StemMaker はそのファイルを自動的にクラシックで処理します。htdemucs v3 は常にクラシックで計算します。"
 
-#: usettings.pas:325
+#: usettings.pas:326
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr "クラシック (demucs.cpp、1.9 までと同じ)"
 
-#: taggerform.pas:787
+#: taggerform.pas:842
 msgid "Klick sortiert, nochmal klicken sortiert umgekehrt"
 msgstr "クリックで並べ替え、もう一度クリックで逆順"
 
-#: playerform.pas:967
+#: playerform.pas:979
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "クリックまたはドラッグでこの位置へジャンプします。"
 
@@ -1681,11 +1681,11 @@ msgstr "クリックまたはドラッグでこの位置へジャンプします
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr "エンコードを測定中 (ffmpeg、5 トラック)"
 
-#: taggerform.pas:444
+#: taggerform.pas:495
 msgid "Kommentar"
 msgstr "コメント"
 
-#: umain.pas:822
+#: umain.pas:823
 msgid "Konvertierung läuft"
 msgstr "変換中"
 
@@ -1693,11 +1693,11 @@ msgstr "変換中"
 msgid "Kopiert das Protokoll unten in die Zwischenablage"
 msgstr "下のログをクリップボードにコピーします"
 
-#: umain.pas:811
+#: umain.pas:812
 msgid "Kopiert ✓"
 msgstr "コピーしました ✓"
 
-#: taggerform.pas:724
+#: taggerform.pas:779
 msgid "Künstler oder Band, z.B. „Kungs“"
 msgstr "アーティストまたはバンド (例: 「Kungs」)"
 
@@ -1705,11 +1705,11 @@ msgstr "アーティストまたはバンド (例: 「Kungs」)"
 msgid "LIZENZEN"
 msgstr "ライセンス"
 
-#: playerform.pas:790 playerform.pas:1246
+#: playerform.pas:802 playerform.pas:1258
 msgid "LOOP"
 msgstr "LOOP"
 
-#: taggerform.pas:443
+#: taggerform.pas:494
 msgid "Label"
 msgstr "レーベル"
 
@@ -1717,11 +1717,11 @@ msgstr "レーベル"
 msgid "Lade %s  (%d von %d)"
 msgstr "%s をダウンロード中  (%d / %d)"
 
-#: uupdateui.pas:324
+#: uupdateui.pas:325
 msgid "Lade StemMaker %s ..."
 msgstr "StemMaker %s をダウンロード中 ..."
 
-#: playerform.pas:2162
+#: playerform.pas:2174
 msgid "Laden abgebrochen."
 msgstr "読み込みをキャンセルしました。"
 
@@ -1753,15 +1753,15 @@ msgstr "音量を揃える: %s dB (調整前の最大ピーク %.1f dBFS)"
 msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
 msgstr "音量を揃える: レベルを測定できなかったため変更なし"
 
-#: taggerform.pas:727
+#: taggerform.pas:782
 msgid "Leer lassen, wenn er gleich ist wie der Interpret."
 msgstr "アーティストと同じ場合は空欄のままにしてください。"
 
-#: playerform.pas:863
+#: playerform.pas:875
 msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
 msgstr "スペース 再生/一時停止  ·  1-4 ミュート  ·  Shift+1-4 ソロ  ·  0 リセット  ·  S/O/R モード  ·  矢印 -/+5 秒  ·  W 波形  ·  A/B/L ループ  ·  Shift/Ctrl+矢印 幅"
 
-#: taggerform.pas:626
+#: taggerform.pas:681
 msgid "Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak)."
 msgstr "最初の保存の前に元ファイルのコピー (名前.stem.mp4.bak) を作成します。"
 
@@ -1773,23 +1773,23 @@ msgstr "音量の小さいファイルは、最も大きい部分が 0 dB のわ
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr "ダウンロード中の読み取りエラー (エラー %d)"
 
-#: playerform.pas:851
+#: playerform.pas:863
 msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr "合計がクリップすると赤く点灯します (その場合はマスターを下げてください)"
 
-#: taggerform.pas:587 umain.lfm:61
+#: taggerform.pas:638 umain.lfm:61
 msgid "Liste leeren"
 msgstr "リストをクリア"
 
-#: umain.pas:2516
+#: umain.pas:2517
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "前回のリストを復元しました: %d ファイル、うち %d が未処理です。"
 
-#: uinfo.pas:552
+#: uinfo.pas:553
 msgid "Lizenzen"
 msgstr "ライセンス"
 
-#: packerform.pas:660
+#: packerform.pas:665
 msgid "Log anzeigen"
 msgstr "ログを表示"
 
@@ -1797,7 +1797,7 @@ msgstr "ログを表示"
 msgid "Log konnte nicht gelesen werden: %s"
 msgstr "ログを読み込めませんでした: %s"
 
-#: umain.pas:814 umain.lfm:100
+#: umain.pas:815 umain.lfm:100
 msgid "Log kopieren"
 msgstr "ログをコピー"
 
@@ -1805,59 +1805,59 @@ msgstr "ログをコピー"
 msgid "Log:"
 msgstr "ログ:"
 
-#: uinfo.pas:442
+#: uinfo.pas:443
 msgid "Logs-Ordner öffnen"
 msgstr "ログフォルダーを開く"
 
-#: playerform.pas:803
+#: playerform.pas:815
 msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
 msgstr "ループ ON/OFF (L キー)。ON にすると、再生位置が"
 
-#: playerform.pas:2491
+#: playerform.pas:2503
 msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
 msgstr "ループ ON:  %s から %s  (%.1f 秒)  ·  L = OFF、Backspace = 削除"
 
-#: playerform.pas:2494
+#: playerform.pas:2506
 msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
 msgstr "ループ OFF:  %s から %s を記憶  ·  L = 再び ON"
 
-#: playerform.pas:805
+#: playerform.pas:817
 msgid "Loop löschen (Rücktaste)"
 msgstr "ループを削除 (Backspace)"
 
-#: playerform.pas:799
+#: playerform.pas:811
 msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
 msgstr "現在位置にループポイント A を設定 (A キー)"
 
-#: playerform.pas:800
+#: playerform.pas:812
 msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
 msgstr "現在位置にループポイント B を設定 (B キー)。"
 
-#: playerform.pas:2498
+#: playerform.pas:2510
 msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
 msgstr "ループ: ポイント A は %s  ·  終了位置で B を押してください"
 
-#: playerform.pas:2412
+#: playerform.pas:2424
 msgid "Loop: Punkt B muss hinter Punkt A liegen."
 msgstr "ループ: ポイント B はポイント A より後にしてください。"
 
-#: playerform.pas:2522
+#: playerform.pas:2534
 msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
 msgstr "ループ: 短すぎます (0.1 秒以上)。"
 
-#: playerform.pas:2406
+#: playerform.pas:2418
 msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
 msgstr "ループ: 先にポイント A を設定してから (A キー)、B を設定してください。"
 
-#: playerform.pas:2426
+#: playerform.pas:2438
 msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
 msgstr "ループ: 先にポイント A と B を設定してください (A キーと B キー、または波形内で右ボタンでドラッグ)。"
 
-#: playerform.pas:749
+#: playerform.pas:761
 msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
 msgstr "ルーペ: 赤い線の前後数秒を表示し、ループを正確に設定できます。"
 
-#: playerform.pas:1232
+#: playerform.pas:1244
 msgid "LÄNGE"
 msgstr "長さ"
 
@@ -1865,75 +1865,75 @@ msgstr "長さ"
 msgid "Länge: %d:%.2d min"
 msgstr "長さ: %d:%.2d 分"
 
-#: packerform.pas:1198
+#: packerform.pas:1213
 msgid "Längen prüfen"
 msgstr "長さを確認中"
 
-#: packerform.pas:1413
+#: packerform.pas:1428
 msgid "Längen-Warnung bei %d Song(s): eine Spur ist kürzer oder länger als der Rest (siehe Liste). Bitte in Traktor anhören, ob alles zusammenpasst."
 msgstr "%d 曲で長さの警告: 他より短い、または長いトラックがあります（一覧を参照）。Traktor で合っているか聴いて確認してください。"
 
-#: playerform.pas:826 playerform.pas:1290
+#: playerform.pas:838 playerform.pas:1302
 msgid "MASTER"
 msgstr "マスター"
 
-#: playerform.pas:2278
+#: playerform.pas:2290
 msgid "MODUS: ORIGINAL"
 msgstr "モード: オリジナル"
 
-#: playerform.pas:2278
+#: playerform.pas:2290
 msgid "MODUS: REST"
 msgstr "モード: 残差"
 
-#: taggerform.pas:1439
+#: taggerform.pas:1494
 msgid "MP3 OK"
 msgstr "MP3 OK"
 
-#: taggerform.pas:1437
+#: taggerform.pas:1492
 msgid "MP3 OK, mit Traktor-Daten"
 msgstr "MP3 OK、Traktor データあり"
 
-#: taggerform.pas:1991
+#: taggerform.pas:2046
 msgid "MP3-Dateien"
 msgstr "MP3 ファイル"
 
-#: taggerform.pas:1992
+#: taggerform.pas:2047
 msgid "MP4-Dateien"
 msgstr "MP4 ファイル"
 
-#: playerform.pas:751
+#: playerform.pas:763
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "マーカー A と B はマウスで移動できます。左ボタンで波形をドラッグすると位置を移動でき、ドラッグ中は音が聞こえます。"
 
-#: umain.pas:1948 umain.lfm:336
+#: umain.pas:1949 umain.lfm:336
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr "選択したステムファイル、または最後に変換したステムファイルを StemPlayer で再生"
 
-#: packerform.pas:312
+#: packerform.pas:317
 msgid "Master"
 msgstr "マスター"
 
-#: packerform.pas:853
+#: packerform.pas:868
 msgid "Master aus den Stems gemischt"
 msgstr "マスターはステムからミックス"
 
-#: packerform.pas:496
+#: packerform.pas:501
 msgid "Master aus den Stems mischen"
 msgstr "ステムからマスターをミックス"
 
-#: packerform.pas:855
+#: packerform.pas:870
 msgid "Master „%s“"
 msgstr "マスター「%s」"
 
-#: playerform.pas:752
+#: playerform.pas:764
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "マウスホイール: ズーム。クリック: ジャンプ。"
 
-#: usettings.pas:425
+#: usettings.pas:426
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "変換が終わったら時計の横に通知"
 
-#: playerform.pas:2171
+#: playerform.pas:2183
 msgid "Meldung von ffmpeg:"
 msgstr "ffmpeg からのメッセージ:"
 
@@ -1941,7 +1941,7 @@ msgstr "ffmpeg からのメッセージ:"
 msgid "Mindestens eine Prüfung ist fehlgeschlagen (rot). Details erscheinen beim Überfahren der Zeile mit der Maus."
 msgstr "少なくとも 1 つのチェックが失敗しました (赤)。行にマウスを重ねると詳細が表示されます。"
 
-#: usettings.pas:345
+#: usettings.pas:346
 msgid "Misst CPU und Grafikkarte und sagt, wie lange ein Track auf diesem PC etwa dauert"
 msgstr "CPU とグラフィックカードを測定し、このPCで1曲にかかるおおよその時間を表示します"
 
@@ -1965,19 +1965,19 @@ msgstr "モデルがありません: %s"
 msgid "Modell lesen"
 msgstr "モデルを読み込み中"
 
-#: umain.pas:1038
+#: umain.pas:1039
 msgid "Modell nicht installiert"
 msgstr "モデルがインストールされていません"
 
-#: usettings.pas:432
+#: usettings.pas:433
 msgid "Modelle:"
 msgstr "モデル:"
 
-#: taggerform.pas:728
+#: taggerform.pas:783
 msgid "Musikstil: aus der Liste wählen oder selbst eintippen"
 msgstr "音楽ジャンル: リストから選ぶか、直接入力"
 
-#: playerform.pas:926 playerform.pas:1270
+#: playerform.pas:938 playerform.pas:1282
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "ミュート: このステムを消音 (%d キー)"
 
@@ -1985,19 +1985,19 @@ msgstr "ミュート: このステムを消音 (%d キー)"
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Elospeed にエラーレポートを送りますか? 送信前にレポートを確認でき、自動では何も送信されません。"
 
-#: uinfo.pas:468 uinfo.pas:579
+#: uinfo.pas:469 uinfo.pas:580
 msgid "Nach Updates suchen"
 msgstr "更新を確認"
 
-#: packerform.pas:359
+#: packerform.pas:364
 msgid "Name des Stems, so zeigt ihn Traktor an"
 msgstr "ステム名（Traktor での表示名）"
 
-#: taggerform.pas:723
+#: taggerform.pas:778
 msgid "Name des Tracks, z.B. „Clap Your Hands“"
 msgstr "トラック名 (例: 「Clap Your Hands」)"
 
-#: packerform.pas:515
+#: packerform.pas:520
 msgid "Namensmuster (* = Songname)"
 msgstr "名前のパターン（* = 曲名）"
 
@@ -2009,15 +2009,15 @@ msgstr "いいえ、結構です"
 msgid "Netzbetrieb"
 msgstr "電源接続"
 
-#: taggerform.pas:1792
+#: taggerform.pas:1847
 msgid "Neu geschrieben werden nur die geänderten Tags, Audio, Stems und Traktor-Daten bleiben unverändert."
 msgstr "書き換えられるのは変更したタグだけで、オーディオ、ステム、Traktor データはそのまま残ります。"
 
-#: taggerform.pas:1355 taggerform.pas:1374 taggerform.pas:1386
+#: taggerform.pas:1410 taggerform.pas:1429 taggerform.pas:1441
 msgid "Nicht lesbar"
 msgstr "読み取れません"
 
-#: taggerform.pas:1663
+#: taggerform.pas:1718
 msgid "Nicht mehr anzeigen"
 msgstr "今後は表示しない"
 
@@ -2029,71 +2029,71 @@ msgstr "今後は表示しない"
 msgid "Nicht senden"
 msgstr "送信しない"
 
-#: usettings.pas:653
+#: usettings.pas:655
 msgid "Noch kein Vortest auf diesem PC."
 msgstr "このPCではまだ事前テストを行っていません。"
 
-#: umain.pas:1835
+#: umain.pas:1836
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr "「%s」のステムファイルはまだありません - 先に変換してください。"
 
-#: taggerform.pas:730
+#: taggerform.pas:785
 msgid "Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)"
 msgstr "アルバム内の番号 (例: 3 または 3/12 = 12 曲中 3 曲目)"
 
-#: packerform.pas:493
+#: packerform.pas:498
 msgid "Nummern: „Song_0“ (Master) bis „Song_4“"
 msgstr "番号:「Song_0」（マスター）～「Song_4」"
 
-#: usettings.pas:337
+#: usettings.pas:338
 msgid "Nur CPU"
 msgstr "CPU のみ"
 
-#: taggerform.pas:1361
+#: taggerform.pas:1416
 msgid "Nur lesen (alter oder beschädigter ID3-Tag)"
 msgstr "読み取り専用（古いまたは破損した ID3 タグ）"
 
-#: usettings.pas:308
+#: usettings.pas:309
 msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
 msgstr "専用の出力フォルダーがある場合のみ (メイン画面で「元ファイルと同じ場所に保存」がオンになっています)。"
 
-#: usettings.pas:426
+#: usettings.pas:427
 msgid "Nur wenn StemMaker gerade nicht im Vordergrund ist."
 msgstr "StemMaker が前面にないときのみ。"
 
-#: usettings.pas:479
+#: usettings.pas:480
 msgid "OK"
 msgstr "OK"
 
-#: umain.pas:1144
+#: umain.pas:1145
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
-#: playerform.pas:1597
+#: playerform.pas:1609
 msgid "ORIGINAL"
 msgstr "オリジナル"
 
-#: playerform.pas:775
+#: playerform.pas:787
 msgid "ORIGINAL  O"
 msgstr "オリジナル  O"
 
-#: taggerform.pas:1435
+#: taggerform.pas:1490
 msgid "Ohne Cover"
 msgstr "カバーなし"
 
-#: taggerform.pas:1432
+#: taggerform.pas:1487
 msgid "Ohne Tags"
 msgstr "タグなし"
 
-#: taggerform.pas:1430
+#: taggerform.pas:1485
 msgid "Ohne Tags und Cover"
 msgstr "タグとカバーなし"
 
-#: packerform.pas:517
+#: packerform.pas:522
 msgid "Ordner"
 msgstr "フォルダー"
 
-#: taggerform.pas:1656
+#: taggerform.pas:1711
 msgid "Ordner geladen"
 msgstr "フォルダーを読み込みました"
 
@@ -2101,27 +2101,27 @@ msgstr "フォルダーを読み込みました"
 msgid "Ordner mit Audiodateien wählen"
 msgstr "オーディオファイルのあるフォルダーを選択"
 
-#: taggerform.pas:2016
+#: taggerform.pas:2071
 msgid "Ordner mit Stem- oder MP3-Dateien wählen (mit Unterordnern)"
 msgstr "ステムファイルまたは MP3 ファイルのあるフォルダーを選択（サブフォルダーを含む）"
 
-#: packerform.pas:400
+#: packerform.pas:405
 msgid "Ordner mit den Master-Dateien"
 msgstr "マスターファイルのフォルダー"
 
-#: packerform.pas:464
+#: packerform.pas:469
 msgid "Ordner mit den Spuren hier hineinziehen"
 msgstr "トラックのフォルダーをここにドラッグ"
 
-#: packerform.pas:252
+#: packerform.pas:257
 msgid "Ordner mit den Spuren hineinziehen oder „Ordner wählen …“ klicken."
 msgstr "トラックのフォルダーをドラッグするか「フォルダーを選択 …」をクリックしてください。"
 
-#: packerform.pas:1624
+#: packerform.pas:1639
 msgid "Ordner mit den Spuren wählen"
 msgstr "トラックのフォルダーを選択"
 
-#: packerform.pas:721
+#: packerform.pas:736
 msgid "Ordner mit den Stems"
 msgstr "ステムのフォルダー"
 
@@ -2133,19 +2133,19 @@ msgstr "完成したステムファイルのフォルダーをエクスプロー
 msgid "Ordner nach der Umwandlung öffnen"
 msgstr "変換後にフォルダーを開く"
 
-#: packerform.pas:250
+#: packerform.pas:255
 msgid "Ordner und Muster einstellen, dann „Songs suchen“."
 msgstr "フォルダーとパターンを設定して「曲を探す」を押してください。"
 
-#: packerform.pas:468
+#: packerform.pas:473
 msgid "Ordner und Muster selbst einstellen"
 msgstr "フォルダーとパターンを自分で設定"
 
-#: packerform.pas:392 packerform.pas:1649
+#: packerform.pas:397 packerform.pas:1664
 msgid "Ordner wählen"
 msgstr "フォルダーを選択"
 
-#: packerform.pas:461
+#: packerform.pas:466
 msgid "Ordner wählen …"
 msgstr "フォルダーを選択 …"
 
@@ -2153,19 +2153,19 @@ msgstr "フォルダーを選択 …"
 msgid "Ordner öffnen"
 msgstr "フォルダーを開く"
 
-#: umain.pas:1375 umain.pas:1385
+#: umain.pas:1376 umain.pas:1386
 msgid "Ordner übersprungen, Pfad zu lang: %s"
 msgstr "パスが長すぎるためフォルダーをスキップ: %s"
 
-#: taggerform.pas:585 umain.lfm:42
+#: taggerform.pas:636 umain.lfm:42
 msgid "Ordner..."
 msgstr "フォルダー..."
 
-#: playerform.pas:736
+#: playerform.pas:748
 msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "オリジナル - クリックまたはドラッグでこの位置へジャンプします。"
 
-#: playerform.pas:779
+#: playerform.pas:791
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr "ファイル内のオリジナルミックス (トラック 0) で A/B 比較 (O キー)"
 
@@ -2173,19 +2173,19 @@ msgstr "ファイル内のオリジナルミックス (トラック 0) で A/B �
 msgid "PC nach Abschluss herunterfahren"
 msgstr "完了後にPCをシャットダウン"
 
-#: umain.pas:2265
+#: umain.pas:2266
 msgid "PC wird heruntergefahren ..."
 msgstr "PCをシャットダウンしています ..."
 
-#: usettings.pas:312
+#: usettings.pas:313
 msgid "PC während der Konvertierung wach halten (kein Standby)"
 msgstr "変換中はPCをスリープさせない (スタンバイなし)"
 
-#: packerform.pas:1300
+#: packerform.pas:1315
 msgid "Packe %s"
 msgstr "%s をパック中"
 
-#: packerform.pas:1734
+#: packerform.pas:1755
 msgid "Packt fertige Einzelspuren (Master und 4 Stems) ohne KI-Trennung zu Traktor-Stem-Dateien."
 msgstr "完成した個別トラック（マスターと 4 ステム）を AI 分離なしで Traktor ステムファイルにまとめます。"
 
@@ -2205,11 +2205,11 @@ msgstr "パス"
 msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
 msgstr "パスが長すぎます (%d 文字、Windows の上限は %d 文字)。ファイルをパスの短いフォルダーに移動してください。"
 
-#: taggerform.pas:743
+#: taggerform.pas:798
 msgid "Plattenfirma, die den Track veröffentlicht hat"
 msgstr "トラックをリリースしたレーベル"
 
-#: playerform.pas:703
+#: playerform.pas:715
 msgid "Play / Pause (Leertaste)"
 msgstr "再生 / 一時停止 (スペース)"
 
@@ -2217,7 +2217,7 @@ msgstr "再生 / 一時停止 (スペース)"
 msgid "Problem gefunden"
 msgstr "問題が見つかりました"
 
-#: usettings.pas:390
+#: usettings.pas:391
 msgid "Programm"
 msgstr "プログラム"
 
@@ -2233,7 +2233,7 @@ msgstr "プロセッサ"
 msgid "Prüfsumme (SHA-256) stimmt nicht - die Datei wurde verworfen. Bitte später nochmals versuchen."
 msgstr "チェックサム (SHA-256) が一致しません - ファイルは破棄されました。後でもう一度お試しください。"
 
-#: playerform.pas:1285
+#: playerform.pas:1297
 msgid "QUELLE"
 msgstr "ソース"
 
@@ -2245,7 +2245,7 @@ msgstr "元ファイル: %s -> ステムファイル AAC %d kbit/s"
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "元ファイル: %s -> ステムファイル AAC %d kbit/s (自動)"
 
-#: usettings.pas:637
+#: usettings.pas:639
 msgid "RAM knapp!"
 msgstr "メモリ不足!"
 
@@ -2253,63 +2253,63 @@ msgstr "メモリ不足!"
 msgid "RECHTE AN DER MUSIK"
 msgstr "音楽の権利"
 
-#: playerform.pas:813
+#: playerform.pas:825
 msgid "RESET  0"
 msgstr "リセット  0"
 
-#: playerform.pas:1598
+#: playerform.pas:1610
 msgid "REST"
 msgstr "残差"
 
-#: playerform.pas:776
+#: playerform.pas:788
 msgid "REST  R"
 msgstr "残差  R"
 
-#: playerform.pas:1231 playerform.pas:1252
+#: playerform.pas:1243 playerform.pas:1264
 msgid "RESTZEIT"
 msgstr "残り"
 
-#: taggerform.pas:788
+#: taggerform.pas:843
 msgid "Rand zwischen zwei Spalten ziehen ändert die Breite"
 msgstr "2つの列の境界をドラッグすると幅を変更できます"
 
-#: playerform.pas:750
+#: playerform.pas:762
 msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
 msgstr "右ボタンでドラッグ: ループを設定 (グリッドにスナップ、Shift で自由に)。"
 
-#: playerform.pas:737 playerform.pas:968
+#: playerform.pas:749 playerform.pas:980
 msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
 msgstr "右ボタンでドラッグ: ループ範囲を指定"
 
-#: playerform.pas:780
+#: playerform.pas:792
 msgid "Rest = Original minus Summe aller Stems (Taste R):"
 msgstr "残差 = オリジナル - 全ステムの合計 (R キー):"
 
-#: playerform.pas:1276 playerform.pas:2282
+#: playerform.pas:1288 playerform.pas:2294
 msgid "SOLO"
 msgstr "ソロ"
 
-#: playerform.pas:1260
+#: playerform.pas:1272
 msgid "STEM-PADS"
 msgstr "ステムパッド"
 
-#: playerform.pas:1599
+#: playerform.pas:1611
 msgid "STEMS"
 msgstr "ステム"
 
-#: playerform.pas:774
+#: playerform.pas:786
 msgid "STEMS  S"
 msgstr "ステム  S"
 
-#: playerform.pas:2289
+#: playerform.pas:2301
 msgid "STUMM"
 msgstr "ミュート"
 
-#: uturbotest.pas:496 uturbotest.pas:507 uturbotest.pas:809
+#: uturbotest.pas:496 uturbotest.pas:507 uturbotest.pas:810
 msgid "Schliessen"
 msgstr "閉じる"
 
-#: uinfo.pas:435
+#: uinfo.pas:436
 msgid "Schließen"
 msgstr "閉じる"
 
@@ -2321,15 +2321,15 @@ msgstr "これまでに %d 曲をステムに変換しました"
 msgid "Server meldet HTTP %d"
 msgstr "サーバーの応答: HTTP %d"
 
-#: usettings.pas:382
+#: usettings.pas:383
 msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
 msgstr "4 色を Traktor 純正のステムファイルの値 (オレンジ、紫、緑、水色) に設定します。名前はそのままです。"
 
-#: usettings.pas:448
+#: usettings.pas:449
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr "このウィンドウの値を初期設定に戻します (言語はそのまま)。"
 
-#: taggerform.pas:625
+#: taggerform.pas:680
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "バックアップを作成 (.bak)"
 
@@ -2337,35 +2337,35 @@ msgstr "バックアップを作成 (.bak)"
 msgid "Sitzung vorbereiten"
 msgstr "セッションを準備"
 
-#: playerform.pas:934 playerform.pas:1277
+#: playerform.pas:946 playerform.pas:1289
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr "ソロ: このステムだけを聴く (Shift+%d)。"
 
-#: packerform.pas:681
+#: packerform.pas:696
 msgid "Song"
 msgstr "曲"
 
-#: packerform.pas:1390
+#: packerform.pas:1405
 msgid "Song %d von %d: %s"
 msgstr "曲 %d / %d: %s"
 
-#: packerform.pas:635
+#: packerform.pas:640
 msgid "Songs suchen"
 msgstr "曲を探す"
 
-#: packerform.pas:586
+#: packerform.pas:591
 msgid "Sonst werden Songs übersprungen, deren Stem-Datei es schon gibt."
 msgstr "オフの場合、ステムファイルがすでにある曲はスキップします。"
 
-#: taggerform.pas:1801
+#: taggerform.pas:1856
 msgid "Speichere %s ..."
 msgstr "%s を保存中 ..."
 
-#: taggerform.pas:596
+#: taggerform.pas:647
 msgid "Speichern"
 msgstr "保存"
 
-#: taggerform.pas:680
+#: taggerform.pas:735
 msgid "Speichern..."
 msgstr "保存..."
 
@@ -2373,19 +2373,19 @@ msgstr "保存..."
 msgid "Spender"
 msgstr "寄付者"
 
-#: usettings.pas:585
+#: usettings.pas:587
 msgid "Sprache und Design werden beim nächsten Start übernommen."
 msgstr "言語とテーマは次回の起動時に変更されます。"
 
-#: usettings.pas:597
+#: usettings.pas:599
 msgid "Sprache und Design werden nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "言語とテーマは再起動後に適用されます。今すぐ StemMaker を再起動しますか？"
 
-#: usettings.pas:391
+#: usettings.pas:392
 msgid "Sprache:"
 msgstr "言語:"
 
-#: packerform.pas:510
+#: packerform.pas:515
 msgid "Spur"
 msgstr "トラック"
 
@@ -2393,11 +2393,11 @@ msgstr "トラック"
 msgid "Spuren : "
 msgstr "トラック : "
 
-#: uupdateui.pas:471
+#: uupdateui.pas:472
 msgid "Später"
 msgstr "後で"
 
-#: usettings.pas:447
+#: usettings.pas:448
 msgid "Standard wiederherstellen"
 msgstr "初期設定に戻す"
 
@@ -2409,7 +2409,7 @@ msgstr "開始"
 msgid "Starten"
 msgstr "開始"
 
-#: packerform.pas:683 taggerform.pas:767 umain.lfm:136
+#: packerform.pas:698 taggerform.pas:822 umain.lfm:136
 msgid "Status"
 msgstr "状態"
 
@@ -2417,11 +2417,11 @@ msgstr "状態"
 msgid "Stem   : "
 msgstr "ステム : "
 
-#: packerform.pas:313
+#: packerform.pas:318
 msgid "Stem %d"
 msgstr "ステム %d"
 
-#: taggerform.pas:1441
+#: taggerform.pas:1496
 msgid "Stem OK (%d Spuren)"
 msgstr "ステム OK (%d トラック)"
 
@@ -2429,7 +2429,7 @@ msgstr "ステム OK (%d トラック)"
 msgid "Stem prüfen..."
 msgstr "ステムをチェック..."
 
-#: taggerform.pas:1989
+#: taggerform.pas:2044
 msgid "Stem- und MP3-Dateien"
 msgstr "ステムファイルと MP3 ファイル"
 
@@ -2441,19 +2441,19 @@ msgstr "ステムファイルは既に存在します"
 msgid "Stem-Datei kodieren"
 msgstr "ステムファイルをエンコード"
 
-#: umain.pas:1481
+#: umain.pas:1482
 msgid "Stem-Datei prüfen"
 msgstr "ステムファイルをチェック"
 
-#: playerform.pas:509
+#: playerform.pas:513
 msgid "Stem-Datei öffnen"
 msgstr "ステムファイルを開く"
 
-#: playerform.pas:661
+#: playerform.pas:665
 msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
 msgstr "ステムファイルを開く (Ctrl+O) - またはウィンドウにドラッグするだけ"
 
-#: playerform.pas:665
+#: playerform.pas:669
 msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr "ステムファイルを開くか、ここにドラッグ (ドラッグ&ドロップ)"
 
@@ -2465,11 +2465,11 @@ msgstr "ステムファイル: %.1f MB"
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr "ステムファイル: %.1f MB、速度: 音楽1分あたり %.1f 秒 (%s)"
 
-#: taggerform.pas:1990 umain.pas:1482
+#: taggerform.pas:2045 umain.pas:1483
 msgid "Stem-Dateien"
 msgstr "ステムファイル"
 
-#: taggerform.pas:1461
+#: taggerform.pas:1516
 msgid "Stem-Dateien, MP3s oder Ordner hierher ziehen"
 msgstr "ステムファイル、MP3、フォルダーをここにドラッグ"
 
@@ -2481,7 +2481,7 @@ msgstr "ステムのメタデータを書き込み"
 msgid "Stem-Metadaten: %s"
 msgstr "ステムのメタデータ: %s"
 
-#: packerform.pas:513
+#: packerform.pas:518
 msgid "Stem-Name"
 msgstr "ステム名"
 
@@ -2497,11 +2497,11 @@ msgstr "StemCLI %s (Elospeed StemMaker) - Traktor ステムファイル (*.stem.
 msgid "StemMaker"
 msgstr "StemMaker"
 
-#: uupdateui.pas:427
+#: uupdateui.pas:428
 msgid "StemMaker %s ist da"
 msgstr "StemMaker %s が公開されました"
 
-#: uupdateui.pas:583
+#: uupdateui.pas:584
 msgid "StemMaker %s ist installiert. StemMaker startet jetzt neu."
 msgstr "StemMaker %s をインストールしました。StemMaker を再起動します。"
 
@@ -2509,7 +2509,7 @@ msgstr "StemMaker %s をインストールしました。StemMaker を再起動�
 msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
 msgstr "StemMaker %s が公開されています - 変換が終わったら更新を案内します。"
 
-#: umain.pas:2703
+#: umain.pas:2704
 msgid "StemMaker anzeigen"
 msgstr "StemMaker を表示"
 
@@ -2521,7 +2521,7 @@ msgstr "StemMaker は MIT ライセンスのオープンソースです (© 2026
 msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
 msgstr "StemMaker は既に開いています。2 つ起動するとキュー、設定、完成ファイルを共有してしまうため、同時に起動できる StemMaker は 1 つだけです。"
 
-#: umain.pas:2827
+#: umain.pas:2828
 msgid "StemMaker ist fertig"
 msgstr "StemMaker の処理が完了しました"
 
@@ -2557,27 +2557,27 @@ msgstr "前回 StemMaker が予期せず終了しました。"
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "StemOnnx.exe が見つかりませんでした (%s)。StemMaker は demucs.cpp (クラシック) で分離します。"
 
-#: umain.pas:1989
+#: umain.pas:1990
 msgid "StemPacker konnte nicht gestartet werden: %s"
 msgstr "StemPacker を起動できませんでした: %s"
 
-#: umain.pas:1611
+#: umain.pas:1612
 msgid "StemPlayer konnte nicht gestartet werden: %s"
 msgstr "StemPlayer を起動できませんでした: %s"
 
-#: umain.pas:1592
+#: umain.pas:1593
 msgid "StemPlayer nicht gefunden:%s%s"
 msgstr "StemPlayer が見つかりません:%s%s"
 
-#: umain.pas:1645
+#: umain.pas:1646
 msgid "StemTagger konnte nicht gestartet werden: %s"
 msgstr "StemTagger を起動できませんでした: %s"
 
-#: umain.pas:1629
+#: umain.pas:1630
 msgid "StemTagger nicht gefunden:%s%s"
 msgstr "StemTagger が見つかりません:%s%s"
 
-#: usettings.pas:359
+#: usettings.pas:360
 msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
 msgstr "ステム (Traktor に表示される名前と色)"
 
@@ -2589,19 +2589,19 @@ msgstr "ステムを分離 (Turbo)"
 msgid "Stems trennen (demucs)"
 msgstr "ステムを分離 (demucs)"
 
-#: playerform.pas:710
+#: playerform.pas:722
 msgid "Stop und zurück an den Anfang"
 msgstr "停止して先頭に戻る"
 
-#: playerform.pas:935 playerform.pas:1278
+#: playerform.pas:947 playerform.pas:1290
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+クリック: 別のステムを追加 (複数ソロ)"
 
-#: uinfo.pas:573
+#: uinfo.pas:574
 msgid "Suche ..."
 msgstr "確認中 ..."
 
-#: umain.pas:1854
+#: umain.pas:1855
 msgid "Tags bearbeiten..."
 msgstr "タグを編集..."
 
@@ -2613,11 +2613,11 @@ msgstr "元ファイルのタグ: BPM %s、キー %s"
 msgid "Tags der Quelle: BPM %s, keine Tonart"
 msgstr "元ファイルのタグ: BPM %s、キーなし"
 
-#: packerform.pas:1268
+#: packerform.pas:1283
 msgid "Tags lesen"
 msgstr "タグを読み込み中"
 
-#: usettings.pas:283
+#: usettings.pas:284
 msgid "Teile:"
 msgstr "分割数:"
 
@@ -2633,7 +2633,7 @@ msgstr "一時フォルダーを残しました: %s"
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr "一時フォルダーを作成できません: %s"
 
-#: taggerform.pas:731
+#: taggerform.pas:786
 msgid "Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128."
 msgstr "テンポ (1分あたりの拍数)。%d から %d までの整数のみ (例: 128)。"
 
@@ -2649,23 +2649,23 @@ msgstr "5.1ステムのテストとアイデア"
 msgid "Testsignal erzeugen"
 msgstr "テスト信号を生成中"
 
-#: playerform.pas:802
+#: playerform.pas:814
 msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
 msgstr "ヒント: 波形内で右ボタンでドラッグ"
 
-#: taggerform.pas:434 taggerform.pas:765
+#: taggerform.pas:485 taggerform.pas:820
 msgid "Titel"
 msgstr "タイトル"
 
-#: umain.pas:1952
+#: umain.pas:1953
 msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
 msgstr "選択した完成済みステムファイルのタイトル、アーティスト、カバーなどを編集"
 
-#: taggerform.pas:442
+#: taggerform.pas:493
 msgid "Tonart"
 msgstr "キー"
 
-#: taggerform.pas:734
+#: taggerform.pas:789
 msgid "Tonart des Tracks: aus der Liste wählen oder selbst eintippen."
 msgstr "トラックのキー: リストから選ぶか、直接入力してください。"
 
@@ -2673,27 +2673,27 @@ msgstr "トラックのキー: リストから選ぶか、直接入力してく�
 msgid "Tools: ..."
 msgstr "ツール: ..."
 
-#: umain.pas:1003
+#: umain.pas:1004
 msgid "Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden"
 msgstr "ツール: ffmpeg、Turbo、demucs.cpp、モデルが見つかりました"
 
-#: umain.pas:1005
+#: umain.pas:1006
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr "ツール: ffmpeg、demucs.cpp、モデルが見つかりました"
 
-#: taggerform.pas:440
+#: taggerform.pas:491
 msgid "Track-Nr."
 msgstr "トラック番号"
 
-#: taggerform.pas:767
+#: taggerform.pas:822
 msgid "Traktor"
 msgstr "Traktor"
 
-#: playerform.pas:510
+#: playerform.pas:514
 msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr "Traktor ステム (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|すべてのファイル (*.*)|*.*"
 
-#: taggerform.pas:733
+#: taggerform.pas:788
 msgid "Traktor misst das Tempo beim Analysieren ohnehin selbst."
 msgstr "Traktor は解析時にテンポを自分で測定します。"
 
@@ -2701,7 +2701,7 @@ msgstr "Traktor は解析時にテンポを自分で測定します。"
 msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
 msgstr "Traktor および STEMS は Native Instruments GmbH の商標です。StemMaker は独立したプロジェクトであり、Native Instruments とは一切関係ありません。"
 
-#: usettings.pas:381
+#: usettings.pas:382
 msgid "Traktor-Farben"
 msgstr "Traktor の色"
 
@@ -2737,7 +2737,7 @@ msgstr "Turbo (StemOnnx)、対応していればグラフィックカード"
 msgid "Turbo (StemOnnx), nur CPU"
 msgstr "Turbo (StemOnnx)、CPU のみ"
 
-#: usettings.pas:324
+#: usettings.pas:325
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (高速、標準)"
 
@@ -2761,7 +2761,7 @@ msgstr "Turbo 事前テスト"
 msgid "Ultimative Leistung"
 msgstr "究極のパフォーマンス"
 
-#: usettings.pas:280
+#: usettings.pas:281
 msgid "Umwandlung"
 msgstr "変換"
 
@@ -2777,27 +2777,27 @@ msgstr "予期せず終了"
 msgid "Unerwarteter Fehler"
 msgstr "予期しないエラー"
 
-#: packerform.pas:500
+#: packerform.pas:505
 msgid "Unterordner durchsuchen"
 msgstr "サブフォルダーも検索"
 
-#: usettings.pas:301
+#: usettings.pas:302
 msgid "Unterordner im Ausgabeordner nachbauen"
 msgstr "出力フォルダーにサブフォルダーを再現"
 
-#: uupdateui.pas:418
+#: uupdateui.pas:419
 msgid "Update"
 msgstr "更新"
 
-#: uupdateui.pas:314
+#: uupdateui.pas:315
 msgid "Update auf %s"
 msgstr "%s に更新"
 
-#: uupdateui.pas:553
+#: uupdateui.pas:554
 msgid "Update konnte nicht geladen werden: %s"
 msgstr "更新をダウンロードできませんでした: %s"
 
-#: uupdateui.pas:576
+#: uupdateui.pas:577
 msgid "Update konnte nicht installiert werden: %s"
 msgstr "更新をインストールできませんでした: %s"
 
@@ -2805,11 +2805,11 @@ msgstr "更新をインストールできませんでした: %s"
 msgid "Verbindung fehlgeschlagen (Fehler %d)"
 msgstr "接続に失敗しました (エラー %d)"
 
-#: usettings.pas:313
+#: usettings.pas:314
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "スリープを防ぎ、省電力設定を一時的に停止します。"
 
-#: uinfo.pas:508
+#: uinfo.pas:509
 msgid "Versionen"
 msgstr "バージョン"
 
@@ -2817,23 +2817,23 @@ msgstr "バージョン"
 msgid "Vorbereiten"
 msgstr "準備"
 
-#: packerform.pas:585
+#: packerform.pas:590
 msgid "Vorhandene überschreiben"
 msgstr "既存のファイルを上書き"
 
-#: packerform.pas:485
+#: packerform.pas:490
 msgid "Vorlage:"
 msgstr "テンプレート:"
 
-#: usettings.pas:344
+#: usettings.pas:345
 msgid "Vortest ..."
 msgstr "事前テスト ..."
 
-#: uturbotest.pas:745
+#: uturbotest.pas:746
 msgid "Vortest fehlgeschlagen"
 msgstr "事前テストに失敗しました"
 
-#: playerform.pas:1568
+#: playerform.pas:1580
 msgid "WELLENFORM"
 msgstr "波形"
 
@@ -2869,11 +2869,11 @@ msgstr "その他のモデル"
 msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
 msgstr "すべてのファイルが完了すると、60 秒後にPCをシャットダウンします (キャンセル可)。"
 
-#: usettings.pas:429
+#: usettings.pas:430
 msgid "Werkzeuge"
 msgstr "ツール"
 
-#: usettings.pas:281
+#: usettings.pas:282
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "demucs が曲を何分割して同時に計算するか。各分割はさらに複数のコアを使い、2 GB 強のメモリが必要です。"
 
@@ -2885,7 +2885,7 @@ msgstr "Wine を検出 (Linux): Wine ではグラフィックカードを使用�
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine を検出: Turbo は CPU で動作します"
 
-#: playerform.pas:1230
+#: playerform.pas:1242
 msgid "ZEIT"
 msgstr "時間"
 
@@ -2901,15 +2901,15 @@ msgstr "既存の .stem.mp4 のトラックとステムのメタデータを表�
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "完成したステムファイルをエクスプローラーで表示 - そこから Traktor に直接ドラッグできます"
 
-#: uinfo.pas:476
+#: uinfo.pas:477
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "ログを表示し、メールまたは GitHub で Elospeed に送るのを手伝います。自動では何も送信されません。"
 
-#: packerform.pas:684
+#: packerform.pas:699
 msgid "Ziel"
 msgstr "保存先"
 
-#: packerform.pas:535
+#: packerform.pas:540
 msgid "Ziel:"
 msgstr "保存先:"
 
@@ -2917,19 +2917,19 @@ msgstr "保存先:"
 msgid "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen."
 msgstr "出力先のパスが長すぎます (%d 文字、Windows の上限は %d 文字)。短い出力フォルダーを選ぶか、ファイル名を短くしてください。"
 
-#: taggerform.pas:2277
+#: taggerform.pas:2338
 msgid "Zuerst die Dateien markieren, die dieses Cover bekommen sollen."
 msgstr "まず、このカバーを付けるファイルを選択してください。"
 
-#: packerform.pas:1304 umain.pas:1160 umain.pas:2492
+#: packerform.pas:1319 umain.pas:1161 umain.pas:2493
 msgid "abgebrochen"
 msgstr "キャンセル"
 
-#: packerform.pas:1147
+#: packerform.pas:1162
 msgid "bereit"
 msgstr "準備完了"
 
-#: packerform.pas:1145
+#: packerform.pas:1160
 msgid "bereit, still gefüllt: "
 msgstr "準備完了、無音で補完: "
 
@@ -2937,7 +2937,7 @@ msgstr "準備完了、無音で補完: "
 msgid "beschädigt (nur %d KB)"
 msgstr "破損 (%d KB のみ)"
 
-#: uinit.pas:1036 umain.pas:1246 umain.pas:1255
+#: uinit.pas:1036 umain.pas:1247 umain.pas:1256
 msgid "ca. %s"
 msgstr "約 %s"
 
@@ -2961,11 +2961,11 @@ msgstr "demucs.cpp が見つかりません: %s"
 msgid "demucs: %s (%s), %d Teile x je %d Kerne"
 msgstr "demucs: %s (%s)、%d 分割 x 各 %d コア"
 
-#: packerform.pas:1210
+#: packerform.pas:1225
 msgid "der Master"
 msgstr "マスター"
 
-#: packerform.pas:1210
+#: packerform.pas:1225
 msgid "die längste Spur"
 msgstr "最も長いトラック"
 
@@ -2973,7 +2973,7 @@ msgstr "最も長いトラック"
 msgid "eigener Plan %s"
 msgstr "カスタムプラン %s"
 
-#: umain.pas:1159 umain.pas:2490
+#: umain.pas:1160 umain.pas:2491
 msgid "existiert schon"
 msgstr "既に存在します"
 
@@ -2985,7 +2985,7 @@ msgstr "不足"
 msgid "fehlt - wird heruntergeladen (ca. %d MB)"
 msgstr "不足 - ダウンロードします (約 %d MB)"
 
-#: packerform.pas:1139
+#: packerform.pas:1154
 msgid "fehlt: "
 msgstr "不足: "
 
@@ -2997,7 +2997,7 @@ msgstr "不足: %s"
 msgid "fehlt: %s - StemMaker-ZIP bitte komplett neu entpacken"
 msgstr "不足: %s - StemMaker の ZIP をもう一度すべて展開してください"
 
-#: packerform.pas:1345
+#: packerform.pas:1360
 msgid "fertig"
 msgstr "完了"
 
@@ -3005,11 +3005,11 @@ msgstr "完了"
 msgid "fertig ca. %s"
 msgstr "完了予定 %s"
 
-#: packerform.pas:1341
+#: packerform.pas:1356
 msgid "fertig, Achtung: "
 msgstr "完了、注意: "
 
-#: packerform.pas:230
+#: packerform.pas:235
 msgid "fertige Spuren zu Stem-Dateien packen"
 msgstr "完成したトラックをステムファイルにまとめる"
 
@@ -3021,7 +3021,7 @@ msgstr "ffmpeg (新規)"
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg がファイルをデコードできませんでした (コード %d)"
 
-#: playerform.pas:2170
+#: playerform.pas:2182
 msgid "ffmpeg konnte die Datei nicht dekodieren:"
 msgstr "ffmpeg がファイルをデコードできませんでした:"
 
@@ -3033,35 +3033,35 @@ msgstr "ffmpeg がステムファイルを作成できませんでした (コー
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg が見つかりません: %s"
 
-#: playerform.pas:2058
+#: playerform.pas:2070
 msgid "ffmpeg wurde mit Code %d beendet."
 msgstr "ffmpeg がコード %d で終了しました。"
 
-#: playerform.pas:2114
+#: playerform.pas:2126
 msgid "ffmpeg.exe auswählen"
 msgstr "ffmpeg.exe を選択"
 
-#: packerform.pas:248
+#: packerform.pas:253
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Gebrauch abgefragt."
 msgstr "ffmpeg.exe が見つかりません - 初回使用時に指定を求めます。"
 
-#: playerform.pas:531
+#: playerform.pas:535
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
 msgstr "ffmpeg.exe が見つかりません - 最初のファイルを開くときに指定を求めます。"
 
-#: packerform.pas:1494 playerform.pas:2109
+#: packerform.pas:1509 playerform.pas:2121
 msgid "ffmpeg.exe wurde nicht gefunden."
 msgstr "ffmpeg.exe が見つかりませんでした。"
 
-#: playerform.pas:2115
+#: playerform.pas:2127
 msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr "ffmpeg.exe|ffmpeg.exe|プログラム (*.exe)|*.exe"
 
-#: taggerform.pas:1423
+#: taggerform.pas:1478
 msgid "geändert"
 msgstr "変更あり"
 
-#: packerform.pas:1141
+#: packerform.pas:1156
 msgid "gibt es schon, wird übersprungen"
 msgstr "すでにあるのでスキップ"
 
@@ -3077,7 +3077,7 @@ msgstr "htdemucs (標準、Demucs v4)"
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (最高品質、約 4 倍遅い)"
 
-#: playerform.pas:781
+#: playerform.pas:793
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr "分離で失われた音や、異なって聞こえる音が"
 
@@ -3085,7 +3085,7 @@ msgstr "分離で失われた音や、異なって聞こえる音が"
 msgid "in StemMaker ist ein Fehler aufgetreten. Der Bericht ist angehängt (Datei aus dem Explorer-Fenster in diese Mail ziehen):"
 msgstr "StemMaker でエラーが発生しました。レポートを添付します (エクスプローラーのウィンドウからこのメールにファイルをドラッグ):"
 
-#: packerform.pas:552
+#: packerform.pas:557
 msgid "in diesen Ordner:"
 msgstr "このフォルダーへ:"
 
@@ -3101,15 +3101,15 @@ msgstr "曲の途中で停止しました"
 msgid "ist nicht schneller als die CPU"
 msgstr "CPU より速くありません"
 
-#: taggerform.pas:1411 taggerform.pas:1417
+#: taggerform.pas:1466 taggerform.pas:1472
 msgid "ja"
 msgstr "はい"
 
-#: usettings.pas:632
+#: usettings.pas:634
 msgid "je %d Kerne (%d von %d)"
 msgstr "各 %d コア (%d / %d)"
 
-#: usettings.pas:630
+#: usettings.pas:632
 msgid "je 1 Kern (%d von %d)"
 msgstr "各 1 コア (%d / %d)"
 
@@ -3117,7 +3117,7 @@ msgstr "各 1 コア (%d / %d)"
 msgid "kein AVX (kompatible Version)"
 msgstr "AVX なし (互換版)"
 
-#: taggerform.pas:1682
+#: taggerform.pas:1737
 msgid "kein Cover"
 msgstr "カバーなし"
 
@@ -3129,7 +3129,7 @@ msgstr "グラフィックカードが見つかりません"
 msgid "keine gültige Modelldatei"
 msgstr "有効なモデルファイルではありません"
 
-#: playerform.pas:782
+#: playerform.pas:794
 msgid "klingt (ideal: fast Stille)."
 msgstr "わかります (理想: ほぼ無音)。"
 
@@ -3137,11 +3137,11 @@ msgstr "わかります (理想: ほぼ無音)。"
 msgid "ko-fi.com/elospeed"
 msgstr "ko-fi.com/elospeed"
 
-#: packerform.pas:402 packerform.pas:723
+#: packerform.pas:407 packerform.pas:738
 msgid "leer = wie Master"
 msgstr "空欄 = マスターと同じ"
 
-#: packerform.pas:404
+#: packerform.pas:409
 msgid "leer = wie Stem %d"
 msgstr "空欄 = ステム %d と同じ"
 
@@ -3149,7 +3149,7 @@ msgstr "空欄 = ステム %d と同じ"
 msgid "lässt sich nicht einschalten"
 msgstr "有効にできません"
 
-#: umain.pas:1113 umain.pas:1133
+#: umain.pas:1114 umain.pas:1134
 msgid "läuft..."
 msgstr "実行中..."
 
@@ -3161,7 +3161,7 @@ msgstr "明日 %s"
 msgid "neben der Originaldatei speichern"
 msgstr "元ファイルと同じ場所に保存"
 
-#: packerform.pas:542
+#: packerform.pas:547
 msgid "neben die Master-Datei"
 msgstr "マスターファイルの隣"
 
@@ -3209,31 +3209,31 @@ msgstr "許可されていないパス"
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "経過 %s   |   残り %s   |   %.1f MB/s"
 
-#: uinfo.pas:418
+#: uinfo.pas:419
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "作者 %s  ·  オーディオファイルから Traktor ステムを作成  ·  無料 && オープンソース  ·  ビルド: %s"
 
-#: usettings.pas:299
+#: usettings.pas:300
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "既存のステムファイルを上書き"
 
-#: umain.pas:1337 umain.pas:2086 umain.pas:2108
+#: umain.pas:1338 umain.pas:2087 umain.pas:2109
 msgid "wartet"
 msgstr "待機中"
 
-#: umain.pas:2493
+#: umain.pas:2494
 msgid "wartet (unterbrochen)"
 msgstr "待機中 (中断)"
 
-#: playerform.pas:804
+#: playerform.pas:816
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "ループの外にある場合は A へジャンプします。"
 
-#: uinit.pas:1038 umain.pas:1258 umain.pas:1294
+#: uinit.pas:1038 umain.pas:1259 umain.pas:1295
 msgid "wird berechnet ..."
 msgstr "計算中 ..."
 
-#: packerform.pas:1298
+#: packerform.pas:1313
 msgid "wird gepackt ..."
 msgstr "パック中 ..."
 
@@ -3241,31 +3241,31 @@ msgstr "パック中 ..."
 msgid "z.B. die von Elospeed StemMaker erzeugten."
 msgstr "例: Elospeed StemMaker で作成したファイル。"
 
-#: usettings.pas:433
+#: usettings.pas:434
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "必要な場合のみ変更: StemMaker.ini の [Tools] セクション (StemMaker を閉じた状態で)。"
 
-#: taggerform.pas:595
+#: taggerform.pas:646
 msgid "Änderungen verwerfen"
 msgstr "変更を破棄"
 
-#: playerform.pas:660
+#: playerform.pas:664
 msgid "ÖFFNEN"
 msgstr "開く"
 
-#: usettings.pas:456
+#: usettings.pas:457
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "StemMaker.ini があるフォルダーを開きます"
 
-#: uinfo.pas:486
+#: uinfo.pas:487
 msgid "Öffnet die bebilderte Anleitung im Browser."
 msgstr "図解ガイドをブラウザーで開きます。"
 
-#: umain.pas:1327
+#: umain.pas:1328
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "スキップ (非対応の形式): %s"
 
-#: packerform.pas:1106
+#: packerform.pas:1121
 msgid "ähnlich: „%s“"
 msgstr "似た名前:「%s」"
 

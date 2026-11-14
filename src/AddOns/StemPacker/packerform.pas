@@ -51,7 +51,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, LCLType, LCLIntf, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, UTF8Process, Process,
-  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect;
+  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe;
 
 const
   APP_TITLE = 'Elospeed StemPacker';
@@ -100,6 +100,7 @@ type
     FBtnCancel : TButton;
     FBtnLog    : TButton;
     FBtnInfo   : TButton;
+    FBtnHilfe  : TButton;
     FStatus    : TLabel;
     FKofi      : TPaintBox;
     FKofiHover : Boolean;
@@ -156,6 +157,7 @@ type
     procedure BtnCancelClick(Sender: TObject);
     procedure BtnLogClick(Sender: TObject);
     procedure BtnInfoClick(Sender: TObject);
+    procedure BtnHilfeClick(Sender: TObject);
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure KofiPaint(Sender: TObject);
     procedure KofiClick(Sender: TObject);
@@ -227,6 +229,7 @@ begin
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FSongs := TList.Create;
+  HelpKeyword := 'stempacker';   // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
 
   Caption := APP_TITLE + ' ' + APP_VER + '  -  ' + _('fertige Spuren zu Stem-Dateien packen');
@@ -668,6 +671,16 @@ begin
   FBtnInfo.BorderSpacing.Around := Scale96ToForm(4);
   FBtnInfo.Caption := _('Info');
   FBtnInfo.OnClick := @BtnInfoClick;
+  { "?" links neben Info: Kapitel StemPacker in der StemMaker-Anleitung (auch F1) }
+  FBtnHilfe := TButton.Create(Self);
+  FBtnHilfe.Parent := Bottom;
+  FBtnHilfe.Align := alRight;
+  FBtnHilfe.Width := Scale96ToForm(40);
+  FBtnHilfe.BorderSpacing.Around := Scale96ToForm(4);
+  FBtnHilfe.Caption := '?';
+  FBtnHilfe.Hint := _('Hilfe (F1)');
+  FBtnHilfe.ShowHint := True;
+  FBtnHilfe.OnClick := @BtnHilfeClick;
 
   { --- Liste der Songs (wächst mit dem Fenster) ----------------------- }
   FList := TListView.Create(Self);
@@ -1726,6 +1739,12 @@ begin
     FStatus.Hint := FStatus.Caption;
     FStatus.ShowHint := True;
   end;
+end;
+
+{ "?": Kapitel StemPacker in der Anleitung öffnen }
+procedure TPackerForm.BtnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('stempacker');
 end;
 
 { Info mit Version, Projektseite und Dank }

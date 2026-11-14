@@ -25,7 +25,8 @@ uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
   Interfaces, Forms, taggerform,
   uWine,   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
-  uDunklerRahmen;   // dunkle Titelleiste passend zum dunklen Fenster
+  uDunklerRahmen,   // dunkle Titelleiste passend zum dunklen Fenster
+  uHilfe;           // F1 öffnet das Kapitel StemTagger der Anleitung
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -36,6 +37,7 @@ begin
   Application.Initialize;
   WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
   DunkleRahmenEinrichten;  // Windows 10/11: Titelleiste dunkel statt weiss
+  HilfeTasteEinrichten;    // F1 in allen Fenstern (uHilfe)
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

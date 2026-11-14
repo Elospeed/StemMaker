@@ -14,6 +14,7 @@ keyword line per item. Only things users notice, no technical details.
 - Settings: pre-test result no longer cut off and shown in the chosen language
 - StemPlayer 1.8.6, StemTagger 1.2.3: dark title bar instead of a white one
 - StemTagger and StemPacker light or dark like StemMaker
+- "?" and F1 also in StemPlayer, StemTagger and StemPacker
 
 ## 2.3 – 10 November 2026
 ### New
