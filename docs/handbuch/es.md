@@ -135,7 +135,7 @@ En el **primer inicio** aún faltan ffmpeg (aprox. 60 MB) y el modelo de separac
 
 Arriba está la lista de archivos con la barra de AddOns a su derecha, debajo los ajustes para la próxima conversión y abajo del todo el progreso y el registro.
 
-![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:11.4,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:79.4,97.5 12:95,10"}
+![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:0.5,7.1 2:11.9,7.1 3:38.4,7.1 4:58.9,7.1 5:46.5,32.0 6:10.8,46.9 7:13.6,64.1 8:0.5,72.5 9:47.2,71.0 10:70.3,88.6 11:79.9,98.5 12:95.7,10.1"}
 
 ::: marken
 1. **Info**: versión, actualizaciones, informe de error y registros (capítulo [§](#info)). Al lado **?**: abre esta guía. La tecla [F1]{.taste} hace lo mismo en cualquier ventana, siempre en la sección correspondiente.
@@ -436,7 +436,7 @@ Habla el mismo idioma que StemMaker y sigue su diseño (claro u oscuro). **?** a
 
 ## Vista general
 
-![El StemTagger con tres archivos, dos de ellos seleccionados](img/es/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:34.0,96.0"}
+![El StemTagger con tres archivos, dos de ellos seleccionados](img/es/stemtagger.png){marken="1:0.5,8.8 2:63.0,8.8 3:0.5,14.5 4:0.5,71.3 5:25.0,73.5 6:33.7,97.2"}
 
 ::: marken
 1. **Archivos...**, **Carpeta...**, **Eliminar** y **Vaciar lista**: cargar archivos o quitarlos de la lista (los archivos en sí se quedan).
@@ -469,7 +469,7 @@ Haz clic en **StemPacker** en la barra de AddOns o usa el menú Inicio. Usa el f
 
 ## Vista general
 
-![El StemPacker después de arrastrar una carpeta](img/es/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
+![El StemPacker después de arrastrar una carpeta](img/es/stempacker.png){marken="1:0.5,8.2 2:0.5,19.1 3:0.5,23.9 4:0.5,28.6 5:50.0,60.7 6:0.5,92.2"}
 
 ::: marken
 1. **Arrastra una carpeta** o **Elegir carpeta …**: por los nombres de archivo reconoce cuál es el máster y qué pista es drums, bass, other o vox. Con **Ajustar carpetas y patrones yo mismo** fijas tú la carpeta y el patrón de nombre de cada pista.
@@ -494,7 +494,7 @@ Una guía detallada en inglés viene como `AddOns\StemPacker-User-Guide.pdf`.
 
 El botón **Info** de arriba a la izquierda abre la ventana Info con la versión, la fecha de compilación y el nombre del registro actual.
 
-![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
+![La ventana Info](img/es/info.png){marken="1:38.3,22.2 2:0.6,88.6 3:29.6,88.6 4:59.2,88.6 5:0.6,96.1"}
 
 ::: marken
 1. **Guía**, **Versiones**, **Gracias** y **Licencias**: la versión breve (README), qué trajo cada versión, todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.

@@ -135,7 +135,7 @@ Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (
 
 Oben ist die Liste der Dateien mit der AddOn-Leiste rechts daneben, darunter die Einstellungen für die nächste Umwandlung, ganz unten der Fortschritt und das Protokoll.
 
-![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:10.2,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:80.6,97.5 12:95,10"}
+![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:0.5,7.1 2:11.9,7.1 3:38.4,7.1 4:58.9,7.1 5:46.5,32.0 6:9.6,46.9 7:13.6,64.1 8:0.5,72.5 9:47.2,71.0 10:70.3,88.6 11:81.1,98.5 12:95.7,10.1"}
 
 ::: marken
 1. **Info**: Version, Updates, Fehlerbericht und Logs (Kapitel [§](#info)). Daneben **?**: öffnet diese Anleitung. Die Taste [F1]{.taste} tut das in jedem Fenster, jeweils beim passenden Abschnitt.
@@ -284,7 +284,7 @@ Im Hauptfenster steht nur, was man pro Umwandlung ändert:
 
 Alles, was man einmal einstellt, liegt hinter dem Zahnrad **Weitere Einstellungen…**.
 
-![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
+![Das Fenster „Weitere Einstellungen“](img/de/einstellungen.png){marken="1:1.5,8.4 2:1.5,15.1 3:1.5,25.5 4:85.3,38.7 5:18.8,54.3 6:18.8,76.4 7:1.5,97.1"}
 
 ::: marken
 1. **Teile / Auto**: wie viele Teile des Songs gleichzeitig getrennt werden. **Auto** (Standard) nimmt so viele Teile, wie der Prozessor echte Kerne hat (höchstens 4), und nur so viele, wie der Arbeitsspeicher verkraftet (pro Teil gut 2 GB). Daneben steht, wie die Kerne verteilt werden. Das gilt nur für Klassisch; Turbo verteilt die Arbeit selbst auf alle Kerne.
@@ -436,7 +436,7 @@ Er spricht dieselbe Sprache wie StemMaker und folgt dem Design (hell oder dunkel
 
 ## Überblick
 
-![Der StemTagger mit drei Dateien, zwei davon markiert](img/de/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:32.8,96.0"}
+![Der StemTagger mit drei Dateien, zwei davon markiert](img/de/stemtagger.png){marken="1:0.5,8.8 2:63.0,8.8 3:0.5,14.5 4:0.5,71.3 5:25.0,73.5 6:32.5,97.2"}
 
 ::: marken
 1. **Dateien...**, **Ordner...**, **Entfernen** und **Liste leeren**: Dateien laden oder aus der Liste nehmen (die Dateien selbst bleiben).
@@ -469,7 +469,7 @@ In der AddOn-Leiste auf **StemPacker** klicken oder im Startmenü. Er nimmt ffmp
 
 ## Überblick
 
-![Der StemPacker nach dem Hineinziehen eines Ordners](img/de/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
+![Der StemPacker nach dem Hineinziehen eines Ordners](img/de/stempacker.png){marken="1:0.5,8.2 2:0.5,19.1 3:0.5,23.9 4:0.5,28.6 5:50.0,60.7 6:0.5,92.2"}
 
 ::: marken
 1. **Ordner hineinziehen** oder **Ordner wählen …**: Er erkennt an den Dateinamen selbst, welche Datei der Master ist und welche Spur Drums, Bass, Other oder Vox. Mit **Ordner und Muster selbst einstellen** legst du Ordner und Namensmuster pro Spur selbst fest.
@@ -494,7 +494,7 @@ Eine ausführliche englische Anleitung liegt als `AddOns\StemPacker-User-Guide.p
 
 Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum und dem Namen des aktuellen Logs.
 
-![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
+![Das Info-Fenster](img/de/info.png){marken="1:38.3,22.2 2:0.6,88.6 3:29.6,88.6 4:59.2,88.6 5:0.6,96.1"}
 
 ::: marken
 1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzfassung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.

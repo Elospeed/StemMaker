@@ -135,7 +135,7 @@ On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (ap
 
 At the top is the list of files with the AddOn bar next to it on the right, below it the settings for the next conversion, and at the bottom the progress and the log.
 
-![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:10.2,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:80.6,97.5 12:95,10"}
+![The main window during a conversion](img/en/hauptfenster.png){marken="1:0.5,7.1 2:11.9,7.1 3:38.4,7.1 4:58.9,7.1 5:46.5,32.0 6:9.6,46.9 7:13.6,64.1 8:0.5,72.5 9:47.2,71.0 10:70.3,88.6 11:81.1,98.5 12:95.7,10.1"}
 
 ::: marken
 1. **Info**: version, updates, error report and logs (chapter [§](#info)). Next to it **?**: opens this guide. The [F1]{.taste} key does the same in every window, each time at the matching section.
@@ -284,7 +284,7 @@ The main window only holds what you change per conversion:
 
 Everything you set up once is behind the gear button **More settings…**.
 
-![The "Settings" window](img/en/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
+![The "Settings" window](img/en/einstellungen.png){marken="1:1.5,8.4 2:1.5,15.1 3:1.5,25.5 4:85.3,38.7 5:18.8,54.3 6:18.8,76.4 7:1.5,97.1"}
 
 ::: marken
 1. **Parts / Auto**: how many parts of the song are separated at the same time. **Auto** (default) uses as many parts as the processor has real cores (at most 4), and only as many as the RAM can handle (a good 2 GB per part). Next to it you see how the cores are shared out. This only applies to Classic; Turbo spreads the work over all cores by itself.
@@ -436,7 +436,7 @@ It speaks the same language as StemMaker and follows its design (light or dark).
 
 ## Overview
 
-![The StemTagger with three files, two of them selected](img/en/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:41.6,96.0"}
+![The StemTagger with three files, two of them selected](img/en/stemtagger.png){marken="1:0.5,8.8 2:63.0,8.8 3:0.5,14.5 4:0.5,71.3 5:25.0,73.5 6:41.5,97.2"}
 
 ::: marken
 1. **Files...**, **Folder...**, **Remove** and **Clear list**: load files or take them off the list (the files themselves stay).
@@ -469,7 +469,7 @@ Click **StemPacker** in the AddOn bar or use the Start menu. It uses StemMaker's
 
 ## Overview
 
-![The StemPacker after dragging in a folder](img/en/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
+![The StemPacker after dragging in a folder](img/en/stempacker.png){marken="1:0.5,8.2 2:0.5,19.1 3:0.5,23.9 4:0.5,28.6 5:50.0,60.7 6:0.5,92.2"}
 
 ::: marken
 1. **Drag in a folder** or **Choose folder …**: it works out from the file names which file is the master and which track is drums, bass, other or vox. With **Set folders and patterns myself** you set the folder and name pattern for each track yourself.
@@ -494,7 +494,7 @@ A detailed English guide comes as `AddOns\StemPacker-User-Guide.pdf`.
 
 The **Info** button at the top left opens the Info window with version, build date and the name of the current log.
 
-![The Info window](img/en/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
+![The Info window](img/en/info.png){marken="1:38.3,22.2 2:0.6,88.6 3:29.6,88.6 4:59.2,88.6 5:0.6,96.1"}
 
 ::: marken
 1. **Guide**, **Versions**, **Thanks** and **Licenses**: the short version (README), what each version brought, everyone who helped, and the disclaimer and license texts.
