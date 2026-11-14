@@ -356,7 +356,7 @@ Oben rechts wählst du die **Ansicht**: **KOMPAKT** (nur Regler), **WELLENFORM**
 
 ## Überblick
 
-![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.2,9.6 2:2.7,19.1 3:16.3,16.4 4:2.4,26.9 5:2.3,35.4 6:1.2,43.2 7:1.2,81.3 8:1.2,90.9"}
+![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.2,7.6 2:1.2,15.1 3:16.0,12.6 4:1.2,21.3 5:1.2,28.0 6:1.2,34.2 7:1.2,85.9 8:1.2,93.8"}
 
 ::: marken
 1. **ÖFFNEN** und Dateiname, rechts **?** für die Hilfe und die **Ansicht** (KOMPAKT, WELLENFORM oder CD-PLAYER).

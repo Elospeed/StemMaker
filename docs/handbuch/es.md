@@ -284,7 +284,7 @@ En la ventana principal solo está lo que se cambia en cada conversión:
 
 Todo lo que se configura una sola vez está detrás del botón del engranaje **Más ajustes…**.
 
-![La ventana «Configuración»](img/es/einstellungen.png){marken="1:1.9,9.3 2:1.9,15.9 3:1.9,26.2 4:85,39.3 5:19,54.4 6:19,76.3 7:1.9,96.8"}
+![La ventana «Configuración»](img/es/einstellungen.png){marken="1:1.5,8.4 2:1.5,15.1 3:1.5,25.5 4:85.3,38.7 5:18.8,54.3 6:18.8,76.4 7:1.5,97.1"}
 
 ::: marken
 1. **Partes / Auto**: cuántas partes de la canción se separan a la vez. **Auto** (por defecto) usa tantas partes como núcleos reales tenga el procesador (como máximo 4), y solo tantas como aguante la RAM (algo más de 2 GB por parte). Al lado se ve cómo se reparten los núcleos. Esto solo vale para Clásico; Turbo reparte el trabajo él solo entre todos los núcleos.
@@ -356,7 +356,7 @@ Arriba a la derecha eliges la **vista**: **COMPACTA** (solo faders), **FORMA DE 
 
 ## Vista general
 
-![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.2,9.6 2:2.7,19.1 3:16.3,16.4 4:2.4,26.9 5:2.3,35.4 6:1.2,43.2 7:1.2,81.3 8:1.2,90.9"}
+![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.2,7.6 2:1.2,15.1 3:16.0,12.6 4:1.2,21.3 5:1.2,28.0 6:1.2,34.2 7:1.2,85.9 8:1.2,93.8"}
 
 ::: marken
 1. **ABRIR** y nombre del archivo; a la derecha **?** para la ayuda y la **vista** (COMPACTA, FORMA DE ONDA o REPRODUCTOR CD).
