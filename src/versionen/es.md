@@ -6,7 +6,7 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.4 – aún no publicada
+## 2.4 – 14 de noviembre de 2026
 ### Nuevo
 - Claro u oscuro: el tema se elige en los ajustes, por defecto como Windows (idea de David GJ)
 - Ayuda: el botón «?» y la tecla F1 abren la guía ilustrada en el lugar correcto

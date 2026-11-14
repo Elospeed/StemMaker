@@ -6,7 +6,7 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.4 – not released yet
+## 2.4 – 14 November 2026
 ### New
 - Light or dark: choose the theme in the settings, default follows Windows (idea by David GJ)
 - Help: the "?" button and the F1 key open the illustrated guide at the right place

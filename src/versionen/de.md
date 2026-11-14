@@ -6,7 +6,7 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
-## 2.4 – noch nicht veröffentlicht
+## 2.4 – 14. November 2026
 ### Neu
 - Hell oder dunkel: Design in den Einstellungen wählbar, Standard wie Windows (Idee von David GJ)
 - Hilfe: Knopf „?“ und Taste F1 öffnen die bebilderte Anleitung an der passenden Stelle

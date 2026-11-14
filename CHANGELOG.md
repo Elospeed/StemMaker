@@ -7,7 +7,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.4 – noch nicht veröffentlicht
+## 2.4 – 14. November 2026
 
 ### Neu
 - **Hell oder dunkel:** Unter „Weitere Einstellungen“ → „Programm“ → „Design“ gibt es „Automatisch (wie Windows)“ (Standard), „Hell“ und „Dunkel“. Automatisch folgt der Windows-Einstellung „Standard-App-Modus“. Im dunklen Design sind Hauptfenster, Einstellungen, alle Meldungen, Listen, Menüs und Titelleisten dunkel; Statusspalte, Fortschrittsbalken und farbige Texte haben dafür eigene, gut lesbare Farben. Die Wahl gilt nach einem Neustart: StemMaker fragt nach dem Umschalten (auch bei einer anderen Sprache), ob er gleich neu starten soll. Läuft gerade eine Umwandlung, gilt die Änderung beim nächsten Start. Braucht Windows 10 ab 1809 oder Windows 11 (unter Linux/Wine bleibt StemMaker hell). Umgesetzt mit der Bibliothek metadarkstyle (LGPL mit Ausnahme für das Linken). Danke an David GJ für die Idee (#114).
