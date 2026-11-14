@@ -359,7 +359,7 @@ Oben rechts wählst du die **Ansicht**: **KOMPAKT** (nur Regler), **WELLENFORM**
 ![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
-1. **ÖFFNEN** und Dateiname, rechts die **Ansicht** (KOMPAKT, WELLENFORM oder CD-PLAYER).
+1. **ÖFFNEN** und Dateiname, rechts **?** für die Hilfe und die **Ansicht** (KOMPAKT, WELLENFORM oder CD-PLAYER).
 2. **Wiedergabe**: Play/Pause, Stop (zurück an den Anfang), Zeit und Länge.
 3. **Original-Wellenform**: klicken oder ziehen springt an diese Stelle; der rote Strich zeigt die aktuelle Position.
 4. **Lupe**: zeigt einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops und zum Scrubbing.
@@ -427,11 +427,35 @@ Ziehst du die Welle in der **Lupe** mit der linken Maustaste nach links oder rec
 
 Der **StemTagger** (`AddOns\StemTagger.exe`) setzt in fertigen Stem-Dateien und MP3s, was Traktor und Mixxx anzeigen und wonach man dort sucht: Titel, Interpret, Album, Genre, Jahr, Label, Kommentar und das Cover. Gedacht vor allem für Dateien ohne Tags, zum Beispiel aus dem StemPacker.
 
-- **Öffnen:** in der AddOn-Leiste auf **StemTagger** klicken oder Rechtsklick in der Dateiliste → **Tags bearbeiten...**. Er lädt die markierten fertigen Dateien. Im StemTagger selbst lädst du Dateien oder ganze Ordner.
-- **Viele Dateien auf einmal:** mehrere Zeilen markieren und zum Beispiel Album oder Cover für alle setzen. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange du sie nicht änderst.
-- **Cover:** Bild aufs Fenster ziehen, aus dem Browser kopieren und mit [Strg]{.taste} + [V]{.taste} einfügen oder eine Datei wählen. Grosse Bilder werden auf Wunsch verkleinert.
-- **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
-- **Die Stems bleiben unangetastet:** Neu geschrieben werden nur die Tags. Audio, Stems, Stem-Infos und Traktors eigene Daten (Cues, Beatgrid) bleiben gleich. Auf Wunsch legt der StemTagger eine Sicherungskopie `.bak` an.
+## Öffnen
+
+- In der AddOn-Leiste auf **StemTagger** klicken oder in der Dateiliste Rechtsklick → **Tags bearbeiten...**: Er lädt die markierten fertigen Dateien.
+- Im StemTagger selbst lädst du mit **Dateien...** oder **Ordner...** weitere Dateien, oder du ziehst sie auf das Fenster.
+
+Er spricht dieselbe Sprache wie StemMaker und folgt dem Design (hell oder dunkel). **?** oben rechts oder [F1]{.taste} öffnet dieses Kapitel.
+
+## Überblick
+
+![Der StemTagger mit drei Dateien, zwei davon markiert](img/de/stemtagger.png){marken="MARKEN_TAGGER"}
+
+::: marken
+1. **Dateien...**, **Ordner...**, **Entfernen** und **Liste leeren**: Dateien laden oder aus der Liste nehmen (die Dateien selbst bleiben).
+2. **Änderungen verwerfen** und **Speichern**: Speichern leuchtet grün, solange etwas zu speichern ist. Daneben **?** für die Hilfe.
+3. **Die Liste**: Datei, Titel, Interpret, Album, Genre, Cover, Traktor und Status. Klick auf eine Spaltenüberschrift sortiert. „Traktor“ zeigt, welche MP3s schon Traktor-Daten (Cues, Beatgrid) enthalten.
+4. **Cover**: Vorschau mit **Bild...**, **Einfügen** ([Strg]{.taste} + [V]{.taste}), **Entfernen** und **Speichern...** (Cover als Bilddatei sichern).
+5. **Die Felder**: Titel, Interpret, Album, Album-Interpret, Genre, Jahr, Label und Kommentar. **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
+6. **Schalter**: **Sicherungskopie anlegen (.bak)** und **Grosse Cover verkleinern**. Grün ist an, rot aus.
+:::
+
+## Viele Dateien auf einmal
+
+Markierst du mehrere Zeilen, gilt jede Eingabe für alle markierten Dateien, zum Beispiel dasselbe Album oder Cover. Felder mit unterschiedlichen Werten zeigen „<verschieden>“ und bleiben pro Datei erhalten, solange du sie nicht änderst. Geschrieben wird erst mit **Speichern**, und nur in Dateien mit Änderungen.
+
+## Was sich ändert und was nicht
+
+- Neu geschrieben werden nur die Tags. Audio, Stems, Stem-Infos und Traktors eigene Daten (Cues, Beatgrid) bleiben gleich, auch in MP3s.
+- Mit dem Schalter **Sicherungskopie** legt er vor dem ersten Speichern `Name.stem.mp4.bak` an. Die Kopie wird nie überschrieben und bleibt das echte Original.
+- Cover: Bild aufs Fenster ziehen, aus dem Browser kopieren und einfügen oder eine Datei wählen. Grosse Bilder verkleinert er auf Wunsch auf 1000 Pixel.
 
 BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst. Den StemTagger gibt es auch einzeln als kleines ZIP auf der Release-Seite.
 
@@ -439,11 +463,30 @@ BPM und Tonart ermitteln Traktor und Mixxx beim Analysieren selbst. Den StemTagg
 
 Der **StemPacker** (`AddOns\StemPacker.exe`) macht Stem-Dateien aus Spuren, die schon getrennt vorliegen, ganz ohne KI: zum Beispiel Einzelspuren aus der eigenen DAW, von einer 5.1-DVD oder aus einem anderen Trennprogramm. Pro Song braucht er den Master und bis zu vier Stems.
 
-- **Öffnen:** in der AddOn-Leiste auf **StemPacker** klicken oder im Startmenü.
-- **Ordner hineinziehen:** Er erkennt an den Dateinamen selbst, welche Datei der Master ist und welche Spur Drums, Bass, Other oder Vox (zum Beispiel `Song - Drums.wav`). Was er nicht sicher erkennt, zeigt er an.
-- **Im Stapel:** Viele Songs auf einmal, mit denselben Stem-Namen, Farben und dem Audio-Format wie in StemMaker.
+## Öffnen
 
-Er nimmt ffmpeg und die Sprachdateien von StemMaker. Eine ausführliche englische Anleitung liegt als `AddOns\StemPacker-User-Guide.pdf` bei.
+In der AddOn-Leiste auf **StemPacker** klicken oder im Startmenü. Er nimmt ffmpeg und die Sprachdateien von StemMaker und folgt dem Design (hell oder dunkel). **?** unten rechts oder [F1]{.taste} öffnet dieses Kapitel.
+
+## Überblick
+
+![Der StemPacker nach dem Hineinziehen eines Ordners](img/de/stempacker.png){marken="MARKEN_PACKER"}
+
+::: marken
+1. **Ordner hineinziehen** oder **Ordner wählen …**: Er erkennt an den Dateinamen selbst, welche Datei der Master ist und welche Spur Drums, Bass, Other oder Vox. Mit **Ordner und Muster selbst einstellen** legst du Ordner und Namensmuster pro Spur selbst fest.
+2. **Ziel**: neben die Master-Datei oder in einen eigenen Ordner (Unterordner werden übernommen).
+3. **Format**: AAC 320 kbit/s wie Traktor-Stems, ALAC verlustfrei 16 Bit oder ALAC 24 Bit (Test). Daneben **Vorhandene überschreiben**.
+4. **Extras**: **Fehlende Stems still füllen** (fehlt eine Spur, wird sie durch Stille ersetzt) und **Cover aus dem Ordner**, wenn die Datei keins hat.
+5. **Die Liste**: pro Song die Anzahl Dateien, der Status („bereit“, „fehlt: …“, „gibt es schon“) und das Ziel.
+6. **Songs suchen**, **Alle packen** und **Abbrechen**; rechts **?**, **Info** und **Log anzeigen**.
+:::
+
+## So gehst du vor
+
+1. Den Ordner mit den Spuren auf das Fenster ziehen. Die Liste zeigt alle erkannten Songs.
+2. Status prüfen: „fehlt: …“ nennt die gesuchte Datei und eine ähnliche, falls es eine gibt. Was er nicht sicher erkennt, stellst du mit **Ordner und Muster selbst einstellen** ein (Stern `*` = Songname).
+3. **Alle packen**. Stem-Namen, Farben und Tags kommen wie in StemMaker dazu, Tags und Cover vom Master.
+
+Eine ausführliche englische Anleitung liegt als `AddOns\StemPacker-User-Guide.pdf` bei.
 
 # Info, Updates und Hilfe {#info}
 

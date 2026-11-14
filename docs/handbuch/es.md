@@ -359,7 +359,7 @@ Arriba a la derecha eliges la **vista**: **COMPACTA** (solo faders), **FORMA DE 
 ![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
-1. **ABRIR** y nombre del archivo; a la derecha la **vista**: COMPACTO (solo controles) o FORMA DE ONDA (con la onda bajo cada stem).
+1. **ABRIR** y nombre del archivo; a la derecha **?** para la ayuda y la **vista** (COMPACTA, FORMA DE ONDA o REPRODUCTOR CD).
 2. **Reproducción**: reproducir/pausa, stop (vuelta al principio), tiempo y duración.
 3. **Forma de onda del original**: haz clic o arrastra para saltar ahí; la línea roja indica la posición actual.
 4. **Lupa**: muestra unos segundos alrededor de la línea roja, para colocar el bucle con precisión y para el scrubbing.
@@ -427,11 +427,35 @@ Si arrastras la onda de la **lupa** hacia la izquierda o la derecha con el botó
 
 El **StemTagger** (`AddOns\StemTagger.exe`) pone en archivos stem terminados y en MP3 lo que Traktor y Mixxx muestran y lo que se busca allí: título, artista, álbum, género, año, sello, comentario y la portada. Está pensado sobre todo para archivos sin etiquetas, por ejemplo los del StemPacker.
 
-- **Abrir:** haz clic en **StemTagger** en la barra de AddOns o clic derecho en la lista → **Editar etiquetas...**. Carga los archivos terminados seleccionados. En el propio StemTagger cargas archivos o carpetas enteras.
-- **Muchos archivos a la vez:** selecciona varias filas y pon, por ejemplo, el álbum o la portada para todas. Los campos con valores distintos muestran «<distinto>» y se conservan en cada archivo mientras no los cambies.
-- **Portada:** arrastra una imagen a la ventana, cópiala en el navegador y pégala con [Ctrl]{.taste} + [V]{.taste}, o elige un archivo. Las imágenes grandes se pueden reducir.
-- **Artista/título desde el nombre** rellena ambos campos a partir de nombres como «Artista - Título.stem.mp4».
-- **Los stems no se tocan:** solo se reescriben las etiquetas. El audio, los stems, la información stem y los datos propios de Traktor (cues, beatgrid) se quedan igual. Si quieres, el StemTagger guarda una copia de seguridad `.bak`.
+## Abrir
+
+- Haz clic en **StemTagger** en la barra de AddOns o clic derecho en la lista → **Editar etiquetas...**: carga los archivos terminados seleccionados.
+- En el propio StemTagger cargas más archivos con **Archivos...** o **Carpeta...**, o los arrastras a la ventana.
+
+Habla el mismo idioma que StemMaker y sigue su diseño (claro u oscuro). **?** arriba a la derecha o [F1]{.taste} abre este capítulo.
+
+## Vista general
+
+![El StemTagger con tres archivos, dos de ellos seleccionados](img/es/stemtagger.png){marken="MARKEN_TAGGER"}
+
+::: marken
+1. **Archivos...**, **Carpeta...**, **Eliminar** y **Vaciar lista**: cargar archivos o quitarlos de la lista (los archivos en sí se quedan).
+2. **Descartar cambios** y **Guardar**: Guardar se ilumina en verde mientras haya algo que guardar. Al lado **?** para la ayuda.
+3. **La lista**: archivo, título, artista, álbum, género, portada, Traktor y estado. Un clic en el encabezado de una columna ordena. «Traktor» indica qué MP3 ya contienen datos de Traktor (cues, beatgrid).
+4. **Portada**: vista previa con **Imagen...**, **Pegar** ([Ctrl]{.taste} + [V]{.taste}), **Eliminar** y **Guardar...** (guardar la portada como archivo de imagen).
+5. **Los campos**: título, artista, álbum, artista del álbum, género, año, sello y comentario. **Artista/título desde el nombre** rellena ambos campos a partir de nombres como «Artista - Título.stem.mp4».
+6. **Interruptores**: **Crear copia de seguridad (.bak)** y **Reducir portadas grandes**. Verde es activado, rojo desactivado.
+:::
+
+## Muchos archivos a la vez
+
+Si seleccionas varias filas, cada cambio se aplica a todos los archivos seleccionados, por ejemplo el mismo álbum o la misma portada. Los campos con valores distintos muestran «<distintos>» y conservan el valor de cada archivo mientras no los cambies. No se escribe nada hasta que pulsas **Guardar**, y solo en los archivos con cambios.
+
+## Qué cambia y qué no
+
+- Solo se reescriben las etiquetas. El audio, los stems, la información stem y los datos propios de Traktor (cues, beatgrid) se quedan igual, también en los MP3.
+- Con el interruptor **copia de seguridad** crea `Nombre.stem.mp4.bak` antes del primer guardado. La copia nunca se sobrescribe y sigue siendo el verdadero original.
+- Portada: arrastra una imagen a la ventana, cópiala en el navegador y pégala, o elige un archivo. Si quieres, las imágenes grandes se reducen a 1000 píxeles.
 
 Traktor y Mixxx calculan el BPM y la tonalidad al analizar. El StemTagger también existe por separado como ZIP pequeño en la página de versiones.
 
@@ -439,11 +463,30 @@ Traktor y Mixxx calculan el BPM y la tonalidad al analizar. El StemTagger tambi�
 
 El **StemPacker** (`AddOns\StemPacker.exe`) crea archivos stem a partir de pistas que ya están separadas, sin IA: por ejemplo pistas sueltas de tu propio DAW, de un DVD 5.1 o de otro programa de separación. Para cada canción necesita el máster y hasta cuatro stems.
 
-- **Abrir:** haz clic en **StemPacker** en la barra de AddOns o usa el menú Inicio.
-- **Arrastra una carpeta:** por los nombres de archivo reconoce cuál es el máster y qué pista es drums, bass, other o vox (por ejemplo `Canción - Drums.wav`). Lo que no reconoce con seguridad lo muestra.
-- **Por lotes:** muchas canciones a la vez, con los mismos nombres de stems, colores y formato de audio que en StemMaker.
+## Abrir
 
-Usa el ffmpeg y los archivos de idioma de StemMaker. Una guía detallada en inglés viene como `AddOns\StemPacker-User-Guide.pdf`.
+Haz clic en **StemPacker** en la barra de AddOns o usa el menú Inicio. Usa el ffmpeg y los archivos de idioma de StemMaker y sigue su diseño (claro u oscuro). **?** abajo a la derecha o [F1]{.taste} abre este capítulo.
+
+## Vista general
+
+![El StemPacker después de arrastrar una carpeta](img/es/stempacker.png){marken="MARKEN_PACKER"}
+
+::: marken
+1. **Arrastra una carpeta** o **Elegir carpeta …**: por los nombres de archivo reconoce cuál es el máster y qué pista es drums, bass, other o vox. Con **Ajustar carpetas y patrones yo mismo** fijas tú la carpeta y el patrón de nombre de cada pista.
+2. **Destino**: junto al archivo master o en una carpeta propia (se conservan las subcarpetas).
+3. **Formato**: AAC 320 kbit/s como los stems de Traktor, ALAC sin pérdida 16 bits o ALAC 24 bits (prueba). Al lado **Sobrescribir existentes**.
+4. **Extras**: **Rellenar stems que faltan con silencio** (una pista que falta se sustituye por silencio) y **Portada de la carpeta** si el archivo no tiene.
+5. **La lista**: para cada canción el número de archivos, el estado («listo», «falta: …», «ya existe») y el destino.
+6. **Buscar canciones**, **Empaquetar todo** y **Cancelar**; a la derecha **?**, **Info** y **Ver registro**.
+:::
+
+## Cómo se hace
+
+1. Arrastra la carpeta con las pistas a la ventana. La lista muestra todas las canciones encontradas.
+2. Revisa el estado: «falta: …» nombra el archivo buscado y uno parecido, si lo hay. Lo que no reconoce con seguridad lo ajustas con **Ajustar carpetas y patrones yo mismo** (asterisco `*` = nombre de la canción).
+3. **Empaquetar todo**. Los nombres de los stems, los colores y las etiquetas se añaden como en StemMaker; las etiquetas y la portada vienen del máster.
+
+Una guía detallada en inglés viene como `AddOns\StemPacker-User-Guide.pdf`.
 
 # Info, actualizaciones y ayuda {#info}
 

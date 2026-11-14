@@ -359,7 +359,7 @@ At the top right you choose the **view**: **COMPACT** (faders only), **WAVEFORM*
 ![The StemPlayer with waveforms and an active loop](img/en/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
 
 ::: marken
-1. **OPEN** and file name, on the right the **view**: COMPACT (controls only) or WAVEFORM (with a waveform under each stem).
+1. **OPEN** and file name, on the right **?** for help and the **view** (COMPACT, WAVEFORM or CD PLAYER).
 2. **Playback**: play/pause, stop (back to the start), time and length.
 3. **Original waveform**: click or drag to jump there; the red line shows the current position.
 4. **Magnifier**: shows a few seconds around the red line, for setting the loop precisely and for scrubbing.
@@ -427,11 +427,35 @@ If you drag the waveform in the **magnifier** left or right with the left mouse 
 
 The **StemTagger** (`AddOns\StemTagger.exe`) sets what Traktor and Mixxx show and search for in finished stem files and MP3s: title, artist, album, genre, year, label, comment and the cover. It is meant mainly for files without tags, for example from the StemPacker.
 
-- **Open:** click **StemTagger** in the AddOn bar or right-click in the file list → **Edit tags...**. It loads the selected finished files. In the StemTagger itself you load files or whole folders.
-- **Many files at once:** select several rows and set, for example, the album or cover for all of them. Fields with different values show "<different>" and are kept per file as long as you don't change them.
-- **Cover:** drag a picture onto the window, copy it in the browser and paste it with [Ctrl]{.taste} + [V]{.taste}, or choose a file. Large pictures can be scaled down.
-- **Artist/title from file name** fills both fields from names like "Artist - Title.stem.mp4".
-- **The stems stay untouched:** only the tags are rewritten. Audio, stems, stem info and Traktor's own data (cues, beatgrid) stay the same. If you like, the StemTagger keeps a backup copy `.bak`.
+## Opening
+
+- Click **StemTagger** in the AddOn bar or right-click in the file list → **Edit tags...**: it loads the selected finished files.
+- In the StemTagger itself you load more files with **Files...** or **Folder...**, or drag them onto the window.
+
+It speaks the same language as StemMaker and follows its design (light or dark). **?** at the top right or [F1]{.taste} opens this chapter.
+
+## Overview
+
+![The StemTagger with three files, two of them selected](img/en/stemtagger.png){marken="MARKEN_TAGGER"}
+
+::: marken
+1. **Files...**, **Folder...**, **Remove** and **Clear list**: load files or take them off the list (the files themselves stay).
+2. **Discard changes** and **Save**: Save lights up green as long as there is something to save. Next to it **?** for help.
+3. **The list**: file, title, artist, album, genre, cover, Traktor and status. Clicking a column header sorts. "Traktor" shows which MP3s already contain Traktor data (cues, beatgrid).
+4. **Cover**: preview with **Picture...**, **Paste** ([Ctrl]{.taste} + [V]{.taste}), **Remove** and **Save...** (save the cover as a picture file).
+5. **The fields**: title, artist, album, album artist, genre, year, label and comment. **Artist/title from file name** fills both fields from names like "Artist - Title.stem.mp4".
+6. **Switches**: **Create backup copy (.bak)** and **Shrink large covers**. Green is on, red is off.
+:::
+
+## Many files at once
+
+If you select several rows, every entry applies to all selected files, for example the same album or cover. Fields with different values show "<different>" and are kept per file as long as you don't change them. Nothing is written until you click **Save**, and only files with changes are written.
+
+## What changes and what doesn't
+
+- Only the tags are rewritten. Audio, stems, stem info and Traktor's own data (cues, beatgrid) stay the same, in MP3s too.
+- With the **backup copy** switch it creates `Name.stem.mp4.bak` before the first save. The copy is never overwritten and stays the real original.
+- Cover: drag a picture onto the window, copy it in the browser and paste it, or choose a file. If you like, large pictures are shrunk to 1000 pixels.
 
 Traktor and Mixxx work out BPM and key themselves when they analyse a track. The StemTagger is also available on its own as a small ZIP on the release page.
 
@@ -439,11 +463,30 @@ Traktor and Mixxx work out BPM and key themselves when they analyse a track. The
 
 The **StemPacker** (`AddOns\StemPacker.exe`) makes stem files from tracks that are already separated, without any AI: for example separate tracks from your own DAW, from a 5.1 DVD or from another separation program. For each song it needs the master and up to four stems.
 
-- **Open:** click **StemPacker** in the AddOn bar, or use the Start menu.
-- **Drag in a folder:** it works out from the file names which file is the master and which track is drums, bass, other or vox (for example `Song - Drums.wav`). Anything it can't tell for sure is shown.
-- **In batches:** many songs at once, with the same stem names, colours and audio format as in StemMaker.
+## Opening
 
-It uses StemMaker's ffmpeg and language files. A detailed English guide comes as `AddOns\StemPacker-User-Guide.pdf`.
+Click **StemPacker** in the AddOn bar or use the Start menu. It uses StemMaker's ffmpeg and language files and follows its design (light or dark). **?** at the bottom right or [F1]{.taste} opens this chapter.
+
+## Overview
+
+![The StemPacker after dragging in a folder](img/en/stempacker.png){marken="MARKEN_PACKER"}
+
+::: marken
+1. **Drag in a folder** or **Choose folder …**: it works out from the file names which file is the master and which track is drums, bass, other or vox. With **Set folders and patterns myself** you set the folder and name pattern for each track yourself.
+2. **Target**: next to the master file or into a folder of your own (subfolders are kept).
+3. **Format**: AAC 320 kbit/s like Traktor stems, ALAC lossless 16 bit or ALAC 24 bit (test). Next to it **Overwrite existing**.
+4. **Extras**: **Fill missing stems with silence** (a missing track is replaced by silence) and **Cover from the folder** if the file has none.
+5. **The list**: for each song the number of files, the status ("ready", "missing: …", "already exists") and the target.
+6. **Find songs**, **Pack all** and **Cancel**; on the right **?**, **Info** and **Show log**.
+:::
+
+## How to do it
+
+1. Drag the folder with the tracks onto the window. The list shows all songs it found.
+2. Check the status: "missing: …" names the file it looked for and a similar one, if there is one. Anything it can't tell for sure you set with **Set folders and patterns myself** (star `*` = song name).
+3. **Pack all**. Stem names, colours and tags are added as in StemMaker; tags and cover come from the master.
+
+A detailed English guide comes as `AddOns\StemPacker-User-Guide.pdf`.
 
 # Info, updates and help {#info}
 
