@@ -5,11 +5,11 @@ msgstr ""
 "X-Source-Language: de\n"
 "Project-Id-Version: Elospeed StemMaker\n"
 
-#: umain.pas:2354
+#: umain.pas:2369
 msgid "                   Wine erkannt: Turbo läuft auf der CPU"
 msgstr "                   Wine detectado: Turbo funciona con la CPU"
 
-#: umain.pas:2351
+#: umain.pas:2366
 msgid "                   vorhanden: %s"
 msgstr "                      instalado: %s"
 
@@ -33,103 +33,103 @@ msgstr "        [--no-normalize] [--no-bassfix]  (desactivar opciones de sonido)
 msgid "        [-t teile] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 msgstr "        [-t partes] [-f aac|alac] [-b auto|kbit] [--overwrite] [--keep]"
 
-#: playerform.pas:454
+#: playerform.pas:473
 msgid "  -  von Elospeed"
 msgstr "  -  de Elospeed"
 
-#: umain.pas:2358
+#: umain.pas:2373
 msgid "  ACHTUNG        : Der PC war ca. %s im Ruhezustand - die Zeiten oben sind um diese Dauer zu lang."
 msgstr "  ADVERTENCIA    : El PC estuvo aproximadamente %s en modo de suspensión, por lo que hay que restar esa duración a los tiempos mostrados arriba."
 
-#: umain.pas:2325
+#: umain.pas:2340
 msgid "  Abgebrochen    : %d"
 msgstr "  Cancelado      : %d"
 
-#: umain.pas:1489
+#: umain.pas:1504
 msgid "  Audiospuren: %d (Stem = 5)"
 msgstr "  Pistas de audio: %d (stem = 5)"
 
-#: taggerform.pas:793
+#: taggerform.pas:825
 msgid "  Camelot (Mixed In Key):  8A = a-Moll, 8B = C-Dur (A = Moll, B = Dur)"
 msgstr "  Camelot (Mixed In Key):  8A = La menor, 8B = Do mayor (A = menor, B = mayor)"
 
-#: umain.pas:2322
+#: umain.pas:2337
 msgid "  Dateien        : %d  (OK %d, übersprungen %d, Fehler %d)"
 msgstr "  Archivos       : %d  (OK %d, omitidos %d, errores %d)"
 
-#: umain.pas:1156
+#: umain.pas:1171
 msgid "  Dauer: %s"
 msgstr "  Duración: %s"
 
-#: umain.pas:2355
+#: umain.pas:2370
 msgid "  Energie        : %s"
 msgstr "  Energía        : %s"
 
-#: umain.pas:2341
+#: umain.pas:2356
 msgid "  Engine         : Klassisch (demucs.cpp) für %d Datei(en)"
 msgstr "  Motor          : Clásico (demucs.cpp) para %d archivo(s)"
 
-#: umain.pas:2337
+#: umain.pas:2352
 msgid "  Engine         : Turbo (StemOnnx) für %d Datei(en), zuletzt auf: %s"
 msgstr "  Motor          : Turbo (StemOnnx) para %d archivo(s), el último en: %s"
 
-#: umain.pas:1496
+#: umain.pas:1511
 msgid "  Fehler: %s"
 msgstr "  Error: %s"
 
-#: umain.pas:2334
+#: umain.pas:2349
 msgid "  Format         : %s"
 msgstr "  Formato        : %s"
 
-#: umain.pas:2326
+#: umain.pas:2341
 msgid "  Gesamtzeit     : %s"
 msgstr "  Tiempo total   : %s"
 
-#: umain.pas:2350
+#: umain.pas:2365
 msgid "  Grafikkarte    : nicht genutzt (demucs.cpp rechnet nur mit der CPU)"
 msgstr "  Tarjeta gráfica : no utilizada (demucs.cpp solo usa la CPU)"
 
-#: umain.pas:1491
+#: umain.pas:1506
 msgid "  KEIN Stem-Metadatenblock gefunden - keine gültige Stem-Datei"
 msgstr "  NO se encontró ningún bloque de metadatos de stem - no es un archivo stem válido"
 
-#: taggerform.pas:792
+#: taggerform.pas:824
 msgid "  Klassisch:  Am = a-Moll, C = C-Dur (m = Moll, ohne m = Dur)"
 msgstr "  Clásica:  Am = La menor, C = Do mayor (m = menor, sin m = mayor)"
 
-#: umain.pas:2333
+#: umain.pas:2348
 msgid "  Modell         : %s"
 msgstr "  Modelo         : %s"
 
-#: taggerform.pas:794
+#: taggerform.pas:826
 msgid "  Open Key (Traktor):  1m = a-Moll, 1d = C-Dur (m = Moll, d = Dur)"
 msgstr "  Open Key (Traktor):  1m = La menor, 1d = Do mayor (m = menor, d = mayor)"
 
-#: umain.pas:2347
+#: umain.pas:2362
 msgid "  RAM Trennen    : max. %d MB  (Gesamt-RAM %.1f GB)"
 msgstr "  RAM separación : máx. %d MB  (RAM total %.1f GB)"
 
-#: umain.pas:2342
+#: umain.pas:2357
 msgid "  Rechenleistung : %d Teile x %d Kerne = %d von %d echten Kernen (%d logisch), demucs-Version %s"
 msgstr "  Potencia de cómputo : %d partes x %d núcleos = %d de %d núcleos físicos (%d lógicos), versión de demucs %s"
 
-#: umain.pas:2361
+#: umain.pas:2376
 msgid "  Ruhezustand    : keiner während der Konvertierung"
 msgstr "  Suspensión     : ninguna durante la conversión"
 
-#: umain.pas:2327
+#: umain.pas:2342
 msgid "  Schnitt/Track  : %s  (nur erfolgreiche Tracks)"
 msgstr "  Promedio por pista : %s  (solo pistas procesadas correctamente)"
 
-#: umain.pas:1493
+#: umain.pas:1508
 msgid "  Stem-Metadaten: %s"
 msgstr "  Metadatos de stem: %s"
 
-#: umain.pas:2331
+#: umain.pas:2346
 msgid "  Tempo          : %.1f s pro Minute Musik (Statistik: logs\\statistik.csv)"
 msgstr "  Velocidad      : %.1f s por minuto de música (estadísticas: logs\\statistik.csv)"
 
-#: umain.pas:2655
+#: umain.pas:2670
 msgid " - %d Längen noch unbekannt"
 msgstr " - %d duraciones aún desconocidas"
 
@@ -137,67 +137,67 @@ msgstr " - %d duraciones aún desconocidas"
 msgid " - kostenlos & quelloffen"
 msgstr " - gratuito y de código abierto"
 
-#: uinit.pas:301
+#: uinit.pas:310
 msgid " [Zeitlimit]"
 msgstr " [tiempo agotado]"
 
-#: taggerform.pas:803
+#: taggerform.pas:835
 msgid "\"Interpret - Titel.stem.mp4\" füllt Interpret und Titel"
 msgstr "\"Artista - Título.stem.mp4\" rellena artista y título"
 
-#: ureport.pas:216
+#: ureport.pas:224
 msgid "\"Per E-Mail senden\" speichert den Bericht als Datei, zeigt sie im Explorer und öffnet eine fertige Mail. Bitte die markierte Datei in die Mail ziehen. Öffnet sich keine Mail (z. B. bei Webmail), schick die Datei einfach an %s. Der ganze Bericht liegt zusätzlich in der Zwischenablage (Strg+V)."
 msgstr "\"Enviar por correo\" guarda el informe como archivo, lo muestra en el Explorador y abre un correo ya preparado. Arrastra el archivo marcado al correo. Si no se abre ningún correo (p. ej. con webmail), envía el archivo a %s. Además, el informe completo está en el portapapeles (Ctrl+V)."
 
-#: uupdateui.pas:358
+#: uupdateui.pas:371
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: uupdateui.pas:353
+#: uupdateui.pas:366
 msgid "%.1f von %.1f MB"
 msgstr "%.1f de %.1f MB"
 
-#: uinit.pas:829
+#: uinit.pas:839
 msgid "%d Dateien OK"
 msgstr "%d archivos OK"
 
-#: taggerform.pas:2291
+#: taggerform.pas:2324
 msgid "%d Dateien aus dem Dateinamen übernommen - noch nicht gespeichert"
 msgstr "%d archivos rellenados desde el nombre de archivo - aún sin guardar"
 
-#: umain.pas:2522
+#: umain.pas:2537
 msgid "%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen."
 msgstr "%d archivos de la lista guardada ya no existen; se han omitido."
 
-#: taggerform.pas:1909
+#: taggerform.pas:1941
 msgid "%d Dateien gespeichert"
 msgstr "%d archivos guardados"
 
-#: taggerform.pas:1906
+#: taggerform.pas:1938
 msgid "%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status."
 msgstr "%d archivos guardados, %d con errores. Los archivos con errores no se han modificado, detalles en la columna Estado."
 
-#: taggerform.pas:1712
+#: taggerform.pas:1744
 msgid "%d Dateien in der Liste."
 msgstr "%d archivos en la lista."
 
-#: umain.pas:2632
+#: umain.pas:2647
 msgid "%d Dateien offen - Länge wird ermittelt ..."
 msgstr "%d archivos pendientes - leyendo duraciones ..."
 
-#: umain.pas:2639
+#: umain.pas:2654
 msgid "%d Dateien offen, %s Musik - Dauer ca. %s"
 msgstr "%d archivos pendientes, %s de música - aprox. %s"
 
-#: taggerform.pas:1846
+#: taggerform.pas:1878
 msgid "%d Dateien werden geändert."
 msgstr "Se modificarán %d archivos."
 
-#: taggerform.pas:1518
+#: taggerform.pas:1550
 msgid "%d Dateien, %d geändert"
 msgstr "%d archivos, %d modificados"
 
-#: uinit.pas:739
+#: uinit.pas:749
 msgid "%d Kerne (%d logisch), %s"
 msgstr "%d núcleos (%d lógicos), %s"
 
@@ -205,23 +205,23 @@ msgstr "%d núcleos (%d lógicos), %s"
 msgid "%d Minuten"
 msgstr "%d minutos"
 
-#: umain.pas:1393
+#: umain.pas:1408
 msgid "%d Ordner konnten nicht gelesen werden, weil ihr Pfad länger als %d Zeichen ist. Musik darin fehlt in der Liste."
 msgstr "%d carpeta(s) no pudieron leerse porque su ruta supera los %d caracteres. La música que contienen no aparece en la lista."
 
-#: packerform.pas:1174
+#: packerform.pas:1184
 msgid "%d Songs gefunden, %d bereit zum Packen."
 msgstr "%d canciones encontradas, %d listas para empaquetar."
 
-#: playerform.pas:2216
+#: playerform.pas:2236
 msgid "%d Spuren  ·  Länge %s"
 msgstr "%d pistas  ·  duración %s"
 
-#: playerform.pas:2224
+#: playerform.pas:2244
 msgid "%d Spuren geladen  ·  Länge %s  ·  ffmpeg: %s"
 msgstr "%d pistas cargadas  ·  duración %s  ·  ffmpeg: %s"
 
-#: packerform.pas:1429
+#: packerform.pas:1439
 msgid "%d Stem-Dateien erstellt, %d Fehler, %d übersprungen."
 msgstr "%d archivos stem creados, %d errores, %d omitidos."
 
@@ -229,51 +229,51 @@ msgstr "%d archivos stem creados, %d errores, %d omitidos."
 msgid "%d Stunden"
 msgstr "%d horas"
 
-#: umain.pas:2829
+#: umain.pas:2844
 msgid "%d erfolgreich, %d übersprungen, %d fehlgeschlagen - Gesamtzeit %s"
 msgstr "%d correctos, %d omitidos, %d fallidos - tiempo total %s"
 
-#: packerform.pas:1419
+#: packerform.pas:1429
 msgid "%d fertig, %d Fehler, %d übersprungen."
 msgstr "%d listos, %d errores, %d omitidos."
 
-#: taggerform.pas:2095
+#: taggerform.pas:2127
 msgid "%d markierte Dateien haben ungespeicherte Änderungen. Trotzdem aus der Liste nehmen?"
 msgstr "%d archivos seleccionados tienen cambios sin guardar. ¿Quitarlos de la lista de todos modos?"
 
-#: uturbotest.pas:149
+#: uturbotest.pas:159
 msgid "%d s"
 msgstr "%d s"
 
-#: uturbotest.pas:151
+#: uturbotest.pas:161
 msgid "%d:%.2d min"
 msgstr "%d:%.2d min"
 
-#: umain.pas:641
+#: umain.pas:651
 msgid "%s %s  -  Traktor Stems (*.stem.mp4) aus Audiodateien"
 msgstr "%s %s  -  Traktor stems (*.stem.mp4) desde archivos de audio"
 
-#: umain.pas:668
+#: umain.pas:678
 msgid "%s %s - bereit. Dateien hinzufügen oder ins Fenster ziehen."
 msgstr "%s %s - listo. Añade archivos o arrástralos a la ventana."
 
-#: umain.pas:2745
+#: umain.pas:2760
 msgid "%s - %d %% (Datei %d von %d)"
 msgstr "%s - %d %% (archivo %d de %d)"
 
-#: uinit.pas:557
+#: uinit.pas:566
 msgid "%s - Start"
 msgstr "%s - Inicio"
 
-#: uinit.pas:823
+#: uinit.pas:833
 msgid "%s - wird heruntergeladen (ca. %d MB)"
 msgstr "%s - se descargará (aprox. %d MB)"
 
-#: packerform.pas:1232
+#: packerform.pas:1242
 msgid "%s ist %s s kürzer als %s"
 msgstr "%s dura %s s menos que %s"
 
-#: packerform.pas:1235
+#: packerform.pas:1245
 msgid "%s ist %s s länger als %s"
 msgstr "%s dura %s s más que %s"
 
@@ -281,23 +281,23 @@ msgstr "%s dura %s s más que %s"
 msgid "%s nicht im ZIP gefunden"
 msgstr "%s no encontrado en el ZIP"
 
-#: uinit.pas:795
+#: uinit.pas:805
 msgid "%s startet (%s-Version)"
 msgstr "%s se inicia (versión %s)"
 
-#: uinit.pas:800
+#: uinit.pas:810
 msgid "%s startet nicht (Code %d) %s"
 msgstr "%s no se inicia (código %d) %s"
 
-#: uinit.pas:892
+#: uinit.pas:902
 msgid "%s wird gestartet ..."
 msgstr "Iniciando %s ..."
 
-#: uinfo.pas:161 uinfo.pas:194
+#: uinfo.pas:168 uinfo.pas:201
 msgid "%s wurde nicht gefunden."
 msgstr "%s no se encontró."
 
-#: packerform.pas:1119
+#: packerform.pas:1129
 msgid "%s „%s“"
 msgstr "%s «%s»"
 
@@ -337,35 +337,35 @@ msgstr "&Cerrar"
 msgid "&Wiederholen"
 msgstr "&Reintentar"
 
-#: packerform.pas:373
+#: packerform.pas:383
 msgid "(Tags und Cover)"
 msgstr "(etiquetas y portada)"
 
-#: umain.pas:2645
+#: umain.pas:2660
 msgid "(Tempo dieses PCs)"
 msgstr "(velocidad de este PC)"
 
-#: ureport.pas:298
+#: ureport.pas:306
 msgid "(aktueller Lauf)"
 msgstr "(ejecución actual)"
 
-#: usettings.pas:401 usettings.pas:416
+#: usettings.pas:413 usettings.pas:428
 msgid "(gilt ab dem nächsten Start)"
 msgstr "(se aplica tras el próximo inicio)"
 
-#: umain.pas:2650
+#: umain.pas:2665
 msgid "(grob geschätzt)"
 msgstr "(estimación aproximada)"
 
-#: ureport.pas:336
+#: ureport.pas:344
 msgid "(kein Log gefunden)"
 msgstr "(no se encontró ningún registro)"
 
-#: uturbotest.pas:733
+#: uturbotest.pas:758
 msgid "(vorläufig, wird mit jedem Messwert genauer)"
 msgstr "(provisional, se vuelve más preciso con cada medición)"
 
-#: playerform.pas:2123
+#: playerform.pas:2142
 msgid "(z.B. die von Elospeed StemMaker)."
 msgstr "(p. ej. el de Elospeed StemMaker)."
 
@@ -409,23 +409,23 @@ msgstr "- demucs.cpp de Sevag Hanssian (MIT) - los programas de separación en t
 msgid "--- letzte Ausgabe ---"
 msgstr "--- última salida ---"
 
-#: packerform.pas:588
+#: packerform.pas:598
 msgid "24 Bit / 96 kHz ist noch nicht in Traktor geprüft. Bitte zuerst mit einem Song testen."
 msgstr "24 bits / 96 kHz aún no se ha probado en Traktor. Prueba primero con una canción."
 
-#: packerform.pas:496
+#: packerform.pas:506
 msgid "5.1-DVD: „Song (DOWNMIX #1)“ + „Song (A)“ … „(D)“"
 msgstr "DVD 5.1: «Canción (DOWNMIX #1)» + «Canción (A)» … «(D)»"
 
-#: taggerform.pas:1590 taggerform.pas:1619
+#: taggerform.pas:1622 taggerform.pas:1651
 msgid "<verschieden>"
 msgstr "<distintos>"
 
-#: umain.pas:1488
+#: umain.pas:1503
 msgid "== Prüfung: %s"
 msgstr "== Verificación: %s"
 
-#: umain.pas:2321
+#: umain.pas:2336
 msgid "=== Zusammenfassung ==="
 msgstr "=== Resumen ==="
 
@@ -441,11 +441,11 @@ msgstr "AAC 256 kbit/s (estándar NI)"
 msgid "AAC 320 kbit/s"
 msgstr "AAC 320 kbit/s"
 
-#: packerform.pas:585
+#: packerform.pas:595
 msgid "AAC 320 kbit/s (wie Traktor-Stems)"
 msgstr "AAC 320 kbit/s (como los stems de Traktor)"
 
-#: umain.pas:2315
+#: umain.pas:2330
 msgid "AAC automatisch (wie die Quelle, max. %d kbit/s) - Bitrate pro Datei siehe \"Quelle:\" oben"
 msgstr "AAC automático (igual que la fuente, máx. %d kbit/s) - ver la tasa de bits por archivo en \"Fuente:\" arriba"
 
@@ -453,11 +453,11 @@ msgstr "AAC automático (igual que la fuente, máx. %d kbit/s) - ver la tasa de 
 msgid "AAC automatisch (wie die Quelle, max. 320 kbit/s)"
 msgstr "AAC automático (igual que la fuente, máx. 320 kbit/s)"
 
-#: umain.pas:2312
+#: umain.pas:2327
 msgid "ALAC (verlustfrei)"
 msgstr "ALAC (sin pérdida)"
 
-#: packerform.pas:587
+#: packerform.pas:597
 msgid "ALAC 24 Bit, Original-Abtastrate (Test)"
 msgstr "ALAC 24 bits, frecuencia original (prueba)"
 
@@ -465,55 +465,55 @@ msgstr "ALAC 24 bits, frecuencia original (prueba)"
 msgid "ALAC verlustfrei (große Dateien)"
 msgstr "ALAC sin pérdida (archivos grandes)"
 
-#: packerform.pas:586
+#: packerform.pas:596
 msgid "ALAC verlustfrei, 16 Bit / 44,1 kHz"
 msgstr "ALAC sin pérdida, 16 bits / 44,1 kHz"
 
-#: playerform.pas:806
+#: playerform.pas:825
 msgid "AN  L"
 msgstr "ON  L"
 
-#: playerform.pas:1298
+#: playerform.pas:1317
 msgid "ANSICHT"
 msgstr "VISTA"
 
-#: playerform.pas:2304
+#: playerform.pas:2324
 msgid "AUS (SOLO)"
 msgstr "OFF (SOLO)"
 
-#: playerform.pas:839
+#: playerform.pas:858
 msgid "AUSGANG L / R"
 msgstr "SALIDA L / R"
 
-#: uinit.pas:737
+#: uinit.pas:747
 msgid "AVX (mittlere Version)"
 msgstr "AVX (versión media)"
 
-#: uinit.pas:736
+#: uinit.pas:746
 msgid "AVX2 (schnelle Version)"
 msgstr "AVX2 (versión rápida)"
 
-#: packerform.pas:657 uinit.pas:605 ulangui.pas:192
+#: packerform.pas:667 uinit.pas:614 ulangui.pas:192
 msgid "Abbrechen"
 msgstr "Cancelar"
 
-#: umain.pas:2169
+#: umain.pas:2184
 msgid "Abbruch angefordert..."
 msgstr "Cancelación solicitada..."
 
-#: udownload.pas:242 udownload.pas:413 uinit.pas:456
+#: udownload.pas:242 udownload.pas:413 uinit.pas:465
 msgid "Abgebrochen"
 msgstr "Cancelado"
 
-#: umain.pas:2185
+#: umain.pas:2200
 msgid "Abgebrochen: %d Datei(en)"
 msgstr "Cancelado: %d archivo(s)"
 
-#: umain.pas:1395
+#: umain.pas:1410
 msgid "Abhilfe: den Ordner weiter oben ablegen (z. B. direkt unter D:\\Musik) oder Ordnernamen kürzen. Die Ordner stehen im Log."
 msgstr "Solución: mueve la carpeta a un nivel superior (p. ej. directamente en D:\\Música) o acorta los nombres de las carpetas. Las carpetas aparecen en el registro."
 
-#: taggerform.pas:1715
+#: taggerform.pas:1747
 msgid "Achtung bei Mehrfachauswahl: Sind mehrere Zeilen markiert, bekommen alle markierten Dateien den neuen Wert (z.B. alle dasselbe Album oder Cover). Felder mit „<verschieden>“ bleiben pro Datei erhalten, solange du sie nicht änderst."
 msgstr "Atención con la selección múltiple: si hay varias filas seleccionadas, todos los archivos seleccionados reciben el nuevo valor (p. ej. todos el mismo álbum o portada). Los campos con «<distintos>» conservan el valor de cada archivo mientras no los cambies."
 
@@ -525,23 +525,23 @@ msgstr "Batería"
 msgid "Akku (%d %%)"
 msgstr "Batería (%d %%)"
 
-#: uinfo.pas:421
+#: uinfo.pas:428
 msgid "Aktuelles Log: %s"
 msgstr "Registro actual: %s"
 
-#: taggerform.pas:487 taggerform.pas:821
+#: taggerform.pas:519 taggerform.pas:853
 msgid "Album"
 msgstr "Álbum"
 
-#: taggerform.pas:780
+#: taggerform.pas:812
 msgid "Album, EP oder Single, auf der der Track erschienen ist"
 msgstr "Álbum, EP o single en el que se publicó la pista"
 
-#: taggerform.pas:488
+#: taggerform.pas:520
 msgid "Album-Interpret"
 msgstr "Artista del álbum"
 
-#: umain.pas:1460
+#: umain.pas:1475
 msgid "Alle %d Dateien aus der Liste entfernen?"
 msgstr "¿Eliminar todos los %d archivos de la lista?"
 
@@ -549,19 +549,19 @@ msgstr "¿Eliminar todos los %d archivos de la lista?"
 msgid "Alle Audiodateien eines Ordners (inkl. Unterordner) hinzufügen"
 msgstr "Añadir todos los archivos de audio de una carpeta (incluidas subcarpetas)"
 
-#: umain.pas:638 umain.pas:1484
+#: umain.pas:648 umain.pas:1499
 msgid "Alle Dateien"
 msgstr "Todos los archivos"
 
-#: umain.pas:2094
+#: umain.pas:2109
 msgid "Alle Dateien in der Liste sind bereits fertig. Nochmals konvertieren?"
 msgstr "Todos los archivos de la lista ya están listos. ¿Convertir de nuevo?"
 
-#: umain.pas:2627
+#: umain.pas:2642
 msgid "Alle Dateien in der Liste sind fertig."
 msgstr "Todos los archivos de la lista están listos."
 
-#: umain.pas:2889 umain.pas:2915
+#: umain.pas:2904 umain.pas:2930
 msgid "Alle Dateien sind fertig. Der PC wird in %d Sekunden heruntergefahren."
 msgstr "Todos los archivos están listos. El PC se apagará en %d segundos."
 
@@ -569,11 +569,11 @@ msgstr "Todos los archivos están listos. El PC se apagará en %d segundos."
 msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
 msgstr "Todos los detalles: Info -> Licencias, así como LICENSE y THIRD-PARTY-NOTICES.md en la carpeta StemMaker."
 
-#: uinfo.pas:526
+#: uinfo.pas:533
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "Todos los detalles están en el CHANGELOG de GitHub (en alemán)"
 
-#: packerform.pas:648
+#: packerform.pas:658
 msgid "Alle packen"
 msgstr "Empaquetar todo"
 
@@ -581,27 +581,27 @@ msgstr "Empaquetar todo"
 msgid "Alle verneinen"
 msgstr "No a todo"
 
-#: uinit.pas:891
+#: uinit.pas:901
 msgid "Alles bereit"
 msgstr "Todo listo"
 
-#: playerform.pas:827
+#: playerform.pas:846
 msgid "Alles zurücksetzen: Mute/Solo aus, Fader auf 100 %, Modus Stems (Taste 0)"
 msgstr "Restablecer todo: mute/solo desactivados, faders al 100 %, modo stems (tecla 0)"
 
-#: ureport.pas:445
+#: ureport.pas:453
 msgid "Als GitHub-Issue"
 msgstr "Como issue de GitHub"
 
-#: ureport.pas:256
+#: ureport.pas:264
 msgid "Als GitHub-Issue (öffentlich)"
 msgstr "Como issue de GitHub (público)"
 
-#: umain.pas:1850 umain.lfm:335
+#: umain.pas:1865 umain.lfm:335
 msgid "Anhören"
 msgstr "Escuchar"
 
-#: uinfo.pas:499
+#: uinfo.pas:506
 msgid "Anleitung"
 msgstr "Guía"
 
@@ -609,7 +609,7 @@ msgstr "Guía"
 msgid "Anleitung, Version, Spenden, Logs"
 msgstr "Guía, versión, donaciones, registros"
 
-#: playerform.pas:681
+#: playerform.pas:700
 msgid "Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)"
 msgstr "Elegir vista: compacta, forma de onda o reproductor de CD (tecla W: compacta/forma de onda)"
 
@@ -617,11 +617,11 @@ msgstr "Elegir vista: compacta, forma de onda o reproductor de CD (tecla W: comp
 msgid "Antwort zu gross"
 msgstr "Respuesta demasiado grande"
 
-#: packerform.pas:506
+#: packerform.pas:516
 msgid "Auch in Unterordnern suchen. Die Unterordner müssen in allen Ordnern gleich heissen."
 msgstr "Buscar también en subcarpetas. Las subcarpetas deben llamarse igual en todas las carpetas."
 
-#: taggerform.pas:1717
+#: taggerform.pas:1749
 msgid "Audio, Stems und Traktors eigene Daten (auch in MP3s) bleiben immer unverändert, neu geschrieben werden nur die Tags."
 msgstr "El audio, los stems y los datos propios de Traktor (también en MP3) nunca se modifican, solo se reescriben las etiquetas."
 
@@ -629,7 +629,7 @@ msgstr "El audio, los stems y los datos propios de Traktor (también en MP3) nun
 msgid "Audio-Format:"
 msgstr "Formato de audio:"
 
-#: umain.pas:635
+#: umain.pas:645
 msgid "Audiodateien wählen"
 msgstr "Elegir archivos de audio"
 
@@ -641,7 +641,7 @@ msgstr "No se pudo abrir el dispositivo de audio (error de waveOutOpen %d)."
 msgid "Aufruf: StemCLI <datei|ordner> [...] [-o ausgabeordner] [-m ht|ft|v3]"
 msgstr "Uso: StemCLI <archivo|carpeta> [...] [-o carpeta_salida] [-m ht|ft|v3]"
 
-#: umain.pas:1859
+#: umain.pas:1874
 msgid "Aus Liste entfernen"
 msgstr "Quitar de la lista"
 
@@ -649,7 +649,7 @@ msgstr "Quitar de la lista"
 msgid "Ausbalanciert"
 msgstr "Equilibrado"
 
-#: packerform.pas:570
+#: packerform.pas:580
 msgid "Ausgabeordner (Unterordner werden übernommen)"
 msgstr "Carpeta de salida (se mantienen las subcarpetas)"
 
@@ -657,7 +657,7 @@ msgstr "Carpeta de salida (se mantienen las subcarpetas)"
 msgid "Ausgabeordner kann nicht erstellt werden"
 msgstr "No se puede crear la carpeta de salida"
 
-#: packerform.pas:1681
+#: packerform.pas:1691
 msgid "Ausgabeordner wählen"
 msgstr "Elegir carpeta de salida"
 
@@ -665,27 +665,27 @@ msgstr "Elegir carpeta de salida"
 msgid "Ausgabeordner:"
 msgstr "Carpeta de salida:"
 
-#: usettings.pas:295
+#: usettings.pas:307
 msgid "Auto"
 msgstr "Auto"
 
-#: usettings.pas:296
+#: usettings.pas:308
 msgid "Auto: so viele Teile wie der Prozessor echte Kerne hat (höchstens 4) und der Arbeitsspeicher verkraftet"
 msgstr "Auto: tantas partes como núcleos físicos tenga el procesador (máximo 4) y la RAM pueda manejar"
 
-#: usettings.pas:337
+#: usettings.pas:349
 msgid "Automatisch (Grafikkarte, wenn sie mitmacht)"
 msgstr "Automático (tarjeta gráfica si funciona)"
 
-#: usettings.pas:408
+#: usettings.pas:420
 msgid "Automatisch (wie Windows)"
 msgstr "Automático (como Windows)"
 
-#: usettings.pas:412
+#: usettings.pas:424
 msgid "Automatisch folgt der Windows-Einstellung \"Standard-App-Modus\" (Personalisierung > Farben)."
 msgstr "Automático sigue el ajuste de Windows \"Elegir el modo de aplicación predeterminado\" (Personalización > Colores)."
 
-#: usettings.pas:339
+#: usettings.pas:351
 msgid "Automatisch: Die Grafikkarte wird nur genommen, wenn sie im Test gleiche Stems liefert und schneller ist als die CPU (Beta)."
 msgstr "Automático: la tarjeta gráfica solo se usa si en la prueba da los mismos stems y es más rápida que la CPU (beta)."
 
@@ -693,11 +693,11 @@ msgstr "Automático: la tarjeta gráfica solo se usa si en la prueba da los mism
 msgid "Automatisch: Die Stem-Datei bekommt die Bitrate der Quelle (z.B. MP3 256 -> AAC 256).\nGrösser bringt nichts - besser als die Quelle wird es nie.\nSehr niedrige Quellen (unter 192) bekommen 192, damit beim Neu-Kodieren nichts zusätzlich verloren geht."
 msgstr "Automático: el archivo stem obtiene la tasa de bits de la fuente (ej. MP3 256 -> AAC 256).\nMás alto no sirve de nada: nunca será mejor que la fuente.\nLas fuentes muy bajas (menores a 192) reciben 192 para que no se pierda nada extra al recodificar."
 
-#: taggerform.pas:492
+#: taggerform.pas:524
 msgid "BPM"
 msgstr "BPM"
 
-#: taggerform.pas:1836
+#: taggerform.pas:1868
 msgid "BPM „%s“ bei %s ist ungültig. Bitte eine ganze Zahl von %d bis %d eingeben oder das Feld leeren."
 msgstr "El BPM «%s» de %s no es válido. Introduce un número entero de %d a %d o deja el campo vacío."
 
@@ -713,43 +713,43 @@ msgstr "Bass fix: graves profundos por debajo de %s Hz movidos de Other a Bass"
 msgid "Bass-Fix: Tiefbass von Other nach Bass"
 msgstr "Bass fix: mover graves profundos de Other a Bass"
 
-#: uinit.pas:609 ulicenseui.pas:91 umain.pas:2709
+#: uinit.pas:618 ulicenseui.pas:99 umain.pas:2724
 msgid "Beenden"
 msgstr "Salir"
 
-#: usettings.pas:303
+#: usettings.pas:315
 msgid "Bei ganzen Ordnern: Musik\\House\\2024\\track.mp3 wird zu <Ausgabeordner>\\House\\2024\\track.stem.mp4"
 msgstr "Con carpetas completas: Música\\House\\2024\\track.mp3 pasa a ser <carpeta de salida>\\House\\2024\\track.stem.mp4"
 
-#: usettings.pas:327
+#: usettings.pas:339
 msgid "Beide rechnen dasselbe Modell, die Stems sind gleich. Turbo ist auf der CPU etwa 5-8x schneller und kann die Grafikkarte nutzen."
 msgstr "Ambos calculan el mismo modelo, los stems son iguales. Turbo es unas 5-8 veces más rápido en la CPU y puede usar la tarjeta gráfica."
 
-#: taggerform.pas:1713
+#: taggerform.pas:1745
 msgid "Beim Laden wird nichts verändert. In die Dateien geschrieben wird erst mit „Speichern“, und nur bei Dateien mit Änderungen."
 msgstr "Al cargar no se modifica nada. Los archivos solo se escriben al pulsar «Guardar», y solo los que tienen cambios."
 
-#: usettings.pas:421
+#: usettings.pas:433
 msgid "Beim Minimieren nur das Symbol neben der Uhr zeigen"
 msgstr "Al minimizar, mostrar solo el icono junto al reloj"
 
-#: usettings.pas:418 uupdateui.pas:451
+#: usettings.pas:430 uupdateui.pas:464
 msgid "Beim Start nach Updates suchen"
 msgstr "Buscar actualizaciones al inicio"
 
-#: packerform.pas:385
+#: packerform.pas:395
 msgid "Beispiel: „* (A)“ findet „Hello (A).wav“, der Song heisst dann „Hello“."
 msgstr "Ejemplo: «* (A)» encuentra «Hello (A).wav», la canción se llama entonces «Hello»."
 
-#: taggerform.pas:797
+#: taggerform.pas:829
 msgid "Benachbarte Zahlen passen beim Mixen gut zusammen (z.B. 8A zu 7A, 9A und 8B)."
 msgstr "Los números vecinos combinan bien al mezclar (p. ej. 8A con 7A, 9A y 8B)."
 
-#: umain.pas:1461
+#: umain.pas:1476
 msgid "Bereits erstellte Stem-Dateien bleiben erhalten."
 msgstr "Los archivos stem ya creados se conservan."
 
-#: umain.pas:792
+#: umain.pas:802
 msgid "Bericht ansehen..."
 msgstr "Ver informe..."
 
@@ -773,43 +773,43 @@ msgstr "Aceptado - StemCLI está habilitado en este PC."
 msgid "Bestätigung"
 msgstr "Confirmación"
 
-#: taggerform.pas:736
+#: taggerform.pas:768
 msgid "Bild aus der Zwischenablage einfügen (Strg+V)"
 msgstr "Pegar imagen del portapapeles (Ctrl+V)"
 
-#: taggerform.pas:1798
+#: taggerform.pas:1830
 msgid "Bild kann nicht gelesen werden:%s%s"
 msgstr "No se puede leer la imagen:%s%s"
 
-#: taggerform.pas:732
+#: taggerform.pas:764
 msgid "Bild..."
 msgstr "Imagen..."
 
-#: taggerform.pas:2131
+#: taggerform.pas:2163
 msgid "Bilder"
 msgstr "Imágenes"
 
-#: ureport.pas:458
+#: ureport.pas:466
 msgid "Bitte die Datei aus dem Explorer-Fenster hier hineinziehen:"
 msgstr "Arrastra aquí el archivo desde la ventana del Explorador:"
 
-#: playerform.pas:2100
+#: playerform.pas:2119
 msgid "Bitte eine Stem-Datei (.stem.mp4) reinziehen, keinen Ordner."
 msgstr "Arrastra un archivo stem (.stem.mp4), no una carpeta."
 
-#: packerform.pas:1061
+#: packerform.pas:1071
 msgid "Bitte einen Ausgabeordner angeben (oder „neben die Master-Datei“ wählen)."
 msgstr "Indica una carpeta de salida (o elige «junto al archivo master»)."
 
-#: umain.pas:2055
+#: umain.pas:2070
 msgid "Bitte einen Ausgabeordner wählen oder \"neben Originaldatei\" aktivieren."
 msgstr "Elige una carpeta de salida o activa \"junto al archivo original\"."
 
-#: playerform.pas:2122
+#: playerform.pas:2141
 msgid "Bitte im nächsten Dialog die ffmpeg.exe auswählen"
 msgstr "Selecciona ffmpeg.exe en la siguiente ventana"
 
-#: packerform.pas:1510
+#: packerform.pas:1520
 msgid "Bitte im nächsten Fenster die ffmpeg.exe auswählen (z. B. aus StemMaker\\tools\\)."
 msgstr "Selecciona ffmpeg.exe en la siguiente ventana (p. ej. de StemMaker\\tools\\)."
 
@@ -817,91 +817,91 @@ msgstr "Selecciona ffmpeg.exe en la siguiente ventana (p. ej. de StemMaker\\tool
 msgid "Bitte vor der ersten Benutzung lesen"
 msgstr "Léelo antes del primer uso"
 
-#: ureport.pas:257
+#: ureport.pas:265
 msgid "Braucht ein GitHub-Konto. Issues kann jeder lesen."
 msgstr "Necesitas una cuenta de GitHub. Cualquiera puede leer los issues."
 
-#: playerform.pas:3047
+#: playerform.pas:3068
 msgid "Breche Dekodieren ab ..."
 msgstr "Cancelando la decodificación ..."
 
-#: packerform.pas:1731 packerform.pas:1823 uinit.pas:1107
+#: packerform.pas:1741 packerform.pas:1834 uinit.pas:1117
 msgid "Breche ab ..."
 msgstr "Cancelando ..."
 
-#: playerform.pas:1582
+#: playerform.pas:1601
 msgid "CD-PLAYER"
 msgstr "REPRODUCTOR CD"
 
-#: playerform.pas:858
+#: playerform.pas:877
 msgid "CLIP"
 msgstr "CLIP"
 
-#: uturbotest.pas:579
+#: uturbotest.pas:604
 msgid "CPU einrichten (Durchgang %d von %d)"
 msgstr "Preparando la CPU (pasada %d de %d)"
 
-#: uturbotest.pas:581
+#: uturbotest.pas:606
 msgid "CPU messen (Durchgang %d von %d)"
 msgstr "Midiendo la CPU (pasada %d de %d)"
 
-#: uturbotest.pas:577
+#: uturbotest.pas:602
 msgid "CPU vorbereiten"
 msgstr "Preparando la CPU"
 
-#: playerform.pas:1381
+#: playerform.pas:1400
 msgid "CUE"
 msgstr "CUE"
 
-#: taggerform.pas:497 taggerform.pas:821
+#: taggerform.pas:529 taggerform.pas:853
 msgid "Cover"
 msgstr "Portada"
 
-#: packerform.pas:603
+#: packerform.pas:613
 msgid "Cover aus dem Ordner, wenn die Datei keins hat"
 msgstr "Portada de la carpeta si el archivo no tiene"
 
-#: taggerform.pas:2237
+#: taggerform.pas:2269
 msgid "Cover speichern"
 msgstr "Guardar portada"
 
-#: taggerform.pas:2130
+#: taggerform.pas:2162
 msgid "Cover-Bild wählen"
 msgstr "Elegir imagen de portada"
 
-#: packerform.pas:497
+#: packerform.pas:507
 msgid "DAW-Export: „Song“ + „Song_drums“ … „_vocals“"
 msgstr "Exportación DAW: «Canción» + «Canción_drums» … «_vocals»"
 
-#: usettings.pas:315
+#: usettings.pas:327
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "Después de esto, todo se restablecerá a como estaba antes. La pantalla puede apagarse."
 
-#: uinfo.pas:532
+#: uinfo.pas:539
 msgid "Danke"
 msgstr "Gracias"
 
-#: packerform.pas:1757
+#: packerform.pas:1768
 msgid "Danke an Cuiusquemodi für die Idee, den Test mit 178 Songs und die vielen Rückmeldungen."
 msgstr "Gracias a Cuiusquemodi por la idea, la prueba con 178 canciones y sus muchos comentarios."
 
-#: uinfo.pas:284
+#: uinfo.pas:291
 msgid "Danke an alle, die StemMaker mit Übersetzungen, Tests, Ideen, Fehlermeldungen oder Spenden unterstützen!"
 msgstr "¡Gracias a todos los que apoyan StemMaker con traducciones, pruebas, ideas, informes de errores o donaciones!"
 
-#: taggerform.pas:2210
+#: taggerform.pas:2242
 msgid "Das Bild aus der Zwischenablage kann nicht gelesen werden."
 msgstr "No se puede leer la imagen del portapapeles."
 
-#: usettings.pas:593
+#: usettings.pas:615
 msgid "Das Design wird beim nächsten Start übernommen."
 msgstr "El tema se aplicará en el próximo inicio."
 
-#: usettings.pas:605
+#: usettings.pas:627
 msgid "Das Design wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "El tema se aplicará tras reiniciar. ¿Reiniciar StemMaker ahora?"
 
-#: usettings.pas:422
+#: usettings.pas:434
 msgid "Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol neben der Uhr holt es zurück."
 msgstr "La ventana desaparece de la barra de tareas. Haz clic en el icono junto al reloj para recuperarla."
 
@@ -925,7 +925,7 @@ msgstr "La ventana abierta pasa ahora al frente. Añade allí más archivos a la
 msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
 msgstr "Eso son aproximadamente %s de música, separada en tu propio PC: sin suscripción, sin subida, sin anuncios."
 
-#: taggerform.pas:820 umain.lfm:132
+#: taggerform.pas:852 umain.lfm:132
 msgid "Datei"
 msgstr "Archivo"
 
@@ -937,11 +937,11 @@ msgstr "No se puede guardar el archivo: %s"
 msgid "Datei nicht gefunden: %s"
 msgstr "Archivo no encontrado: %s"
 
-#: umain.pas:1260
+#: umain.pas:1275
 msgid "Datei:  vergangen %s   |   verbleibend %s"
 msgstr "Archivo:  transcurrido %s   |   restante %s"
 
-#: packerform.pas:697
+#: packerform.pas:707
 msgid "Dateien"
 msgstr "Archivos"
 
@@ -949,11 +949,11 @@ msgstr "Archivos"
 msgid "Dateien hinzufügen..."
 msgstr "Añadir archivos..."
 
-#: taggerform.pas:2043
+#: taggerform.pas:2075
 msgid "Dateien öffnen"
 msgstr "Abrir archivos"
 
-#: taggerform.pas:635
+#: taggerform.pas:667
 msgid "Dateien..."
 msgstr "Archivos..."
 
@@ -961,15 +961,15 @@ msgstr "Archivos..."
 msgid "Dateigröße: %.1f MB"
 msgstr "Tamaño del archivo: %.1f MB"
 
-#: packerform.pas:384
+#: packerform.pas:394
 msgid "Dateiname ohne Endung, * steht für den Songnamen."
 msgstr "Nombre de archivo sin extensión, * representa el nombre de la canción."
 
-#: playerform.pas:2060
+#: playerform.pas:2079
 msgid "Dekodiere %d Spuren mit ffmpeg ... %.1f s"
 msgstr "Decodificando %d pistas con ffmpeg ... %.1f s"
 
-#: playerform.pas:2166
+#: playerform.pas:2185
 msgid "Dekodiere ..."
 msgstr "Decodificando ..."
 
@@ -977,23 +977,23 @@ msgstr "Decodificando ..."
 msgid "Dekodieren"
 msgstr "Decodificando"
 
-#: playerform.pas:813
+#: playerform.pas:832
 msgid "Der Abschnitt A bis B wird dann endlos wiederholt."
 msgstr "Luego el tramo de A a B se repite sin fin."
 
-#: ureport.pas:364
+#: ureport.pas:372
 msgid "Der Bericht konnte nicht gespeichert werden: %s"
 msgstr "No se pudo guardar el informe: %s"
 
-#: playerform.pas:1421 playerform.pas:1664
+#: playerform.pas:1440 playerform.pas:1683
 msgid "Der CD-Player passt bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "El reproductor de CD no cabe en la pantalla con este escalado de Windows."
 
-#: packerform.pas:1056
+#: packerform.pas:1066
 msgid "Der Ordner von „%s“ fehlt oder existiert nicht."
 msgstr "La carpeta de «%s» falta o no existe."
 
-#: uupdateui.pas:203
+#: uupdateui.pas:216
 msgid "Der Server antwortet nicht."
 msgstr "El servidor no responde."
 
@@ -1005,35 +1005,35 @@ msgstr "StemPlayer solo reproduce archivos stem de Traktor (.stem.mp4),"
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
 msgstr "El grave profundo por debajo de 80 Hz que la separación deja en el stem \"Other\" se mueve al stem de Bass.\nEl stem de Bass suena más lleno (como los propios stems de Traktor); todos los stems juntos suenan sin cambios."
 
-#: uinfo.pas:348
+#: uinfo.pas:355
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "Falta el historial de versiones en esta versión."
 
-#: uturbotest.pas:751
+#: uturbotest.pas:776
 msgid "Der Vortest hat nicht geklappt (Code %s). StemMaker versucht Turbo trotzdem und nimmt sonst demucs.cpp (Klassisch). Die Einzelheiten stehen im Log."
 msgstr "La prueba previa no ha funcionado (código %s). StemMaker intentará usar Turbo de todos modos y, si no, usará demucs.cpp (Clásico). Los detalles están en el registro."
 
-#: playerform.pas:1268
+#: playerform.pas:1287
 msgid "Der blaue Ring zeigt die Restzeit."
 msgstr "El anillo azul muestra el tiempo restante."
 
-#: usettings.pas:403
+#: usettings.pas:415
 msgid "Design:"
 msgstr "Tema:"
 
-#: playerform.pas:790
+#: playerform.pas:809
 msgid "Die 4 Stems gemischt - mit Mute / Solo / Lautstärke (Taste S)"
 msgstr "Los 4 stems mezclados - con mute / solo / volumen (tecla S)"
 
-#: uinfo.pas:163
+#: uinfo.pas:170
 msgid "Die Anleitung liegt normalerweise im StemMaker-Ordner neben StemMaker.exe. Bitte das ZIP komplett entpacken."
 msgstr "La guía suele estar en la carpeta de StemMaker, junto a StemMaker.exe. Descomprime el ZIP completo."
 
-#: packerform.pas:479
+#: packerform.pas:489
 msgid "Die Benennung wird erkannt, z. B. „Song_drums“, „Song (Vocals)“, „Song (A)“ oder „Song_1“."
 msgstr "El nombre de los archivos se reconoce solo, p. ej. «Song_drums», «Song (Vocals)», «Song (A)» o «Song_1»."
 
-#: packerform.pas:1431
+#: packerform.pas:1441
 msgid "Die Dateien lassen sich direkt in Traktor laden. Ordner jetzt öffnen?"
 msgstr "Los archivos se pueden cargar directamente en Traktor. ¿Abrir la carpeta ahora?"
 
@@ -1041,51 +1041,51 @@ msgstr "Los archivos se pueden cargar directamente en Traktor. ¿Abrir la carpet
 msgid "Die Details stehen im Log:"
 msgstr "Los detalles están en el registro:"
 
-#: uturbotest.pas:205
+#: uturbotest.pas:230
 msgid "Die Grafikkarte (%s) %s. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "La tarjeta gráfica (%s) %s. StemMaker separa con la CPU: unos %s de cálculo por minuto de música."
 
-#: uturbotest.pas:194
+#: uturbotest.pas:219
 msgid "Die Grafikkarte (%s) würde funktionieren, eingestellt ist aber \"Nur CPU\". StemMaker trennt mit der CPU: etwa %s pro Minute Musik."
 msgstr "La tarjeta gráfica (%s) funcionaría, pero está elegido \"Solo CPU\". StemMaker separa con la CPU: unos %s por minuto de música."
 
-#: umain.pas:824
+#: umain.pas:834
 msgid "Die Konvertierung läuft noch. Abbrechen und beenden?"
 msgstr "La conversión aún está en curso. ¿Cancelar y salir?"
 
-#: taggerform.pas:682
+#: taggerform.pas:714
 msgid "Die Kopie wird nie überschrieben, sie bleibt also das echte Original."
 msgstr "La copia nunca se sobrescribe, así que sigue siendo el original."
 
-#: umain.pas:2116
+#: umain.pas:2131
 msgid "Die Liste ist leer - zuerst Dateien hinzufügen."
 msgstr "La lista está vacía: añade archivos primero."
 
-#: taggerform.pas:796
+#: taggerform.pas:828
 msgid "Die Liste zeigt alle drei, gespeichert wird die klassische (z.B. Am)."
 msgstr "La lista muestra las tres, se guarda la clásica (p. ej. Am)."
 
-#: uupdateui.pas:567
+#: uupdateui.pas:585
 msgid "Die Prüfsumme (SHA-256) des Updates stimmt nicht. Die Datei wurde verworfen, an StemMaker wurde nichts geändert."
 msgstr "La suma de comprobación (SHA-256) de la actualización no coincide. El archivo fue descartado, no se ha realizado ningún cambio en StemMaker."
 
-#: usettings.pas:590
+#: usettings.pas:612
 msgid "Die Sprache wird beim nächsten Start übernommen."
 msgstr "El idioma se aplicará en el próximo inicio."
 
-#: usettings.pas:602
+#: usettings.pas:624
 msgid "Die Sprache wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "El idioma se aplicará tras reiniciar. ¿Reiniciar StemMaker ahora?"
 
-#: uinfo.pas:594
+#: uinfo.pas:601
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "La búsqueda de actualizaciones falló: %s"
 
-#: usettings.pas:385
+#: usettings.pas:397
 msgid "Die Symbole zeigt Traktor fest nach Platz 1-4, sie lassen sich nicht ändern."
 msgstr "Traktor asigna los iconos de forma fija a las posiciones 1-4; no se pueden cambiar."
 
-#: playerform.pas:1428 playerform.pas:1684
+#: playerform.pas:1447 playerform.pas:1703
 msgid "Die Wellenformen passen bei dieser Windows-Skalierung nicht auf den Bildschirm."
 msgstr "Las formas de onda no caben en la pantalla con este escalado de Windows."
 
@@ -1093,7 +1093,7 @@ msgstr "Las formas de onda no caben en la pantalla con este escalado de Windows.
 msgid "Die alte Version wurde wiederhergestellt."
 msgstr "La versión anterior ha sido restaurada."
 
-#: umain.pas:2520
+#: umain.pas:2535
 msgid "Die zuletzt bearbeitete Datei wurde unterbrochen - sie wird mit \"Start\" neu gemacht."
 msgstr "El archivo que se estaba procesando se interrumpió; se volverá a procesar al pulsar \"Iniciar\"."
 
@@ -1101,27 +1101,27 @@ msgstr "El archivo que se estaba procesando se interrumpió; se volverá a proce
 msgid "Diese Bestätigung gilt für diesen PC. Wird der StemMaker-Ordner auf einen anderen PC kopiert, kommt diese Frage dort noch einmal."
 msgstr "Esta confirmación vale para este PC. Si copias la carpeta de StemMaker a otro PC, allí se te volverá a preguntar."
 
-#: uinit.pas:909
+#: uinit.pas:919
 msgid "Diese Dateien werden einmalig aus dem Internet geladen: %s. Danach startet StemMaker automatisch."
 msgstr "Estos archivos se descargarán una sola vez de Internet: %s. Después, StemMaker se iniciará automáticamente."
 
-#: uupdateui.pas:479
+#: uupdateui.pas:492
 msgid "Diese Version überspringen"
 msgstr "Omitir esta versión"
 
-#: taggerform.pas:1806
+#: taggerform.pas:1838
 msgid "Dieses Bildformat wird nicht unterstützt. Bitte JPEG, PNG, BMP oder GIF verwenden."
 msgstr "Este formato de imagen no es compatible. Usa JPEG, PNG, BMP o GIF."
 
-#: uupdateui.pas:533
+#: uupdateui.pas:551
 msgid "Dieses Update kann nicht automatisch installiert werden. Die Download-Seite wird im Browser geöffnet."
 msgstr "Esta actualización no se puede instalar automáticamente. Se abrirá la página de descarga en tu navegador."
 
-#: taggerform.pas:844
+#: taggerform.pas:876
 msgid "Doppelklick auf den Rand passt die Spalte an den Text an"
 msgstr "Doble clic en el borde ajusta la columna al texto"
 
-#: uinit.pas:1066
+#: uinit.pas:1076
 msgid "Download fehlgeschlagen"
 msgstr "Descarga fallida"
 
@@ -1129,11 +1129,11 @@ msgstr "Descarga fallida"
 msgid "Download fehlgeschlagen (curl %d)"
 msgstr "Descarga fallida (curl %d)"
 
-#: uinit.pas:982
+#: uinit.pas:992
 msgid "Download läuft ..."
 msgstr "Descargando ..."
 
-#: uinit.pas:1028
+#: uinit.pas:1038
 msgid "Download läuft ...  %s"
 msgstr "Descargando ...  %s"
 
@@ -1141,35 +1141,35 @@ msgstr "Descargando ...  %s"
 msgid "Download unvollständig"
 msgstr "Descarga incompleta"
 
-#: uinfo.pas:591
+#: uinfo.pas:598
 msgid "Du hast die neueste Version (%s)."
 msgstr "Tienes la última versión (%s)."
 
-#: usettings.pas:410
+#: usettings.pas:422
 msgid "Dunkel"
 msgstr "Oscuro"
 
-#: usettings.pas:414
+#: usettings.pas:426
 msgid "Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11."
 msgstr "Oscuro necesita Windows 10 (versión 1809 o posterior) o Windows 11."
 
-#: packerform.pas:499
+#: packerform.pas:509
 msgid "Eigene Muster"
 msgstr "Patrones propios"
 
-#: uturbotest.pas:730
+#: uturbotest.pas:755
 msgid "Ein Track von 3 Minuten dauert hier etwa %s mit htdemucs (Standard) und %s mit htdemucs_ft (beste Qualität)."
 msgstr "Una pista de 3 minutos tarda aquí unos %s con htdemucs (estándar) y %s con htdemucs_ft (mejor calidad)."
 
-#: taggerform.pas:733
+#: taggerform.pas:765
 msgid "Einfügen"
 msgstr "Pegar"
 
-#: usettings.pas:262 umain.lfm:158
+#: usettings.pas:274 umain.lfm:158
 msgid "Einstellungen"
 msgstr "Configuración"
 
-#: ulicenseui.pas:99
+#: ulicenseui.pas:107
 msgid "Einverstanden - StemMaker starten"
 msgstr "De acuerdo - iniciar StemMaker"
 
@@ -1181,7 +1181,7 @@ msgstr "¿Estás de acuerdo? Entonces ejecuta StemCLI una vez con --accept (o in
 msgid "Energiesparmodus"
 msgstr "Economizador"
 
-#: umain.pas:2136
+#: umain.pas:2151
 msgid "Energiesparplan \"%s\" vorübergehend auf \"%s\" gestellt - wird nach der Konvertierung zurückgestellt."
 msgstr "Plan de energía cambiado temporalmente de \"%s\" a \"%s\"; se restaurará después de la conversión."
 
@@ -1189,15 +1189,15 @@ msgstr "Plan de energía cambiado temporalmente de \"%s\" a \"%s\"; se restaurar
 msgid "Energiesparplan vorübergehend: %s -> %s"
 msgstr "Plan de energía temporalmente: %s -> %s"
 
-#: usettings.pas:319
+#: usettings.pas:331
 msgid "Engine (trennt die Stems)"
 msgstr "Motor (separa los stems)"
 
-#: usettings.pas:320
+#: usettings.pas:332
 msgid "Engine:"
 msgstr "Motor:"
 
-#: taggerform.pas:637 taggerform.pas:734 umain.lfm:52
+#: taggerform.pas:669 taggerform.pas:766 umain.lfm:52
 msgid "Entfernen"
 msgstr "Eliminar"
 
@@ -1205,7 +1205,7 @@ msgstr "Eliminar"
 msgid "Entpacken fehlgeschlagen"
 msgstr "Error al descomprimir"
 
-#: ureport.pas:365
+#: ureport.pas:373
 msgid "Er liegt aber in der Zwischenablage (Strg+V)."
 msgstr "Sin embargo, está en el portapapeles (Ctrl+V)."
 
@@ -1213,39 +1213,39 @@ msgstr "Sin embargo, está en el portapapeles (Ctrl+V)."
 msgid "Ergebnis hat nicht 5 Audiospuren"
 msgstr "El resultado no tiene 5 pistas de audio"
 
-#: packerform.pas:872
+#: packerform.pas:882
 msgid "Erkannt: „%s“ … „%s“, %s."
 msgstr "Reconocido: «%s» … «%s», %s."
 
-#: uinit.pas:607
+#: uinit.pas:616
 msgid "Erneut prüfen"
 msgstr "Comprobar de nuevo"
 
-#: uturbotest.pas:440
+#: uturbotest.pas:465
 msgid "Erneut testen"
 msgstr "Volver a probar"
 
-#: taggerform.pas:784
+#: taggerform.pas:816
 msgid "Erscheinungsjahr, z.B. 2016"
 msgstr "Año de publicación, p. ej. 2016"
 
-#: umain.pas:2065
+#: umain.pas:2080
 msgid "Es fehlen Programmteile:"
 msgstr "Faltan componentes del programa:"
 
-#: uinit.pas:902
+#: uinit.pas:912
 msgid "Es fehlen noch Dateien"
 msgstr "Aún faltan archivos"
 
-#: taggerform.pas:791
+#: taggerform.pas:823
 msgid "Es gibt drei übliche Schreibweisen für dieselbe Tonart:"
 msgstr "Hay tres formas habituales de escribir la misma tonalidad:"
 
-#: taggerform.pas:2374
+#: taggerform.pas:2407
 msgid "Es gibt ungespeicherte Änderungen. Jetzt speichern?"
 msgstr "Hay cambios sin guardar. ¿Guardar ahora?"
 
-#: taggerform.pas:2115
+#: taggerform.pas:2147
 msgid "Es gibt ungespeicherte Änderungen. Liste trotzdem leeren?"
 msgstr "Hay cambios sin guardar. ¿Vaciar la lista de todos modos?"
 
@@ -1253,11 +1253,11 @@ msgstr "Hay cambios sin guardar. ¿Vaciar la lista de todos modos?"
 msgid "Es ist ein unerwarteter Fehler aufgetreten:"
 msgstr "Ha ocurrido un error inesperado:"
 
-#: packerform.pas:599
+#: packerform.pas:609
 msgid "Extras:"
 msgstr "Extras:"
 
-#: umain.pas:616
+#: umain.pas:626
 msgid "FEHLER im Hintergrund: %s (Details im Log)"
 msgstr "ERROR en segundo plano: %s (detalles en el registro)"
 
@@ -1265,87 +1265,87 @@ msgstr "ERROR en segundo plano: %s (detalles en el registro)"
 msgid "FEHLER: "
 msgstr "ERROR: "
 
-#: packerform.pas:516
+#: packerform.pas:526
 msgid "Farbe"
 msgstr "Color"
 
-#: packerform.pas:353
+#: packerform.pas:363
 msgid "Farbe des Stems in Traktor (klicken zum Ändern)"
 msgstr "Color del stem en Traktor (clic para cambiar)"
 
-#: usettings.pas:373
+#: usettings.pas:385
 msgid "Farbe wählen"
 msgstr "Elegir color"
 
-#: packerform.pas:600
+#: packerform.pas:610
 msgid "Fehlende Stems still füllen"
 msgstr "Rellenar stems que faltan con silencio"
 
-#: ulangui.pas:202 umain.pas:1163 umain.pas:2492
+#: ulangui.pas:202 umain.pas:1178 umain.pas:2507
 msgid "Fehler"
 msgstr "Error"
 
-#: uturbotest.pas:660
+#: uturbotest.pas:685
 msgid "Fehler %s"
 msgstr "error %s"
 
-#: playerform.pas:2179
+#: playerform.pas:2198
 msgid "Fehler beim Dekodieren"
 msgstr "Error al decodificar"
 
-#: playerform.pas:2180
+#: playerform.pas:2199
 msgid "Fehler beim Dekodieren: "
 msgstr "Error al decodificar: "
 
-#: taggerform.pas:1894
+#: taggerform.pas:1926
 msgid "Fehler: "
 msgstr "Error: "
 
-#: packerform.pas:1350
+#: packerform.pas:1360
 msgid "Fehler: Datei konnte nicht gespeichert werden"
 msgstr "Error: no se pudo guardar el archivo"
 
-#: packerform.pas:1344
+#: packerform.pas:1354
 msgid "Fehler: Ergebnis hat nicht 5 Spuren"
 msgstr "Error: el resultado no tiene 5 pistas"
 
-#: taggerform.pas:1864
+#: taggerform.pas:1896
 msgid "Fehler: Sicherungskopie nicht möglich"
 msgstr "Error: no se pudo crear la copia de seguridad"
 
-#: packerform.pas:1338
+#: packerform.pas:1348
 msgid "Fehler: Stem-Block"
 msgstr "Error: bloque stem"
 
-#: packerform.pas:1325
+#: packerform.pas:1335
 msgid "Fehler: ffmpeg Code %d (siehe Log)"
 msgstr "Error: ffmpeg código %d (ver registro)"
 
-#: ureport.pas:364
+#: ureport.pas:372
 msgid "Fehlerbericht"
 msgstr "Informe de error"
 
-#: ureport.pas:192
+#: ureport.pas:200
 msgid "Fehlerbericht senden"
 msgstr "Enviar informe de error"
 
-#: uinfo.pas:476 ulogui.pas:60
+#: uinfo.pas:483 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "Enviar informe de error..."
 
-#: packerform.pas:601
+#: packerform.pas:611
 msgid "Fehlt ein Stem, wird eine stille Spur eingesetzt, statt den Song zu überspringen."
 msgstr "Si falta un stem, se usa una pista en silencio en lugar de omitir la canción."
 
-#: umain.pas:1013
+#: umain.pas:1023
 msgid "Fehlt: %s"
 msgstr "Falta: %s"
 
-#: ustemjob.pas:2124 uturbotest.pas:759 uturbotest.pas:760
+#: ustemjob.pas:2124 uturbotest.pas:784 uturbotest.pas:785
 msgid "Fertig"
 msgstr "Hecho"
 
-#: umain.pas:2193
+#: umain.pas:2208
 msgid "Fertig - Gesamtzeit %s"
 msgstr "Hecho - tiempo total %s"
 
@@ -1353,95 +1353,95 @@ msgstr "Hecho - tiempo total %s"
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen"
 msgstr "Hecho: %d correctos, %d omitidos, %d fallidos"
 
-#: umain.pas:2182 umain.pas:2197
+#: umain.pas:2197 umain.pas:2212
 msgid "Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s"
 msgstr "Hecho: %d correctos, %d omitidos, %d fallidos  -  tiempo total %s"
 
-#: umain.pas:1957
+#: umain.pas:1972
 msgid "Fertige Spuren (Master + Stems) ohne KI zu Stem-Dateien packen"
 msgstr "Empaquetar pistas terminadas (máster + stems) en archivos stem sin IA"
 
-#: packerform.pas:577
+#: packerform.pas:587
 msgid "Format:"
 msgstr "Formato:"
 
-#: packerform.pas:1759
+#: packerform.pas:1770
 msgid "Frei unter der MIT-Lizenz. Enthält ffmpeg (LGPL)."
 msgstr "Libre bajo la licencia MIT. Incluye ffmpeg (LGPL)."
 
-#: taggerform.pas:799
+#: taggerform.pas:831
 msgid "Freier Text, z.B. Notizen fürs Auflegen"
 msgstr "Texto libre, p. ej. notas para pinchar"
 
-#: usettings.pas:423
+#: usettings.pas:435
 msgid "Fährt man mit der Maus über das Symbol, steht dort der Fortschritt."
 msgstr "Al pasar el ratón sobre el icono se muestra el progreso."
 
-#: umain.pas:1040
+#: umain.pas:1050
 msgid "Für \"%s\" fehlen noch Dateien."
 msgstr "Aún faltan archivos para \"%s\"."
 
-#: packerform.pas:476
+#: packerform.pas:486
 msgid "Für Benennungen, die nicht erkannt werden: Ordner, Namensmuster, Stem-Namen und Farben je Spur selbst eintragen."
 msgstr "Para nombres que no se reconocen: introduce tú mismo la carpeta, el patrón, el nombre del stem y el color de cada pista."
 
-#: packerform.pas:502
+#: packerform.pas:512
 msgid "Für Spuren ohne fertigen Master: die vier Stems werden ohne Pegeländerung zusammengemischt."
 msgstr "Para pistas sin master: los cuatro stems se mezclan sin cambiar el nivel."
 
-#: uturbotest.pas:502
+#: uturbotest.pas:527
 msgid "Für den Test braucht es das Modell htdemucs oder htdemucs_ft. Es wird beim Start von StemMaker heruntergeladen."
 msgstr "La prueba necesita el modelo htdemucs o htdemucs_ft. Se descarga al iniciar StemMaker."
 
-#: taggerform.pas:489 taggerform.pas:821
+#: taggerform.pas:521 taggerform.pas:853
 msgid "Genre"
 msgstr "Género"
 
-#: usettings.pas:332
+#: usettings.pas:344
 msgid "Gerät:"
 msgstr "Dispositivo:"
 
-#: umain.pas:1303
+#: umain.pas:1318
 msgid "Gesamt (Datei %d von %d):  verbleibend %s"
 msgstr "Total (archivo %d de %d):  restante %s"
 
-#: umain.pas:1301
+#: umain.pas:1316
 msgid "Gesamt (Datei %d von %d):  vergangen %s   |   verbleibend %s"
 msgstr "Total (archivo %d de %d):  transcurrido %s   |   restante %s"
 
-#: umain.pas:2646
+#: umain.pas:2661
 msgid "Geschätzt mit dem Tempo, das auf diesem PC gemessen wurde."
 msgstr "Estimado con la velocidad medida en este PC."
 
-#: taggerform.pas:1889
+#: taggerform.pas:1921
 msgid "Gespeichert"
 msgstr "Guardado"
 
-#: ureport.pas:446
+#: ureport.pas:454
 msgid "GitHub-Issues sind öffentlich, jeder kann sie lesen. Prüfe den Bericht vorher auf Dinge, die du nicht zeigen möchtest (z. B. Songnamen). Du brauchst ein GitHub-Konto."
 msgstr "Los issues de GitHub son públicos, cualquiera puede leerlos. Revisa antes el informe por si contiene algo que no quieras mostrar (p. ej. nombres de canciones). Necesitas una cuenta de GitHub."
 
-#: uturbotest.pas:654
+#: uturbotest.pas:679
 msgid "Grafikkarte einschalten"
 msgstr "activar tarjeta gráfica"
 
-#: uturbotest.pas:584
+#: uturbotest.pas:609
 msgid "Grafikkarte messen"
 msgstr "Midiendo la tarjeta gráfica"
 
-#: uturbotest.pas:583
+#: uturbotest.pas:608
 msgid "Grafikkarte prüfen (kann bis 30 s dauern)"
 msgstr "Comprobando la tarjeta gráfica (puede tardar hasta 30 s)"
 
-#: uturbotest.pas:582
+#: uturbotest.pas:607
 msgid "Grafikkarte suchen"
 msgstr "Buscando la tarjeta gráfica"
 
-#: umain.pas:2651
+#: umain.pas:2666
 msgid "Grobe Schätzung - nach dem ersten fertigen Track kennt StemMaker das Tempo dieses PCs."
 msgstr "Estimación aproximada: después de la primera pista finalizada, StemMaker conoce la velocidad de este PC."
 
-#: taggerform.pas:686
+#: taggerform.pas:718
 msgid "Grosse Cover auf %d px verkleinern"
 msgstr "Reducir portadas grandes a %d px"
 
@@ -1449,43 +1449,43 @@ msgstr "Reducir portadas grandes a %d px"
 msgid "HAFTUNGSAUSSCHLUSS"
 msgstr "DESCARGO DE RESPONSABILIDAD"
 
-#: ureport.pas:430
+#: ureport.pas:438
 msgid "Hallo Elospeed,"
 msgstr "Hola Elospeed,"
 
-#: packerform.pas:604
+#: packerform.pas:614
 msgid "Hat die Master-Datei kein Cover, wird cover.jpg, folder.jpg, front.jpg oder <Song>.jpg aus ihrem Ordner genommen."
 msgstr "Si el archivo master no tiene portada, se usa cover.jpg, folder.jpg, front.jpg o <canción>.jpg de su carpeta."
 
-#: uinfo.pas:292
+#: uinfo.pas:299
 msgid "Helfende"
 msgstr "Colaboradores"
 
-#: usettings.pas:409
+#: usettings.pas:421
 msgid "Hell"
 msgstr "Claro"
 
-#: umain.pas:2288
+#: umain.pas:2303
 msgid "Herunterfahren abgebrochen."
 msgstr "Apagado cancelado."
 
-#: uinit.pas:606
+#: uinit.pas:615
 msgid "Herunterladen"
 msgstr "Descargar"
 
-#: uinit.pas:885
+#: uinit.pas:895
 msgid "Herunterladen (ca. %d MB)"
 msgstr "Descargar (aprox. %d MB)"
 
-#: uinfo.pas:548
+#: uinfo.pas:555
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "Aquí solo aparece quien ha dado su consentimiento. ¿Has ayudado y quieres aparecer aquí? Escribe a elospeed.dev@gmail.com."
 
-#: packerform.pas:681 playerform.pas:701 taggerform.pas:650
+#: packerform.pas:691 playerform.pas:720 taggerform.pas:682
 msgid "Hilfe (F1)"
 msgstr "Ayuda (F1)"
 
-#: usettings.pas:465
+#: usettings.pas:477
 msgid "Hilfe zu diesem Fenster (F1)"
 msgstr "Ayuda para esta ventana (F1)"
 
@@ -1493,11 +1493,11 @@ msgstr "Ayuda para esta ventana (F1)"
 msgid "Hilfe: bebilderte Anleitung im Browser (F1)"
 msgstr "Ayuda: guía ilustrada en el navegador (F1)"
 
-#: umain.pas:686
+#: umain.pas:696
 msgid "Hinweis: %d frühere Läufe wurden unerwartet beendet - Details in den Logs mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Nota: %d ejecuciones anteriores terminaron inesperadamente; detalles en los registros con \"_ABSTURZ\" en el nombre (Info -> Abrir carpeta de logs)."
 
-#: umain.pas:2130
+#: umain.pas:2145
 msgid "Hinweis: Der PC läuft auf Akku (%s). Windows bremst dann die CPU - am Netzteil geht es deutlich schneller."
 msgstr "Nota: El PC funciona con batería (%s). Windows ralentiza la CPU; con el cargador es mucho más rápido."
 
@@ -1509,7 +1509,7 @@ msgstr "Nota: El PC funciona con batería; es más rápido con el cargador."
 msgid "Hinweis: Der PC war ca. %d min im Ruhezustand."
 msgstr "Nota: El PC estuvo en modo de suspensión durante aprox. %d min."
 
-#: umain.pas:683
+#: umain.pas:693
 msgid "Hinweis: Der letzte Lauf wurde unerwartet beendet - Details im Log mit \"_ABSTURZ\" im Namen (Info -> Logs-Ordner öffnen)."
 msgstr "Nota: La última ejecución terminó inesperadamente - detalles en el registro con \"_ABSTURZ\" en el nombre (Info -> Abrir carpeta de logs)."
 
@@ -1517,15 +1517,15 @@ msgstr "Nota: La última ejecución terminó inesperadamente - detalles en el re
 msgid "Hinweis: True Peak über 0 dBFS - die Master-Spur kann beim Abspielen leicht übersteuern"
 msgstr "Nota: true peak por encima de 0 dBFS - la pista principal puede saturar ligeramente durante la reproducción"
 
-#: playerform.pas:2159
+#: playerform.pas:2178
 msgid "Hinweis: kein Traktor-\"stem\"-Block gefunden (Standardnamen werden verwendet)."
 msgstr "Nota: no se encontró ningún bloque \"stem\" de Traktor (se usan los nombres estándar)."
 
-#: playerform.pas:2306
+#: playerform.pas:2326
 msgid "HÖRBAR"
 msgstr "AUDIBLE"
 
-#: playerform.pas:782 playerform.pas:1245 playerform.pas:1300
+#: playerform.pas:801 playerform.pas:1264 playerform.pas:1319
 msgid "HÖREN"
 msgstr "OÍR"
 
@@ -1533,31 +1533,31 @@ msgstr "OÍR"
 msgid "Höchstleistung"
 msgstr "Alto rendimiento"
 
-#: usettings.pas:456
+#: usettings.pas:468
 msgid "INI-Ordner öffnen"
 msgstr "Abrir carpeta INI"
 
-#: ulicenseui.pas:83
+#: ulicenseui.pas:91
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "He leído el descargo de responsabilidad y las notas de la licencia y estoy de acuerdo."
 
-#: packerform.pas:1050
+#: packerform.pas:1060
 msgid "Im Muster von „%s“ fehlt der Stern * für den Songnamen."
 msgstr "Al patrón de «%s» le falta el asterisco * para el nombre de la canción."
 
-#: taggerform.pas:1376
+#: taggerform.pas:1408
 msgid "Im Ordner wurden keine Stem- oder MP3-Dateien gefunden:%s%s"
 msgstr "No se encontraron archivos stem ni MP3 en la carpeta:%s%s"
 
-#: uupdateui.pas:578
+#: uupdateui.pas:596
 msgid "Im Zweifel das ZIP von der Release-Seite von Hand entpacken."
 msgstr "En caso de duda, descomprime a mano el ZIP de la página de la versión."
 
-#: taggerform.pas:2194
+#: taggerform.pas:2226
 msgid "In der Zwischenablage ist kein Bild."
 msgstr "No hay ninguna imagen en el portapapeles."
 
-#: packerform.pas:672 uinfo.pas:394 umain.lfm:80
+#: packerform.pas:682 uinfo.pas:401 umain.lfm:80
 msgid "Info"
 msgstr "Info"
 
@@ -1565,11 +1565,11 @@ msgstr "Info"
 msgid "Information"
 msgstr "Información"
 
-#: uinit.pas:569 uinit.pas:731
+#: uinit.pas:578 uinit.pas:741
 msgid "Installation wird geprüft ..."
 msgstr "Comprobando instalación ..."
 
-#: uupdateui.pas:435
+#: uupdateui.pas:448
 msgid "Installiert ist %s. Einstellungen, Liste, Logs, Modelle und ffmpeg bleiben erhalten."
 msgstr "Instalado: %s. La configuración, la lista, los logs, los modelos y ffmpeg se conservan."
 
@@ -1577,55 +1577,55 @@ msgstr "Instalado: %s. La configuración, la lista, los logs, los modelos y ffmp
 msgid "Internet-Zugriff nicht möglich (WinINet)"
 msgstr "Acceso a Internet no posible (WinINet)"
 
-#: uinit.pas:1068
+#: uinit.pas:1078
 msgid "Internetverbindung prüfen und \"Herunterladen\" erneut klicken."
 msgstr "Comprueba tu conexión a Internet y haz clic en \"Descargar\" de nuevo."
 
-#: taggerform.pas:486 taggerform.pas:820
+#: taggerform.pas:518 taggerform.pas:852
 msgid "Interpret"
 msgstr "Artista"
 
-#: taggerform.pas:781
+#: taggerform.pas:813
 msgid "Interpret des ganzen Albums, z.B. „Various Artists“ bei Compilations."
 msgstr "Artista de todo el álbum, p. ej. «Various Artists» en recopilatorios."
 
-#: taggerform.pas:800
+#: taggerform.pas:832
 msgid "Interpret/Titel aus Dateiname"
 msgstr "Artista/título desde el nombre"
 
-#: taggerform.pas:490
+#: taggerform.pas:522
 msgid "Jahr"
 msgstr "Año"
 
-#: uupdateui.pas:464
+#: uupdateui.pas:477
 msgid "Jetzt aktualisieren"
 msgstr "Actualizar ahora"
 
-#: umain.pas:1041
+#: umain.pas:1051
 msgid "Jetzt herunterladen?"
 msgstr "¿Descargar ahora?"
 
-#: umain.pas:2066
+#: umain.pas:2081
 msgid "Jetzt prüfen und fehlende Dateien herunterladen?"
 msgstr "¿Comprobar ahora y descargar los archivos faltantes?"
 
-#: taggerform.pas:1848
+#: taggerform.pas:1880
 msgid "Jetzt speichern?"
 msgstr "¿Guardar ahora?"
 
-#: uinfo.pas:449
+#: uinfo.pas:456
 msgid "Jetzt spenden"
 msgstr "Donar ahora"
 
-#: playerform.pas:1267
+#: playerform.pas:1286
 msgid "Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand."
 msgstr "Jog wheel: gíralo con el botón del ratón pulsado y oirás el sonido como un disco bajo la mano."
 
-#: playerform.pas:1579
+#: playerform.pas:1598
 msgid "KOMPAKT"
 msgstr "COMPACTO"
 
-#: packerform.pas:615 packerform.pas:1774 playerform.pas:897
+#: packerform.pas:625 packerform.pas:1785 playerform.pas:916
 msgid "Kaffee spendieren"
 msgstr "Invítame a un café"
 
@@ -1641,51 +1641,51 @@ msgstr "No se puede escribir %s"
 msgid "Kann Zieldatei nicht schreiben: %s"
 msgstr "No se puede escribir el archivo de destino: %s"
 
-#: uturbotest.pas:202
+#: uturbotest.pas:227
 msgid "Keine Grafikkarte gefunden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "No se ha encontrado ninguna tarjeta gráfica. StemMaker separa con la CPU: unos %s de cálculo por minuto de música."
 
-#: packerform.pas:1172
+#: packerform.pas:1182
 msgid "Keine Songs gefunden. Ordner und Muster prüfen (Stern * = Songname)."
 msgstr "No se encontraron canciones. Revisa carpetas y patrones (asterisco * = nombre de la canción)."
 
-#: taggerform.pas:1433
+#: taggerform.pas:1465
 msgid "Keine Stem-Datei"
 msgstr "No es un archivo stem"
 
-#: playerform.pas:2111
+#: playerform.pas:2130
 msgid "Keine Stem-Datei: "
 msgstr "No es un archivo stem: "
 
-#: packerform.pas:814
+#: packerform.pas:824
 msgid "Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen."
 msgstr "No se ha encontrado ningún nombre conocido. Ajusta tú mismo las carpetas y los patrones."
 
-#: usettings.pas:329
+#: usettings.pas:341
 msgid "Klappt Turbo bei einer Datei nicht, nimmt StemMaker für diese Datei von selbst Klassisch. htdemucs v3 rechnet immer klassisch."
 msgstr "Si Turbo falla con un archivo, StemMaker usa automáticamente Clásico para ese archivo. htdemucs v3 siempre usa Clásico."
 
-#: usettings.pas:326
+#: usettings.pas:338
 msgid "Klassisch (demucs.cpp, wie bis 1.9)"
 msgstr "Clásico (demucs.cpp, como hasta la 1.9)"
 
-#: taggerform.pas:842
+#: taggerform.pas:874
 msgid "Klick sortiert, nochmal klicken sortiert umgekehrt"
 msgstr "Clic para ordenar, otro clic invierte el orden"
 
-#: playerform.pas:979
+#: playerform.pas:998
 msgid "Klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Haz clic o arrastra para saltar a esta posición."
 
-#: uturbotest.pas:354
+#: uturbotest.pas:379
 msgid "Kodieren messen (ffmpeg, 5 Spuren)"
 msgstr "Midiendo la codificación (ffmpeg, 5 pistas)"
 
-#: taggerform.pas:495
+#: taggerform.pas:527
 msgid "Kommentar"
 msgstr "Comentario"
 
-#: umain.pas:823
+#: umain.pas:833
 msgid "Konvertierung läuft"
 msgstr "Conversión en curso"
 
@@ -1693,11 +1693,11 @@ msgstr "Conversión en curso"
 msgid "Kopiert das Protokoll unten in die Zwischenablage"
 msgstr "Copia el registro de abajo al portapapeles"
 
-#: umain.pas:812
+#: umain.pas:822
 msgid "Kopiert ✓"
 msgstr "Copiado ✓"
 
-#: taggerform.pas:779
+#: taggerform.pas:811
 msgid "Künstler oder Band, z.B. „Kungs“"
 msgstr "Artista o grupo, p. ej. «Kungs»"
 
@@ -1705,23 +1705,23 @@ msgstr "Artista o grupo, p. ej. «Kungs»"
 msgid "LIZENZEN"
 msgstr "LICENCIAS"
 
-#: playerform.pas:802 playerform.pas:1258
+#: playerform.pas:821 playerform.pas:1277
 msgid "LOOP"
 msgstr "LOOP"
 
-#: taggerform.pas:494
+#: taggerform.pas:526
 msgid "Label"
 msgstr "Sello"
 
-#: uinit.pas:992
+#: uinit.pas:1002
 msgid "Lade %s  (%d von %d)"
 msgstr "Descargando %s  (%d de %d)"
 
-#: uupdateui.pas:325
+#: uupdateui.pas:338
 msgid "Lade StemMaker %s ..."
 msgstr "Descargando StemMaker %s ..."
 
-#: playerform.pas:2174
+#: playerform.pas:2193
 msgid "Laden abgebrochen."
 msgstr "Carga cancelada."
 
@@ -1753,15 +1753,15 @@ msgstr "Normalizar sonoridad: %s dB (pico más alto anterior %.1f dBFS)"
 msgid "Lautstärke angleichen: Pegel konnte nicht gemessen werden, bleibt unverändert"
 msgstr "Normalizar sonoridad: no se pudo medir el nivel, se deja sin cambios"
 
-#: taggerform.pas:782
+#: taggerform.pas:814
 msgid "Leer lassen, wenn er gleich ist wie der Interpret."
 msgstr "Déjalo vacío si es el mismo que el artista."
 
-#: playerform.pas:875
+#: playerform.pas:894
 msgid "Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite"
 msgstr "Espacio play/pausa  ·  1-4 mute  ·  Mayús+1-4 solo  ·  0 reset  ·  S/O/R modo  ·  flechas -/+5 s  ·  W forma de onda  ·  A/B/L loop  ·  Mayús/Ctrl+flecha ancho"
 
-#: taggerform.pas:681
+#: taggerform.pas:713
 msgid "Legt vor dem ersten Speichern eine Kopie der Originaldatei an (Name.stem.mp4.bak)."
 msgstr "Crea una copia del archivo original antes de guardar por primera vez (nombre.stem.mp4.bak)."
 
@@ -1773,91 +1773,91 @@ msgstr "Los archivos silenciosos se suben hasta que el punto más fuerte esté j
 msgid "Lesefehler beim Download (Fehler %d)"
 msgstr "Error de lectura durante la descarga (error %d)"
 
-#: playerform.pas:863
+#: playerform.pas:882
 msgid "Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)"
 msgstr "Se enciende en rojo cuando la suma satura (entonces baja el master)"
 
-#: taggerform.pas:638 umain.lfm:61
+#: taggerform.pas:670 umain.lfm:61
 msgid "Liste leeren"
 msgstr "Vaciar lista"
 
-#: umain.pas:2517
+#: umain.pas:2532
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Lista restaurada de la última vez: %d archivos, %d de ellos aún pendientes."
 
-#: uinfo.pas:553
+#: uinfo.pas:560
 msgid "Lizenzen"
 msgstr "Licencias"
 
-#: packerform.pas:665
+#: packerform.pas:675
 msgid "Log anzeigen"
 msgstr "Ver registro"
 
-#: ureport.pas:171
+#: ureport.pas:179
 msgid "Log konnte nicht gelesen werden: %s"
 msgstr "No se pudo leer el registro: %s"
 
-#: umain.pas:815 umain.lfm:100
+#: umain.pas:825 umain.lfm:100
 msgid "Log kopieren"
 msgstr "Copiar registro"
 
-#: ureport.pas:227
+#: ureport.pas:235
 msgid "Log:"
 msgstr "Registro:"
 
-#: uinfo.pas:443
+#: uinfo.pas:450
 msgid "Logs-Ordner öffnen"
 msgstr "Abrir carpeta de logs"
 
-#: playerform.pas:815
+#: playerform.pas:834
 msgid "Loop an/aus (Taste L). Einschalten springt zu A,"
 msgstr "Activar/desactivar el loop (tecla L). Al activarlo salta a A"
 
-#: playerform.pas:2503
+#: playerform.pas:2523
 msgid "Loop an:  %s bis %s  (%.1f s)  ·  L = aus, Rücktaste = löschen"
 msgstr "Loop activo:  %s a %s  (%.1f s)  ·  L = desactivar, Retroceso = borrar"
 
-#: playerform.pas:2506
+#: playerform.pas:2526
 msgid "Loop aus:  %s bis %s gemerkt  ·  L = wieder an"
 msgstr "Loop desactivado:  %s a %s se conserva  ·  L = activar de nuevo"
 
-#: playerform.pas:817
+#: playerform.pas:836
 msgid "Loop löschen (Rücktaste)"
 msgstr "Borrar loop (Retroceso)"
 
-#: playerform.pas:811
+#: playerform.pas:830
 msgid "Loop-Punkt A an der aktuellen Stelle setzen (Taste A)"
 msgstr "Fijar el punto A del loop en la posición actual (tecla A)"
 
-#: playerform.pas:812
+#: playerform.pas:831
 msgid "Loop-Punkt B an der aktuellen Stelle setzen (Taste B)."
 msgstr "Fijar el punto B del loop en la posición actual (tecla B)."
 
-#: playerform.pas:2510
+#: playerform.pas:2530
 msgid "Loop: Punkt A bei %s  ·  jetzt an der Endstelle B drücken"
 msgstr "Loop: punto A en %s  ·  ahora pulsa B en el punto final"
 
-#: playerform.pas:2424
+#: playerform.pas:2444
 msgid "Loop: Punkt B muss hinter Punkt A liegen."
 msgstr "Loop: el punto B debe estar después del punto A."
 
-#: playerform.pas:2534
+#: playerform.pas:2554
 msgid "Loop: zu kurz (mindestens 0,1 Sekunden)."
 msgstr "Loop: demasiado corto (mínimo 0,1 segundos)."
 
-#: playerform.pas:2418
+#: playerform.pas:2438
 msgid "Loop: zuerst Punkt A setzen (Taste A), dann B."
 msgstr "Loop: fija primero el punto A (tecla A), luego B."
 
-#: playerform.pas:2438
+#: playerform.pas:2458
 msgid "Loop: zuerst Punkt A und B setzen (Tasten A und B, oder rechte Maustaste in der Wellenform ziehen)."
 msgstr "Loop: fija primero los puntos A y B (teclas A y B, o arrastra con el botón derecho en la forma de onda)."
 
-#: playerform.pas:761
+#: playerform.pas:780
 msgid "Lupe: einige Sekunden rund um den roten Strich, zum genauen Setzen des Loops."
 msgstr "Lupa: unos segundos alrededor de la línea roja, para fijar el loop con precisión."
 
-#: playerform.pas:1244
+#: playerform.pas:1263
 msgid "LÄNGE"
 msgstr "DURACIÓN"
 
@@ -1865,95 +1865,95 @@ msgstr "DURACIÓN"
 msgid "Länge: %d:%.2d min"
 msgstr "Duración: %d:%.2d min"
 
-#: packerform.pas:1213
+#: packerform.pas:1223
 msgid "Längen prüfen"
 msgstr "Comprobar duraciones"
 
-#: packerform.pas:1428
+#: packerform.pas:1438
 msgid "Längen-Warnung bei %d Song(s): eine Spur ist kürzer oder länger als der Rest (siehe Liste). Bitte in Traktor anhören, ob alles zusammenpasst."
 msgstr "Aviso de duración en %d canción(es): una pista es más corta o más larga que el resto (ver la lista). Escucha en Traktor si todo está sincronizado."
 
-#: playerform.pas:838 playerform.pas:1302
+#: playerform.pas:857 playerform.pas:1321
 msgid "MASTER"
 msgstr "MASTER"
 
-#: playerform.pas:2290
+#: playerform.pas:2310
 msgid "MODUS: ORIGINAL"
 msgstr "MODO: ORIGINAL"
 
-#: playerform.pas:2290
+#: playerform.pas:2310
 msgid "MODUS: REST"
 msgstr "MODO: RESTO"
 
-#: taggerform.pas:1494
+#: taggerform.pas:1526
 msgid "MP3 OK"
 msgstr "MP3 OK"
 
-#: taggerform.pas:1492
+#: taggerform.pas:1524
 msgid "MP3 OK, mit Traktor-Daten"
 msgstr "MP3 OK, con datos de Traktor"
 
-#: taggerform.pas:2046
+#: taggerform.pas:2078
 msgid "MP3-Dateien"
 msgstr "Archivos MP3"
 
-#: taggerform.pas:2047
+#: taggerform.pas:2079
 msgid "MP4-Dateien"
 msgstr "Archivos MP4"
 
-#: playerform.pas:763
+#: playerform.pas:782
 msgid "Marken A und B mit der Maus verschieben. Welle mit der linken Maustaste ziehen: Stelle anfahren, dabei hört man den Ton."
 msgstr "Mueve las marcas A y B con el ratón. Arrastra la onda con el botón izquierdo para ir a una posición, mientras arrastras se oye el audio."
 
-#: umain.pas:1949 umain.lfm:336
+#: umain.pas:1964 umain.lfm:336
 msgid "Markierte oder zuletzt umgewandelte Stem-Datei im StemPlayer abspielen"
 msgstr "Reproducir en StemPlayer el archivo stem seleccionado o el último convertido"
 
-#: packerform.pas:317
+#: packerform.pas:327
 msgid "Master"
 msgstr "Master"
 
-#: packerform.pas:868
+#: packerform.pas:878
 msgid "Master aus den Stems gemischt"
 msgstr "máster mezclado a partir de los stems"
 
-#: packerform.pas:501
+#: packerform.pas:511
 msgid "Master aus den Stems mischen"
 msgstr "Mezclar master a partir de los stems"
 
-#: packerform.pas:870
+#: packerform.pas:880
 msgid "Master „%s“"
 msgstr "máster «%s»"
 
-#: playerform.pas:764
+#: playerform.pas:783
 msgid "Mausrad: zoomen. Klick: springen."
 msgstr "Rueda del ratón: zoom. Clic: saltar."
 
-#: usettings.pas:426
+#: usettings.pas:438
 msgid "Meldung neben der Uhr, wenn die Umwandlung fertig ist"
 msgstr "Notificación junto al reloj cuando la conversión haya terminado"
 
-#: playerform.pas:2183
+#: playerform.pas:2202
 msgid "Meldung von ffmpeg:"
 msgstr "Mensaje de ffmpeg:"
 
-#: uinit.pas:917
+#: uinit.pas:927
 msgid "Mindestens eine Prüfung ist fehlgeschlagen (rot). Details erscheinen beim Überfahren der Zeile mit der Maus."
 msgstr "Al menos una comprobación ha fallado (rojo). Pasa el ratón sobre la línea para ver los detalles."
 
-#: usettings.pas:346
+#: usettings.pas:358
 msgid "Misst CPU und Grafikkarte und sagt, wie lange ein Track auf diesem PC etwa dauert"
 msgstr "Mide la CPU y la tarjeta gráfica y te dice cuánto tarda más o menos una pista en este PC"
 
-#: ureport.pas:212
+#: ureport.pas:220
 msgid "Mit diesem Bericht kann Elospeed den Fehler finden. Es wird NICHTS automatisch gesendet: Unten steht genau der Text, der den PC verlässt. Dein Benutzername ist bereits entfernt, Dateinamen deiner Songs bleiben drin."
 msgstr "Este informe ayuda a Elospeed a encontrar el error. NADA se envía automáticamente: lo que aparece abajo es exactamente el texto que sale de tu PC. Tu nombre de usuario ya ha sido eliminado, los nombres de tus canciones se mantienen."
 
-#: uinit.pas:577
+#: uinit.pas:586
 msgid "Modell %s"
 msgstr "Modelo %s"
 
-#: uturbotest.pas:501
+#: uturbotest.pas:526
 msgid "Modell fehlt"
 msgstr "Falta el modelo"
 
@@ -1961,47 +1961,47 @@ msgstr "Falta el modelo"
 msgid "Modell fehlt: %s"
 msgstr "Modelo faltante: %s"
 
-#: uturbotest.pas:576
+#: uturbotest.pas:601
 msgid "Modell lesen"
 msgstr "Leyendo el modelo"
 
-#: umain.pas:1039
+#: umain.pas:1049
 msgid "Modell nicht installiert"
 msgstr "Modelo no instalado"
 
-#: usettings.pas:433
+#: usettings.pas:445
 msgid "Modelle:"
 msgstr "Modelos:"
 
-#: taggerform.pas:783
+#: taggerform.pas:815
 msgid "Musikstil: aus der Liste wählen oder selbst eintippen"
 msgstr "Estilo musical: elige uno de la lista o escríbelo"
 
-#: playerform.pas:938 playerform.pas:1282
+#: playerform.pas:957 playerform.pas:1301
 msgid "Mute: Stem stumm schalten (Taste %d)"
 msgstr "Mute: silenciar este stem (tecla %d)"
 
-#: umain.pas:790
+#: umain.pas:800
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "¿Te gustaría enviar un informe de error a Elospeed? Verás el informe primero, nada se envía automáticamente."
 
-#: uinfo.pas:469 uinfo.pas:580
+#: uinfo.pas:476 uinfo.pas:587
 msgid "Nach Updates suchen"
 msgstr "Buscar actualizaciones"
 
-#: packerform.pas:364
+#: packerform.pas:374
 msgid "Name des Stems, so zeigt ihn Traktor an"
 msgstr "Nombre del stem, tal como lo muestra Traktor"
 
-#: taggerform.pas:778
+#: taggerform.pas:810
 msgid "Name des Tracks, z.B. „Clap Your Hands“"
 msgstr "Nombre de la pista, p. ej. «Clap Your Hands»"
 
-#: packerform.pas:520
+#: packerform.pas:530
 msgid "Namensmuster (* = Songname)"
 msgstr "Patrón de nombre (* = canción)"
 
-#: umain.pas:792
+#: umain.pas:802
 msgid "Nein, danke"
 msgstr "No, gracias"
 
@@ -2009,15 +2009,15 @@ msgstr "No, gracias"
 msgid "Netzbetrieb"
 msgstr "Conectado a la corriente"
 
-#: taggerform.pas:1847
+#: taggerform.pas:1879
 msgid "Neu geschrieben werden nur die geänderten Tags, Audio, Stems und Traktor-Daten bleiben unverändert."
 msgstr "Solo se reescriben las etiquetas modificadas; el audio, los stems y los datos de Traktor no cambian."
 
-#: taggerform.pas:1410 taggerform.pas:1429 taggerform.pas:1441
+#: taggerform.pas:1442 taggerform.pas:1461 taggerform.pas:1473
 msgid "Nicht lesbar"
 msgstr "No se puede leer"
 
-#: taggerform.pas:1718
+#: taggerform.pas:1750
 msgid "Nicht mehr anzeigen"
 msgstr "No volver a mostrar"
 
@@ -2025,103 +2025,103 @@ msgstr "No volver a mostrar"
 msgid "Nicht mehr fragen"
 msgstr "No volver a preguntar"
 
-#: ureport.pas:266
+#: ureport.pas:274
 msgid "Nicht senden"
 msgstr "No enviar"
 
-#: usettings.pas:655
+#: usettings.pas:677
 msgid "Noch kein Vortest auf diesem PC."
 msgstr "Todavía no hay prueba previa en este PC."
 
-#: umain.pas:1836
+#: umain.pas:1851
 msgid "Noch keine Stem-Datei für \"%s\" - zuerst umwandeln."
 msgstr "Aún no hay un archivo stem para \"%s\" - conviértelo primero."
 
-#: taggerform.pas:785
+#: taggerform.pas:817
 msgid "Nummer auf dem Album, z.B. 3 oder 3/12 (Track 3 von 12)"
 msgstr "Número en el álbum, p. ej. 3 o 3/12 (pista 3 de 12)"
 
-#: packerform.pas:498
+#: packerform.pas:508
 msgid "Nummern: „Song_0“ (Master) bis „Song_4“"
 msgstr "Números: «Canción_0» (master) a «Canción_4»"
 
-#: usettings.pas:338
+#: usettings.pas:350
 msgid "Nur CPU"
 msgstr "Solo CPU"
 
-#: taggerform.pas:1416
+#: taggerform.pas:1448
 msgid "Nur lesen (alter oder beschädigter ID3-Tag)"
 msgstr "Solo lectura (etiqueta ID3 antigua o dañada)"
 
-#: usettings.pas:309
+#: usettings.pas:321
 msgid "Nur mit eigenem Ausgabeordner (im Hauptfenster \"neben der Originaldatei speichern\" ist an)."
 msgstr "Solo con carpeta de salida propia (no si en la ventana principal está activado \"guardar junto al archivo original\")."
 
-#: usettings.pas:427
+#: usettings.pas:439
 msgid "Nur wenn StemMaker gerade nicht im Vordergrund ist."
 msgstr "Solo cuando StemMaker no esté en primer plano."
 
-#: usettings.pas:480
+#: usettings.pas:492
 msgid "OK"
 msgstr "OK"
 
-#: umain.pas:1145
+#: umain.pas:1160
 msgid "OK (%s)"
 msgstr "OK (%s)"
 
-#: playerform.pas:1609
+#: playerform.pas:1628
 msgid "ORIGINAL"
 msgstr "ORIGINAL"
 
-#: playerform.pas:787
+#: playerform.pas:806
 msgid "ORIGINAL  O"
 msgstr "ORIGINAL  O"
 
-#: taggerform.pas:1490
+#: taggerform.pas:1522
 msgid "Ohne Cover"
 msgstr "Sin portada"
 
-#: taggerform.pas:1487
+#: taggerform.pas:1519
 msgid "Ohne Tags"
 msgstr "Sin etiquetas"
 
-#: taggerform.pas:1485
+#: taggerform.pas:1517
 msgid "Ohne Tags und Cover"
 msgstr "Sin etiquetas ni portada"
 
-#: packerform.pas:522
+#: packerform.pas:532
 msgid "Ordner"
 msgstr "Carpeta"
 
-#: taggerform.pas:1711
+#: taggerform.pas:1743
 msgid "Ordner geladen"
 msgstr "Carpeta cargada"
 
-#: umain.pas:639
+#: umain.pas:649
 msgid "Ordner mit Audiodateien wählen"
 msgstr "Elegir una carpeta con archivos de audio"
 
-#: taggerform.pas:2071
+#: taggerform.pas:2103
 msgid "Ordner mit Stem- oder MP3-Dateien wählen (mit Unterordnern)"
 msgstr "Elegir una carpeta con archivos stem o MP3 (con subcarpetas)"
 
-#: packerform.pas:405
+#: packerform.pas:415
 msgid "Ordner mit den Master-Dateien"
 msgstr "Carpeta con los archivos master"
 
-#: packerform.pas:469
+#: packerform.pas:479
 msgid "Ordner mit den Spuren hier hineinziehen"
 msgstr "Arrastra aquí la carpeta con las pistas"
 
-#: packerform.pas:257
+#: packerform.pas:267
 msgid "Ordner mit den Spuren hineinziehen oder „Ordner wählen …“ klicken."
 msgstr "Arrastra la carpeta con las pistas o haz clic en «Elegir carpeta …»."
 
-#: packerform.pas:1639
+#: packerform.pas:1649
 msgid "Ordner mit den Spuren wählen"
 msgstr "Elegir la carpeta con las pistas"
 
-#: packerform.pas:736
+#: packerform.pas:746
 msgid "Ordner mit den Stems"
 msgstr "Carpeta con los stems"
 
@@ -2133,19 +2133,19 @@ msgstr "Abrir la carpeta con los archivos stem terminados en el Explorador (para
 msgid "Ordner nach der Umwandlung öffnen"
 msgstr "Abrir carpeta después de la conversión"
 
-#: packerform.pas:255
+#: packerform.pas:265
 msgid "Ordner und Muster einstellen, dann „Songs suchen“."
 msgstr "Ajusta carpetas y patrones y luego «Buscar canciones»."
 
-#: packerform.pas:473
+#: packerform.pas:483
 msgid "Ordner und Muster selbst einstellen"
 msgstr "Ajustar carpetas y patrones yo mismo"
 
-#: packerform.pas:397 packerform.pas:1664
+#: packerform.pas:407 packerform.pas:1674
 msgid "Ordner wählen"
 msgstr "Elegir carpeta"
 
-#: packerform.pas:466
+#: packerform.pas:476
 msgid "Ordner wählen …"
 msgstr "Elegir carpeta …"
 
@@ -2153,19 +2153,19 @@ msgstr "Elegir carpeta …"
 msgid "Ordner öffnen"
 msgstr "Abrir carpeta"
 
-#: umain.pas:1376 umain.pas:1386
+#: umain.pas:1391 umain.pas:1401
 msgid "Ordner übersprungen, Pfad zu lang: %s"
 msgstr "Carpeta omitida, ruta demasiado larga: %s"
 
-#: taggerform.pas:636 umain.lfm:42
+#: taggerform.pas:668 umain.lfm:42
 msgid "Ordner..."
 msgstr "Carpeta..."
 
-#: playerform.pas:748
+#: playerform.pas:767
 msgid "Original - klicken oder ziehen, um an diese Stelle zu springen."
 msgstr "Original - haz clic o arrastra para saltar a esta posición."
 
-#: playerform.pas:791
+#: playerform.pas:810
 msgid "Originalmix aus der Datei (Spur 0) zum A/B-Vergleich (Taste O)"
 msgstr "Mezcla original del archivo (pista 0) para comparar A/B (tecla O)"
 
@@ -2173,19 +2173,19 @@ msgstr "Mezcla original del archivo (pista 0) para comparar A/B (tecla O)"
 msgid "PC nach Abschluss herunterfahren"
 msgstr "Apagar el PC al finalizar"
 
-#: umain.pas:2266
+#: umain.pas:2281
 msgid "PC wird heruntergefahren ..."
 msgstr "Apagando el PC..."
 
-#: usettings.pas:313
+#: usettings.pas:325
 msgid "PC während der Konvertierung wach halten (kein Standby)"
 msgstr "Mantener el PC despierto durante la conversión (sin suspensión)"
 
-#: packerform.pas:1315
+#: packerform.pas:1325
 msgid "Packe %s"
 msgstr "Empaquetando %s"
 
-#: packerform.pas:1755
+#: packerform.pas:1766
 msgid "Packt fertige Einzelspuren (Master und 4 Stems) ohne KI-Trennung zu Traktor-Stem-Dateien."
 msgstr "Empaqueta pistas sueltas ya listas (máster y 4 stems) en archivos stem de Traktor, sin separación por IA."
 
@@ -2193,7 +2193,7 @@ msgstr "Empaqueta pistas sueltas ya listas (máster y 4 stems) en archivos stem 
 msgid "Pegel messen"
 msgstr "Midiendo nivel"
 
-#: ureport.pas:249
+#: ureport.pas:257
 msgid "Per E-Mail senden"
 msgstr "Enviar por correo"
 
@@ -2205,35 +2205,35 @@ msgstr "Ruta"
 msgid "Pfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte die Datei in einen Ordner mit kürzerem Pfad verschieben."
 msgstr "Ruta demasiado larga (%d caracteres, Windows permite como máximo %d). Por favor, mueve el archivo a una carpeta con una ruta más corta."
 
-#: taggerform.pas:798
+#: taggerform.pas:830
 msgid "Plattenfirma, die den Track veröffentlicht hat"
 msgstr "Sello discográfico que publicó la pista"
 
-#: playerform.pas:715
+#: playerform.pas:734
 msgid "Play / Pause (Leertaste)"
 msgstr "Play / pausa (Espacio)"
 
-#: uinit.pas:916
+#: uinit.pas:926
 msgid "Problem gefunden"
 msgstr "Problema encontrado"
 
-#: usettings.pas:391
+#: usettings.pas:403
 msgid "Programm"
 msgstr "Programa"
 
-#: umain.pas:793
+#: umain.pas:803
 msgid "Programm wurde unerwartet beendet"
 msgstr "El programa se cerró inesperadamente"
 
-#: uinit.pas:574
+#: uinit.pas:583
 msgid "Prozessor"
 msgstr "Procesador"
 
-#: uinit.pas:510
+#: uinit.pas:519
 msgid "Prüfsumme (SHA-256) stimmt nicht - die Datei wurde verworfen. Bitte später nochmals versuchen."
 msgstr "La suma de verificación (SHA-256) no coincide - el archivo ha sido descartado. Por favor, inténtalo de nuevo más tarde."
 
-#: playerform.pas:1297
+#: playerform.pas:1316
 msgid "QUELLE"
 msgstr "FUENTE"
 
@@ -2245,7 +2245,7 @@ msgstr "Fuente: %s -> archivo stem AAC %d kbit/s"
 msgid "Quelle: %s -> Stem-Datei AAC %d kbit/s (automatisch)"
 msgstr "Fuente: %s -> archivo stem AAC %d kbit/s (automático)"
 
-#: usettings.pas:639
+#: usettings.pas:661
 msgid "RAM knapp!"
 msgstr "¡Poca RAM!"
 
@@ -2253,63 +2253,63 @@ msgstr "¡Poca RAM!"
 msgid "RECHTE AN DER MUSIK"
 msgstr "DERECHOS SOBRE LA MÚSICA"
 
-#: playerform.pas:825
+#: playerform.pas:844
 msgid "RESET  0"
 msgstr "RESET  0"
 
-#: playerform.pas:1610
+#: playerform.pas:1629
 msgid "REST"
 msgstr "RESTO"
 
-#: playerform.pas:788
+#: playerform.pas:807
 msgid "REST  R"
 msgstr "RESTO  R"
 
-#: playerform.pas:1243 playerform.pas:1264
+#: playerform.pas:1262 playerform.pas:1283
 msgid "RESTZEIT"
 msgstr "RESTANTE"
 
-#: taggerform.pas:843
+#: taggerform.pas:875
 msgid "Rand zwischen zwei Spalten ziehen ändert die Breite"
 msgstr "Arrastra el borde entre dos columnas para cambiar el ancho"
 
-#: playerform.pas:762
+#: playerform.pas:781
 msgid "Rechte Maustaste ziehen: Loop setzen (rastet am Raster ein, mit Shift frei)."
 msgstr "Arrastrar con el botón derecho: fijar el loop (se ajusta a la cuadrícula; con Mayús, libre)."
 
-#: playerform.pas:749 playerform.pas:980
+#: playerform.pas:768 playerform.pas:999
 msgid "Rechte Maustaste ziehen: Loop-Bereich aufziehen"
 msgstr "Arrastrar con el botón derecho: marcar el rango del loop"
 
-#: playerform.pas:792
+#: playerform.pas:811
 msgid "Rest = Original minus Summe aller Stems (Taste R):"
 msgstr "Resto = original menos la suma de todos los stems (tecla R):"
 
-#: playerform.pas:1288 playerform.pas:2294
+#: playerform.pas:1307 playerform.pas:2314
 msgid "SOLO"
 msgstr "SOLO"
 
-#: playerform.pas:1272
+#: playerform.pas:1291
 msgid "STEM-PADS"
 msgstr "PADS DE STEMS"
 
-#: playerform.pas:1611
+#: playerform.pas:1630
 msgid "STEMS"
 msgstr "STEMS"
 
-#: playerform.pas:786
+#: playerform.pas:805
 msgid "STEMS  S"
 msgstr "STEMS  S"
 
-#: playerform.pas:2301
+#: playerform.pas:2321
 msgid "STUMM"
 msgstr "MUTE"
 
-#: uturbotest.pas:496 uturbotest.pas:507 uturbotest.pas:810
+#: uturbotest.pas:521 uturbotest.pas:532 uturbotest.pas:835
 msgid "Schliessen"
 msgstr "Cerrar"
 
-#: uinfo.pas:436
+#: uinfo.pas:443
 msgid "Schließen"
 msgstr "Cerrar"
 
@@ -2321,71 +2321,71 @@ msgstr "Ya has convertido %d pistas en stems"
 msgid "Server meldet HTTP %d"
 msgstr "El servidor devolvió HTTP %d"
 
-#: usettings.pas:383
+#: usettings.pas:395
 msgid "Setzt die 4 Farben auf die Werte aus Traktors eigenen Stem-Dateien (Orange, Lila, Grün, Hellblau). Die Namen bleiben."
 msgstr "Establece los 4 colores según los valores de los propios archivos stem de Traktor (naranja, morado, verde, azul claro). Los nombres se mantienen."
 
-#: usettings.pas:449
+#: usettings.pas:461
 msgid "Setzt die Werte in diesem Fenster auf den Auslieferungszustand (Sprache bleibt)."
 msgstr "Restaura los valores de esta ventana a los valores por defecto (el idioma se mantiene)."
 
-#: taggerform.pas:680
+#: taggerform.pas:712
 msgid "Sicherungskopie anlegen (.bak)"
 msgstr "Crear copia de seguridad (.bak)"
 
-#: uturbotest.pas:655
+#: uturbotest.pas:680
 msgid "Sitzung vorbereiten"
 msgstr "preparar sesión"
 
-#: playerform.pas:946 playerform.pas:1289
+#: playerform.pas:965 playerform.pas:1308
 msgid "Solo: nur diesen Stem hören (Shift+%d)."
 msgstr "Solo: escuchar solo este stem (Mayús+%d)."
 
-#: packerform.pas:696
+#: packerform.pas:706
 msgid "Song"
 msgstr "Canción"
 
-#: packerform.pas:1405
+#: packerform.pas:1415
 msgid "Song %d von %d: %s"
 msgstr "Canción %d de %d: %s"
 
-#: packerform.pas:640
+#: packerform.pas:650
 msgid "Songs suchen"
 msgstr "Buscar canciones"
 
-#: packerform.pas:591
+#: packerform.pas:601
 msgid "Sonst werden Songs übersprungen, deren Stem-Datei es schon gibt."
 msgstr "Si no, se omiten las canciones cuyo archivo stem ya existe."
 
-#: taggerform.pas:1856
+#: taggerform.pas:1888
 msgid "Speichere %s ..."
 msgstr "Guardando %s ..."
 
-#: taggerform.pas:647
+#: taggerform.pas:679
 msgid "Speichern"
 msgstr "Guardar"
 
-#: taggerform.pas:735
+#: taggerform.pas:767
 msgid "Speichern..."
 msgstr "Guardar..."
 
-#: uinfo.pas:288
+#: uinfo.pas:295
 msgid "Spender"
 msgstr "Donantes"
 
-#: usettings.pas:587
+#: usettings.pas:609
 msgid "Sprache und Design werden beim nächsten Start übernommen."
 msgstr "El idioma y el tema se aplicarán en el próximo inicio."
 
-#: usettings.pas:599
+#: usettings.pas:621
 msgid "Sprache und Design werden nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "El idioma y el tema se aplicarán tras reiniciar. ¿Reiniciar StemMaker ahora?"
 
-#: usettings.pas:392
+#: usettings.pas:404
 msgid "Sprache:"
 msgstr "Idioma:"
 
-#: packerform.pas:515
+#: packerform.pas:525
 msgid "Spur"
 msgstr "Pista"
 
@@ -2393,11 +2393,11 @@ msgstr "Pista"
 msgid "Spuren : "
 msgstr "Pistas : "
 
-#: uupdateui.pas:472
+#: uupdateui.pas:485
 msgid "Später"
 msgstr "Más tarde"
 
-#: usettings.pas:448
+#: usettings.pas:460
 msgid "Standard wiederherstellen"
 msgstr "Restablecer valores por defecto"
 
@@ -2405,11 +2405,11 @@ msgstr "Restablecer valores por defecto"
 msgid "Start"
 msgstr "Iniciar"
 
-#: uinit.pas:893
+#: uinit.pas:903
 msgid "Starten"
 msgstr "Iniciar"
 
-#: packerform.pas:698 taggerform.pas:822 umain.lfm:136
+#: packerform.pas:708 taggerform.pas:854 umain.lfm:136
 msgid "Status"
 msgstr "Estado"
 
@@ -2417,11 +2417,11 @@ msgstr "Estado"
 msgid "Stem   : "
 msgstr "Stem   : "
 
-#: packerform.pas:318
+#: packerform.pas:328
 msgid "Stem %d"
 msgstr "Stem %d"
 
-#: taggerform.pas:1496
+#: taggerform.pas:1528
 msgid "Stem OK (%d Spuren)"
 msgstr "Stem OK (%d pistas)"
 
@@ -2429,7 +2429,7 @@ msgstr "Stem OK (%d pistas)"
 msgid "Stem prüfen..."
 msgstr "Comprobar stem..."
 
-#: taggerform.pas:2044
+#: taggerform.pas:2076
 msgid "Stem- und MP3-Dateien"
 msgstr "Archivos stem y MP3"
 
@@ -2441,19 +2441,19 @@ msgstr "El archivo stem ya existe"
 msgid "Stem-Datei kodieren"
 msgstr "Codificando archivo stem"
 
-#: umain.pas:1482
+#: umain.pas:1497
 msgid "Stem-Datei prüfen"
 msgstr "Comprobar archivo stem"
 
-#: playerform.pas:513
+#: playerform.pas:532
 msgid "Stem-Datei öffnen"
 msgstr "Abrir archivo stem"
 
-#: playerform.pas:665
+#: playerform.pas:684
 msgid "Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen"
 msgstr "Abrir archivo stem (Ctrl+O) - o simplemente arrástralo a la ventana"
 
-#: playerform.pas:669
+#: playerform.pas:688
 msgid "Stem-Datei öffnen oder hierher ziehen (Drag & Drop)"
 msgstr "Abre un archivo stem o arrástralo aquí (arrastrar y soltar)"
 
@@ -2465,11 +2465,11 @@ msgstr "Archivo stem: %.1f MB"
 msgid "Stem-Datei: %.1f MB, Tempo: %.1f s pro Minute Musik (%s)"
 msgstr "Archivo stem: %.1f MB, velocidad: %.1f s por minuto de música (%s)"
 
-#: taggerform.pas:2045 umain.pas:1483
+#: taggerform.pas:2077 umain.pas:1498
 msgid "Stem-Dateien"
 msgstr "Archivos stem"
 
-#: taggerform.pas:1516
+#: taggerform.pas:1548
 msgid "Stem-Dateien, MP3s oder Ordner hierher ziehen"
 msgstr "Arrastra aquí archivos stem, MP3 o carpetas"
 
@@ -2481,7 +2481,7 @@ msgstr "Escribiendo metadatos de stem"
 msgid "Stem-Metadaten: %s"
 msgstr "Metadatos de stem: %s"
 
-#: packerform.pas:518
+#: packerform.pas:528
 msgid "Stem-Name"
 msgstr "Nombre del stem"
 
@@ -2497,19 +2497,19 @@ msgstr "StemCLI %s (Elospeed StemMaker) - crea archivos stem de Traktor (*.stem.
 msgid "StemMaker"
 msgstr "StemMaker"
 
-#: uupdateui.pas:428
+#: uupdateui.pas:441
 msgid "StemMaker %s ist da"
 msgstr "StemMaker %s está disponible"
 
-#: uupdateui.pas:584
+#: uupdateui.pas:602
 msgid "StemMaker %s ist installiert. StemMaker startet jetzt neu."
 msgstr "StemMaker %s está instalado. StemMaker se reiniciará ahora."
 
-#: umain.pas:733
+#: umain.pas:743
 msgid "StemMaker %s ist verfügbar - das Update wird nach der Umwandlung angeboten."
 msgstr "StemMaker %s está disponible - la actualización se ofrecerá después de la conversión."
 
-#: umain.pas:2704
+#: umain.pas:2719
 msgid "StemMaker anzeigen"
 msgstr "Mostrar StemMaker"
 
@@ -2521,7 +2521,7 @@ msgstr "StemMaker es código abierto bajo la licencia MIT (© 2026 Elospeed). Co
 msgid "StemMaker ist bereits geöffnet. Es kann immer nur ein StemMaker gleichzeitig laufen, weil sich zwei die Warteschlange, die Einstellungen und die fertigen Dateien teilen würden."
 msgstr "StemMaker ya está abierto. Solo puede haber un StemMaker ejecutándose a la vez, porque dos compartirían la cola, la configuración y los archivos terminados."
 
-#: umain.pas:2828
+#: umain.pas:2843
 msgid "StemMaker ist fertig"
 msgstr "StemMaker ha terminado"
 
@@ -2537,11 +2537,11 @@ msgstr "StemMaker ya se está ejecutando"
 msgid "StemMaker läuft weiter. Falls etwas nicht mehr richtig funktioniert, bitte das Programm neu starten."
 msgstr "StemMaker seguirá funcionando. Si algo deja de funcionar correctamente, por favor reinicia el programa."
 
-#: uturbotest.pas:396
+#: uturbotest.pas:421
 msgid "StemMaker misst einmal, wie schnell dieser PC Stems trennt: zuerst die CPU, dann die Grafikkarte. Das dauert etwa eine Minute."
 msgstr "StemMaker mide una vez lo rápido que este PC separa stems: primero la CPU, luego la tarjeta gráfica. Tarda alrededor de un minuto."
 
-#: uturbotest.pas:190
+#: uturbotest.pas:215
 msgid "StemMaker trennt auf diesem PC mit der Grafikkarte (%s): etwa %s Rechenzeit pro Minute Musik (CPU: %s)."
 msgstr "StemMaker separa en este PC con la tarjeta gráfica (%s): unos %s de cálculo por minuto de música (CPU: %s)."
 
@@ -2549,35 +2549,35 @@ msgstr "StemMaker separa en este PC con la tarjeta gráfica (%s): unos %s de cá
 msgid "StemMaker wird kostenlos und ohne jede Gewährleistung bereitgestellt (\"wie besehen\"). Die Benutzung erfolgt auf eigenes Risiko. Soweit gesetzlich zulässig, haftet Elospeed nicht für Schäden oder Datenverlust, die durch die Benutzung entstehen. Lege von wichtigen Dateien vorher eine Sicherung an."
 msgstr "StemMaker se ofrece gratis y sin ninguna garantía (\"tal cual\"). Lo usas bajo tu propia responsabilidad. En la medida en que lo permita la ley, Elospeed no se hace responsable de daños ni pérdidas de datos derivados de su uso. Haz antes una copia de seguridad de tus archivos importantes."
 
-#: umain.pas:789
+#: umain.pas:799
 msgid "StemMaker wurde beim letzten Mal unerwartet beendet."
 msgstr "StemMaker se cerró inesperadamente la última vez."
 
-#: uturbotest.pas:491
+#: uturbotest.pas:516
 msgid "StemOnnx.exe wurde nicht gefunden (%s). StemMaker trennt mit demucs.cpp (Klassisch)."
 msgstr "No se ha encontrado StemOnnx.exe (%s). StemMaker separa con demucs.cpp (Clásico)."
 
-#: umain.pas:1990
+#: umain.pas:2005
 msgid "StemPacker konnte nicht gestartet werden: %s"
 msgstr "No se pudo iniciar StemPacker: %s"
 
-#: umain.pas:1612
+#: umain.pas:1627
 msgid "StemPlayer konnte nicht gestartet werden: %s"
 msgstr "No se pudo iniciar StemPlayer: %s"
 
-#: umain.pas:1593
+#: umain.pas:1608
 msgid "StemPlayer nicht gefunden:%s%s"
 msgstr "StemPlayer no encontrado:%s%s"
 
-#: umain.pas:1646
+#: umain.pas:1661
 msgid "StemTagger konnte nicht gestartet werden: %s"
 msgstr "No se pudo iniciar StemTagger: %s"
 
-#: umain.pas:1630
+#: umain.pas:1645
 msgid "StemTagger nicht gefunden:%s%s"
 msgstr "No se encontró StemTagger:%s%s"
 
-#: usettings.pas:360
+#: usettings.pas:372
 msgid "Stems (Namen und Farben, so zeigt Traktor sie an)"
 msgstr "Stems (nombres y colores como se muestran en Traktor)"
 
@@ -2589,19 +2589,19 @@ msgstr "Separando stems (Turbo)"
 msgid "Stems trennen (demucs)"
 msgstr "Separar stems (demucs)"
 
-#: playerform.pas:722
+#: playerform.pas:741
 msgid "Stop und zurück an den Anfang"
 msgstr "Stop y volver al principio"
 
-#: playerform.pas:947 playerform.pas:1290
+#: playerform.pas:966 playerform.pas:1309
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+clic: añadir otro stem (varios solos)"
 
-#: uinfo.pas:574
+#: uinfo.pas:581
 msgid "Suche ..."
 msgstr "Buscando ..."
 
-#: umain.pas:1855
+#: umain.pas:1870
 msgid "Tags bearbeiten..."
 msgstr "Editar etiquetas..."
 
@@ -2613,15 +2613,15 @@ msgstr "Etiquetas de la fuente: BPM %s, tonalidad %s"
 msgid "Tags der Quelle: BPM %s, keine Tonart"
 msgstr "Etiquetas de la fuente: BPM %s, sin tonalidad"
 
-#: packerform.pas:1283
+#: packerform.pas:1293
 msgid "Tags lesen"
 msgstr "Leyendo etiquetas"
 
-#: usettings.pas:284
+#: usettings.pas:296
 msgid "Teile:"
 msgstr "Partes:"
 
-#: uinit.pas:578
+#: uinit.pas:587
 msgid "Temp-Ordner"
 msgstr "Carpeta temporal"
 
@@ -2633,39 +2633,39 @@ msgstr "Mantener carpeta temporal: %s"
 msgid "Temp-Ordner kann nicht erstellt werden: %s"
 msgstr "No se puede crear la carpeta temporal: %s"
 
-#: taggerform.pas:786
+#: taggerform.pas:818
 msgid "Tempo in Schlägen pro Minute, nur ganze Zahlen von %d bis %d, z.B. 128."
 msgstr "Tempo en pulsaciones por minuto, solo números enteros de %d a %d, p. ej. 128."
 
-#: uinfo.pas:294
+#: uinfo.pas:301
 msgid "Tempo-Vergleich, Tests und Fehlerberichte"
 msgstr "comparación de velocidad, pruebas e informes de errores"
 
-#: uinfo.pas:295
+#: uinfo.pas:302
 msgid "Tests und Ideen zu 5.1-Stems"
 msgstr "pruebas e ideas sobre stems 5.1"
 
-#: uturbotest.pas:575
+#: uturbotest.pas:600
 msgid "Testsignal erzeugen"
 msgstr "Generando la señal de prueba"
 
-#: playerform.pas:814
+#: playerform.pas:833
 msgid "Tipp: mit der rechten Maustaste in einer Wellenform ziehen"
 msgstr "Consejo: arrastra con el botón derecho en una forma de onda"
 
-#: taggerform.pas:485 taggerform.pas:820
+#: taggerform.pas:517 taggerform.pas:852
 msgid "Titel"
 msgstr "Título"
 
-#: umain.pas:1953
+#: umain.pas:1968
 msgid "Titel, Interpret, Cover usw. der markierten fertigen Stem-Dateien bearbeiten"
 msgstr "Editar título, artista, portada, etc. de los archivos stem terminados seleccionados"
 
-#: taggerform.pas:493
+#: taggerform.pas:525
 msgid "Tonart"
 msgstr "Tonalidad"
 
-#: taggerform.pas:789
+#: taggerform.pas:821
 msgid "Tonart des Tracks: aus der Liste wählen oder selbst eintippen."
 msgstr "Tonalidad de la pista: elige una de la lista o escríbela."
 
@@ -2673,27 +2673,27 @@ msgstr "Tonalidad de la pista: elige una de la lista o escríbela."
 msgid "Tools: ..."
 msgstr "Herramientas: ..."
 
-#: umain.pas:1004
+#: umain.pas:1014
 msgid "Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden"
 msgstr "Herramientas: ffmpeg, Turbo, demucs.cpp y modelo encontrados"
 
-#: umain.pas:1006
+#: umain.pas:1016
 msgid "Tools: ffmpeg, demucs.cpp und Modell gefunden"
 msgstr "Herramientas: ffmpeg, demucs.cpp y modelo encontrados"
 
-#: taggerform.pas:491
+#: taggerform.pas:523
 msgid "Track-Nr."
 msgstr "N.º de pista"
 
-#: taggerform.pas:822
+#: taggerform.pas:854
 msgid "Traktor"
 msgstr "Traktor"
 
-#: playerform.pas:514
+#: playerform.pas:533
 msgid "Traktor Stems (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Alle Dateien (*.*)|*.*"
 msgstr "Stems de Traktor (*.stem.mp4;*.mp4)|*.stem.mp4;*.mp4|Todos los archivos (*.*)|*.*"
 
-#: taggerform.pas:788
+#: taggerform.pas:820
 msgid "Traktor misst das Tempo beim Analysieren ohnehin selbst."
 msgstr "De todos modos, Traktor mide el tempo al analizar."
 
@@ -2701,11 +2701,11 @@ msgstr "De todos modos, Traktor mide el tempo al analizar."
 msgid "Traktor und STEMS sind Marken der Native Instruments GmbH. StemMaker ist ein unabhängiges Projekt und steht in keiner Verbindung zu Native Instruments."
 msgstr "Traktor y STEMS son marcas de Native Instruments GmbH. StemMaker es un proyecto independiente y no está afiliado a Native Instruments."
 
-#: usettings.pas:382
+#: usettings.pas:394
 msgid "Traktor-Farben"
 msgstr "Colores de Traktor"
 
-#: uturbotest.pas:632
+#: uturbotest.pas:657
 msgid "Treiber"
 msgstr "controlador"
 
@@ -2713,19 +2713,19 @@ msgstr "controlador"
 msgid "Trenn-Modell:"
 msgstr "Modelo:"
 
-#: uturbotest.pas:657
+#: uturbotest.pas:682
 msgid "Trennen"
 msgstr "separar"
 
-#: uturbotest.pas:656
+#: uturbotest.pas:681
 msgid "Trennen auf der Grafikkarte"
 msgstr "separar en la tarjeta gráfica"
 
-#: uturbotest.pas:585
+#: uturbotest.pas:610
 msgid "Trennen gemessen"
 msgstr "Separación medida"
 
-#: uinit.pas:608
+#: uinit.pas:617
 msgid "Trotzdem starten"
 msgstr "Iniciar de todos modos"
 
@@ -2737,11 +2737,11 @@ msgstr "Turbo (StemOnnx), tarjeta gráfica si funciona"
 msgid "Turbo (StemOnnx), nur CPU"
 msgstr "Turbo (StemOnnx), solo CPU"
 
-#: usettings.pas:325
+#: usettings.pas:337
 msgid "Turbo (schnell, Standard)"
 msgstr "Turbo (rápido, estándar)"
 
-#: uturbotest.pas:490
+#: uturbotest.pas:515
 msgid "Turbo fehlt"
 msgstr "Falta Turbo"
 
@@ -2753,7 +2753,7 @@ msgstr "Turbo no ha funcionado (código %d), ahora demucs.cpp separa este archiv
 msgid "Turbo rechnet auf: %s"
 msgstr "Turbo calcula en: %s"
 
-#: uturbotest.pas:384
+#: uturbotest.pas:409
 msgid "Turbo-Vortest"
 msgstr "Prueba previa de Turbo"
 
@@ -2761,7 +2761,7 @@ msgstr "Prueba previa de Turbo"
 msgid "Ultimative Leistung"
 msgstr "Máximo rendimiento"
 
-#: usettings.pas:281
+#: usettings.pas:293
 msgid "Umwandlung"
 msgstr "Conversión"
 
@@ -2769,7 +2769,7 @@ msgstr "Conversión"
 msgid "Und wenn nicht, ist das völlig in Ordnung. Viel Spass beim Auflegen!"
 msgstr "Y si no, no pasa nada. ¡Que disfrutes mezclando!"
 
-#: umain.pas:788
+#: umain.pas:798
 msgid "Unerwartet beendet"
 msgstr "Cerrado inesperadamente"
 
@@ -2777,27 +2777,27 @@ msgstr "Cerrado inesperadamente"
 msgid "Unerwarteter Fehler"
 msgstr "Error inesperado"
 
-#: packerform.pas:505
+#: packerform.pas:515
 msgid "Unterordner durchsuchen"
 msgstr "Buscar en subcarpetas"
 
-#: usettings.pas:302
+#: usettings.pas:314
 msgid "Unterordner im Ausgabeordner nachbauen"
 msgstr "Recrear subcarpetas en la carpeta de salida"
 
-#: uupdateui.pas:419
+#: uupdateui.pas:432
 msgid "Update"
 msgstr "Actualización"
 
-#: uupdateui.pas:315
+#: uupdateui.pas:328
 msgid "Update auf %s"
 msgstr "Actualización a %s"
 
-#: uupdateui.pas:554
+#: uupdateui.pas:572
 msgid "Update konnte nicht geladen werden: %s"
 msgstr "No se pudo descargar la actualización: %s"
 
-#: uupdateui.pas:577
+#: uupdateui.pas:595
 msgid "Update konnte nicht installiert werden: %s"
 msgstr "No se pudo instalar la actualización: %s"
 
@@ -2805,35 +2805,35 @@ msgstr "No se pudo instalar la actualización: %s"
 msgid "Verbindung fehlgeschlagen (Fehler %d)"
 msgstr "Conexión fallida (error %d)"
 
-#: usettings.pas:314
+#: usettings.pas:326
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "Evita la suspensión y desactiva temporalmente el modo de ahorro de energía."
 
-#: uinfo.pas:509
+#: uinfo.pas:516
 msgid "Versionen"
 msgstr "Versiones"
 
-#: uturbotest.pas:408
+#: uturbotest.pas:433
 msgid "Vorbereiten"
 msgstr "Preparando"
 
-#: packerform.pas:590
+#: packerform.pas:600
 msgid "Vorhandene überschreiben"
 msgstr "Sobrescribir existentes"
 
-#: packerform.pas:490
+#: packerform.pas:500
 msgid "Vorlage:"
 msgstr "Plantilla:"
 
-#: usettings.pas:345
+#: usettings.pas:357
 msgid "Vortest ..."
 msgstr "Prueba previa ..."
 
-#: uturbotest.pas:746
+#: uturbotest.pas:771
 msgid "Vortest fehlgeschlagen"
 msgstr "La prueba previa ha fallado"
 
-#: playerform.pas:1580
+#: playerform.pas:1599
 msgid "WELLENFORM"
 msgstr "FORMA DE ONDA"
 
@@ -2845,7 +2845,7 @@ msgstr "Solo convierte música de la que tengas los derechos necesarios, p. ej. 
 msgid "Warnung"
 msgstr "Advertencia"
 
-#: ureport.pas:434
+#: ureport.pas:442
 msgid "Was habe ich gerade gemacht?"
 msgstr "¿Qué estaba haciendo?"
 
@@ -2853,7 +2853,7 @@ msgstr "¿Qué estaba haciendo?"
 msgid "Weiter"
 msgstr "Continuar"
 
-#: ureport.pas:449
+#: ureport.pas:457
 msgid "Weiter zu GitHub?"
 msgstr "¿Continuar a GitHub?"
 
@@ -2861,7 +2861,7 @@ msgstr "¿Continuar a GitHub?"
 msgid "Weitere Einstellungen..."
 msgstr "Más ajustes..."
 
-#: uinit.pas:579
+#: uinit.pas:588
 msgid "Weitere Modelle"
 msgstr "Otros modelos"
 
@@ -2869,23 +2869,23 @@ msgstr "Otros modelos"
 msgid "Wenn alle Dateien fertig sind, wird der PC nach 60 Sekunden heruntergefahren (abbrechbar)."
 msgstr "Cuando todos los archivos estén listos, el PC se apagará tras 60 segundos (se puede cancelar)."
 
-#: usettings.pas:430
+#: usettings.pas:442
 msgid "Werkzeuge"
 msgstr "Herramientas"
 
-#: usettings.pas:282
+#: usettings.pas:294
 msgid "Wie viele Teile des Songs demucs gleichzeitig rechnet. Jeder Teil nutzt zusätzlich mehrere Kerne und braucht gut 2 GB RAM."
 msgstr "Cuántas partes de la canción procesa demucs al mismo tiempo. Cada parte también utiliza varios núcleos y requiere unos 2 GB de RAM."
 
-#: uturbotest.pas:198
+#: uturbotest.pas:223
 msgid "Wine erkannt (Linux): Die Grafikkarte kann unter Wine nicht genutzt werden. StemMaker trennt mit der CPU: etwa %s Rechenzeit pro Minute Musik."
 msgstr "Wine detectado (Linux): la tarjeta gráfica no se puede usar con Wine. StemMaker separa con la CPU: unos %s de cálculo por minuto de música."
 
-#: uturbotest.pas:628
+#: uturbotest.pas:653
 msgid "Wine erkannt: Turbo läuft auf der CPU"
 msgstr "Wine detectado: Turbo funciona con la CPU"
 
-#: playerform.pas:1242
+#: playerform.pas:1261
 msgid "ZEIT"
 msgstr "TIEMPO"
 
@@ -2901,15 +2901,15 @@ msgstr "Muestra las pistas y los metadatos de stem de un archivo .stem.mp4 exist
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "Muestra el archivo stem terminado en el Explorador - arrástralo directamente a Traktor desde allí"
 
-#: uinfo.pas:477
+#: uinfo.pas:484
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "Muestra un registro y ayuda a enviarlo a Elospeed por correo electrónico o GitHub. Nada se envía automáticamente."
 
-#: packerform.pas:699
+#: packerform.pas:709
 msgid "Ziel"
 msgstr "Destino"
 
-#: packerform.pas:540
+#: packerform.pas:550
 msgid "Ziel:"
 msgstr "Destino:"
 
@@ -2917,27 +2917,27 @@ msgstr "Destino:"
 msgid "Zielpfad zu lang (%d Zeichen, Windows erlaubt höchstens %d). Bitte einen kürzeren Ausgabeordner wählen oder den Dateinamen kürzen."
 msgstr "Ruta de destino demasiado larga (%d caracteres, Windows permite como máximo %d). Por favor, elige una carpeta de salida más corta o acorta el nombre del archivo."
 
-#: taggerform.pas:2338
+#: taggerform.pas:2371
 msgid "Zuerst die Dateien markieren, die dieses Cover bekommen sollen."
 msgstr "Primero selecciona los archivos que deben recibir esta portada."
 
-#: packerform.pas:1319 umain.pas:1161 umain.pas:2493
+#: packerform.pas:1329 umain.pas:1176 umain.pas:2508
 msgid "abgebrochen"
 msgstr "cancelado"
 
-#: packerform.pas:1162
+#: packerform.pas:1172
 msgid "bereit"
 msgstr "listo"
 
-#: packerform.pas:1160
+#: packerform.pas:1170
 msgid "bereit, still gefüllt: "
 msgstr "listo, relleno con silencio: "
 
-#: uinit.pas:345
+#: uinit.pas:354
 msgid "beschädigt (nur %d KB)"
 msgstr "dañado (solo %d KB)"
 
-#: uinit.pas:1036 umain.pas:1247 umain.pas:1256
+#: uinit.pas:1046 umain.pas:1262 umain.pas:1271
 msgid "ca. %s"
 msgstr "aprox. %s"
 
@@ -2961,11 +2961,11 @@ msgstr "demucs.cpp no encontrado: %s"
 msgid "demucs: %s (%s), %d Teile x je %d Kerne"
 msgstr "demucs: %s (%s), %d partes x %d núcleos cada una"
 
-#: packerform.pas:1225
+#: packerform.pas:1235
 msgid "der Master"
 msgstr "el máster"
 
-#: packerform.pas:1225
+#: packerform.pas:1235
 msgid "die längste Spur"
 msgstr "la pista más larga"
 
@@ -2973,47 +2973,47 @@ msgstr "la pista más larga"
 msgid "eigener Plan %s"
 msgstr "plan propio %s"
 
-#: umain.pas:1160 umain.pas:2491
+#: umain.pas:1175 umain.pas:2506
 msgid "existiert schon"
 msgstr "ya existe"
 
-#: uinit.pas:339
+#: uinit.pas:348
 msgid "fehlt"
 msgstr "falta"
 
-#: uinit.pas:750
+#: uinit.pas:760
 msgid "fehlt - wird heruntergeladen (ca. %d MB)"
 msgstr "falta - se descargará (aprox. %d MB)"
 
-#: packerform.pas:1154
+#: packerform.pas:1164
 msgid "fehlt: "
 msgstr "falta: "
 
-#: uinit.pas:754
+#: uinit.pas:764
 msgid "fehlt: %s"
 msgstr "falta: %s"
 
-#: uinit.pas:789
+#: uinit.pas:799
 msgid "fehlt: %s - StemMaker-ZIP bitte komplett neu entpacken"
 msgstr "falta: %s - por favor, descomprime de nuevo el ZIP de StemMaker completamente"
 
-#: packerform.pas:1360
+#: packerform.pas:1370
 msgid "fertig"
 msgstr "listo"
 
-#: umain.pas:416
+#: umain.pas:426
 msgid "fertig ca. %s"
 msgstr "listo aprox. %s"
 
-#: packerform.pas:1356
+#: packerform.pas:1366
 msgid "fertig, Achtung: "
 msgstr "listo, atención: "
 
-#: packerform.pas:235
+#: packerform.pas:245
 msgid "fertige Spuren zu Stem-Dateien packen"
 msgstr "empaquetar pistas terminadas en archivos stem"
 
-#: uinit.pas:773
+#: uinit.pas:783
 msgid "ffmpeg (neu)"
 msgstr "ffmpeg (nuevo)"
 
@@ -3021,7 +3021,7 @@ msgstr "ffmpeg (nuevo)"
 msgid "ffmpeg konnte die Datei nicht dekodieren (Code %d)"
 msgstr "ffmpeg no pudo decodificar el archivo (código %d)"
 
-#: playerform.pas:2182
+#: playerform.pas:2201
 msgid "ffmpeg konnte die Datei nicht dekodieren:"
 msgstr "ffmpeg no pudo decodificar el archivo:"
 
@@ -3033,35 +3033,35 @@ msgstr "ffmpeg no pudo crear el archivo stem (código %d)"
 msgid "ffmpeg nicht gefunden: %s"
 msgstr "ffmpeg no encontrado: %s"
 
-#: playerform.pas:2070
+#: playerform.pas:2089
 msgid "ffmpeg wurde mit Code %d beendet."
 msgstr "ffmpeg terminó con el código %d."
 
-#: playerform.pas:2126
+#: playerform.pas:2145
 msgid "ffmpeg.exe auswählen"
 msgstr "Seleccionar ffmpeg.exe"
 
-#: packerform.pas:253
+#: packerform.pas:263
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Gebrauch abgefragt."
 msgstr "No se encontró ffmpeg.exe - se pedirá en el primer uso."
 
-#: playerform.pas:535
+#: playerform.pas:554
 msgid "ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt."
 msgstr "ffmpeg.exe no encontrado - se te pedirá al abrir el primer archivo."
 
-#: packerform.pas:1509 playerform.pas:2121
+#: packerform.pas:1519 playerform.pas:2140
 msgid "ffmpeg.exe wurde nicht gefunden."
 msgstr "No se encontró ffmpeg.exe."
 
-#: playerform.pas:2127
+#: playerform.pas:2146
 msgid "ffmpeg.exe|ffmpeg.exe|Programme (*.exe)|*.exe"
 msgstr "ffmpeg.exe|ffmpeg.exe|Programas (*.exe)|*.exe"
 
-#: taggerform.pas:1478
+#: taggerform.pas:1510
 msgid "geändert"
 msgstr "modificado"
 
-#: packerform.pas:1156
+#: packerform.pas:1166
 msgid "gibt es schon, wird übersprungen"
 msgstr "ya existe, se omitirá"
 
@@ -3077,59 +3077,59 @@ msgstr "htdemucs (estándar, Demucs v4)"
 msgid "htdemucs_ft (beste Qualität, ca. 4x langsamer)"
 msgstr "htdemucs_ft (mejor calidad, aprox. 4 veces más lento)"
 
-#: playerform.pas:793
+#: playerform.pas:812
 msgid "hörbar, was bei der Trennung verloren ging oder anders"
 msgstr "se oye lo que se perdió en la separación o suena"
 
-#: ureport.pas:431
+#: ureport.pas:439
 msgid "in StemMaker ist ein Fehler aufgetreten. Der Bericht ist angehängt (Datei aus dem Explorer-Fenster in diese Mail ziehen):"
 msgstr "se ha producido un error en StemMaker. Adjunto el informe (arrastra el archivo desde la ventana del Explorador a este correo):"
 
-#: packerform.pas:557
+#: packerform.pas:567
 msgid "in diesen Ordner:"
 msgstr "en esta carpeta:"
 
-#: uturbotest.pas:161
+#: uturbotest.pas:171
 msgid "ist beim Test abgestürzt"
 msgstr "se ha bloqueado durante la prueba"
 
-#: uturbotest.pas:163
+#: uturbotest.pas:173
 msgid "ist mitten im Song ausgestiegen"
 msgstr "ha fallado en mitad de una canción"
 
-#: uturbotest.pas:169
+#: uturbotest.pas:179
 msgid "ist nicht schneller als die CPU"
 msgstr "no es más rápida que la CPU"
 
-#: taggerform.pas:1466 taggerform.pas:1472
+#: taggerform.pas:1498 taggerform.pas:1504
 msgid "ja"
 msgstr "sí"
 
-#: usettings.pas:634
+#: usettings.pas:656
 msgid "je %d Kerne (%d von %d)"
 msgstr "%d núcleos cada una (%d de %d)"
 
-#: usettings.pas:632
+#: usettings.pas:654
 msgid "je 1 Kern (%d von %d)"
 msgstr "1 núcleo cada una (%d de %d)"
 
-#: uinit.pas:738
+#: uinit.pas:748
 msgid "kein AVX (kompatible Version)"
 msgstr "sin AVX (versión compatible)"
 
-#: taggerform.pas:1737
+#: taggerform.pas:1769
 msgid "kein Cover"
 msgstr "sin portada"
 
-#: uturbotest.pas:626
+#: uturbotest.pas:651
 msgid "keine Grafikkarte gefunden"
 msgstr "no se ha encontrado ninguna tarjeta gráfica"
 
-#: uinit.pas:363
+#: uinit.pas:372
 msgid "keine gültige Modelldatei"
 msgstr "no es un archivo de modelo válido"
 
-#: playerform.pas:794
+#: playerform.pas:813
 msgid "klingt (ideal: fast Stille)."
 msgstr "diferente (lo ideal: casi silencio)."
 
@@ -3137,23 +3137,23 @@ msgstr "diferente (lo ideal: casi silencio)."
 msgid "ko-fi.com/elospeed"
 msgstr "ko-fi.com/elospeed"
 
-#: packerform.pas:407 packerform.pas:738
+#: packerform.pas:417 packerform.pas:748
 msgid "leer = wie Master"
 msgstr "vacío = igual que master"
 
-#: packerform.pas:409
+#: packerform.pas:419
 msgid "leer = wie Stem %d"
 msgstr "vacío = igual que stem %d"
 
-#: uturbotest.pas:159
+#: uturbotest.pas:169
 msgid "lässt sich nicht einschalten"
 msgstr "no se puede activar"
 
-#: umain.pas:1114 umain.pas:1134
+#: umain.pas:1129 umain.pas:1149
 msgid "läuft..."
 msgstr "procesando..."
 
-#: umain.pas:380
+#: umain.pas:390
 msgid "morgen %s"
 msgstr "mañana %s"
 
@@ -3161,15 +3161,15 @@ msgstr "mañana %s"
 msgid "neben der Originaldatei speichern"
 msgstr "guardar junto al archivo original"
 
-#: packerform.pas:547
+#: packerform.pas:557
 msgid "neben die Master-Datei"
 msgstr "junto al archivo master"
 
-#: uinit.pas:847
+#: uinit.pas:857
 msgid "nicht beschreibbar: %s"
 msgstr "sin permiso de escritura: %s"
 
-#: uinit.pas:357
+#: uinit.pas:366
 msgid "nicht lesbar"
 msgstr "no se puede leer"
 
@@ -3177,23 +3177,23 @@ msgstr "no se puede leer"
 msgid "oder hierher ziehen"
 msgstr "o arrástralos aquí"
 
-#: uinit.pas:745 uinit.pas:784 uinit.pas:807
+#: uinit.pas:755 uinit.pas:794 uinit.pas:817
 msgid "prüfe ..."
 msgstr "comprobando ..."
 
-#: uturbotest.pas:167
+#: uturbotest.pas:177
 msgid "rechnet falsch"
 msgstr "calcula resultados erróneos"
 
-#: uturbotest.pas:165
+#: uturbotest.pas:175
 msgid "rechnet ungenau"
 msgstr "calcula de forma imprecisa"
 
-#: uinfo.pas:293
-msgid "spanische Übersetzung"
-msgstr "traducción al español"
+#: uinfo.pas:300
+msgid "spanische Übersetzung und Idee Hell/Dunkel"
+msgstr "traducción al español e idea del modo claro/oscuro"
 
-#: uinit.pas:770
+#: uinit.pas:780
 msgid "startet nicht: %s"
 msgstr "no se inicia: %s"
 
@@ -3205,35 +3205,35 @@ msgstr "desconocido"
 msgid "unerlaubter Pfad"
 msgstr "ruta no permitida"
 
-#: uinit.pas:1039
+#: uinit.pas:1049
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "transcurrido %s   |   restante %s   |   %.1f MB/s"
 
-#: uinfo.pas:419
+#: uinfo.pas:426
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "por %s  ·  stems de Traktor desde archivos de audio  ·  gratis && código abierto  ·  Build: %s"
 
-#: usettings.pas:300
+#: usettings.pas:312
 msgid "vorhandene Stem-Dateien überschreiben"
 msgstr "sobrescribir archivos stem existentes"
 
-#: umain.pas:1338 umain.pas:2087 umain.pas:2109
+#: umain.pas:1353 umain.pas:2102 umain.pas:2124
 msgid "wartet"
 msgstr "esperando"
 
-#: umain.pas:2494
+#: umain.pas:2509
 msgid "wartet (unterbrochen)"
 msgstr "esperando (interrumpido)"
 
-#: playerform.pas:816
+#: playerform.pas:835
 msgid "wenn die Wiedergabe gerade ausserhalb des Loops ist."
 msgstr "si la reproducción está fuera del loop."
 
-#: uinit.pas:1038 umain.pas:1259 umain.pas:1295
+#: uinit.pas:1048 umain.pas:1274 umain.pas:1310
 msgid "wird berechnet ..."
 msgstr "calculando ..."
 
-#: packerform.pas:1313
+#: packerform.pas:1323
 msgid "wird gepackt ..."
 msgstr "empaquetando ..."
 
@@ -3241,31 +3241,31 @@ msgstr "empaquetando ..."
 msgid "z.B. die von Elospeed StemMaker erzeugten."
 msgstr "p. ej. los creados con Elospeed StemMaker."
 
-#: usettings.pas:434
+#: usettings.pas:446
 msgid "Ändern nur bei Bedarf: StemMaker.ini, Abschnitt [Tools] (bei geschlossenem StemMaker)."
 msgstr "Cámbialo solo si hace falta: StemMaker.ini, sección [Tools] (con StemMaker cerrado)."
 
-#: taggerform.pas:646
+#: taggerform.pas:678
 msgid "Änderungen verwerfen"
 msgstr "Descartar cambios"
 
-#: playerform.pas:664
+#: playerform.pas:683
 msgid "ÖFFNEN"
 msgstr "ABRIR"
 
-#: usettings.pas:457
+#: usettings.pas:469
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Abre la carpeta donde se encuentra StemMaker.ini"
 
-#: uinfo.pas:487
+#: uinfo.pas:494
 msgid "Öffnet die bebilderte Anleitung im Browser."
 msgstr "Abre la guía ilustrada en el navegador."
 
-#: umain.pas:1328
+#: umain.pas:1343
 msgid "Übersprungen (Format nicht unterstützt): %s"
 msgstr "Omitido (formato no compatible): %s"
 
-#: packerform.pas:1121
+#: packerform.pas:1131
 msgid "ähnlich: „%s“"
 msgstr "parecido: «%s»"
 

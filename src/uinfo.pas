@@ -297,7 +297,7 @@ begin
   AddThanksName(Box, 'ptrex alias DJ Pretski', '');
 
   AddThanksGroup(Box, _('Helfende'), THANKS_BLUE);
-  AddThanksName(Box, 'David GJ', _('spanische Übersetzung'));
+  AddThanksName(Box, 'David GJ', _('spanische Übersetzung und Idee Hell/Dunkel'));
   AddThanksName(Box, 'ptrex alias DJ Pretski', _('Tempo-Vergleich, Tests und Fehlerberichte'));
   AddThanksName(Box, 'Cuiusquemodi', _('Tests und Ideen zu 5.1-Stems'));
 end;

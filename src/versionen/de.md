@@ -8,7 +8,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 
 ## 2.4 – noch nicht veröffentlicht
 ### Neu
-- Hell oder dunkel: Design in den Einstellungen wählbar, Standard wie Windows
+- Hell oder dunkel: Design in den Einstellungen wählbar, Standard wie Windows (Idee von David GJ)
 - Hilfe: Knopf „?“ und Taste F1 öffnen die bebilderte Anleitung an der passenden Stelle
 ### Behoben
 - Einstellungen: Vortest-Ergebnis nicht mehr abgeschnitten und in der gewählten Sprache
