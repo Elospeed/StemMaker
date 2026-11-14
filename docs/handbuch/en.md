@@ -135,7 +135,7 @@ On the **very first start**, ffmpeg (approx. 60 MB) and the separation model (ap
 
 At the top is the list of files with the AddOn bar next to it on the right, below it the settings for the next conversion, and at the bottom the progress and the log.
 
-![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
+![The main window during a conversion](img/en/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:10.2,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:80.6,97.5 12:95,10"}
 
 ::: marken
 1. **Info**: version, updates, error report and logs (chapter [§](#info)). Next to it **?**: opens this guide. The [F1]{.taste} key does the same in every window, each time at the matching section.
@@ -356,7 +356,7 @@ At the top right you choose the **view**: **COMPACT** (faders only), **WAVEFORM*
 
 ## Overview
 
-![The StemPlayer with waveforms and an active loop](img/en/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
+![The StemPlayer with waveforms and an active loop](img/en/stemplayer.png){.gross marken="1:1.2,9.6 2:2.7,19.1 3:16.3,16.4 4:2.4,26.9 5:2.3,35.4 6:1.2,43.2 7:1.2,81.3 8:1.2,90.9"}
 
 ::: marken
 1. **OPEN** and file name, on the right **?** for help and the **view** (COMPACT, WAVEFORM or CD PLAYER).
@@ -436,14 +436,14 @@ It speaks the same language as StemMaker and follows its design (light or dark).
 
 ## Overview
 
-![The StemTagger with three files, two of them selected](img/en/stemtagger.png){marken="MARKEN_TAGGER"}
+![The StemTagger with three files, two of them selected](img/en/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:41.6,96.0"}
 
 ::: marken
 1. **Files...**, **Folder...**, **Remove** and **Clear list**: load files or take them off the list (the files themselves stay).
 2. **Discard changes** and **Save**: Save lights up green as long as there is something to save. Next to it **?** for help.
 3. **The list**: file, title, artist, album, genre, cover, Traktor and status. Clicking a column header sorts. "Traktor" shows which MP3s already contain Traktor data (cues, beatgrid).
 4. **Cover**: preview with **Picture...**, **Paste** ([Ctrl]{.taste} + [V]{.taste}), **Remove** and **Save...** (save the cover as a picture file).
-5. **The fields**: title, artist, album, album artist, genre, year, label and comment. **Artist/title from file name** fills both fields from names like "Artist - Title.stem.mp4".
+5. **The fields**: title, artist, album, genre, year, label and comment. **Artist/title from file name** fills both fields from names like "Artist - Title.stem.mp4".
 6. **Switches**: **Create backup copy (.bak)** and **Shrink large covers**. Green is on, red is off.
 :::
 
@@ -469,7 +469,7 @@ Click **StemPacker** in the AddOn bar or use the Start menu. It uses StemMaker's
 
 ## Overview
 
-![The StemPacker after dragging in a folder](img/en/stempacker.png){marken="MARKEN_PACKER"}
+![The StemPacker after dragging in a folder](img/en/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
 
 ::: marken
 1. **Drag in a folder** or **Choose folder …**: it works out from the file names which file is the master and which track is drums, bass, other or vox. With **Set folders and patterns myself** you set the folder and name pattern for each track yourself.
@@ -494,7 +494,7 @@ A detailed English guide comes as `AddOns\StemPacker-User-Guide.pdf`.
 
 The **Info** button at the top left opens the Info window with version, build date and the name of the current log.
 
-![The Info window](img/en/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
+![The Info window](img/en/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
 
 ::: marken
 1. **Guide**, **Versions**, **Thanks** and **Licenses**: the short version (README), what each version brought, everyone who helped, and the disclaimer and license texts.

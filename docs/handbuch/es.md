@@ -135,7 +135,7 @@ En el **primer inicio** aún faltan ffmpeg (aprox. 60 MB) y el modelo de separac
 
 Arriba está la lista de archivos con la barra de AddOns a su derecha, debajo los ajustes para la próxima conversión y abajo del todo el progreso y el registro.
 
-![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
+![La ventana principal durante una conversión](img/es/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:11.4,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:79.4,97.5 12:95,10"}
 
 ::: marken
 1. **Info**: versión, actualizaciones, informe de error y registros (capítulo [§](#info)). Al lado **?**: abre esta guía. La tecla [F1]{.taste} hace lo mismo en cualquier ventana, siempre en la sección correspondiente.
@@ -356,7 +356,7 @@ Arriba a la derecha eliges la **vista**: **COMPACTA** (solo faders), **FORMA DE 
 
 ## Vista general
 
-![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
+![El StemPlayer con formas de onda y un bucle activo](img/es/stemplayer.png){.gross marken="1:1.2,9.6 2:2.7,19.1 3:16.3,16.4 4:2.4,26.9 5:2.3,35.4 6:1.2,43.2 7:1.2,81.3 8:1.2,90.9"}
 
 ::: marken
 1. **ABRIR** y nombre del archivo; a la derecha **?** para la ayuda y la **vista** (COMPACTA, FORMA DE ONDA o REPRODUCTOR CD).
@@ -436,14 +436,14 @@ Habla el mismo idioma que StemMaker y sigue su diseño (claro u oscuro). **?** a
 
 ## Vista general
 
-![El StemTagger con tres archivos, dos de ellos seleccionados](img/es/stemtagger.png){marken="MARKEN_TAGGER"}
+![El StemTagger con tres archivos, dos de ellos seleccionados](img/es/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:34.0,96.0"}
 
 ::: marken
 1. **Archivos...**, **Carpeta...**, **Eliminar** y **Vaciar lista**: cargar archivos o quitarlos de la lista (los archivos en sí se quedan).
 2. **Descartar cambios** y **Guardar**: Guardar se ilumina en verde mientras haya algo que guardar. Al lado **?** para la ayuda.
 3. **La lista**: archivo, título, artista, álbum, género, portada, Traktor y estado. Un clic en el encabezado de una columna ordena. «Traktor» indica qué MP3 ya contienen datos de Traktor (cues, beatgrid).
 4. **Portada**: vista previa con **Imagen...**, **Pegar** ([Ctrl]{.taste} + [V]{.taste}), **Eliminar** y **Guardar...** (guardar la portada como archivo de imagen).
-5. **Los campos**: título, artista, álbum, artista del álbum, género, año, sello y comentario. **Artista/título desde el nombre** rellena ambos campos a partir de nombres como «Artista - Título.stem.mp4».
+5. **Los campos**: título, artista, álbum, género, año, sello y comentario. **Artista/título desde el nombre** rellena ambos campos a partir de nombres como «Artista - Título.stem.mp4».
 6. **Interruptores**: **Crear copia de seguridad (.bak)** y **Reducir portadas grandes**. Verde es activado, rojo desactivado.
 :::
 
@@ -469,7 +469,7 @@ Haz clic en **StemPacker** en la barra de AddOns o usa el menú Inicio. Usa el f
 
 ## Vista general
 
-![El StemPacker después de arrastrar una carpeta](img/es/stempacker.png){marken="MARKEN_PACKER"}
+![El StemPacker después de arrastrar una carpeta](img/es/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
 
 ::: marken
 1. **Arrastra una carpeta** o **Elegir carpeta …**: por los nombres de archivo reconoce cuál es el máster y qué pista es drums, bass, other o vox. Con **Ajustar carpetas y patrones yo mismo** fijas tú la carpeta y el patrón de nombre de cada pista.
@@ -494,7 +494,7 @@ Una guía detallada en inglés viene como `AddOns\StemPacker-User-Guide.pdf`.
 
 El botón **Info** de arriba a la izquierda abre la ventana Info con la versión, la fecha de compilación y el nombre del registro actual.
 
-![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
+![La ventana Info](img/es/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
 
 ::: marken
 1. **Guía**, **Versiones**, **Gracias** y **Licencias**: la versión breve (README), qué trajo cada versión, todas las personas que han ayudado, y el descargo de responsabilidad y los textos de licencia.

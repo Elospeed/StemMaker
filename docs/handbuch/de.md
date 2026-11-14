@@ -135,7 +135,7 @@ Beim **allerersten Start** fehlen noch ffmpeg (ca. 60 MB) und das Trenn-Modell (
 
 Oben ist die Liste der Dateien mit der AddOn-Leiste rechts daneben, darunter die Einstellungen für die nächste Umwandlung, ganz unten der Fortschritt und das Protokoll.
 
-![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.1,7 2:14,7 3:38.8,7 4:59.6,7 5:46.6,31.7 6:10,48.8 7:14.2,65.4 8:1.1,73.4 9:48.3,72 10:46.6,87.7 11:81.8,98.2 12:95,10"}
+![Das Hauptfenster während einer Umwandlung](img/de/hauptfenster.png){marken="1:1.1,7 2:12.5,7 3:38.6,7 4:58.8,7 5:46.6,31.7 6:10.2,46.4 7:14.2,63.5 8:1.1,71.8 9:47.2,70.3 10:70,87.7 11:80.6,97.5 12:95,10"}
 
 ::: marken
 1. **Info**: Version, Updates, Fehlerbericht und Logs (Kapitel [§](#info)). Daneben **?**: öffnet diese Anleitung. Die Taste [F1]{.taste} tut das in jedem Fenster, jeweils beim passenden Abschnitt.
@@ -356,7 +356,7 @@ Oben rechts wählst du die **Ansicht**: **KOMPAKT** (nur Regler), **WELLENFORM**
 
 ## Überblick
 
-![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.5,5.4 2:2.9,12.7 3:16,12.8 4:3.2,20.3 5:1.5,26.6 6:17,32.6 7:1.6,81.3 8:1.6,93.9"}
+![Der StemPlayer mit Wellenformen und aktivem Loop](img/de/stemplayer.png){.gross marken="1:1.2,9.6 2:2.7,19.1 3:16.3,16.4 4:2.4,26.9 5:2.3,35.4 6:1.2,43.2 7:1.2,81.3 8:1.2,90.9"}
 
 ::: marken
 1. **ÖFFNEN** und Dateiname, rechts **?** für die Hilfe und die **Ansicht** (KOMPAKT, WELLENFORM oder CD-PLAYER).
@@ -436,14 +436,14 @@ Er spricht dieselbe Sprache wie StemMaker und folgt dem Design (hell oder dunkel
 
 ## Überblick
 
-![Der StemTagger mit drei Dateien, zwei davon markiert](img/de/stemtagger.png){marken="MARKEN_TAGGER"}
+![Der StemTagger mit drei Dateien, zwei davon markiert](img/de/stemtagger.png){marken="1:1.0,8.7 2:62.8,8.7 3:1.0,14.3 4:1.0,70.4 5:25.4,72.6 6:32.8,96.0"}
 
 ::: marken
 1. **Dateien...**, **Ordner...**, **Entfernen** und **Liste leeren**: Dateien laden oder aus der Liste nehmen (die Dateien selbst bleiben).
 2. **Änderungen verwerfen** und **Speichern**: Speichern leuchtet grün, solange etwas zu speichern ist. Daneben **?** für die Hilfe.
 3. **Die Liste**: Datei, Titel, Interpret, Album, Genre, Cover, Traktor und Status. Klick auf eine Spaltenüberschrift sortiert. „Traktor“ zeigt, welche MP3s schon Traktor-Daten (Cues, Beatgrid) enthalten.
 4. **Cover**: Vorschau mit **Bild...**, **Einfügen** ([Strg]{.taste} + [V]{.taste}), **Entfernen** und **Speichern...** (Cover als Bilddatei sichern).
-5. **Die Felder**: Titel, Interpret, Album, Album-Interpret, Genre, Jahr, Label und Kommentar. **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
+5. **Die Felder**: Titel, Interpret, Album, Genre, Jahr, Label und Kommentar. **Interpret/Titel aus Dateiname** füllt beide Felder aus Namen wie „Interpret - Titel.stem.mp4“.
 6. **Schalter**: **Sicherungskopie anlegen (.bak)** und **Grosse Cover verkleinern**. Grün ist an, rot aus.
 :::
 
@@ -469,7 +469,7 @@ In der AddOn-Leiste auf **StemPacker** klicken oder im Startmenü. Er nimmt ffmp
 
 ## Überblick
 
-![Der StemPacker nach dem Hineinziehen eines Ordners](img/de/stempacker.png){marken="MARKEN_PACKER"}
+![Der StemPacker nach dem Hineinziehen eines Ordners](img/de/stempacker.png){marken="1:1.3,8.1 2:1.0,18.9 3:1.0,23.6 4:1.0,28.3 5:50,60 6:1.2,91.2"}
 
 ::: marken
 1. **Ordner hineinziehen** oder **Ordner wählen …**: Er erkennt an den Dateinamen selbst, welche Datei der Master ist und welche Spur Drums, Bass, Other oder Vox. Mit **Ordner und Muster selbst einstellen** legst du Ordner und Namensmuster pro Spur selbst fest.
@@ -494,7 +494,7 @@ Eine ausführliche englische Anleitung liegt als `AddOns\StemPacker-User-Guide.p
 
 Der Knopf **Info** oben links öffnet das Info-Fenster mit Version, Build-Datum und dem Namen des aktuellen Logs.
 
-![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:1.7,88.2 3:30.7,88.2 4:59.8,88.2 5:1.7,95.6"}
+![Das Info-Fenster](img/de/info.png){marken="1:38.5,21.9 2:1.6,87.5 3:30.0,87.5 4:59.0,87.5 5:1.6,94.9"}
 
 ::: marken
 1. **Anleitung**, **Versionen**, **Danke** und **Lizenzen**: die Kurzfassung (LIESMICH), was jede Version Neues gebracht hat, alle, die mitgeholfen haben, sowie Haftungsausschluss und Lizenztexte.
