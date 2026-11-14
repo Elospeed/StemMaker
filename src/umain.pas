@@ -1,11 +1,16 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uMain  (Datei umain.pas, Hauptfenster; Layout in umain.lfm)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : umain.pas  (Unit uMain, Hauptfenster; Layout in umain.lfm)
-  Version : siehe APP_VERSION weiter unten (einzige Stelle im Code)
+  Stand   : 14.11.2026
+  Version : APP_VERSION in version.inc (einzige Stelle im Code)
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Knopf "?" und F1, Farben passend zum dunklen Design,
+                     Neustart nach Sprach- oder Designwechsel
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Hauptfenster. Hier passiert alles, was der Benutzer sieht:
     - Dateiliste (Dateien hinzufügen, per Drag & Drop, ganze Ordner)
@@ -26,6 +31,11 @@
   Hauptthread aus - dort ist das Anfassen der Oberfläche erlaubt.
 
   Die Einstellungen werden in StemMaker.ini gespeichert (neben der Exe).
+
+  BENUTZUNG
+
+    Das Fenster legt StemMaker.lpr an (Application.CreateForm), sobald das
+    Startfenster "OK" meldet. Von aussen wird hier nichts aufgerufen.
   ============================================================================ }
 unit uMain;
 
@@ -38,7 +48,7 @@ uses
   ComCtrls, Spin, EditBtn, Buttons, IniFiles, LCLIntf, FileUtil, LazFileUtils,
   Clipbrd, Menus, uSingleInstance, {$IFDEF WINDOWS}Windows,{$ENDIF} uStemMP4, uStemJob, uInit, uLog, uInfo,
   uPower, uLang, uLangUI, uQueue, uReport, Process, UTF8Process, uUpdate, uUpdateUI,
-  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar,
+  uSettings, uStatusDraw, uDonate, uTurboTest, LCLType, uAddOnBar, uHilfe,
   uSkalierung, uWine;
 
 {$I version.inc}   // APP_VERSION
@@ -60,11 +70,11 @@ type
   private
     FForm    : TfrmMain;
     FSettings: TStemSettings;
-    FFiles   : TStringList;        // volle Pfade der zu bearbeitenden Dateien
-    FOutFiles: TStringList;        // Zielname je Datei (siehe PlannedOutFiles)
-    FIndexes : array of Integer;   // zugehörige Zeile in der Dateiliste
-    FJob     : TStemJob;           // der gerade laufende Auftrag
-    FLock    : TRTLCriticalSection;// schützt FJob (Zugriff aus 2 Threads)
+    FFiles   : TStringList;                                // volle Pfade der zu bearbeitenden Dateien
+    FOutFiles: TStringList;                                // Zielname je Datei (siehe PlannedOutFiles)
+    FIndexes : array of Integer;                           // zugehörige Zeile in der Dateiliste
+    FJob     : TStemJob;                                   // der gerade laufende Auftrag
+    FLock    : TRTLCriticalSection;                        // schützt FJob (Zugriff aus 2 Threads)
     { Werte, die per Synchronize an das Fenster gehen: }
     FSyncMsg   : string;
     FSyncPct   : Integer;
@@ -72,9 +82,9 @@ type
     FSyncItem  : Integer;
     FSyncStatus: TItemState;
     FSyncDone  : Integer;
-    FSyncOut   : string;           // fertige Stem-Datei (leer = keine)
-    FSyncTurbo : Boolean;          // diese Datei hat Turbo getrennt (für das Tempo-Lernen)
-    FLastPct   : Integer;          // zuletzt gemeldete Prozentzahl
+    FSyncOut   : string;                                   // fertige Stem-Datei (leer = keine)
+    FSyncTurbo : Boolean;                                  // diese Datei hat Turbo getrennt (für das Tempo-Lernen)
+    FLastPct   : Integer;                                  // zuletzt gemeldete Prozentzahl
     FCancelled : Boolean;
     procedure JobLog(const Msg: string);
     procedure JobProgress(Percent: Integer; const Stage: string);
@@ -84,13 +94,13 @@ type
   protected
     procedure Execute; override;
   public
-    OKCount, FailCount, SkipCount: Integer;   // Zähler für die Zusammenfassung
-    CancelCount: Integer;                      // abgebrochen (zählt nicht als Fehler)
-    MaxPeakMemMB: Integer;                     // höchster RAM-Bedarf von demucs
-    OmpPerPart  : Integer;                     // Kerne pro demucs-Teilstück
-    TurboCount  : Integer;                     // Dateien mit Turbo getrennt
-    ClassicCount: Integer;                     // Dateien mit demucs.cpp getrennt
-    TurboDev    : string;                      // Turbo: Gerät der letzten Datei
+    OKCount, FailCount, SkipCount: Integer;                // Zähler für die Zusammenfassung
+    CancelCount: Integer;                                  // abgebrochen (zählt nicht als Fehler)
+    MaxPeakMemMB: Integer;                                 // höchster RAM-Bedarf von demucs
+    OmpPerPart  : Integer;                                 // Kerne pro demucs-Teilstück
+    TurboCount  : Integer;                                 // Dateien mit Turbo getrennt
+    ClassicCount: Integer;                                 // Dateien mit demucs.cpp getrennt
+    TurboDev    : string;                                  // Turbo: Gerät der letzten Datei
     constructor Create(AForm: TfrmMain; const ASettings: TStemSettings);
     destructor Destroy; override;
     procedure AddFile(const FileName, OutFile: string; ListIndex: Integer);
@@ -103,6 +113,7 @@ type
   TfrmMain = class(TForm)
     btnAddFiles: TButton;
     btnInfo: TButton;
+    btnHelp: TButton;
     btnCopyLog: TButton;
     btnAddFolder: TButton;
     btnRemove: TButton;
@@ -174,52 +185,53 @@ type
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
     procedure btnCopyLogClick(Sender: TObject);
   private
-    FWorker: TStemWorker;          // nil = gerade keine Umwandlung
-    FTotal : Integer;              // Anzahl Dateien im aktuellen Durchlauf
+    FWorker: TStemWorker;                                  // nil = gerade keine Umwandlung
+    FTotal : Integer;                                      // Anzahl Dateien im aktuellen Durchlauf
     FIniName: string;
-    FToolFFmpeg, FToolDemucs, FToolModels: string;   // Werkzeug-Pfade
-    FPrefs: TStemPrefs;            // Werte aus dem Fenster "Einstellungen" (uSettings)
+    FToolFFmpeg, FToolDemucs, FToolModels: string;         // Werkzeug-Pfade
+    FPrefs: TStemPrefs;                                    // Werte aus dem Fenster "Einstellungen" (uSettings)
     { für die Zeitanzeige unter den Balken: }
-    FRunStart  : QWord;            // Startzeitpunkt des ganzen Durchlaufs (ms)
-    FFileStart : QWord;            // Startzeitpunkt der aktuellen Datei (ms)
-    FFilePct   : Integer;          // Fortschritt der aktuellen Datei 0..100
-    FFilesDone : Integer;          // Anzahl schon fertiger Dateien
-    FOKTimeMS  : QWord;            // Summe der Dauer aller erfolgreichen Dateien
-    FOKCount   : Integer;          // Anzahl erfolgreicher Dateien (für den Schnitt)
-    FStageName : string;           // aktueller Arbeitsschritt (z.B. "Stems trennen")
-    FStageT0   : QWord;            // wann der Schritt begonnen hat
-    FStagePct0 : Integer;          // bei wie viel Prozent er begonnen hat
-    FRunSettings: TStemSettings;   // Einstellungen des laufenden Durchlaufs (fürs Log)
-    FPower     : TPowerRun;        // Schlafsperre/Energieplan des laufenden Durchlaufs
-    FProber    : TDurationProber;  // ermittelt im Hintergrund die Song-Längen
-    FProbeAgain: Boolean;          // während der Abfrage kamen neue Dateien dazu
-    FChangePending: Boolean;       // AfterListChange ist schon angemeldet
-    FRestoring : Boolean;          // Liste wird gerade aus der Datei geladen
-    FOKAudioMS : Int64;            // Musik-Länge aller fertigen Dateien (für das Tempo)
-    FItemTurbo : Boolean;          // die gemeldete Datei lief mit Turbo (sonst demucs.cpp)
-    FCurIndex  : Integer;          // Zeile der Datei, die gerade läuft
-    FUserCancelled: Boolean;       // Benutzer hat "Abbrechen" gedrückt
-    FLastOutFile: string;          // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
-    FUpdate    : TUpdateInfo;      // gefundenes Update (ohne ModelHashes)
-    FHasUpdate : Boolean;          // ... wartet darauf, angeboten zu werden
-    FKofiHover : Boolean;          // Maus ist über dem Ko-fi-Knopf
+    FRunStart  : QWord;                                    // Startzeitpunkt des ganzen Durchlaufs (ms)
+    FFileStart : QWord;                                    // Startzeitpunkt der aktuellen Datei (ms)
+    FFilePct   : Integer;                                  // Fortschritt der aktuellen Datei 0..100
+    FFilesDone : Integer;                                  // Anzahl schon fertiger Dateien
+    FOKTimeMS  : QWord;                                    // Summe der Dauer aller erfolgreichen Dateien
+    FOKCount   : Integer;                                  // Anzahl erfolgreicher Dateien (für den Schnitt)
+    FStageName : string;                                   // aktueller Arbeitsschritt (z.B. "Stems trennen")
+    FStageT0   : QWord;                                    // wann der Schritt begonnen hat
+    FStagePct0 : Integer;                                  // bei wie viel Prozent er begonnen hat
+    FRunSettings: TStemSettings;                           // Einstellungen des laufenden Durchlaufs (fürs Log)
+    FPower     : TPowerRun;                                // Schlafsperre/Energieplan des laufenden Durchlaufs
+    FProber    : TDurationProber;                          // ermittelt im Hintergrund die Song-Längen
+    FProbeAgain: Boolean;                                  // während der Abfrage kamen neue Dateien dazu
+    FChangePending: Boolean;                               // AfterListChange ist schon angemeldet
+    FRestoring : Boolean;                                  // Liste wird gerade aus der Datei geladen
+    FOKAudioMS : Int64;                                    // Musik-Länge aller fertigen Dateien (für das Tempo)
+    FItemTurbo : Boolean;                                  // die gemeldete Datei lief mit Turbo (sonst demucs.cpp)
+    FCurIndex  : Integer;                                  // Zeile der Datei, die gerade läuft
+    FUserCancelled: Boolean;                               // Benutzer hat "Abbrechen" gedrückt
+    FLastOutFile: string;                                  // zuletzt fertig gewordene Stem-Datei (dieser Durchlauf)
+    FUpdate    : TUpdateInfo;                              // gefundenes Update (ohne ModelHashes)
+    FHasUpdate : Boolean;                                  // ... wartet darauf, angeboten zu werden
+    FKofiHover : Boolean;                                  // Maus ist über dem Ko-fi-Knopf
     { Symbol im Infobereich (neben der Uhr), siehe "Symbol neben der Uhr" }
     FTray      : TTrayIcon;
-    FTrayTimer : TTimer;           // fragt ab, ob ein zweiter Start "zeig dich" will
-    FInTray    : Boolean;          // Fenster ist gerade ins Symbol versteckt
-    FTrayNotice: Boolean;          // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
-    FDonatePending: Boolean;       // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    FTrayTimer : TTimer;                                   // fragt ab, ob ein zweiter Start "zeig dich" will
+    FInTray    : Boolean;                                  // Fenster ist gerade ins Symbol versteckt
+    FTrayNotice: Boolean;                                  // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
+    FDonatePending: Boolean;                               // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
     { Rechtsklick-Menü der Dateiliste }
     FMenuListen: TMenuItem;
     FMenuRemove: TMenuItem;
     FMenuTags: TMenuItem;
     { Seitenleiste mit den AddOns (statt Knopf "Anhören") }
     FAddOnBar: TAddOnBar;
-    FInhalt: TPanel;               // Liste bis Log, links neben der Leiste
-    FZeigtSchaetzung: Boolean;     // lblTotal zeigt gerade die Schätzung vor dem Start
-    FToolsText: string;   // ganzer Text der roten „Fehlt“-Zeile ('' = alles da)
+    FInhalt: TPanel;                                       // Liste bis Log, links neben der Leiste
+    FZeigtSchaetzung: Boolean;                             // lblTotal zeigt gerade die Schätzung vor dem Start
+    FToolsText: string;                                    // ganzer Text der roten „Fehlt“-Zeile ('' = alles da)
     procedure SetupAddOnBar;
     procedure AddOnTaggerClick(Sender: TObject);
     procedure AddOnPackerClick(Sender: TObject);
@@ -299,12 +311,12 @@ const
   { Zustand einer Zeile der Dateiliste. Er steht im Data-Feld der Zeile
     (eine Zahl, kein Text - der angezeigte Text ist ja je nach Sprache
     verschieden). }
-  ST_WAIT   = 0;     // wartet (auch: unterbrochen)
-  ST_OK     = 1;     // fertig
-  ST_SKIP   = 2;     // übersprungen (Stem-Datei gab es schon)
-  ST_FAIL   = 3;     // Fehler
-  ST_CANCEL = 4;     // abgebrochen
-  ST_RUN    = 5;     // läuft gerade
+  ST_WAIT   = 0;                                           // wartet (auch: unterbrochen)
+  ST_OK     = 1;                                           // fertig
+  ST_SKIP   = 2;                                           // übersprungen (Stem-Datei gab es schon)
+  ST_FAIL   = 3;                                           // Fehler
+  ST_CANCEL = 4;                                           // abgebrochen
+  ST_RUN    = 5;                                           // läuft gerade
 
   { Spalten der Dateiliste (SubItems):
       0 = Status (sichtbar)          1 = voller Pfad (sichtbar)
@@ -332,7 +344,7 @@ function ColorToHex(C: TColor): string;
 var
   RGB: LongInt;
 begin
-  RGB := ColorToRGB(C);            // Systemfarben (clBtnFace ...) auflösen
+  RGB := ColorToRGB(C);                                    // Systemfarben (clBtnFace ...) auflösen
   Result := Format('#%.2X%.2X%.2X', [RGB and $FF, (RGB shr 8) and $FF,
     (RGB shr 16) and $FF]);
 end;
@@ -341,7 +353,7 @@ function HexToColor(const S: string; Def: TColor): TColor;
 var
   V: LongInt;
 begin
-  Result := Def;                   // bei ungültigem Text: Standardfarbe
+  Result := Def;                                           // bei ungültigem Text: Standardfarbe
   if (Length(S) = 7) and (S[1] = '#') and TryStrToInt('$' + Copy(S, 2, 6), V) then
     Result := TColor(((V shr 16) and $FF) or (V and $FF00) or ((V and $FF) shl 16));
 end;
@@ -419,7 +431,7 @@ begin
   else if Passt(Main) or (Short = '') then
     Setze(Main, Clock)
   else
-    Setze(Short, Main + ', ' + Clock);   // nicht einmal der lange Text passt
+    Setze(Short, Main + ', ' + Clock);                     // nicht einmal der lange Text passt
 end;
 
 { ---------------------------------------------------------------------------
@@ -427,7 +439,7 @@ end;
   --------------------------------------------------------------------------- }
 constructor TStemWorker.Create(AForm: TfrmMain; const ASettings: TStemSettings);
 begin
-  inherited Create(True);          // True = erst mit Start loslaufen
+  inherited Create(True);                                  // True = erst mit Start loslaufen
   FreeOnTerminate := False;
   FForm := AForm;
   FSettings := ASettings;
@@ -546,7 +558,7 @@ begin
       Job.OnLog := @JobLog;
       Job.OnProgress := @JobProgress;
       FLastPct := -1;
-      OK := Job.Run(FFiles[I], OutF, Err);      // <- hier passiert die Arbeit
+      OK := Job.Run(FFiles[I], OutF, Err);                 // <- hier passiert die Arbeit
       WasSkipped := Job.Skipped;
       if Job.PeakMemMB > MaxPeakMemMB then
         MaxPeakMemMB := Job.PeakMemMB;
@@ -625,8 +637,9 @@ var
   M: TStemModel;
   I: Integer;
 begin
-  TranslateComponent(Self);   // Texte aus umain.lfm übersetzen (uLangUI)
-  memLog.Font.Name := MonoFontName;   // Consolas hat keine japanischen Zeichen
+  TranslateComponent(Self);                                // Texte aus umain.lfm übersetzen (uLangUI)
+  HelpKeyword := 'hauptfenster';                           // F1 öffnet die Hilfe hier (uHilfe)
+  memLog.Font.Name := MonoFontName;                        // Consolas hat keine japanischen Zeichen
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');
@@ -644,7 +657,7 @@ begin
     cbModel.Items.Add(StemModelDisplayName(M));
   cbModel.ItemIndex := 0;
   cbFormat.ItemIndex := 0;
-  LoadGearGlyph(btnSettings);      // Zahnrad-Symbol (uSettings)
+  LoadGearGlyph(btnSettings);                              // Zahnrad-Symbol (uSettings)
   { Ko-fi-Knopf unten rechts: Breite passend zum (übersetzten) Text.
     Gemessen wird in Bildschirm-Pixeln, das Fenster steht hier aber noch
     auf 96 dpi und wird danach umgerechnet: deshalb zurückrechnen, sonst
@@ -671,7 +684,7 @@ begin
     Application.QueueAsyncCall(@TestError, 0);
   if Application.HasOption('test-absturz') then
     Application.QueueAsyncCall(@TestCrash, 0);
-  ReportAppVersion := APP_VERSION;   // für den Kopf des Fehlerberichts
+  ReportAppVersion := APP_VERSION;                         // für den Kopf des Fehlerberichts
   { nach einem Absturz einmal fragen, ob ein Fehlerbericht gesendet werden soll }
   if LogLastCrashFile <> '' then
     Application.QueueAsyncCall(@OfferCrashReport, 0);
@@ -708,11 +721,11 @@ procedure TfrmMain.CheckTurboTest(Data: PtrInt);
 var
   Reason: string;
 begin
-  if FWorker <> nil then Exit;     // läuft schon etwas: nicht stören
+  if FWorker <> nil then Exit;                             // läuft schon etwas: nicht stören
   if not TurboTestNeeded(CurrentSettings, Reason) then Exit;
   LogLine('Turbo-Vortest nötig: ' + Reason);
   ShowTurboTest(CurrentSettings);
-  UpdateEstimate;                  // Zeitschätzung mit dem neuen Tempo
+  UpdateEstimate;                                          // Zeitschätzung mit dem neuen Tempo
 end;
 
 { ---------------------------------------------------------------------------
@@ -722,7 +735,7 @@ end;
 procedure TfrmMain.UpdateFound(const Info: TUpdateInfo);
 begin
   FUpdate := Info;
-  FUpdate.ModelHashes := nil;      // gehört uUpdateUI und wird dort freigegeben
+  FUpdate.ModelHashes := nil;                              // gehört uUpdateUI und wird dort freigegeben
   FHasUpdate := True;
   if FWorker = nil then
     Application.QueueAsyncCall(@OfferUpdate, 0)
@@ -737,15 +750,15 @@ begin
     Exit;
   FHasUpdate := False;
   if ShowUpdateDialog(FUpdate, APP_VERSION) then
-    Close;                         // neuer StemMaker wartet schon (--nach-update)
+    Close;                                                 // neuer StemMaker wartet schon (--nach-update)
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   CancelUpdateCheck;
   StopProbe;
-  SaveQueueNow;      // letzter Stand der Liste
-  EndPower;          // falls noch etwas umgestellt ist: zurückstellen
+  SaveQueueNow;                                            // letzter Stand der Liste
+  EndPower;                                                // falls noch etwas umgestellt ist: zurückstellen
   SaveSettings;
   LogLine('Hauptfenster wird geschlossen');
 end;
@@ -761,7 +774,7 @@ begin
   try
     L.Add('x');
     LogLine('Test: greife absichtlich auf Zeile 5 einer Liste mit 1 Zeile zu');
-    AddLog(L[5]);                  // -> EStringListError
+    AddLog(L[5]);                                          // -> EStringListError
   finally
     L.Free;
   end;
@@ -771,7 +784,7 @@ procedure TfrmMain.TestCrash(Data: PtrInt);
 begin
   LogLine('Test: Programm wird jetzt hart beendet (simulierter Absturz)');
   {$IFDEF WINDOWS}
-  TerminateProcess(GetCurrentProcess, 99);   // wie Task-Manager "Task beenden"
+  TerminateProcess(GetCurrentProcess, 99);                 // wie Task-Manager "Task beenden"
   {$ELSE}
   Halt(99);
   {$ENDIF}
@@ -790,9 +803,16 @@ begin
     ShowErrorReport(LogLastCrashFile, _('Programm wurde unerwartet beendet'));
 end;
 
+{ "Info": Info-Fenster zeigen (Update-Suche meldet sich über UpdateFound) }
 procedure TfrmMain.btnInfoClick(Sender: TObject);
 begin
   ShowInfoDialog(APP_VERSION, APP_AUTHOR, @UpdateFound);
+end;
+
+{ "?" oben links: Anleitung beim Hauptfenster öffnen (F1 geht überall, uHilfe) }
+procedure TfrmMain.btnHelpClick(Sender: TObject);
+begin
+  HilfeZeigen('hauptfenster');
 end;
 
 procedure TfrmMain.btnCopyLogClick(Sender: TObject);
@@ -815,15 +835,15 @@ begin
       mtConfirmation, [mbYes, mbNo], 0) = mrYes;
     if CanClose then
     begin
-      FWorker.OnTerminate := nil;  // WorkerDone soll nicht mehr kommen
+      FWorker.OnTerminate := nil;                          // WorkerDone soll nicht mehr kommen
       FWorker.Cancel;
-      FWorker.WaitFor;             // warten bis demucs/ffmpeg beendet sind
+      FWorker.WaitFor;                                     // warten bis demucs/ffmpeg beendet sind
       FreeAndNil(FWorker);
-      EndPower;                    // Schlafsperre/Energieplan zurückstellen
+      EndPower;                                            // Schlafsperre/Energieplan zurückstellen
     end;
   end;
   if CanClose then
-    StopProbe;                     // Längen-Abfrage im Hintergrund beenden
+    StopProbe;                                             // Längen-Abfrage im Hintergrund beenden
 end;
 
 { ---------------------------------------------------------------------------
@@ -951,12 +971,12 @@ var
   I: Integer;
 begin
   Result := DefaultStemSettings;
-  LoadTurboSettings(Result);       // Engine (Turbo/Klassisch) aus [Turbo]
+  LoadTurboSettings(Result);                               // Engine (Turbo/Klassisch) aus [Turbo]
   Result.FFmpegExe := FToolFFmpeg;
   Result.DemucsDir := FToolDemucs;
   Result.ModelsDir := FToolModels;
   if chkBeside.Checked then
-    Result.OutputDir := ''                        // neben der Originaldatei
+    Result.OutputDir := ''                                 // neben der Originaldatei
   else
     Result.OutputDir := edtOut.Directory;
   Result.Model := TStemModel(cbModel.ItemIndex);
@@ -994,7 +1014,7 @@ begin
         lblTools.Caption := _('Tools: ffmpeg, Turbo, demucs.cpp und Modell gefunden')
       else
         lblTools.Caption := _('Tools: ffmpeg, demucs.cpp und Modell gefunden');
-      lblTools.Font.Color := clGreen;
+      lblTools.Font.Color := FarbeOK;
       lblTools.Hint := '';
       FToolsText := '';
     end
@@ -1002,7 +1022,7 @@ begin
     begin
       FToolsText := Format(_('Fehlt: %s'), [StringReplace(Trim(Problems),
         LineEnding, '  |  ', [rfReplaceAll])]);
-      lblTools.Font.Color := clRed;
+      lblTools.Font.Color := FarbeFehler;
       lblTools.Hint := Trim(Problems);
       lblTools.ShowHint := True;
       ZeigeToolsText;
@@ -1031,22 +1051,38 @@ begin
     _('Jetzt herunterladen?'), mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
     RunStartupCheck(TStemModel(cbModel.ItemIndex), False);
   UpdateToolStatus;
-  UpdateEstimate;                  // anderes Modell = andere Dauer
+  UpdateEstimate;                                          // anderes Modell = andere Dauer
 end;
 
-{ Zahnrad "Weitere Einstellungen...": Fenster aus uSettings zeigen.
-  Bei OK sofort in StemMaker.ini speichern (falls StemMaker später
-  abstürzt, ist die Änderung trotzdem da). }
+{ TfrmMain.btnSettingsClick
+  Zahnrad "Weitere Einstellungen...": Fenster aus uSettings zeigen.
+  Ablauf   : 1. Fenster zeigen; ein Neustart ist nur möglich, wenn keine
+                Umwandlung läuft (FWorker = nil)
+             2. bei OK sofort in StemMaker.ini speichern (falls StemMaker
+                später abstürzt, ist die Änderung trotzdem da)
+             3. Sprache/Design geändert und Neustart gewählt: neuen
+                StemMaker starten und dieses Fenster schliessen }
 procedure TfrmMain.btnSettingsClick(Sender: TObject);
+var
+  Neustart: Boolean;                                       // Benutzer will gleich neu starten
 begin
   if ShowSettingsDialog(FPrefs, chkBeside.Checked, FToolFFmpeg, FToolDemucs,
-    FToolModels) then
+    FToolModels, FWorker = nil, Neustart) then
   begin
     SaveSettings;
-    UpdateToolStatus;              // Engine kann sich geändert haben
-    UpdateEstimate;                // andere Teile-Zahl oder Engine = andere Dauer
-    pbAccent.Invalidate;           // Stem-Farben können sich geändert haben
+    UpdateToolStatus;                                      // Engine kann sich geändert haben
+    UpdateEstimate;                                        // andere Teile-Zahl oder Engine = andere Dauer
+    pbAccent.Invalidate;                                   // Stem-Farben können sich geändert haben
     lvFiles.Invalidate;
+    { Sprache/Design geändert und "Jetzt neu starten" gewählt: neuen StemMaker
+      starten (wartet mit --nach-update, bis dieser zu ist), dann schliessen.
+      Gespeichert ist schon alles; die Liste speichert FormDestroy. }
+    if Neustart and (FWorker = nil) then
+    begin
+      LogLine('Neustart nach Änderung von Sprache/Design');
+      RestartStemMaker;
+      Close;
+    end;
   end;
 end;
 
@@ -1061,9 +1097,9 @@ end;
   --------------------------------------------------------------------------- }
 procedure TfrmMain.AddLog(const Msg: string);
 begin
-  LogLine(Msg);                    // gleichzeitig in die Log-Datei (sofort)
+  LogLine(Msg);                                            // gleichzeitig in die Log-Datei (sofort)
   memLog.Lines.Add(Msg);
-  memLog.SelStart := Length(memLog.Text);   // ans Ende scrollen
+  memLog.SelStart := Length(memLog.Text);                  // ans Ende scrollen
 end;
 
 { Fortschritt der aktuellen Datei (vom Worker gemeldet).
@@ -1115,14 +1151,14 @@ begin
         { neue Datei beginnt -> Stoppuhr für die Datei neu starten }
         FFileStart := GetTickCount64;
         FFilePct := 0;
-        FStageName := '';          // Schritt-Tempo für die neue Datei neu messen
+        FStageName := '';                                  // Schritt-Tempo für die neue Datei neu messen
       end;
     isOK:
       begin
         { fertig -> benötigte Zeit merken und anzeigen }
         Dur := FormatDuration(GetTickCount64 - FFileStart);
         S := Format(_('OK (%s)'), [Dur]);
-        Inc(FOKTimeMS, GetTickCount64 - FFileStart);   // für die Gesamt-Schätzung
+        Inc(FOKTimeMS, GetTickCount64 - FFileStart);       // für die Gesamt-Schätzung
         Inc(FOKCount);
         { Tempo lernen: wie lange pro Minute Musik? (für künftige Schätzungen) }
         if ItemDurMS(Index) > 0 then
@@ -1154,13 +1190,13 @@ begin
       SetState(lvFiles.Items[Index], ST_FAIL);
     end;
     lvFiles.Items[Index].SubItems[0] := S;
-    lvFiles.Items[Index].MakeVisible(False);  // Zeile ins Bild scrollen
+    lvFiles.Items[Index].MakeVisible(False);               // Zeile ins Bild scrollen
   end;
   FFilesDone := Done;
   if FTotal > 0 then
     pbTotal.Position := Round(Done * 100 / FTotal);
   UpdateTimes;
-  SaveQueueNow;                    // Stand sofort sichern (Absturz, Stromausfall)
+  SaveQueueNow;                                            // Stand sofort sichern (Absturz, Stromausfall)
 end;
 
 { ---------------------------------------------------------------------------
@@ -1196,7 +1232,7 @@ var
   Rate: Double;
 begin
   if FWorker = nil then
-    Exit;                          // läuft nichts -> Anzeige stehen lassen
+    Exit;                                                  // läuft nichts -> Anzeige stehen lassen
   Now64 := GetTickCount64;
   FileMS := Now64 - FFileStart;
   RunMS := Now64 - FRunStart;
@@ -1222,7 +1258,7 @@ begin
   if CanEstimate then
   begin
     FileRestMS := (100 - FFilePct) * (StageMS / StageGain);
-    FileTotalMS := FileMS + FileRestMS;          // geschätzte Gesamtdauer der Datei
+    FileTotalMS := FileMS + FileRestMS;                    // geschätzte Gesamtdauer der Datei
     FileRest := Format(_('ca. %s'), [FormatDuration(Round(FileRestMS))]);
   end
   else if CurDur > 0 then
@@ -1251,12 +1287,12 @@ begin
         Inc(WaitAudio, ItemDurMS(I))
       else
         Inc(WaitUnknown);
-  Waiting := FTotal - FFilesDone - 1;            // Dateien NACH der aktuellen
+  Waiting := FTotal - FFilesDone - 1;                      // Dateien NACH der aktuellen
   if Waiting < 0 then Waiting := 0;
   if FOKCount > 0 then
-    AvgMS := FOKTimeMS / FOKCount                // Schnitt der fertigen Dateien
+    AvgMS := FOKTimeMS / FOKCount                          // Schnitt der fertigen Dateien
   else
-    AvgMS := FileTotalMS;                        // noch keine fertig
+    AvgMS := FileTotalMS;                                  // noch keine fertig
   if CanEstimate and (WaitUnknown = 0) then
   begin
     TotalRestMS := FileRestMS + WaitAudio * Rate;
@@ -1265,14 +1301,14 @@ begin
   else if CanEstimate or ((FOKCount > 0) and (FFilePct = 0)) then
   begin
     TotalRestMS := FileRestMS + Waiting * AvgMS;
-    if (not CanEstimate) then                    // neue Datei hat gerade begonnen
+    if (not CanEstimate) then                              // neue Datei hat gerade begonnen
       TotalRestMS := (Waiting + 1) * AvgMS;
     TotalRest := Format(_('ca. %s'), [FormatDuration(Round(TotalRestMS))]);
   end
   else
   begin
     TotalRest := _('wird berechnet ...');
-    TotalRestMS := 0;                            // noch keine Uhrzeit zeigen
+    TotalRestMS := 0;                                      // noch keine Uhrzeit zeigen
   end;
   Current := FFilesDone + 1;
   if Current > FTotal then Current := FTotal;
@@ -1299,7 +1335,7 @@ var
 begin
   if DirectoryExists(FileName) then
   begin
-    AddFolder(FileName);           // Ordner -> alle Audiodateien darin
+    AddFolder(FileName);                                   // Ordner -> alle Audiodateien darin
     Exit;
   end;
   if not IsSupportedInput(FileName) then
@@ -1308,16 +1344,16 @@ begin
     Exit;
   end;
   if Pos('.stem.', LowerCase(ExtractFileName(FileName))) > 0 then
-    Exit;                          // ist schon eine Stem-Datei
+    Exit;                                                  // ist schon eine Stem-Datei
   for I := 0 to lvFiles.Items.Count - 1 do
     if SameFileName(lvFiles.Items[I].SubItems[1], FileName) then
-      Exit;                        // steht schon in der Liste
+      Exit;                                                // steht schon in der Liste
   Item := lvFiles.Items.Add;
   Item.Caption := ExtractFileName(FileName);
   Item.SubItems.Add(_('wartet'));
   Item.SubItems.Add(FileName);
-  Item.SubItems.Add(Root);         // unsichtbar: Basisordner
-  Item.SubItems.Add('');           // unsichtbar: Länge (kommt von TDurationProber)
+  Item.SubItems.Add(Root);                                 // unsichtbar: Basisordner
+  Item.SubItems.Add('');                                   // unsichtbar: Länge (kommt von TDurationProber)
   SetState(Item, ST_WAIT);
   ListChanged;
 end;
@@ -1334,7 +1370,7 @@ var
   Root: string;
 begin
   Root := ExtractFileDir(ExcludeTrailingPathDelimiter(Dir));
-  L := FindAllFiles(Dir, '*.*', True);   // True = auch Unterordner
+  L := FindAllFiles(Dir, '*.*', True);                     // True = auch Unterordner
   try
     L.Sort;
     for I := 0 to L.Count - 1 do
@@ -1381,7 +1417,7 @@ procedure TfrmMain.FormDropFiles(Sender: TObject; const FileNames: array of stri
 var
   I: Integer;
 begin
-  if FWorker <> nil then Exit;     // während der Arbeit nichts ändern
+  if FWorker <> nil then Exit;                             // während der Arbeit nichts ändern
   lvFiles.BeginUpdate;
   try
     for I := Low(FileNames) to High(FileNames) do
@@ -1441,7 +1477,7 @@ begin
     mtConfirmation, [mbYes, mbNo], 0) <> mrYes) then
     Exit;
   lvFiles.Items.Clear;
-  QueueDelete;                     // gespeicherte Liste ebenfalls löschen
+  QueueDelete;                                             // gespeicherte Liste ebenfalls löschen
   lblTotal.Caption := '';
   lblTotal.Hint := '';
   { Gesamtbalken blieb sonst voll grün stehen (gefunden 16.10.2026) }
@@ -1511,7 +1547,7 @@ var
 begin
   Item := lvFiles.Items[Index];
   if chkBeside.Checked then
-    Result := ''                                  // neben der Originaldatei
+    Result := ''                                           // neben der Originaldatei
   else
   begin
     Result := edtOut.Directory;
@@ -1578,8 +1614,8 @@ begin
     P.Executable := Exe;
     P.CurrentDirectory := ExtractFilePath(Exe);
     if StemFile <> '' then
-      P.Parameters.Add(StemFile);  // Datei oder Ordner
-    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+      P.Parameters.Add(StemFile);                          // Datei oder Ordner
+    P.Options := [];                                       // nicht warten, keine Pipes (siehe Entwicklungslog)
     try
       P.Execute;
       if StemFile <> '' then
@@ -1591,7 +1627,7 @@ begin
         AddLog(Format(_('StemPlayer konnte nicht gestartet werden: %s'), [E.Message]));
     end;
   finally
-    P.Free;                        // gibt nur unseren Zugriff frei, der Player läuft weiter
+    P.Free;                                                // gibt nur unseren Zugriff frei, der Player läuft weiter
   end;
 end;
 
@@ -1616,7 +1652,7 @@ begin
     P.CurrentDirectory := ExtractFilePath(Exe);
     for I := 0 to Files.Count - 1 do
       P.Parameters.Add(Files[I]);
-    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+    P.Options := [];                                       // nicht warten, keine Pipes (siehe Entwicklungslog)
     try
       P.Execute;
       LogLine(Format('StemTagger gestartet (%d Dateien)', [Files.Count]));
@@ -1692,7 +1728,7 @@ begin
     F := FLastOutFile;
   if F = '' then
   begin
-    Planned := PlannedOutFiles;          // einmal für alle Zeilen rechnen
+    Planned := PlannedOutFiles;                            // einmal für alle Zeilen rechnen
     for I := lvFiles.Items.Count - 1 downto 0 do
     begin
       if (lvFiles.Items[I].SubItems.Count > 4) and (lvFiles.Items[I].SubItems[4] <> '') then
@@ -1771,7 +1807,7 @@ var
   Look: TStatusLook;
   Pct: Integer;
 begin
-  if SubItem <> 1 then Exit;       // 0 = Datei, 1 = Status, 2 = Pfad
+  if SubItem <> 1 then Exit;                               // 0 = Datei, 1 = Status, 2 = Pfad
   if Item.SubItems.Count = 0 then Exit;
   R := Item.DisplayRectSubItem(1, drBounds);
   if (R.Right <= R.Left) or (R.Bottom <= R.Top) then Exit;
@@ -1799,7 +1835,7 @@ begin
   Sender.Canvas.Font.Assign(lvFiles.Font);
   DrawStatusCell(Sender.Canvas, R, Look, Pct, Item.SubItems[0], FPrefs.StemColors,
     clWindow, clWindowText, False, Screen.PixelsPerInch);
-  DefaultDraw := False;            // Windows soll diese Zelle nicht übermalen
+  DefaultDraw := False;                                    // Windows soll diese Zelle nicht übermalen
 end;
 
 { Doppelklick auf eine Zeile: fertige Stem-Datei gleich anhören }
@@ -1827,7 +1863,7 @@ begin
   Pop.OnPopup := @ListMenuPopup;
   FMenuListen := TMenuItem.Create(Pop);
   FMenuListen.Caption := _('Anhören');
-  FMenuListen.Default := True;             // fett: das macht auch der Doppelklick
+  FMenuListen.Default := True;                             // fett: das macht auch der Doppelklick
   FMenuListen.OnClick := @ListMenuListenClick;
   Pop.Items.Add(FMenuListen);
   FMenuTags := TMenuItem.Create(Pop);
@@ -1955,12 +1991,12 @@ var
   P: TProcessUTF8;
 begin
   Exe := AppBaseDir + 'AddOns' + PathDelim + ExeName('StemPacker');
-  if not FileExists(Exe) then Exit;   // ohne Exe gibt es die Kachel gar nicht
+  if not FileExists(Exe) then Exit;                        // ohne Exe gibt es die Kachel gar nicht
   P := TProcessUTF8.Create(nil);
   try
     P.Executable := Exe;
     P.CurrentDirectory := ExtractFilePath(Exe);
-    P.Options := [];               // nicht warten, keine Pipes (siehe Entwicklungslog)
+    P.Options := [];                                       // nicht warten, keine Pipes (siehe Entwicklungslog)
     try
       P.Execute;
       LogLine('StemPacker gestartet');
@@ -2056,10 +2092,10 @@ begin
 
   { Worker anlegen und alle noch nicht fertigen Dateien übergeben }
   FWorker := TStemWorker.Create(Self, S);
-  Planned := PlannedOutFiles;            // Zielnamen, eindeutig (siehe dort)
+  Planned := PlannedOutFiles;                              // Zielnamen, eindeutig (siehe dort)
   FTotal := 0;
   for I := 0 to lvFiles.Items.Count - 1 do
-    if ItemState(lvFiles.Items[I]) <> ST_OK then   // alles ausser "fertig"
+    if ItemState(lvFiles.Items[I]) <> ST_OK then           // alles ausser "fertig"
     begin
       FWorker.AddFile(lvFiles.Items[I].SubItems[1], Planned[I], I);
       SetState(lvFiles.Items[I], ST_WAIT);
@@ -2130,14 +2166,14 @@ begin
   lblFileTime.Caption := '';
   lblTotal.Caption := '';
   FZeigtSchaetzung := False;
-  lblTotal.Font.Color := clDefault;     // Farbe der letzten Zusammenfassung weg
+  lblTotal.Font.Color := clDefault;                        // Farbe der letzten Zusammenfassung weg
   tmrTime.Interval := 1000;
   tmrTime.Enabled := True;
   SetRunning(True);
-  FWorker.OnTerminate := @WorkerDone;   // wird aufgerufen, wenn alles fertig ist
+  FWorker.OnTerminate := @WorkerDone;                      // wird aufgerufen, wenn alles fertig ist
   FWorker.Start;
   FTrayNotice := False;
-  UpdateTray;                          // Symbol neben der Uhr mit Fortschritt
+  UpdateTray;                                              // Symbol neben der Uhr mit Fortschritt
   TrayProgress;
 end;
 
@@ -2167,7 +2203,7 @@ begin
   if not FUserCancelled then
     TrayNotifyDone(FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total);
   lblFileTime.Caption := '';
-  lblTotal.Hint := '';                  // "fertig ca. ..." gilt nicht mehr
+  lblTotal.Hint := '';                                     // "fertig ca. ..." gilt nicht mehr
   if FUserCancelled then
     lblTotal.Caption := Format(_('Fertig - Gesamtzeit %s'), [Total])
   else
@@ -2176,11 +2212,11 @@ begin
     lblTotal.Caption := Format(_('Fertig: %d erfolgreich, %d übersprungen, %d fehlgeschlagen  -  Gesamtzeit %s'),
       [FWorker.OKCount, FWorker.SkipCount, FWorker.FailCount, Total]);
     if FWorker.FailCount > 0 then
-      lblTotal.Font.Color := CLR_FAIL_TEXT
+      lblTotal.Font.Color := FarbeFehler
     else
-      lblTotal.Font.Color := CLR_OK_TEXT;
+      lblTotal.Font.Color := FarbeOK;
   end;
-  EndPower;                       // zuerst zurückstellen, dann zusammenfassen
+  EndPower;                                                // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Fertige Tracks zählen. Ist eine "runde" Zahl erreicht (10, 50, 100 ...),
     kommt der Spenden-Hinweis - aber nur nach einem guten Durchlauf: ohne
@@ -2198,7 +2234,7 @@ begin
   Application.QueueAsyncCall(@FreeWorker, PtrInt(FWorker));
   FWorker := nil;
   SetRunning(False);
-  UpdateTray;                     // Symbol weg, wenn es nicht mehr gebraucht wird
+  UpdateTray;                                              // Symbol weg, wenn es nicht mehr gebraucht wird
   SaveQueueNow;
 
   { "Ordner nach der Umwandlung öffnen": die zuletzt fertige Stem-Datei im
@@ -2247,9 +2283,9 @@ begin
     with TProcessUTF8.Create(nil) do
     try
       Executable := 'shutdown.exe';
-      Parameters.Add('/s');                 // herunterfahren
+      Parameters.Add('/s');                                // herunterfahren
       Parameters.Add('/t');
-      Parameters.Add('15');                 // in 15 Sekunden
+      Parameters.Add('15');                                // in 15 Sekunden
       Options := [poNoConsole];
       try
         Execute;
@@ -2260,7 +2296,7 @@ begin
     finally
       Free;
     end;
-    Close;                         // StemMaker sauber beenden (Log wird normal abgeschlossen)
+    Close;                                                 // StemMaker sauber beenden (Log wird normal abgeschlossen)
   end
   else
   begin
@@ -2409,7 +2445,7 @@ begin
   SecPerMin := SpeedLoad(FIniName, M, Turbo);
   if SecPerMin <= 0 then
     SecPerMin := SpeedDefault(M, Turbo);
-  Result := SecPerMin / 60;      // X s Arbeit pro 60 s Musik = X/60 ms Arbeit pro ms Musik
+  Result := SecPerMin / 60;                                // X s Arbeit pro 60 s Musik = X/60 ms Arbeit pro ms Musik
 end;
 
 { ganze Liste in StemMaker_queue.txt schreiben }
@@ -2462,7 +2498,7 @@ begin
     begin
       if not FileExists(E[I].Path) then
       begin
-        Inc(Missing);              // Datei gibt es nicht mehr (verschoben/gelöscht)
+        Inc(Missing);                                      // Datei gibt es nicht mehr (verschoben/gelöscht)
         Continue;
       end;
       case E[I].State of
@@ -2500,7 +2536,7 @@ begin
   if Missing > 0 then
     AddLog(Format(_('%d Dateien aus der gespeicherten Liste gibt es nicht mehr - weggelassen.'),
       [Missing]));
-  ListChanged;                     // speichern (ohne die fehlenden), Längen, Schätzung
+  ListChanged;                                             // speichern (ohne die fehlenden), Längen, Schätzung
 end;
 
 { Längen-Abfrage starten für alle Zeilen ohne bekannte Länge }
@@ -2511,10 +2547,10 @@ var
 begin
   if FProber <> nil then
   begin
-    FProbeAgain := True;           // läuft schon -> danach nochmals
+    FProbeAgain := True;                                   // läuft schon -> danach nochmals
     Exit;
   end;
-  if not FileExists(FToolFFmpeg) then Exit;   // ffmpeg fehlt noch
+  if not FileExists(FToolFFmpeg) then Exit;                // ffmpeg fehlt noch
   L := TStringList.Create;
   try
     for I := 0 to lvFiles.Items.Count - 1 do
@@ -2535,7 +2571,7 @@ begin
   { wie beim Worker: nicht im eigenen Ende-Ereignis freigeben }
   Application.QueueAsyncCall(@FreeProber, PtrInt(FProber));
   FProber := nil;
-  SaveQueueNow;                    // ermittelte Längen mit in die Liste schreiben
+  SaveQueueNow;                                            // ermittelte Längen mit in die Liste schreiben
   if FProbeAgain then
     StartProbe;
 end;
@@ -2567,7 +2603,7 @@ begin
       if DurMS > 0 then
         lvFiles.Items[I].SubItems[3] := IntToStr(DurMS)
       else
-        lvFiles.Items[I].SubItems[3] := '-1';   // nicht lesbar - nicht nochmals fragen
+        lvFiles.Items[I].SubItems[3] := '-1';              // nicht lesbar - nicht nochmals fragen
       Break;
     end;
   UpdateEstimate;
@@ -2585,9 +2621,9 @@ var
   Measured: Boolean;
   S, H, Kurz: string;
 begin
-  if FWorker <> nil then Exit;     // während der Arbeit zeigt UpdateTimes die Zeiten
+  if FWorker <> nil then Exit;                             // während der Arbeit zeigt UpdateTimes die Zeiten
   FZeigtSchaetzung := False;
-  lblTotal.Font.Color := clDefault;  // grün/rot gilt nur für die Zusammenfassung
+  lblTotal.Font.Color := clDefault;                        // grün/rot gilt nur für die Zusammenfassung
   Open := 0;
   Unknown := 0;
   Audio := 0;
@@ -2617,7 +2653,7 @@ begin
   Est := Audio * RateMsPerMs * Open / (Open - Unknown);
   S := Format(_('%d Dateien offen, %s Musik - Dauer ca. %s'),
     [Open, FormatDuration(Audio), FormatDuration(Round(Est))]);
-  Kurz := S;                       // ohne Zusatz, falls die Uhrzeit sonst nicht passt
+  Kurz := S;                                               // ohne Zusatz, falls die Uhrzeit sonst nicht passt
   { kurzer Zusatz im Text, die Erklärung im Hinweis (Maus drüber) }
   if Measured then
   begin
@@ -2632,7 +2668,7 @@ begin
   if Unknown > 0 then
   begin
     S := S + Format(_(' - %d Längen noch unbekannt'), [Unknown]);
-    Kurz := '';                    // die Warnung soll sichtbar bleiben
+    Kurz := '';                                            // die Warnung soll sichtbar bleiben
   end;
   { mit Uhrzeit "fertig ca. 18:40", wenn jetzt gestartet wird (Speedy 30.10.) }
   SetTextWithClock(lblTotal, S, Kurz, Est, H);
@@ -2681,7 +2717,7 @@ begin
   Pop := TPopupMenu.Create(Self);
   Item := TMenuItem.Create(Pop);
   Item.Caption := _('StemMaker anzeigen');
-  Item.Default := True;                    // fett, wie bei Windows üblich
+  Item.Default := True;                                    // fett, wie bei Windows üblich
   Item.OnClick := @TrayClick;
   Pop.Items.Add(Item);
   Item := TMenuItem.Create(Pop);
@@ -2698,7 +2734,7 @@ begin
   Application.OnMinimize := @AppMinimize;
   Application.OnActivate := @AppActivate;
   Application.OnEndSession := @AppEndSession;
-  SingleInstanceShowWanted;                // Signal für den zweiten Start anlegen
+  SingleInstanceShowWanted;                                // Signal für den zweiten Start anlegen
 end;
 
 { Symbol zeigen oder verstecken, je nach Lage }
@@ -2722,7 +2758,7 @@ begin
   Cur := FFilesDone + 1;
   if Cur > FTotal then Cur := FTotal;
   S := Format(_('%s - %d %% (Datei %d von %d)'), [APP_NAME, Pct, Cur, FTotal]);
-  if S <> FTray.Hint then                  // nur bei Änderung neu setzen
+  if S <> FTray.Hint then                                  // nur bei Änderung neu setzen
     FTray.Hint := S;
 end;
 
@@ -2735,7 +2771,7 @@ begin
   { Taskleisten-Eintrag weg (siehe oben: gehört dem Anwendungsfenster) }
   ShowWindow(Application.Handle, SW_HIDE);
   {$ENDIF}
-  SingleInstanceShowWanted;                // altes Signal verwerfen
+  SingleInstanceShowWanted;                                // altes Signal verwerfen
   FTrayTimer.Enabled := True;
 end;
 
@@ -2750,7 +2786,7 @@ begin
     {$ENDIF}
   end;
   FTrayNotice := False;
-  Application.Restore;                     // war minimiert -> wiederherstellen
+  Application.Restore;                                     // war minimiert -> wiederherstellen
   if WindowState = wsMinimized then
     WindowState := wsNormal;
   Application.BringToFront;
@@ -2839,7 +2875,7 @@ begin
   begin
     LogLine('Laufende Umwandlung wird abgebrochen, die angefangene Datei ' +
       'kommt beim nächsten Start noch einmal dran');
-    FWorker.OnTerminate := nil;    // WorkerDone soll nicht mehr kommen
+    FWorker.OnTerminate := nil;                            // WorkerDone soll nicht mehr kommen
     FWorker.Cancel;
   end;
   EndPower;
@@ -2903,7 +2939,7 @@ begin
     T.Interval := 1000;
     T.OnTimer := @F.Tick;
     T.Enabled := True;
-    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
+    SkaliereDialog(F);                                     // Masse oben sind 96-dpi-Pixel
     Result := F.ShowModal = mrOK;
   finally
     F.Free;

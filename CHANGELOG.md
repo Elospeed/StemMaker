@@ -7,11 +7,22 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
-## 2.3.1 – noch nicht veröffentlicht
+## 2.4 – 14. November 2026
+
+### Neu
+- **Hell oder dunkel:** Unter „Weitere Einstellungen“ → „Programm“ → „Design“ gibt es „Automatisch (wie Windows)“ (Standard), „Hell“ und „Dunkel“. Automatisch folgt der Windows-Einstellung „Standard-App-Modus“. Im dunklen Design sind Hauptfenster, Einstellungen, alle Meldungen, Listen, Menüs und Titelleisten dunkel; Statusspalte, Fortschrittsbalken und farbige Texte haben dafür eigene, gut lesbare Farben. Die Wahl gilt nach einem Neustart: StemMaker fragt nach dem Umschalten (auch bei einer anderen Sprache), ob er gleich neu starten soll. Läuft gerade eine Umwandlung, gilt die Änderung beim nächsten Start. Braucht Windows 10 ab 1809 oder Windows 11 (unter Linux/Wine bleibt StemMaker hell). Umgesetzt mit der Bibliothek metadarkstyle (LGPL mit Ausnahme für das Linken). Danke an David GJ für die Idee (#114).
+- **Eingebaute Hilfe:** Der neue Knopf **?** oben links im Hauptfenster und in den Einstellungen, **Hilfe (F1)** im Info-Fenster und die Taste **F1** in jedem Fenster öffnen die bebilderte Anleitung im Browser, direkt beim passenden Abschnitt (z. B. im Vortest beim Abschnitt über den Vortest). Sie liegt als `hilfe\de.html`, `en.html` und `es.html` im Programmordner und geht ohne Internet; andere Sprachen bekommen die englische. Fehlt der Ordner, öffnet sich dieselbe Seite online. Zum Drucken gibt es sie auf der Projektseite auch als PDF.
+- **Anleitung auf Stand 2.4:** neu mit AddOn-Leiste, StemTagger, StemPacker, Hell/Dunkel, Rechtsklick-Menü der Dateiliste und Linux-AppImage.
 
 ### Behoben
 - **Weitere Einstellungen → Engine:** Das Ergebnis des Vortests war auf Englisch und Spanisch unten abgeschnitten. Der Bereich ist jetzt höher, der Text hat Platz für drei Zeilen.
 - **Vortest-Ergebnis in der gewählten Sprache:** Der graue Text unter „Gerät“ blieb in der Sprache stehen, die beim Vortest eingestellt war. StemMaker speichert jetzt nur die Messwerte und zeigt den Satz in der aktuellen Sprache. Ergebnisse aus älteren Versionen erscheinen bis zum nächsten Vortest wie bisher.
+
+#### StemPlayer 1.8.6, StemTagger 1.2.3, StemPacker 0.3.1
+- Titelleiste und Fensterrahmen sind jetzt dunkel wie das Fenster (Windows 10 ab 1809 und Windows 11), statt weiss.
+- Hilfe auch in den AddOns: StemPlayer, StemTagger und StemPacker haben einen Knopf „?“, und F1 öffnet in jedem ihrer Fenster das passende Kapitel der Anleitung (lokal aus `hilfe\`, sonst online).
+- StemPacker 0.3.1 hell oder dunkel: Er folgt ebenfalls der StemMaker-Einstellung „Design“, mit dunkler Titelleiste, dunklen Listen, Knöpfen und Menüs (gleiche Technik wie StemMaker, Windows 10 ab 1809 oder Windows 11; unter Linux hell).
+- StemTagger hell oder dunkel: Er folgt der StemMaker-Einstellung „Design“ (Automatisch wie Windows, Hell, Dunkel). Im hellen Design sind Flächen hell, die Schrift dunkel und die Statusfarben kräftiger, damit sie lesbar bleiben; die Titelleiste bleibt dann normal. Unter Linux ist „Automatisch“ hell wie StemMaker.
 
 ## 2.3 – 10. November 2026
 

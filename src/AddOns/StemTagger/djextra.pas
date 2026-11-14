@@ -1,6 +1,18 @@
-unit djextra;
+{ ============================================================================
+  Unit    : djextra  (Datei djextra.pas)
+  Programm: Elospeed StemTagger
+  Autor   : Elospeed
+  Lizenz  : frei (wie Elospeed StemMaker)
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    1.2.3 (mit StemMaker 2.4), 14.11.2026: Farben für Markierung und Maus
+                     aus djcontrols (hell und dunkel)
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
-{ Zusätzliche dunkle Steuerelemente für den StemTagger, passend zu
+  Zusätzliche Steuerelemente für den StemTagger im DJ-Look, passend zu
   djcontrols.pas (StemPlayer):
 
     TDJCombo     Eingabefeld mit eigener dunkler Auswahlliste. Die Windows-
@@ -8,7 +20,15 @@ unit djextra;
                  und aufgeklappte Liste bleiben weiss).
     TDJLedSwitch Schalter mit LED davor: rot = aus, grün = an.
 
-  Alles selbst gezeichnet, keine fremden Komponenten. }
+  Alles selbst gezeichnet, keine fremden Komponenten. Die Farben kommen
+  aus djcontrols (DJ_...), darum passen sie zum hellen und dunklen Design.
+
+  BENUTZUNG
+
+    taggerform legt die Steuerelemente im Code an (Create, Parent,
+    SetBounds) wie normale LCL-Steuerelemente.
+  ============================================================================ }
+unit djextra;
 
 {$mode objfpc}{$H+}
 
@@ -24,11 +44,11 @@ type
   { aufgeklappte Liste: liegt direkt auf dem Formular über allem anderen }
   TDJDropList = class(TCustomControl)
   private
-    FCombo: TDJCombo;      // gehört zu diesem Feld
-    FTop: Integer;         // erster sichtbarer Eintrag
-    FIndex: Integer;       // hervorgehobener Eintrag, -1 = keiner
-    FRowH: Integer;        // Zeilenhöhe in Pixeln
-    FRows: Integer;        // Anzahl sichtbarer Zeilen
+    FCombo: TDJCombo;                                      // gehört zu diesem Feld
+    FTop: Integer;                                         // erster sichtbarer Eintrag
+    FIndex: Integer;                                       // hervorgehobener Eintrag, -1 = keiner
+    FRowH: Integer;                                        // Zeilenhöhe in Pixeln
+    FRows: Integer;                                        // Anzahl sichtbarer Zeilen
     function ItemAt(Y: Integer): Integer;
     procedure ClampTop;
   protected
@@ -44,11 +64,11 @@ type
 
   TDJCombo = class(TDJPanel)
   private
-    FEdit: TEdit;          // Eingabe (frei tippen geht immer)
-    FArrow: TPaintBox;     // Pfeil rechts, Klick klappt die Liste auf
+    FEdit: TEdit;                                          // Eingabe (frei tippen geht immer)
+    FArrow: TPaintBox;                                     // Pfeil rechts, Klick klappt die Liste auf
     FArrowHover: Boolean;
-    FItems: TStringList;   // Einträge der Liste
-    FDrop: TDJDropList;    // nil, solange zugeklappt
+    FItems: TStringList;                                   // Einträge der Liste
+    FDrop: TDJDropList;                                    // nil, solange zugeklappt
     FAutoComplete: Boolean;
     FOnChange: TNotifyEvent;
     FOnSelect: TNotifyEvent;
@@ -90,7 +110,7 @@ type
 
   TDJLedSwitch = class(TGraphicControl)
   private
-    FDown: Boolean;        // eingeschaltet
+    FDown: Boolean;                                        // eingeschaltet
     FHover: Boolean;
     procedure SetDown(AValue: Boolean);
   protected
@@ -108,7 +128,7 @@ type
   end;
 
 const
-  DJ_LED_OFF = $003A3ADC;   // LED aus: Rot  #DC3A3A
+  DJ_LED_OFF = $003A3ADC;                                  // LED aus: Rot  #DC3A3A
 
 { Kreis geglättet zeichnen (vierfach gross zeichnen, dann mitteln) }
 procedure DrawSmoothDot(C: TCanvas; CX, CY, R: Integer; Col, Glow, Back: TColor);
@@ -116,8 +136,8 @@ procedure DrawSmoothDot(C: TCanvas; CX, CY, R: Integer; Col, Glow, Back: TColor)
 implementation
 
 const
-  MAX_ROWS = 14;   // so viele Einträge sieht man aufgeklappt auf einmal
-  SCROLL_W = 4;    // Breite der Bildlaufanzeige rechts
+  MAX_ROWS = 14;                                           // so viele Einträge sieht man aufgeklappt auf einmal
+  SCROLL_W = 4;                                            // Breite der Bildlaufanzeige rechts
 
 { ============================================================================
   Hilfsfunktion
@@ -125,7 +145,7 @@ const
 
 procedure DrawSmoothDot(C: TCanvas; CX, CY, R: Integer; Col, Glow, Back: TColor);
 const
-  SS = 4;   // Vergrösserung beim Zeichnen
+  SS = 4;                                                  // Vergrösserung beim Zeichnen
 var
   Big, Small: TBitmap;
   BigImg, SmallImg: TLazIntfImage;
@@ -133,7 +153,7 @@ var
   Rs, Gs, Bs: Cardinal;
   Px: TFPColor;
 begin
-  W := 2 * R + 6;   // Platz für den Schein rundherum
+  W := 2 * R + 6;                                          // Platz für den Schein rundherum
   Big := TBitmap.Create;
   Small := TBitmap.Create;
   BigImg := nil;
@@ -237,6 +257,8 @@ begin
   Invalidate;
 end;
 
+{ Aufgeklappte Liste zeichnen: markierte Zeile mit grünem Streifen,
+  rechts Bildlaufanzeige, wenn nicht alles Platz hat }
 procedure TDJDropList.Paint;
 var
   I, Y, TH, Total, ThumbH, ThumbY: Integer;
@@ -255,11 +277,11 @@ begin
       R := Rect(1, Y, Self.Width - 1 - SCROLL_W - 2, Y + FRowH);
       if I = FIndex then
       begin
-        Brush.Color := DJ_BTNBORDER;
+        Brush.Color := DJ_SEL;
         FillRect(R);
-        Brush.Color := DJ_GREEN;      // grüner Streifen links wie im StemPlayer
+        Brush.Color := DJ_GREEN;                           // grüner Streifen links wie im StemPlayer
         FillRect(Rect(1, Y, 4, Y + FRowH));
-        Font.Color := clWhite;
+        Font.Color := DJ_SELTEXT;
       end
       else
         Font.Color := DJ_TEXT;
@@ -487,7 +509,7 @@ begin
     if (Length(FItems[I]) > N) and
        (UTF8LowerCase(Copy(FItems[I], 1, N)) = UTF8LowerCase(S)) then
     begin
-      FEdit.Text := FItems[I];   // Schreibweise aus der Liste ("tech h" -> "Tech House")
+      FEdit.Text := FItems[I];                             // Schreibweise aus der Liste ("tech h" -> "Tech House")
       FEdit.SelStart := N;
       FEdit.SelLength := Length(FItems[I]) - N;
       Exit;
@@ -631,7 +653,7 @@ procedure TDJCombo.Pick(I: Integer);
 begin
   CloseUp;
   if (I < 0) or (I >= FItems.Count) then Exit;
-  FEdit.Text := FItems[I];      // löst OnChange aus
+  FEdit.Text := FItems[I];                                 // löst OnChange aus
   FEdit.SelectAll;
   if Assigned(FOnSelect) then FOnSelect(Self);
 end;
@@ -682,6 +704,7 @@ begin
   Result := Scale96ToForm(22) + Canvas.TextWidth(Caption) + Scale96ToForm(4);
 end;
 
+{ Schalter zeichnen: LED grün mit Schein (an) oder rot (aus), daneben Text }
 procedure TDJLedSwitch.Paint;
 var
   R, CX, CY: Integer;
@@ -703,7 +726,7 @@ begin
     else
       DrawSmoothDot(Canvas, CX, CY, R, Col, clNone, Back);
     Font := Self.Font;
-    if FHover then Font.Color := clWhite
+    if FHover then Font.Color := DJ_HOVERTEXT
     else if FDown then Font.Color := DJ_TEXT
     else Font.Color := DJ_DIM;
     Brush.Style := bsClear;

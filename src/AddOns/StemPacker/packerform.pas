@@ -1,8 +1,27 @@
 { ============================================================================
-  packerform.pas  -  Hauptfenster des Elospeed StemPacker
-
+  Unit    : packerform  (Datei packerform.pas)
+  Programm: Elospeed StemPacker 0.3.1
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    0.1   (01.11.2026)  Erste Testversion
+    0.2   (04.11.2026)  Fehlt ein Stem: gesuchter Dateiname und ähnliche
+                        Datei in der Liste; Längenprüfung (Spur kürzer/
+                        länger als der Master); Info-Knopf mit Dank an
+                        Cuiusquemodi; gewählte Zeile zeigt den ganzen
+                        Status unten
+    0.3   (07.11.2026)  Einfach-Modus: Ordner hineinziehen oder wählen, die
+                        Benennung wird erkannt (packdetect.pas); Ordner und
+                        Muster selbst einstellen bleibt als Häkchen; neun
+                        Sprachen wie StemMaker
+    0.3.1 (14.11.2026)  mit StemMaker 2.4: hell oder dunkel wie StemMaker
+                        (Einstellung "Design", metadarkstyle, siehe
+                        upackdesign.pas), Knopf "?" und F1, Fehlerfarbe
+                        passend zum Design
+  ----------------------------------------------------------------------------
+  ZWECK: Hauptfenster des Elospeed StemPacker
 
   Der StemPacker macht aus fertigen Einzelspuren Traktor-Stem-Dateien,
   OHNE KI-Trennung und im Stapel: pro Song Master + Stem 1..4 (z. B. aus
@@ -28,16 +47,9 @@
   Einstellungen in StemPacker.ini neben der exe (schreibgeschützter
   Ordner: %APPDATA%\StemMaker\). Fenstergrösse in 96-dpi-Einheiten.
 
-  Versionen:
-    0.1  (01.11.2026)  Erste Testversion
-    0.2  (04.11.2026)  Fehlt ein Stem: gesuchter Dateiname und ähnliche Datei
-                       in der Liste; Längenprüfung (Spur kürzer/länger als
-                       der Master); Info-Knopf mit Dank an Cuiusquemodi;
-                       gewählte Zeile zeigt den ganzen Status unten
-    0.3  (07.11.2026)  Einfach-Modus: Ordner hineinziehen oder wählen, die
-                       Benennung wird erkannt (packdetect.pas); Ordner und
-                       Muster selbst einstellen bleibt als Häkchen; neun
-                       Sprachen wie StemMaker
+  BENUTZUNG
+
+    Das Fenster legt StemPacker.lpr an. Bedienung siehe oben.
   ============================================================================ }
 unit packerform;
 
@@ -49,11 +61,11 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, LCLType, LCLIntf, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, UTF8Process, Process,
-  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect;
+  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe;
 
 const
   APP_TITLE = 'Elospeed StemPacker';
-  APP_VER   = '0.3';
+  APP_VER   = '0.3.1';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
   PAGE_URL  = 'https://elospeed.github.io/StemPacker/';
 
@@ -74,13 +86,13 @@ type
   TPackerForm = class(TForm)
   private
     FRows      : array[0..ROLE_COUNT - 1] of TRoleRow;
-    FSimple    : TPanel;     // Einfach-Modus: Ordner ziehen oder wählen
-    FBtnPick   : TButton;    // „Ordner wählen …“
-    FDetect    : TLabel;     // was erkannt wurde
-    FChkExpert : TCheckBox;  // Ordner und Muster selbst einstellen
-    FPTop      : TPanel;     // Vorlage + Schalter (nur im erweiterten Modus)
-    FHead      : TPanel;     // Spaltenüberschriften der fünf Zeilen
-    FOptPanels : array[0..2] of TPanel;  // Ziel, Format, Extras (für die Reihenfolge)
+    FSimple    : TPanel;                                   // Einfach-Modus: Ordner ziehen oder wählen
+    FBtnPick   : TButton;                                  // „Ordner wählen …“
+    FDetect    : TLabel;                                   // was erkannt wurde
+    FChkExpert : TCheckBox;                                // Ordner und Muster selbst einstellen
+    FPTop      : TPanel;                                   // Vorlage + Schalter (nur im erweiterten Modus)
+    FHead      : TPanel;                                   // Spaltenüberschriften der fünf Zeilen
+    FOptPanels : array[0..2] of TPanel;                    // Ziel, Format, Extras (für die Reihenfolge)
     FCbPreset  : TComboBox;
     FChkMix    : TCheckBox;
     FChkSub    : TCheckBox;
@@ -98,16 +110,17 @@ type
     FBtnCancel : TButton;
     FBtnLog    : TButton;
     FBtnInfo   : TButton;
+    FBtnHilfe  : TButton;
     FStatus    : TLabel;
     FKofi      : TPaintBox;
     FKofiHover : Boolean;
 
-    FSongs     : TList;      // TPackSong
+    FSongs     : TList;                                    // TPackSong
     FFFmpeg    : string;
     FBusy      : Boolean;
     FCancel    : Boolean;
     FCloseAfter: Boolean;
-    FWarned    : Integer;    // Songs mit Längen-Warnung beim letzten Packen
+    FWarned    : Integer;                                  // Songs mit Längen-Warnung beim letzten Packen
     FLoading   : Boolean;
     FLogFile   : string;
 
@@ -154,6 +167,7 @@ type
     procedure BtnCancelClick(Sender: TObject);
     procedure BtnLogClick(Sender: TObject);
     procedure BtnInfoClick(Sender: TObject);
+    procedure BtnHilfeClick(Sender: TObject);
     procedure ListSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure KofiPaint(Sender: TObject);
     procedure KofiClick(Sender: TObject);
@@ -221,10 +235,11 @@ end;
 
 constructor TPackerForm.Create(TheOwner: TComponent);
 begin
-  inherited CreateNew(TheOwner);   // keine .lfm-Datei
+  inherited CreateNew(TheOwner);                           // keine .lfm-Datei
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FSongs := TList.Create;
+  HelpKeyword := 'stempacker';                             // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
 
   Caption := APP_TITLE + ' ' + APP_VER + '  -  ' + _('fertige Spuren zu Stem-Dateien packen');
@@ -280,7 +295,7 @@ begin
   for i := 1 to 3 do
   begin
     case i of
-      1: IniName := IniFileName;                       // eigene Wahl (Standalone)
+      1: IniName := IniFileName;                           // eigene Wahl (Standalone)
       2: IniName := AppBaseDir + 'StemMaker.ini';
     else
       IniName := IncludeTrailingPathDelimiter(SysUtils.GetEnvironmentVariable('APPDATA')) +
@@ -320,7 +335,7 @@ begin
   Result.Panel := TPanel.Create(Self);
   Result.Panel.Parent := AParent;
   Result.Panel.Align := alTop;
-  Result.Panel.Top := 1000 + Role;          // Reihenfolge von oben nach unten
+  Result.Panel.Top := 1000 + Role;                         // Reihenfolge von oben nach unten
   Result.Panel.Height := Scale96ToForm(30);
   Result.Panel.BevelOuter := bvNone;
 
@@ -485,7 +500,7 @@ begin
   NewLabel(PTop, _('Vorlage:'), alLeft, 66).Left := 0;
   FCbPreset := TComboBox.Create(Self);
   FCbPreset.Parent := PTop;
-  FCbPreset.Align := alClient;      // wird schmaler, wenn das Fenster schmal ist
+  FCbPreset.Align := alClient;                             // wird schmaler, wenn das Fenster schmal ist
   FCbPreset.BorderSpacing.Around := Scale96ToForm(3);
   FCbPreset.Style := csDropDownList;
   FCbPreset.Items.Add(_('5.1-DVD: „Song (DOWNMIX #1)“ + „Song (A)“ … „(D)“'));
@@ -666,6 +681,16 @@ begin
   FBtnInfo.BorderSpacing.Around := Scale96ToForm(4);
   FBtnInfo.Caption := _('Info');
   FBtnInfo.OnClick := @BtnInfoClick;
+  { "?" links neben Info: Kapitel StemPacker in der StemMaker-Anleitung (auch F1) }
+  FBtnHilfe := TButton.Create(Self);
+  FBtnHilfe.Parent := Bottom;
+  FBtnHilfe.Align := alRight;
+  FBtnHilfe.Width := Scale96ToForm(40);
+  FBtnHilfe.BorderSpacing.Around := Scale96ToForm(4);
+  FBtnHilfe.Caption := '?';
+  FBtnHilfe.Hint := _('Hilfe (F1)');
+  FBtnHilfe.ShowHint := True;
+  FBtnHilfe.OnClick := @BtnHilfeClick;
 
   { --- Liste der Songs (wächst mit dem Fenster) ----------------------- }
   FList := TListView.Create(Self);
@@ -797,7 +822,7 @@ begin
     FreeSongs(FSongs);
     FList.Items.Clear;
     FDetect.Caption := _('Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen.');
-    FDetect.Font.Color := clRed;
+    FDetect.Font.Color := FarbeFehler;                     // rot, im dunklen Design heller
     FStatus.Caption := FDetect.Caption;
     { Zeilen zeigen, der Ordner steht schon beim Master }
     FLoading := True;
@@ -1724,6 +1749,13 @@ begin
     FStatus.Hint := FStatus.Caption;
     FStatus.ShowHint := True;
   end;
+end;
+
+{ TPackerForm.BtnHilfeClick
+  Knopf "?": Kapitel StemPacker in der StemMaker-Anleitung öffnen (wie F1) }
+procedure TPackerForm.BtnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('stempacker');
 end;
 
 { Info mit Version, Projektseite und Dank }

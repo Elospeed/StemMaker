@@ -13,7 +13,8 @@
 #    den Abschnitt, Tag gibt es noch nicht.
 # 2. StemMaker, StemCLI und StemPlayer bauen (wie build.yml), dazu Turbo
 #    (StemOnnx, engines/onnx) im Job "stemonnx" auf Linux mit mingw.
-# 3. Release-ZIP zusammenstellen (installer/release-zip.sh). Die Teile, die nicht
+# 3. Release-ZIP zusammenstellen (installer/release-zip.sh), mit der Hilfe
+#    aus Job "hilfe" (docs/handbuch, ab 2.4). Die Teile, die nicht
 #    im Repository liegen (demucs.cpp in tools\), kommen aus dem letzten
 #    Release-ZIP laut update.json, mit Prüfsummen-Kontrolle.
 #    Dazu das eigenständige StemTagger-ZIP (installer/stemtagger-zip.sh).
@@ -68,8 +69,37 @@ jobs:
           path: engines/onnx/dist/StemOnnx
           retention-days: 3
 
+  hilfe:
+    # Bebilderte Anleitung (ab 2.4): docs/handbuch/*.md -> hilfe/de.html,
+    # en.html, es.html (Bilder eingebettet). Kommt als Ordner hilfe\ ins ZIP
+    # und damit auch ins Setup. Vorher: steht in DE/EN/ES die neue Version,
+    # gibt es alle Anker, die StemMaker mit "?" und F1 anspringt?
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Quelltext holen
+        uses: actions/checkout@v4
+      - name: Hilfe prüfen und bauen
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -e
+          VERSION=$(printf '%s' "$VERSION" | tr -d ' \r'); VERSION="${VERSION#v}"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc
+          python3 docs/handbuch/build.py --pruefen "$VERSION"
+          python3 docs/handbuch/build.py --hilfe hilfe
+          ls -l hilfe
+      - name: Hilfe weitergeben
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hilfe
+          path: hilfe
+          retention-days: 3
+
   release:
-    needs: stemonnx
+    needs: [stemonnx, hilfe]
     runs-on: windows-latest
     defaults:
       run:
@@ -136,6 +166,12 @@ jobs:
           name: StemOnnx-release
           path: stemonnx
 
+      - name: Hilfe holen
+        uses: actions/download-artifact@v4
+        with:
+          name: Hilfe
+          path: hilfe
+
       - name: Release-ZIP zusammenstellen
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -149,7 +185,7 @@ jobs:
               -p "$(basename "$URL")" -O alt.zip --clobber
           fi
           echo "$SHA  alt.zip" | sha256sum -c -
-          bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe stemonnx
+          bash installer/release-zip.sh alt.zip exes "$VERSION" ausgabe stemonnx hilfe
           ZIPSHA=$(sha256sum "ausgabe/StemMaker-$VERSION.zip" | cut -d' ' -f1)
           echo "ZIPSHA=$ZIPSHA" >> "$GITHUB_ENV"
           # StemTagger zusätzlich als eigenes kleines ZIP (für alle ohne StemMaker)

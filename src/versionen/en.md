@@ -6,6 +6,16 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.4 – 14 November 2026
+### New
+- Light or dark: choose the theme in the settings, default follows Windows (idea by David GJ)
+- Help: the "?" button and the F1 key open the illustrated guide at the right place
+### Fixed
+- Settings: pre-test result no longer cut off and shown in the chosen language
+- StemPlayer 1.8.6, StemTagger 1.2.3: dark title bar instead of a white one
+- StemTagger and StemPacker light or dark like StemMaker
+- "?" and F1 also in StemPlayer, StemTagger and StemPacker
+
 ## 2.3 – 10 November 2026
 ### New
 - StemPacker add-on: pack finished tracks (master + stems) into stem files without AI

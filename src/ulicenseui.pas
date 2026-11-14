@@ -1,11 +1,14 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uLicenseUI  (Datei ulicenseui.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : ulicenseui.pas  (Unit uLicenseUI)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: F1 öffnet die Hilfe zu diesem Fenster
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Fenster "Bitte vor der ersten Benutzung lesen" (Haftungsausschluss
   und Lizenzhinweise). Text, PC-Kennung und INI stehen in uLicense.
@@ -15,6 +18,11 @@
     [ Beenden ]                             (oder X: StemMaker startet nicht)
 
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei).
+
+  BENUTZUNG
+
+    EnsureTermsAccepted  beim Start; zeigt das Fenster nur, wenn auf
+                         diesem PC noch nicht bestätigt. False = beenden.
   ============================================================================ }
 unit uLicenseUI;
 
@@ -42,6 +50,7 @@ type
     constructor CreateTerms;
   end;
 
+{ Fenster mit Haftungsausschluss und Lizenz-Häkchen beim ersten Start bauen }
 constructor TfrmTerms.CreateTerms;
 var
   lblTitle: TLabel;
@@ -50,6 +59,7 @@ var
   btnQuit: TButton;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'sprache-lizenz';                         // F1 öffnet die Hilfe hier (uHilfe)
   Caption := APP_NAME + ' - ' + TermsTitle;
   BorderStyle := bsSizeable;
   BorderIcons := [biSystemMenu];
@@ -88,7 +98,7 @@ begin
   btnQuit.Anchors := [akTop, akRight];
   btnQuit.Caption := _('Beenden');
   btnQuit.ModalResult := mrCancel;
-  btnQuit.Cancel := True;                     // Esc = Beenden
+  btnQuit.Cancel := True;                                  // Esc = Beenden
 
   btnAccept := TButton.Create(Self);
   btnAccept.Parent := pnlBottom;
@@ -97,7 +107,7 @@ begin
   btnAccept.Caption := _('Einverstanden - StemMaker starten');
   btnAccept.Font.Style := [fsBold];
   btnAccept.ModalResult := mrOK;
-  btnAccept.Enabled := False;                 // erst mit Häkchen
+  btnAccept.Enabled := False;                              // erst mit Häkchen
 
   { der Text in einem Textfeld mit Bildlaufleiste (passt so auch bei
     grosser Schrift oder Englisch) }

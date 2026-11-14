@@ -1,11 +1,14 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uReport  (Datei ureport.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : ureport.pas  (Unit uReport)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: F1 öffnet die Hilfe zu diesem Fenster
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Fenster "Fehlerbericht senden". Es erscheint nur, wenn der Nutzer es
   will: nach einem Absturz (Frage beim nächsten Start), im Fenster
@@ -30,6 +33,11 @@
   Benutzerordner wird deshalb durch %USERPROFILE% ersetzt und ein
   Ordner mit dem Windows-Benutzernamen durch <Benutzer>. Songnamen bleiben
   drin (Fehler hängen oft an Sonderzeichen) - der Nutzer sieht sie ja.
+
+  BENUTZUNG
+
+    ShowErrorReport      öffnet das Fenster mit Log-Pfad und Grund.
+    AnonymizeReport      entfernt Benutzername und Profilpfad aus dem Text.
   ============================================================================ }
 unit uReport;
 
@@ -64,19 +72,19 @@ uses
   uLog, uLang;
 
 const
-  MAX_LOG_BYTES = 1024 * 1024;   // größere Logs: Anfang + Ende
-  HEAD_BYTES    = 32 * 1024;     // Anfang (Rechner-Infos, Einstellungen)
-  MAIL_URL_MAX  = 1800;          // manche Mailprogramme schneiden längere Links ab
-  ISSUE_URL_MAX = 6000;          // GitHub nimmt ca. 8000 Zeichen
+  MAX_LOG_BYTES = 1024 * 1024;                             // größere Logs: Anfang + Ende
+  HEAD_BYTES    = 32 * 1024;                               // Anfang (Rechner-Infos, Einstellungen)
+  MAIL_URL_MAX  = 1800;                                    // manche Mailprogramme schneiden längere Links ab
+  ISSUE_URL_MAX = 6000;                                    // GitHub nimmt ca. 8000 Zeichen
 
 type
   TfrmReport = class(TForm)
   private
-    cbLog: TComboBox;            // welches Log
-    memReport: TMemo;            // der Bericht, genau so wie er gesendet wird
-    FLogs: TStringList;          // volle Pfade zu cbLog
+    cbLog: TComboBox;                                      // welches Log
+    memReport: TMemo;                                      // der Bericht, genau so wie er gesendet wird
+    FLogs: TStringList;                                    // volle Pfade zu cbLog
     FReason: string;
-    FSavedFile: string;          // zuletzt gespeicherter Bericht
+    FSavedFile: string;                                    // zuletzt gespeicherter Bericht
     procedure cbLogChange(Sender: TObject);
     procedure btnMailClick(Sender: TObject);
     procedure btnIssueClick(Sender: TObject);
@@ -185,6 +193,7 @@ var
   Want: string;
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'fehlerbericht';                          // F1 öffnet die Hilfe hier (uHilfe)
   { auch der Anlass (Fehlermeldung) kann Pfade enthalten }
   FReason := AnonymizeReport(Reason, GetEnvironmentVariableUTF8('USERPROFILE'),
     GetEnvironmentVariableUTF8('USERNAME'));
@@ -221,14 +230,14 @@ begin
   lblLog := TLabel.Create(Self);
   lblLog.Parent := pnlTop;
   lblLog.Align := alTop;
-  lblLog.Top := 200;                               // unter lblInfo
+  lblLog.Top := 200;                                       // unter lblInfo
   lblLog.BorderSpacing.Left := 10;
   lblLog.Caption := _('Log:');
 
   cbLog := TComboBox.Create(Self);
   cbLog.Parent := pnlTop;
   cbLog.Align := alTop;
-  cbLog.Top := 300;                                // unter lblLog
+  cbLog.Top := 300;                                        // unter lblLog
   cbLog.BorderSpacing.Left := 10;
   cbLog.BorderSpacing.Right := 10;
   cbLog.BorderSpacing.Bottom := 8;
@@ -263,7 +272,7 @@ begin
   btnClose.Anchors := [akTop, akRight];
   btnClose.Left := pnlBottom.ClientWidth - 130;
   btnClose.Caption := _('Nicht senden');
-  btnClose.Cancel := True;                         // Esc = schließen
+  btnClose.Cancel := True;                                 // Esc = schließen
   btnClose.OnClick := @btnCloseClick;
 
   { --- Mitte: der Bericht --- }
@@ -275,13 +284,13 @@ begin
   memReport.ReadOnly := True;
   memReport.ScrollBars := ssBoth;
   memReport.WordWrap := False;
-  memReport.Font.Name := MonoFontName;   // Japanisch: MS Gothic (uLang)
+  memReport.Font.Name := MonoFontName;                     // Japanisch: MS Gothic (uLang)
 
   { --- Logs auflisten, neuestes zuerst --- }
   FLogs := TStringList.Create;
   L := FindAllFiles(LogDir, 'StemMaker_*.log', False);
   try
-    L.Sort;                                        // Name = Datum -> zeitlich
+    L.Sort;                                                // Name = Datum -> zeitlich
     for I := L.Count - 1 downto 0 do
       FLogs.Add(L[I]);
   finally

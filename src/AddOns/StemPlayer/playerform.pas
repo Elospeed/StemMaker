@@ -1,8 +1,16 @@
 { ============================================================================
-  playerform.pas  -  Hauptfenster des Elospeed StemPlayer
-
+  Unit    : playerform  (Datei playerform.pas)
+  Programm: Elospeed StemPlayer 1.8.6
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    1.8.6 (mit StemMaker 2.4), 14.11.2026: dunkle Titelleiste, Knopf "?"
+                     neben der Ansicht und F1
+    frühere Versionen: siehe Liste "Versionen" weiter unten
+  ----------------------------------------------------------------------------
+  ZWECK: Hauptfenster des Elospeed StemPlayer
 
   Zweck:
     Die von Elospeed StemMaker erzeugten Traktor-Stem-Dateien (.stem.mp4)
@@ -142,6 +150,15 @@
                        (unten abgeschnitten, rechts leer), weil die Innen-
                        fläche gemessen wurde, bevor das Fenster umgestellt
                        war. Jetzt wird erst danach nachgemessen.
+    1.8.6 (14.11.2026) Mit StemMaker 2.4: dunkle Titelleiste, Knopf "?"
+                       neben der Ansicht und F1 öffnen das Kapitel
+                       StemPlayer der Anleitung.
+
+  BENUTZUNG
+
+    Das Fenster legt StemPlayer.lpr an. Eine Datei kommt über die
+    Befehlszeile (StemMaker übergibt sie), über "ÖFFNEN" oder per
+    Drag & Drop.
   ============================================================================ }
 unit playerform;
 
@@ -157,15 +174,15 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.5';
-  TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
-  LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
+  APP_VER   = '1.8.6';
+  TEMP_PREFIX = 'ElospeedStemPlayer_';                     // Präfix der Temp-Ordner (siehe oben)
+  LOCK_NAME   = 'instance.lock';                           // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type
   { Eine Zeile pro Stem }
   TStemRow = record
-    Panel    : TDJPanel;   // Zeile mit farbigem Streifen links (Stemfarbe)
+    Panel    : TDJPanel;                                   // Zeile mit farbigem Streifen links (Stemfarbe)
     LblName  : TLabel;
     LblState : TLabel;
     BtnMute  : TDJButton;
@@ -173,9 +190,9 @@ type
     TrkVol   : TDJSlider;
     LblVol   : TLabel;
     Meter    : TPaintBox;
-    Wave     : TWaveView;  // Wellenform unter der Zeile
+    Wave     : TWaveView;                                  // Wellenform unter der Zeile
     Color    : TColor;
-    Level    : Single;     // geglätteter Anzeigepegel 0..1
+    Level    : Single;                                     // geglätteter Anzeigepegel 0..1
   end;
 
   { Ansicht: die beiden klassischen (mit/ohne Wellenformen) und das
@@ -195,31 +212,32 @@ type
 
   TMainForm = class(TForm)
   private
-    FScroll     : TScrollBox;  // klassische Ansicht: Flächen mit Bildlauf, falls der Bildschirm zu klein ist
+    FScroll     : TScrollBox;                              // klassische Ansicht: Flächen mit Bildlauf, falls der Bildschirm zu klein ist
     { --- Oberer Bereich --- }
     PnlTop      : TDJPanel;
     BtnOpen     : TDJButton;
     LblFile     : TLabel;
-    LblFileInfo : TLabel;      // kleine Zeile unter dem Dateinamen
-    BtnView       : TDJButton;  // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
-    MnuView       : TPopupMenu; // Menü mit den Ansichten (Kompakt, Wellenform, CD-Player)
+    LblFileInfo : TLabel;                                  // kleine Zeile unter dem Dateinamen
+    BtnView       : TDJButton;                             // Ansicht wählen: zeigt die aktuelle, Klick klappt das Menü auf
+    BtnHilfe      : TDJButton;                             // "?": Anleitung beim Kapitel StemPlayer
+    MnuView       : TPopupMenu;                            // Menü mit den Ansichten (Kompakt, Wellenform, CD-Player)
     { --- "Deck": Transport + Modus --- }
     PnlDeck     : TDJPanel;
     BtnPlay     : TDJButton;
     BtnStop     : TDJButton;
-    TrkPos      : TDJSlider;   // Positionsleiste, bis die Wellenform fertig ist
-    WaveMaster  : TWaveView;   // Wellenform des Originals (ersetzt dann TrkPos)
-    Zoom        : TZoomView;   // Lupe: wenige Sekunden um den Abspielkopf
-    LblTime     : TLabel;      // aktuelle Position (gross)
-    LblTotal    : TLabel;      // Gesamtlänge (klein, gedimmt)
+    TrkPos      : TDJSlider;                               // Positionsleiste, bis die Wellenform fertig ist
+    WaveMaster  : TWaveView;                               // Wellenform des Originals (ersetzt dann TrkPos)
+    Zoom        : TZoomView;                               // Lupe: wenige Sekunden um den Abspielkopf
+    LblTime     : TLabel;                                  // aktuelle Position (gross)
+    LblTotal    : TLabel;                                  // Gesamtlänge (klein, gedimmt)
     BtnModeStems: TDJButton;
     BtnModeOrig : TDJButton;
     BtnModeRest : TDJButton;
     BtnReset    : TDJButton;
-    BtnLoopA    : TDJButton;   // Loop: Punkt A an der aktuellen Stelle
-    BtnLoopB    : TDJButton;   // Loop: Punkt B (schaltet den Loop ein)
-    BtnLoopOn   : TDJButton;   // Loop an/aus
-    BtnLoopClear: TDJButton;   // Loop löschen
+    BtnLoopA    : TDJButton;                               // Loop: Punkt A an der aktuellen Stelle
+    BtnLoopB    : TDJButton;                               // Loop: Punkt B (schaltet den Loop ein)
+    BtnLoopOn   : TDJButton;                               // Loop an/aus
+    BtnLoopClear: TDJButton;                               // Loop löschen
     { --- Stems --- }
     Rows        : array[1..STEM_COUNT] of TStemRow;
     { --- Master --- }
@@ -227,63 +245,64 @@ type
     TrkMaster   : TDJSlider;
     LblMasterVol: TLabel;
     MeterOut    : TPaintBox;
-    BtnClip     : TDJButton;   // reine Anzeige, leuchtet bei Übersteuerung
+    BtnClip     : TDJButton;                               // reine Anzeige, leuchtet bei Übersteuerung
     { --- Unten --- }
     PnlBottom   : TDJPanel;
-    PbKofi      : TPaintBox;   // Ko-fi-Knopf unten rechts (wie in allen Elospeed-Tools)
+    PbKofi      : TPaintBox;                               // Ko-fi-Knopf unten rechts (wie in allen Elospeed-Tools)
     FKofiHover  : Boolean;
     LblHelp     : TLabel;
     LblStatus   : TLabel;
     LblKofi     : TLabel;
     { --- Design CD-Player (designviews.pas) --- }
-    PnlCD       : TDJPanel;    // ganze Fläche des Designs
-    CDDisplay   : TDJPanel;    // Display oben: Titel, Zeiten, Wellenformen
-    CDLoop      : TDJPanel;    // Loop-Spur: Lupe + Loop-Knöpfe
-    CDPads      : TDJPanel;    // Stem-Pads + Fader
-    CDSource    : TDJPanel;    // Quelle: Öffnen + Ansicht
-    CDViewCap   : TLabel;      // Überschrift "ANSICHT" über dem Auswahlknopf
-    CDMode      : TDJPanel;    // Hören: Stems / Original / Rest / Reset
-    CDMaster    : TDJPanel;    // Master-Fader + Ausgangspegel
+    PnlCD       : TDJPanel;                                // ganze Fläche des Designs
+    CDDisplay   : TDJPanel;                                // Display oben: Titel, Zeiten, Wellenformen
+    CDLoop      : TDJPanel;                                // Loop-Spur: Lupe + Loop-Knöpfe
+    CDPads      : TDJPanel;                                // Stem-Pads + Fader
+    CDSource    : TDJPanel;                                // Quelle: Öffnen + Ansicht
+    CDViewCap   : TLabel;                                  // Überschrift "ANSICHT" über dem Auswahlknopf
+    CDMode      : TDJPanel;                                // Hören: Stems / Original / Rest / Reset
+    CDMaster    : TDJPanel;                                // Master-Fader + Ausgangspegel
     Jog         : TJogWheel;
     Pads        : array[1..STEM_COUNT, 0..1] of TStemPad;  // [Stem, 0 = Mute / 1 = Solo]
     CDBars      : array[1..STEM_COUNT] of TShape;          // Farbstreifen vor den Wellen
-    LblCDTime, LblCDRemain, LblCDLength, LblCDMode: TLabel;  // Zeiten im Display
+    // Zeiten im Display
+    LblCDTime, LblCDRemain, LblCDLength, LblCDMode: TLabel;
     { --- Ansicht --- }
-    FView       : TViewMode;   // aktuelle Ansicht
-    FPlaced     : array of TPlacement;  // für das Design versetzte Elemente
-    FClassicW   : Integer;     // Fenstergrösse der klassischen Ansicht in 96-dpi-Pixeln,
-    FClassicH   : Integer;     // wird beim Zurückschalten wiederhergestellt
-    FShown      : Boolean;     // Fenster wurde schon einmal angezeigt (FormShow)
-    FFitting    : Boolean;     // Fenstergrösse wird gerade im Code angepasst
-    FWaveH96    : Integer;     // zuletzt gezogene Wellenhöhe (96 dpi), 0 = Standard
+    FView       : TViewMode;                               // aktuelle Ansicht
+    FPlaced     : array of TPlacement;                     // für das Design versetzte Elemente
+    FClassicW   : Integer;                                 // Fenstergrösse der klassischen Ansicht in 96-dpi-Pixeln,
+    FClassicH   : Integer;                                 // wird beim Zurückschalten wiederhergestellt
+    FShown      : Boolean;                                 // Fenster wurde schon einmal angezeigt (FormShow)
+    FFitting    : Boolean;                                 // Fenstergrösse wird gerade im Code angepasst
+    FWaveH96    : Integer;                                 // zuletzt gezogene Wellenhöhe (96 dpi), 0 = Standard
     { --- Sonstiges --- }
     Timer       : TTimer;
-    Takt        : TBildtakt;   // Abspielkopf im Takt des Monitors (bildtakt.pas)
+    Takt        : TBildtakt;                               // Abspielkopf im Takt des Monitors (bildtakt.pas)
     OpenDlg     : TOpenDialog;
 
     Engine      : TStemEngine;
     FInfo       : TStemInfo;
     FFileName   : string;
-    FInstanceDir: string;      // Temp-Ordner dieser Programminstanz
-    FLockFile   : TFileStream; // exklusiv offene Sperrdatei im Instanz-Ordner
-    FTempDir    : string;      // Unterordner mit den .raw-Dateien des Tracks
+    FInstanceDir: string;                                  // Temp-Ordner dieser Programminstanz
+    FLockFile   : TFileStream;                             // exklusiv offene Sperrdatei im Instanz-Ordner
+    FTempDir    : string;                                  // Unterordner mit den .raw-Dateien des Tracks
     FFFmpeg     : string;
-    FLoading    : Boolean;     // True, solange LoadFile läuft (ffmpeg dekodiert)
-    FCancelLoad : Boolean;     // Abbruchwunsch für das laufende Dekodieren
-    FCloseAfterLoad: Boolean;  // Fenster nach dem Abbruch automatisch schliessen
+    FLoading    : Boolean;                                 // True, solange LoadFile läuft (ffmpeg dekodiert)
+    FCancelLoad : Boolean;                                 // Abbruchwunsch für das laufende Dekodieren
+    FCloseAfterLoad: Boolean;                              // Fenster nach dem Abbruch automatisch schliessen
     FUpdatingPos: Boolean;
     FDraggingPos: Boolean;
     FOutLevel   : array[0..1] of Single;
     FLastClip   : Integer;
     FClipTicks  : Integer;
-    FPeakThread : TPeakThread; // berechnet die Wellenformen im Hintergrund
-    FShowWaves  : Boolean;     // Wellenformen sichtbar (Taste W)
-    FHeadPos    : Double;      // geglättete Anzeigeposition in Frames
-    FHeadTime   : Double;      // Zeitpunkt (NowSeconds) dieser Position
-    FHeadRunning: Boolean;     // lief die Uhr schon beim letzten Tick?
-    FLoopA      : Int64;       // Loop-Punkt A in Frames (-1 = nicht gesetzt)
-    FLoopB      : Int64;       // Loop-Punkt B in Frames (-1 = nicht gesetzt)
-    FLoopOn     : Boolean;     // Loop aktiv
+    FPeakThread : TPeakThread;                             // berechnet die Wellenformen im Hintergrund
+    FShowWaves  : Boolean;                                 // Wellenformen sichtbar (Taste W)
+    FHeadPos    : Double;                                  // geglättete Anzeigeposition in Frames
+    FHeadTime   : Double;                                  // Zeitpunkt (NowSeconds) dieser Position
+    FHeadRunning: Boolean;                                 // lief die Uhr schon beim letzten Tick?
+    FLoopA      : Int64;                                   // Loop-Punkt A in Frames (-1 = nicht gesetzt)
+    FLoopB      : Int64;                                   // Loop-Punkt B in Frames (-1 = nicht gesetzt)
+    FLoopOn     : Boolean;                                 // Loop aktiv
 
     procedure LoadLanguage;
     procedure BuildUI;
@@ -396,6 +415,7 @@ type
     procedure KofiEnter(Sender: TObject);
     procedure KofiLeave(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BtnHilfeClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -413,25 +433,27 @@ implementation
 
 uses
   {$IFDEF WINDOWS}UxTheme,{$ENDIF}
-  uStatusDraw;   // Ko-fi-Knopf, gleich wie in StemMaker
+  uStatusDraw,                                             // Ko-fi-Knopf, gleich wie in StemMaker
+  uDunklerRahmen,                                          // dunkle Titelleiste (src\udunklerrahmen.pas)
+  uHilfe;                                                  // "?" und F1: Anleitung (src\uhilfe.pas)
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
-  ROW_HEIGHT  = 54;   // Höhe einer Stem-Zeile (ohne Wellenform)
-  WAVE_HEIGHT = 36;   // Höhe der Wellenform unter einer Stem-Zeile
-  WAVE_EXTRA  = WAVE_HEIGHT + 8;   // so viel wird jede Zeile mit Wellenform höher
-  ZOOM_TOP    = 52;   // Lupe: Abstand oben im Deck (unter der Original-Wellenform)
-  ZOOM_HEIGHT = 56;   // Höhe der Lupe
-  ROW2        = ZOOM_TOP + ZOOM_HEIGHT - 52 + 8;  // so weit rutscht die Knopfzeile nach unten
-  BASE_HEIGHT = 590 + ROW2;  // Fensterhöhe ohne Wellenformen (nur Startwert)
-  WAVE_MIN    = 16;   // so niedrig dürfen die Stem-Wellenformen beim Verkleinern werden
-  WAVE_PAD    = 10;   // Abstand unter der Wellenform bis zum Rand der Stem-Zeile
-  BOTTOM_GAP  = 8;    // Abstand unter MASTER bis zur Fusszeile
-  MARGIN      = 10;   // Abstand der Flächen zum Fensterrand
-  MONO_FONT   = 'Consolas';   // Zahlen mit fester Breite (springen nicht)
-  MIN_LOOP    = SAMPLE_RATE div 10;   // kürzester Loop: 0,1 Sekunden
-  DESIGN_W    = 1000;  // Innenbreite des Fensters im Design CD-Player
-  DESIGN_H    = 642;   // Innenhöhe ohne die Fusszeile (8 px Luft unter MASTER,
+  ROW_HEIGHT  = 54;                                        // Höhe einer Stem-Zeile (ohne Wellenform)
+  WAVE_HEIGHT = 36;                                        // Höhe der Wellenform unter einer Stem-Zeile
+  WAVE_EXTRA  = WAVE_HEIGHT + 8;                           // so viel wird jede Zeile mit Wellenform höher
+  ZOOM_TOP    = 52;                                        // Lupe: Abstand oben im Deck (unter der Original-Wellenform)
+  ZOOM_HEIGHT = 56;                                        // Höhe der Lupe
+  ROW2        = ZOOM_TOP + ZOOM_HEIGHT - 52 + 8;           // so weit rutscht die Knopfzeile nach unten
+  BASE_HEIGHT = 590 + ROW2;                                // Fensterhöhe ohne Wellenformen (nur Startwert)
+  WAVE_MIN    = 16;                                        // so niedrig dürfen die Stem-Wellenformen beim Verkleinern werden
+  WAVE_PAD    = 10;                                        // Abstand unter der Wellenform bis zum Rand der Stem-Zeile
+  BOTTOM_GAP  = 8;                                         // Abstand unter MASTER bis zur Fusszeile
+  MARGIN      = 10;                                        // Abstand der Flächen zum Fensterrand
+  MONO_FONT   = 'Consolas';                                // Zahlen mit fester Breite (springen nicht)
+  MIN_LOOP    = SAMPLE_RATE div 10;                        // kürzester Loop: 0,1 Sekunden
+  DESIGN_W    = 1000;                                      // Innenbreite des Fensters im Design CD-Player
+  DESIGN_H    = 642;                                       // Innenhöhe ohne die Fusszeile (8 px Luft unter MASTER,
                        // sonst verschwand der untere Rahmen bei 125 % durchs Runden)
 
 { ============================================================================
@@ -446,7 +468,8 @@ var
 begin
   { Keine .lfm-Datei -> CreateNew statt Create }
   inherited CreateNew(TheOwner);
-  LoadLanguage;   // VOR allen Texten, sonst bleibt die Oberfläche deutsch
+  HelpKeyword := 'stemplayer';                             // F1 öffnet die Hilfe hier (uHilfe)
+  LoadLanguage;                                            // VOR allen Texten, sonst bleibt die Oberfläche deutsch
   Caption := APP_TITLE + ' ' + APP_VER + _('  -  von Elospeed');
   Width := 820;
   Height := BASE_HEIGHT;
@@ -456,7 +479,7 @@ begin
   Color := DJ_BG;
   Font.Name := 'Segoe UI';
   Font.Color := DJ_TEXT;
-  DoubleBuffered := True;   // weniger Flackern bei den Pegelanzeigen
+  DoubleBuffered := True;                                  // weniger Flackern bei den Pegelanzeigen
   KeyPreview := True;
   AllowDropFiles := True;
   OnKeyDown := @FormKeyDown;
@@ -531,6 +554,8 @@ begin
     LblStatus.Caption := _('ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt.')
   else
     LblStatus.Caption := 'ffmpeg: ' + FFFmpeg;
+  { dunkle Titelleiste schon vor dem ersten Zeigen (kein weisses Aufblitzen) }
+  DunklerRahmen(Self);
 end;
 
 { ---------------------------------------------------------------------------
@@ -565,7 +590,7 @@ begin
         Ini.Free;
       end;
     except
-      Code := '';   // INI nicht lesbar -> nächste versuchen
+      Code := '';                                          // INI nicht lesbar -> nächste versuchen
     end;
     if Code <> '' then Break;
   end;
@@ -632,10 +657,10 @@ procedure TMainForm.BuildUI;
 var
   i, W: Integer;
   L: TLabel;
-  V: TViewMode;     // Schleife über die Ansichten fürs Menü
-  Item: TMenuItem;  // ein Menüeintrag
+  V: TViewMode;                                            // Schleife über die Ansichten fürs Menü
+  Item: TMenuItem;                                         // ein Menüeintrag
 begin
-  W := ClientWidth - 2 * MARGIN;   // Breite der Flächen
+  W := ClientWidth - 2 * MARGIN;                           // Breite der Flächen
 
   { Alle Flächen der klassischen Ansicht liegen in einem Bildlauf-Bereich:
     Ist der Bildschirm zu klein (z. B. 175 % auf einem Full-HD-Laptop),
@@ -653,7 +678,7 @@ begin
   { ---------- Oben: Datei ---------- }
   PnlTop := MakeDJPanel(56, 4);
   PnlTop.Color := DJ_BG;
-  PnlTop.BorderColor := clNone;    // ohne Rahmen, liegt direkt auf dem Fenster
+  PnlTop.BorderColor := clNone;                            // ohne Rahmen, liegt direkt auf dem Fenster
 
   BtnOpen := MakeButton(PnlTop, _('ÖFFNEN'), 0, 12, 96, 32);
   BtnOpen.Hint := _('Stem-Datei öffnen (Strg+O) - oder einfach aufs Fenster ziehen');
@@ -663,30 +688,38 @@ begin
   LblFile := MakeLabel(PnlTop, _('Stem-Datei öffnen oder hierher ziehen (Drag & Drop)'), 110, 8, 12, True);
   LblFile.Anchors := [akLeft, akTop, akRight];
   LblFile.AutoSize := False;
-  LblFile.ShowAccelChar := False;   // "&" im Dateinamen zeigen, nicht als Tastenkürzel
-  LblFile.SetBounds(110, 8, W - 110 - 220, 24);
+  LblFile.ShowAccelChar := False;                          // "&" im Dateinamen zeigen, nicht als Tastenkürzel
+  LblFile.SetBounds(110, 8, W - 110 - 220, 24);            // rechts: "?" und Ansicht
 
   { Ansicht wählen: ein Knopf mit der aktuellen Ansicht, darunter klappt
     ein Menü mit allen vier Ansichten auf (statt vier Knöpfen nebeneinander,
     damit auf der Fläche selbst nur das Arbeitswerkzeug bleibt) }
-  BtnView := MakeButton(PnlTop, '', W - 200, 14, 200, 28);
+  BtnView := MakeButton(PnlTop, '', W - 170, 14, 170, 28);
   BtnView.Anchors := [akTop, akRight];
   BtnView.DropDown := True;
   BtnView.Hint := _('Ansicht wählen: Kompakt, Wellenform oder CD-Player (Taste W: Kompakt/Wellenform)');
   BtnView.ShowHint := True;
   BtnView.OnClick := @ViewClick;
   MnuView := TPopupMenu.Create(Self);
-  MnuView.OwnerDraw := True;   // dunkel wie der Player, nicht im hellen Windows-Stil
+  MnuView.OwnerDraw := True;                               // dunkel wie der Player, nicht im hellen Windows-Stil
   MnuView.OnMeasureItem := @ViewMenuMeasure;
   MnuView.OnDrawItem := @ViewMenuDraw;
   for V := Low(TViewMode) to High(TViewMode) do
   begin
     Item := TMenuItem.Create(MnuView);
     Item.Caption := ViewName(V);
-    Item.Tag := Ord(V);          // Tag = Ansicht, nie über den (übersetzten) Text
+    Item.Tag := Ord(V);                                    // Tag = Ansicht, nie über den (übersetzten) Text
     Item.OnClick := @ViewMenuClick;
     MnuView.Items.Add(Item);
   end;
+
+  { "?" links neben der Ansicht: Kapitel StemPlayer in der StemMaker-Anleitung
+    (F1 geht überall, auch im CD-Player, wo diese Leiste ausgeblendet ist) }
+  BtnHilfe := MakeButton(PnlTop, '?', W - 206, 14, 30, 28);
+  BtnHilfe.Anchors := [akTop, akRight];
+  BtnHilfe.Hint := _('Hilfe (F1)');
+  BtnHilfe.ShowHint := True;
+  BtnHilfe.OnClick := @BtnHilfeClick;
 
   LblFileInfo := MakeLabel(PnlTop, '', 110, 32, 0, False);
   LblFileInfo.Font.Color := DJ_DIM;
@@ -844,7 +877,7 @@ begin
   BtnClip := MakeButton(PnlMaster, _('CLIP'), W - 60, 17, 48, 26);
   BtnClip.Anchors := [akTop, akRight];
   BtnClip.LitColor := DJ_RED;
-  BtnClip.Indicator := True;   // nur Anzeige, kein Knopf
+  BtnClip.Indicator := True;                               // nur Anzeige, kein Knopf
   BtnClip.Font.Size := 7;
   BtnClip.Hint := _('Leuchtet rot, wenn die Summe übersteuert (dann Master leiser stellen)');
   BtnClip.ShowHint := True;
@@ -1207,7 +1240,7 @@ var
     C.AutoSize := False;
     C.Alignment := taRightJustify;
     C.Width := CapWidth;
-    C.Font.Color := $00C09070;   // gedecktes Blau wie die Beschriftung echter CD-Player
+    C.Font.Color := $00C09070;                             // gedecktes Blau wie die Beschriftung echter CD-Player
     Result := MakeLabel(CDDisplay, '--:--', ValLeft, 8, 12, not Mono);
     if Mono then Result.Font.Name := MONO_FONT;
     Result.AutoSize := False;
@@ -1249,7 +1282,7 @@ begin
   Jog.BackColor := DJ_BG;
   Jog.CenterCaption := _('RESTZEIT');
   Jog.CenterText := '-00:00';
-  Jog.OnScrub := @ZoomScrub;   // gleiches Scrubbing wie beim Ziehen in der Lupe
+  Jog.OnScrub := @ZoomScrub;                               // gleiches Scrubbing wie beim Ziehen in der Lupe
   Jog.Hint := _('Jogwheel: mit gedrückter Maustaste drehen, dann hört man den Ton wie bei einer Platte unter der Hand.') + LineEnding +
               _('Der blaue Ring zeigt die Restzeit.');
   Jog.ShowHint := True;
@@ -1577,7 +1610,7 @@ var
   IsOn, StemMode: Boolean;
   C: TColor;
 begin
-  if Pads[1, 0] = nil then Exit;   // Designs noch nicht aufgebaut
+  if Pads[1, 0] = nil then Exit;                           // Designs noch nicht aufgebaut
   StemMode := BtnModeStems.Down;
   for i := 1 to STEM_COUNT do
   begin
@@ -1629,7 +1662,7 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 var
-  CDZuGross: Boolean;   // gespeicherter CD-Player passte nicht (Hinweis steht schon)
+  CDZuGross: Boolean;                                      // gespeicherter CD-Player passte nicht (Hinweis steht schon)
 begin
   CDZuGross := False;
   { Erst jetzt kennt Windows die Rahmenbreite und das Fenster ist auf die
@@ -1793,7 +1826,7 @@ end;
 { Klick auf den Auswahlknopf: Menü direkt unter dem Knopf aufklappen }
 procedure TMainForm.ViewClick(Sender: TObject);
 var
-  P: TPoint;   // linke untere Ecke des Knopfs in Bildschirmkoordinaten
+  P: TPoint;                                               // linke untere Ecke des Knopfs in Bildschirmkoordinaten
 begin
   P := BtnView.ClientToScreen(Point(0, BtnView.Height));
   MnuView.PopUp(P.X, P.Y);
@@ -1821,8 +1854,8 @@ end;
 procedure TMainForm.ViewMenuDraw(Sender: TObject; ACanvas: TCanvas;
   ARect: TRect; AState: TOwnerDrawState);
 var
-  Item: TMenuItem;   // der zu zeichnende Eintrag
-  TS: TTextStyle;    // Textausrichtung
+  Item: TMenuItem;                                         // der zu zeichnende Eintrag
+  TS: TTextStyle;                                          // Textausrichtung
 begin
   Item := Sender as TMenuItem;
   with ACanvas do
@@ -1870,7 +1903,7 @@ begin
   M := 0;
   for i := 1 to STEM_COUNT do
     M := Max(M, PeakMax(FPeakThread.Peaks[i]));
-  if M < 0.05 then M := 0.05;   // fast stille Datei nicht riesig aufblasen
+  if M < 0.05 then M := 0.05;                              // fast stille Datei nicht riesig aufblasen
   for i := 1 to STEM_COUNT do
     if FPeakThread.Peaks[i].Valid then
       Rows[i].Wave.SetPeaks(FPeakThread.Peaks[i], 1 / M);
@@ -1898,7 +1931,7 @@ begin
   TrkPos.Visible := True;
   if Engine <> nil then
   begin
-    Engine.Free;           // stoppt Thread, schliesst Audiogerät und Dateien
+    Engine.Free;                                           // stoppt Thread, schliesst Audiogerät und Dateien
     Engine := nil;
   end;
   { Loop gehört zum Track -> beim nächsten Track ohne Loop beginnen }
@@ -1907,7 +1940,7 @@ begin
   FLoopOn := False;
   ApplyLoop;
   if (FTempDir <> '') and DirectoryExists(FTempDir) then
-    DeleteDirectory(FTempDir, False);   // False = Ordner selbst auch löschen
+    DeleteDirectory(FTempDir, False);                      // False = Ordner selbst auch löschen
   FTempDir := '';
   FFileName := '';
 end;
@@ -1925,7 +1958,7 @@ begin
     FLockFile := TFileStream.Create(FInstanceDir + LOCK_NAME,
                                     fmCreate or fmShareExclusive);
   except
-    FLockFile := nil;   // ohne Sperre läuft der Player trotzdem
+    FLockFile := nil;                                      // ohne Sperre läuft der Player trotzdem
   end;
 end;
 
@@ -1958,8 +1991,8 @@ begin
       if (SR.Attr and faDirectory) = 0 then Continue;
       Dir := TempRoot + SR.Name + PathDelim;
       if FileExists(Dir + LOCK_NAME) and not DeleteFile(Dir + LOCK_NAME) then
-        Continue;                         // gesperrt -> Instanz läuft noch
-      DeleteDirectory(Dir, False);        // verwaist -> komplett löschen
+        Continue;                                          // gesperrt -> Instanz läuft noch
+      DeleteDirectory(Dir, False);                         // verwaist -> komplett löschen
     until FindNext(SR) <> 0;
   finally
     FindClose(SR);
@@ -1988,7 +2021,7 @@ var
     begin
       n := P.Output.Read(Buf, SizeOf(Buf));
       if n <= 0 then Break;
-      SetString(Chunk, PChar(@Buf[0]), n);   // genau n Bytes übernehmen
+      SetString(Chunk, PChar(@Buf[0]), n);                 // genau n Bytes übernehmen
       ErrText := ErrText + Chunk;
       { Nur das Ende behalten - die letzte Meldung ist die aussagekräftige }
       if Length(ErrText) > 4000 then
@@ -2004,10 +2037,10 @@ begin
   try
     P.Executable := FFFmpeg;
     P.Parameters.Add('-hide_banner');
-    P.Parameters.Add('-nostdin');          // nie auf Tastatureingaben warten
+    P.Parameters.Add('-nostdin');                          // nie auf Tastatureingaben warten
     P.Parameters.Add('-loglevel');
-    P.Parameters.Add('error');             // nur echte Fehler ausgeben
-    P.Parameters.Add('-y');                // vorhandene Dateien überschreiben
+    P.Parameters.Add('error');                             // nur echte Fehler ausgeben
+    P.Parameters.Add('-y');                                // vorhandene Dateien überschreiben
     P.Parameters.Add('-i');
     P.Parameters.Add(FileName);
     { Ein Aufruf, mehrere Ausgaben: jede Audiospur in eine eigene .raw-Datei.
@@ -2017,13 +2050,13 @@ begin
       P.Parameters.Add('-map');
       P.Parameters.Add('0:a:' + IntToStr(t));
       P.Parameters.Add('-ac');
-      P.Parameters.Add('2');                     // Stereo
+      P.Parameters.Add('2');                               // Stereo
       P.Parameters.Add('-ar');
-      P.Parameters.Add(IntToStr(SAMPLE_RATE));   // 44.1 kHz
+      P.Parameters.Add(IntToStr(SAMPLE_RATE));             // 44.1 kHz
       P.Parameters.Add('-c:a');
-      P.Parameters.Add('pcm_s16le');             // 16 Bit signed, little endian
+      P.Parameters.Add('pcm_s16le');                       // 16 Bit signed, little endian
       P.Parameters.Add('-f');
-      P.Parameters.Add('s16le');                 // rohe Daten ohne WAV-Header
+      P.Parameters.Add('s16le');                           // rohe Daten ohne WAV-Header
       P.Parameters.Add(FTempDir + 'track' + IntToStr(t) + '.raw');
     end;
     { Fehlerausgabe (stderr) über eine Pipe mitlesen, kein Konsolenfenster }
@@ -2039,16 +2072,16 @@ begin
       if FCancelLoad then
       begin
         P.Terminate(1);
-        P.WaitOnExit;          // warten, bis ffmpeg seine Dateien freigegeben hat
+        P.WaitOnExit;                                      // warten, bis ffmpeg seine Dateien freigegeben hat
         ErrText := '';
         Exit(False);
       end;
       LblStatus.Caption := Format(_('Dekodiere %d Spuren mit ffmpeg ... %.1f s'),
         [TrackCount, (GetTickCount64 - T0) / 1000]);
-      Application.ProcessMessages;   // Fenster bleibt bedienbar
+      Application.ProcessMessages;                         // Fenster bleibt bedienbar
       Sleep(30);
     end;
-    DrainOutput;   // Rest nach Prozessende einsammeln
+    DrainOutput;                                           // Rest nach Prozessende einsammeln
     ErrText := Trim(ErrText);
 
     Result := (P.ExitStatus = 0) and FileExists(FTempDir + 'track0.raw');
@@ -2153,7 +2186,7 @@ begin
     Ok := DecodeTracks(FileName, Tracks, ErrText);
     if not Ok then
     begin
-      UnloadFile;   // halbfertige .raw-Dateien wieder löschen
+      UnloadFile;                                          // halbfertige .raw-Dateien wieder löschen
       if FCancelLoad then
       begin
         { Abbruch durch Schliessen des Fensters -> keine Fehlermeldung }
@@ -2187,10 +2220,11 @@ begin
     begin
       Rows[i].LblName.Caption := Format('%d  %s', [i, UpperCase(FInfo.Names[i - 1])]);
       Rows[i].Color := FInfo.Colors[i - 1];
-      Rows[i].Panel.Enabled := i < Tracks;     // fehlende Spuren deaktivieren
+      Rows[i].Panel.Enabled := i < Tracks;                 // fehlende Spuren deaktivieren
     end;
     FUpdatingPos := True;
-    TrkPos.Max := Max(1, Engine.TotalFrames div (SAMPLE_RATE div 10)); // 1/10 s Schritte
+    // 1/10 s Schritte
+    TrkPos.Max := Max(1, Engine.TotalFrames div (SAMPLE_RATE div 10));
     TrkPos.Position := 0;
     FUpdatingPos := False;
     TrkPos.Enabled := True;
@@ -2250,7 +2284,7 @@ begin
       if IsOn then Engine.Gain[i] := Rows[i].TrkVol.Position / 100
       else Engine.Gain[i] := 0;
     end;
-    Rows[i].Panel.Tag := Ord(IsOn);   // für die Darstellung merken
+    Rows[i].Panel.Tag := Ord(IsOn);                        // für die Darstellung merken
   end;
   if Engine <> nil then
     Engine.MasterVol := TrkMaster.Position / 100;
@@ -2287,7 +2321,7 @@ begin
         S := _('STUMM');
         StateColor := DJ_RED;
       end
-      else S := _('AUS (SOLO)');  // ein anderer Stem ist auf Solo
+      else S := _('AUS (SOLO)');                           // ein anderer Stem ist auf Solo
     end
     else S := _('HÖRBAR');
     Rows[i].LblState.Caption := S;
@@ -2359,7 +2393,7 @@ end;
 function TMainForm.FormatTimeFine(Frames: Int64): string;
 var Ms: Int64;
 begin
-  Ms := Round(Frames * 1000 / SAMPLE_RATE);   // gerundet: 2-ms-Schritte sind 88 Frames
+  Ms := Round(Frames * 1000 / SAMPLE_RATE);                // gerundet: 2-ms-Schritte sind 88 Frames
   Result := Format('%.2d:%.2d.%.3d', [Ms div 60000, (Ms div 1000) mod 60, Ms mod 1000]);
 end;
 
@@ -2872,7 +2906,7 @@ begin
       FHeadPos := FHeadPos - (FLoopB - FLoopA);
     Diff := Dev - FHeadPos;
     if Abs(Diff) > SAMPLE_RATE * 0.25 then
-      FHeadPos := Dev                      // Sprung oder Aussetzer: übernehmen
+      FHeadPos := Dev                                      // Sprung oder Aussetzer: übernehmen
     { sanft nachführen, kein Zurückspringen. Kleine Abweichungen (die Geräteposition
       kommt in ~23-ms-Stufen) nur ganz schwach, sonst schwankt das Tempo der
       Lupe sichtbar }
@@ -2882,7 +2916,7 @@ begin
       FHeadPos := FHeadPos + Diff * 0.08;
   end
   else
-    FHeadPos := Dev;                       // Pause, Ende oder gerade gestartet
+    FHeadPos := Dev;                                       // Pause, Ende oder gerade gestartet
   FHeadRunning := Engine.Playing and not Engine.EndReached;
   FHeadTime := T;
   if FHeadPos < 0 then FHeadPos := 0;
@@ -2921,6 +2955,13 @@ begin
   PbKofi.Invalidate;
 end;
 
+{ TMainForm.BtnHilfeClick
+  Knopf "?": Kapitel StemPlayer in der StemMaker-Anleitung öffnen (wie F1) }
+procedure TMainForm.BtnHilfeClick(Sender: TObject);
+begin
+  HilfeZeigen('stemplayer');
+end;
+
 procedure TMainForm.KofiLeave(Sender: TObject);
 begin
   FKofiHover := False;
@@ -2935,7 +2976,7 @@ begin
     VK_SPACE:
       begin
         TogglePlay;
-        Key := 0;  // Taste ist verarbeitet
+        Key := 0;                                          // Taste ist verarbeitet
       end;
     VK_1..VK_4:
       begin
@@ -2943,7 +2984,7 @@ begin
         if ssShift in Shift then
         begin
           Rows[i].BtnSolo.Down := not Rows[i].BtnSolo.Down;
-          ApplySolo(i, ssCtrl in Shift);   // Strg+Shift = dazunehmen
+          ApplySolo(i, ssCtrl in Shift);                   // Strg+Shift = dazunehmen
         end
         else
           Rows[i].BtnMute.Down := not Rows[i].BtnMute.Down;
@@ -2985,7 +3026,7 @@ begin
           if i > 0 then NudgeMarker(1, NudgeStep) else NudgeMarker(2, -NudgeStep);
         end
         else if FLoopOn and (FLoopA >= 0) and (FLoopB > FLoopA) then
-          MoveLoop(i * NudgeStep)                                  // ganzer Loop
+          MoveLoop(i * NudgeStep)                          // ganzer Loop
         else SeekRelative(i * 5);
         Key := 0;
       end;
@@ -3040,8 +3081,8 @@ begin
     Takt.Stoppen;
     FreeAndNil(Takt);
   end;
-  UnloadFile;          // Thread beenden + Track-Ordner löschen
-  ReleaseInstanceDir;  // Sperrdatei schliessen + Instanz-Ordner löschen
+  UnloadFile;                                              // Thread beenden + Track-Ordner löschen
+  ReleaseInstanceDir;                                      // Sperrdatei schliessen + Instanz-Ordner löschen
 end;
 
 end.

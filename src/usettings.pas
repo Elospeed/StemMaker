@@ -1,11 +1,15 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uSettings  (Datei usettings.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : usettings.pas  (Unit uSettings)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Design hell/dunkel, Frage nach Neustart bei
+                     Sprach- oder Designwechsel, Knopf "?" und F1
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Fenster "Einstellungen" (Zahnrad-Button im Hauptfenster).
 
@@ -17,7 +21,7 @@
     - Engine:     Turbo (StemOnnx) oder Klassisch (demucs.cpp), Gerät für
                   Turbo, Knopf "Vortest ..." (ab 2.0, siehe uTurboTest)
     - Stems:      Namen und Farben der 4 Stems (so zeigt Traktor sie an)
-    - Programm:   Sprache, beim Start nach Updates suchen, Symbol im
+    - Programm:   Sprache, Design (hell/dunkel), nach Updates suchen, Symbol im
                   Infobereich (neben der Uhr, siehe uMain)
     - Werkzeuge:  wo ffmpeg, demucs.cpp und die Modelle liegen (nur Anzeige,
                   ändern geht wie bisher in StemMaker.ini, Abschnitt [Tools])
@@ -31,6 +35,14 @@
 
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei), wie das
   Info-Fenster.
+
+  BENUTZUNG
+
+    ShowSettingsDialog   öffnet das Fenster (Zahnrad im Hauptfenster);
+                         gibt True bei OK zurück, Neustart = Benutzer will
+                         StemMaker gleich neu starten.
+    DefaultStemPrefs     Standardwerte einer frischen Installation.
+    LoadGearGlyph        Zahnrad-Symbol auf den Knopf im Hauptfenster.
   ============================================================================ }
 unit uSettings;
 
@@ -45,16 +57,16 @@ uses
 type
   { Die Einstellungen, die dieses Fenster bearbeitet }
   TStemPrefs = record
-    Threads    : Integer;                 // Teile, die demucs gleichzeitig rechnet
-    ThreadsAuto: Boolean;                 // Teile automatisch wählen
-    Overwrite  : Boolean;                 // vorhandene .stem.mp4 überschreiben
-    KeepTree   : Boolean;                 // Unterordner im Ausgabeordner nachbauen
-    KeepAwake  : Boolean;                 // PC während der Arbeit wach halten
-    TrayMinimize: Boolean;                // minimiert: nur noch Symbol neben der Uhr
-    TrayNotify : Boolean;                 // Meldung neben der Uhr, wenn alles fertig ist
-    Engine     : TStemEngine;             // Turbo oder Klassisch (ab 2.0)
-    TurboDevice: TTurboDevice;            // Turbo: automatisch oder nur CPU
-    StemNames  : array[0..3] of string;   // Drums, Bass, Other, Vox
+    Threads    : Integer;                                  // Teile, die demucs gleichzeitig rechnet
+    ThreadsAuto: Boolean;                                  // Teile automatisch wählen
+    Overwrite  : Boolean;                                  // vorhandene .stem.mp4 überschreiben
+    KeepTree   : Boolean;                                  // Unterordner im Ausgabeordner nachbauen
+    KeepAwake  : Boolean;                                  // PC während der Arbeit wach halten
+    TrayMinimize: Boolean;                                 // minimiert: nur noch Symbol neben der Uhr
+    TrayNotify : Boolean;                                  // Meldung neben der Uhr, wenn alles fertig ist
+    Engine     : TStemEngine;                              // Turbo oder Klassisch (ab 2.0)
+    TurboDevice: TTurboDevice;                             // Turbo: automatisch oder nur CPU
+    StemNames  : array[0..3] of string;                    // Drums, Bass, Other, Vox
     StemColors : array[0..3] of TColor;
   end;
 
@@ -65,8 +77,11 @@ function DefaultStemPrefs: TStemPrefs;
   BesideInput: im Hauptfenster ist "neben der Originaldatei speichern" an
   -> "Unterordner nachbauen" wird ausgegraut (geht nur mit Ausgabeordner).
   Die drei Pfade werden nur angezeigt. }
+{ KannNeustarten: keine Umwandlung läuft. Neustart: Benutzer will StemMaker
+  jetzt neu starten (Sprache oder Design geändert, Frage mit Ja beantwortet). }
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
-  const FFmpegExe, DemucsDir, ModelsDir: string): Boolean;
+  const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
+  out Neustart: Boolean): Boolean;
 
 { Zahnrad-Symbol auf einen Button legen (für den Button im Hauptfenster) }
 procedure LoadGearGlyph(Btn: TBitBtn);
@@ -74,16 +89,16 @@ procedure LoadGearGlyph(Btn: TBitBtn);
 implementation
 
 uses
-  uLang, uLangUI, uUpdate, uTurboTest;
+  uLang, uLangUI, uUpdate, uTurboTest, uDesign, uHilfe;
 
 {$I gearicon.inc}
 
 type
   TfrmSettings = class(TForm)
   private
-    FLangCodes: TStringList;      // Sprach-Codes in der Reihenfolge von cbLang
-    FNextTop: Integer;            // Top für die nächste Gruppe (NewGroup)
-    FInhalt: TScrollBox;          // alle Gruppen; rollt, wenn das Fenster nicht auf den Bildschirm passt
+    FLangCodes: TStringList;                               // Sprach-Codes in der Reihenfolge von cbLang
+    FNextTop: Integer;                                     // Top für die nächste Gruppe (NewGroup)
+    FInhalt: TScrollBox;                                   // alle Gruppen; rollt, wenn das Fenster nicht auf den Bildschirm passt
     seThreads: TSpinEdit;
     chkAutoThreads: TCheckBox;
     lblCores: TLabel;
@@ -91,6 +106,7 @@ type
     edtStem: array[0..3] of TEdit;
     clrStem: array[0..3] of TColorButton;
     cbLang: TComboBox;
+    cbDesign: TComboBox;                                   // Automatisch / Hell / Dunkel (ab 2.4)
     chkAutoUpdate: TCheckBox;
     chkTrayMinimize, chkTrayNotify: TCheckBox;
     cbEngine, cbDevice: TComboBox;
@@ -104,6 +120,7 @@ type
     procedure btnDefaultsClick(Sender: TObject);
     procedure btnTraktorColorsClick(Sender: TObject);
     procedure btnProgDirClick(Sender: TObject);
+    procedure btnHilfeClick(Sender: TObject);
     function NewGroup(const ACaption: string; AHeight: Integer): TGroupBox;
     function NewCheck(AParent: TWinControl; X, Y: Integer;
       const ACaption, AHint: string): TCheckBox;
@@ -116,7 +133,8 @@ type
     destructor Destroy; override;
     procedure SetPrefs(const P: TStemPrefs);
     function GetPrefs: TStemPrefs;
-    procedure SaveProgramPrefs;
+    { True = Benutzer will jetzt neu starten }
+    function SaveProgramPrefs(KannNeustarten: Boolean): Boolean;
   end;
 
 { '#RRGGBB' (wie Traktor) -> TColor ($00BBGGRR). Ungültig -> clBlack }
@@ -140,7 +158,7 @@ begin
   Result.Overwrite := False;
   Result.KeepTree := True;
   Result.KeepAwake := True;
-  Result.TrayMinimize := False;    // aus: sonst sucht man das Fenster
+  Result.TrayMinimize := False;                            // aus: sonst sucht man das Fenster
   Result.TrayNotify := True;
   Result.Engine := D.Engine;
   Result.TurboDevice := D.TurboDevice;
@@ -221,6 +239,7 @@ begin
   Result.Caption := ACaption;
 end;
 
+{ Fenster "Weitere Einstellungen" im Code aufbauen (Reiter, Felder, Knöpfe) }
 constructor TfrmSettings.CreateSettings(BesideInput: Boolean;
   const FFmpegExe, DemucsDir, ModelsDir: string);
 const
@@ -230,7 +249,7 @@ const
 var
   gb: TGroupBox;
   pnlBottom: TPanel;
-  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor, btnTest: TButton;
+  btnOK, btnCancel, btnDefaults, btnProgDir, btnTraktor, btnTest, btnHilfe: TButton;
   lbl: TLabel;
   edt: TEdit;
   I: Integer;
@@ -242,7 +261,7 @@ var
     edt := TEdit.Create(Self);
     edt.Parent := gb;
     edt.SetBounds(110, Y, 460, 25);
-    edt.ReadOnly := True;                  // nur Anzeige, markieren/kopieren geht
+    edt.ReadOnly := True;                                  // nur Anzeige, markieren/kopieren geht
     edt.Color := clBtnFace;
     edt.Text := APath;
     edt.Hint := APath;
@@ -251,11 +270,12 @@ var
 
 begin
   inherited CreateNew(nil);
+  HelpKeyword := 'weitere-einstellungen';                  // F1 öffnet die Hilfe hier (uHilfe)
   Caption := _('Einstellungen');
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
-  Width := 600;
-  Height := 752;
+  Width := 630;
+  Height := 786;
   ShowHint := True;
 
   { Bei 150-200 % Anzeigeskalierung ist das Fenster höher als der
@@ -380,31 +400,46 @@ begin
   btnTraktor.OnClick := @btnTraktorColorsClick;
 
   { --- Programm --- }
-  gb := NewGroup(_('Programm'), 140);
+  gb := NewGroup(_('Programm'), 174);
   lbl := NewLabel(gb, 12, 10, _('Sprache:'));
   cbLang := TComboBox.Create(Self);
   cbLang.Parent := gb;
   cbLang.Style := csDropDownList;
-  cbLang.SetBounds(110, 6, 180, 25);
+  cbLang.SetBounds(110, 6, 210, 25);
   FLangCodes := LangAvailable;
   for I := 0 to FLangCodes.Count - 1 do
     cbLang.Items.Add(LangDisplayName(FLangCodes[I]));
   cbLang.ItemIndex := FLangCodes.IndexOf(LangCode);
-  lbl := NewLabel(gb, 300, 10, _('(gilt ab dem nächsten Start)'));
+  lbl := NewLabel(gb, 330, 10, _('(gilt ab dem nächsten Start)'));
   lbl.Font.Color := clGrayText;
-  chkAutoUpdate := NewCheck(gb, 12, 40, _('Beim Start nach Updates suchen'), '');
+  NewLabel(gb, 12, 44, _('Design:'));
+  cbDesign := TComboBox.Create(Self);
+  cbDesign.Parent := gb;
+  cbDesign.Style := csDropDownList;
+  cbDesign.SetBounds(110, 40, 210, 25);
+  cbDesign.Items.Add(_('Automatisch (wie Windows)'));
+  cbDesign.Items.Add(_('Hell'));
+  cbDesign.Items.Add(_('Dunkel'));
+  cbDesign.ItemIndex := Ord(DesignLesen(StemIniFileName));
+  cbDesign.Hint := _('Automatisch folgt der Windows-Einstellung ' +
+    '"Standard-App-Modus" (Personalisierung > Farben).') + LineEnding +
+    _('Dunkel braucht Windows 10 (ab Version 1809) oder Windows 11.');
+  cbDesign.ShowHint := True;
+  lbl := NewLabel(gb, 330, 44, _('(gilt ab dem nächsten Start)'));
+  lbl.Font.Color := clGrayText;
+  chkAutoUpdate := NewCheck(gb, 12, 74, _('Beim Start nach Updates suchen'), '');
   chkAutoUpdate.Checked := UpdateAutoCheck(StemIniFileName);
-  chkTrayMinimize := NewCheck(gb, 12, 64,
+  chkTrayMinimize := NewCheck(gb, 12, 98,
     _('Beim Minimieren nur das Symbol neben der Uhr zeigen'),
     _('Das Fenster verschwindet aus der Taskleiste. Klick auf das Symbol ' +
     'neben der Uhr holt es zurück.') + LineEnding + _('Fährt man mit der ' +
     'Maus über das Symbol, steht dort der Fortschritt.'));
-  chkTrayNotify := NewCheck(gb, 12, 88,
+  chkTrayNotify := NewCheck(gb, 12, 122,
     _('Meldung neben der Uhr, wenn die Umwandlung fertig ist'),
     _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
   { --- Werkzeuge (nur Anzeige) --- }
-  gb := NewGroup(_('Werkzeuge'), 128);  // Platz für die Hinweiszeile unten (Windows-Schrift ist höher als unter Wine)
+  gb := NewGroup(_('Werkzeuge'), 128);                     // Platz für die Hinweiszeile unten (Windows-Schrift ist höher als unter Wine)
   PathRow(4, 'ffmpeg:', FFmpegExe);
   PathRow(31, 'demucs.cpp:', DemucsDir);
   PathRow(58, _('Modelle:'), ModelsDir);
@@ -434,13 +469,21 @@ begin
   btnProgDir.Hint := _('Öffnet den Ordner, in dem StemMaker.ini liegt');
   btnProgDir.OnClick := @btnProgDirClick;
 
+  { "?" = Hilfe zu diesem Fenster (wie F1, uHilfe) }
+  btnHilfe := TButton.Create(Self);
+  btnHilfe.Parent := pnlBottom;
+  btnHilfe.SetBounds(362, 8, 32, 32);
+  btnHilfe.Caption := '?';
+  btnHilfe.Hint := _('Hilfe zu diesem Fenster (F1)');
+  btnHilfe.OnClick := @btnHilfeClick;
+
   btnCancel := TButton.Create(Self);
   btnCancel.Parent := pnlBottom;
   btnCancel.SetBounds(pnlBottom.ClientWidth - 110, 8, 100, 32);
   btnCancel.Anchors := [akTop, akRight];
   btnCancel.Caption := _('Abbrechen');
   btnCancel.ModalResult := mrCancel;
-  btnCancel.Cancel := True;                // Esc = abbrechen
+  btnCancel.Cancel := True;                                // Esc = abbrechen
 
   btnOK := TButton.Create(Self);
   btnOK.Parent := pnlBottom;
@@ -448,7 +491,7 @@ begin
   btnOK.Anchors := [akTop, akRight];
   btnOK.Caption := _('OK');
   btnOK.ModalResult := mrOK;
-  btnOK.Default := True;                   // Enter = OK
+  btnOK.Default := True;                                   // Enter = OK
 
   { OnChange erst nach dem Aufbau setzen }
   chkAutoThreads.OnChange := @chkAutoThreadsChange;
@@ -461,8 +504,8 @@ end;
   nichts abgeschnitten wird }
 procedure TfrmSettings.FormShowSettings(Sender: TObject);
 begin
-  if Height < Scale96ToForm(752) then
-    Width := Scale96ToForm(600) + GetSystemMetrics(SM_CXVSCROLL);
+  if Height < Scale96ToForm(786) then
+    Width := Scale96ToForm(630) + GetSystemMetrics(SM_CXVSCROLL);
 end;
 
 destructor TfrmSettings.Destroy;
@@ -499,6 +542,7 @@ begin
   ShowPrefs(P);
 end;
 
+{ Werte aus den Feldern als TStemPrefs zurückgeben (Stem-Namen leer = Standard) }
 function TfrmSettings.GetPrefs: TStemPrefs;
 var
   I: Integer;
@@ -513,7 +557,7 @@ begin
   for I := 0 to 3 do
   begin
     Result.StemNames[I] := Trim(edtStem[I].Text);
-    if Result.StemNames[I] = '' then         // leer = Standardname behalten
+    if Result.StemNames[I] = '' then                       // leer = Standardname behalten
       Result.StemNames[I] := DefaultStemSettings.Stems[I].Name;
     Result.StemColors[I] := clrStem[I].ButtonColor;
   end;
@@ -521,18 +565,68 @@ begin
   Result.TurboDevice := TTurboDevice(cbDevice.ItemIndex);
 end;
 
-{ Sprache und Update-Prüfung haben eigene Speicher-Funktionen }
-procedure TfrmSettings.SaveProgramPrefs;
+{ TfrmSettings.SaveProgramPrefs
+  Speichert die Programm-Einstellungen, die eigene Speicher-Funktionen
+  haben (Update-Prüfung, Design, Engine, Sprache). Sprache und Design
+  gelten erst nach einem Neustart.
+  Parameter: KannNeustarten = keine Umwandlung läuft, ein Neustart ist
+                              jetzt möglich
+  Rückgabe : True = Benutzer will StemMaker jetzt neu starten
+  Ablauf   : 1. Update-Prüfung, Design, Engine und Sprache speichern und
+                merken, ob Design oder Sprache neu sind
+             2. nichts davon neu: fertig
+             3. Umwandlung läuft: nur Bescheid geben (gilt beim nächsten Start)
+             4. sonst fragen, ob StemMaker gleich neu starten soll }
+function TfrmSettings.SaveProgramPrefs(KannNeustarten: Boolean): Boolean;
+var
+  DesignNeu: Boolean;                                      // Design wurde geändert
+  SpracheNeu: Boolean;                                     // Sprache wurde geändert
+  Frage: string;                                           // Text der Neustart-Frage
 begin
+  Result := False;
+  DesignNeu := False;
+  SpracheNeu := False;
   UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
+  if (cbDesign.ItemIndex >= 0) and
+     (TDesignWahl(cbDesign.ItemIndex) <> DesignLesen(StemIniFileName)) then
+  begin
+    DesignSpeichern(StemIniFileName, TDesignWahl(cbDesign.ItemIndex));
+    DesignNeu := True;
+  end;
   SaveTurboSettings(TStemEngine(cbEngine.ItemIndex), TTurboDevice(cbDevice.ItemIndex));
   if (cbLang.ItemIndex >= 0) and (cbLang.ItemIndex < FLangCodes.Count) and
      (FLangCodes[cbLang.ItemIndex] <> LangCode) then
   begin
     LangSaveChoice(StemIniFileName, FLangCodes[cbLang.ItemIndex]);
-    MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
-      mtInformation, [mbOK], 0);
+    SpracheNeu := True;
   end;
+  if not (DesignNeu or SpracheNeu) then Exit;
+
+  if not KannNeustarten then
+  begin
+    { Umwandlung läuft: nicht neu starten, nur Bescheid geben }
+    if SpracheNeu and DesignNeu then
+      MessageDlg(_('Sprache und Design werden beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0)
+    else if SpracheNeu then
+      MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0)
+    else
+      MessageDlg(_('Das Design wird beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  if SpracheNeu and DesignNeu then
+    Frage := _('Sprache und Design werden nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?')
+  else if SpracheNeu then
+    Frage := _('Die Sprache wird nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?')
+  else
+    Frage := _('Das Design wird nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?');
+  Result := MessageDlg(Frage, mtConfirmation, [mbYes, mbNo], 0) = mrYes;
 end;
 
 { "Auto" an: Wert ausrechnen und Eingabefeld sperren }
@@ -596,10 +690,12 @@ begin
   ShowTurboSummary;
 end;
 
+{ "Standard wiederherstellen": alle Felder auf Standard, gilt erst bei OK }
 procedure TfrmSettings.btnDefaultsClick(Sender: TObject);
 begin
   ShowPrefs(DefaultStemPrefs);
   chkAutoUpdate.Checked := True;
+  cbDesign.ItemIndex := Ord(dwAuto);
 end;
 
 { Farben aus einer echten Traktor-Pro-4-Stem-Datei (Atom 'stem', Version 2):
@@ -616,16 +712,39 @@ begin
     clrStem[I].ButtonColor := HexToCol(TRAKTOR_COLORS[I]);
 end;
 
+{ Ordner mit StemMaker.ini im Explorer öffnen }
 procedure TfrmSettings.btnProgDirClick(Sender: TObject);
 begin
   OpenDocument(ExtractFilePath(StemIniFileName));
 end;
 
-function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
-  const FFmpegExe, DemucsDir, ModelsDir: string): Boolean;
-var
-  F: TfrmSettings;
+{ TfrmSettings.btnHilfeClick
+  Knopf "?": Hilfe zu diesem Fenster öffnen (Anker im HelpKeyword) }
+procedure TfrmSettings.btnHilfeClick(Sender: TObject);
 begin
+  HilfeZeigen(HelpKeyword);
+end;
+
+{ ShowSettingsDialog
+  Zeigt das Fenster "Einstellungen".
+  Parameter: P              = Werte hinein; bei OK die neuen Werte heraus
+             BesideInput    = "neben der Originaldatei speichern" ist an
+             FFmpegExe,
+             DemucsDir,
+             ModelsDir      = Pfade, nur zur Anzeige
+             KannNeustarten = keine Umwandlung läuft
+             Neustart       = heraus: Benutzer will gleich neu starten
+  Rückgabe : True bei OK
+  Ablauf   : 1. Fenster bauen und mit P füllen
+             2. bei OK P übernehmen und Programmwerte speichern
+                (dabei evtl. die Frage nach dem Neustart) }
+function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
+  const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
+  out Neustart: Boolean): Boolean;
+var
+  F: TfrmSettings;                                         // das Fenster
+begin
+  Neustart := False;
   F := TfrmSettings.CreateSettings(BesideInput, FFmpegExe, DemucsDir, ModelsDir);
   try
     F.SetPrefs(P);
@@ -633,7 +752,7 @@ begin
     if Result then
     begin
       P := F.GetPrefs;
-      F.SaveProgramPrefs;
+      Neustart := F.SaveProgramPrefs(KannNeustarten);
     end;
   finally
     F.Free;
