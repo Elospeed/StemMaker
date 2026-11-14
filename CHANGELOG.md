@@ -18,8 +18,9 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 - **Weitere Einstellungen → Engine:** Das Ergebnis des Vortests war auf Englisch und Spanisch unten abgeschnitten. Der Bereich ist jetzt höher, der Text hat Platz für drei Zeilen.
 - **Vortest-Ergebnis in der gewählten Sprache:** Der graue Text unter „Gerät“ blieb in der Sprache stehen, die beim Vortest eingestellt war. StemMaker speichert jetzt nur die Messwerte und zeigt den Satz in der aktuellen Sprache. Ergebnisse aus älteren Versionen erscheinen bis zum nächsten Vortest wie bisher.
 
-#### StemPlayer 1.8.6, StemTagger 1.2.3
+#### StemPlayer 1.8.6, StemTagger 1.2.3, StemPacker 0.3.1
 - Titelleiste und Fensterrahmen sind jetzt dunkel wie das Fenster (Windows 10 ab 1809 und Windows 11), statt weiss.
+- StemPacker 0.3.1 hell oder dunkel: Er folgt ebenfalls der StemMaker-Einstellung „Design“, mit dunkler Titelleiste, dunklen Listen, Knöpfen und Menüs (gleiche Technik wie StemMaker, Windows 10 ab 1809 oder Windows 11; unter Linux hell).
 - StemTagger hell oder dunkel: Er folgt der StemMaker-Einstellung „Design“ (Automatisch wie Windows, Hell, Dunkel). Im hellen Design sind Flächen hell, die Schrift dunkel und die Statusfarben kräftiger, damit sie lesbar bleiben; die Titelleiste bleibt dann normal. Unter Linux ist „Automatisch“ hell wie StemMaker.
 
 ## 2.3 – 10. November 2026

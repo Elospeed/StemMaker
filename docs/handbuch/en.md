@@ -306,7 +306,7 @@ Under **More settings → Program → Theme** you choose how StemMaker looks:
 | Light | always light |
 | Dark | always dark: windows, lists, buttons and title bars |
 
-The choice applies after a restart; StemMaker asks right away whether to restart. The dark theme needs Windows 10 version 1809 or later, or Windows 11; on older Windows and on Linux StemMaker stays light. The StemTagger follows the same setting (the next time it opens), the StemPlayer always stays dark.
+The choice applies after a restart; StemMaker asks right away whether to restart. The dark theme needs Windows 10 version 1809 or later, or Windows 11; on older Windows and on Linux StemMaker stays light. StemTagger and StemPacker follow the same setting (the next time they open), the StemPlayer always stays dark.
 
 ## Which separation model? {#modelle}
 

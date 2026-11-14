@@ -13,7 +13,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 ### Corregido
 - Ajustes: el resultado de la prueba previa ya no se corta y aparece en el idioma elegido
 - StemPlayer 1.8.6, StemTagger 1.2.3: barra de título oscura en lugar de blanca
-- StemTagger claro u oscuro como StemMaker
+- StemTagger y StemPacker claros u oscuros como StemMaker
 
 ## 2.3 – 10 de noviembre de 2026
 ### Nuevo

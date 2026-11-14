@@ -54,8 +54,23 @@ const
   { Ko-fi-Knopf "E" (Wahl Speedy 29.10.2026): dunkle Pille, vorne das Symbol
     des jeweiligen Programms, rotes Herz, weisser Text - in allen Elospeed-Tools gleich }
   CLR_KOFI_FACE      = TColor($00262220);   // auf hellem Grund     #202226
-  CLR_KOFI_FACE_DARK = TColor($00302C2A);   // auf dunklem Grund    #2A2C30
-  CLR_KOFI_HOVER     = TColor($00443F3C);   // Maus darüber         #3C3F44
+  CLR_KOFI_FACE_DARK  = TColor($00302C2A);  // auf fast schwarzem Grund (StemPlayer) #2A2C30
+  { auf mittel-dunklem Grund (dunkles Design, Fenster #353535): dunkler als
+    der Grund, damit sich die Pille klar abhebt; Maus darüber heller }
+  CLR_KOFI_FACE_DUNKEL = TColor($001E1C1A); // #1A1C1E
+  CLR_KOFI_HOVER      = TColor($00443F3C);  // Maus darüber         #3C3F44
+  CLR_KOFI_HOVER_DARK = TColor($00524D4A);  // Maus darüber, dunkel #4A4D52
+  { "wartet" im dunklen Design: etwas heller als Windows-Grau, besser lesbar }
+  CLR_WAIT_TEXT_DARK  = TColor($00B8B8B8);  // #B8B8B8
+
+var
+  { True = Programm läuft im dunklen Design (setzt uDesign beim Start) }
+  DunklesDesign: Boolean = False;
+
+{ Schriftfarben, die im hellen und im dunklen Design gut lesbar sind }
+function FarbeOK: TColor;       // Grün für "fertig"
+function FarbeFehler: TColor;   // Rot für Fehler
+function FarbeInfo: TColor;     // Blau für Hinweise
 
 { Streifen in den vier Stem-Farben, gleich breite Teile von links nach rechts }
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
@@ -87,6 +102,30 @@ procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
 
 implementation
 
+const
+  { dunkles Design: Farben wie Windows 11 im Dunkelmodus }
+  CLR_BAR_BORDER_DARK = TColor($00606060);
+  CLR_BAR_BACK_DARK   = TColor($00383838);
+  CLR_OK_TEXT_DARK    = TColor($005FCB6C);   // #6CCB5F
+  CLR_FAIL_TEXT_DARK  = TColor($00A499FF);   // #FF99A4
+  CLR_INFO_TEXT       = TColor($00800000);   // clNavy
+  CLR_INFO_TEXT_DARK  = TColor($00FFC060);   // #60C0FF
+
+function FarbeOK: TColor;
+begin
+  if DunklesDesign then Result := CLR_OK_TEXT_DARK else Result := CLR_OK_TEXT;
+end;
+
+function FarbeFehler: TColor;
+begin
+  if DunklesDesign then Result := CLR_FAIL_TEXT_DARK else Result := CLR_FAIL_TEXT;
+end;
+
+function FarbeInfo: TColor;
+begin
+  if DunklesDesign then Result := CLR_INFO_TEXT_DARK else Result := CLR_INFO_TEXT;
+end;
+
 { 96-dpi-Mass auf den Bildschirm umrechnen }
 function ScalePx(V, PPI: Integer): Integer;
 begin
@@ -100,13 +139,19 @@ begin
   Result := ScalePx(56, PPI) + C.TextWidth(Text);
 end;
 
-{ ist die Farbe dunkel? (für die Wahl der Pillenfarbe) }
-function IsDarkColor(Col: TColor): Boolean;
+{ wahrgenommene Helligkeit 0..255 }
+function Helligkeit(Col: TColor): Integer;
 var
   RGB: LongInt;
 begin
   RGB := ColorToRGB(Col);
-  Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000 < 100;
+  Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000;
+end;
+
+{ ist die Farbe dunkel? (für die Wahl der Pillenfarbe) }
+function IsDarkColor(Col: TColor): Boolean;
+begin
+  Result := Helligkeit(Col) < 100;
 end;
 
 { Pille und Herz geglättet zeichnen: GDI zeichnet Rundungen ohne
@@ -206,7 +251,13 @@ begin
     Max(C.TextHeight('Ag') + ScalePx(8, PPI), ScalePx(22, PPI)));
   B := Rect(R.Left, (R.Top + R.Bottom - H) div 2, R.Right, 0);
   B.Bottom := B.Top + H;
-  if Hover then
+  { fast schwarzer Grund (StemPlayer): hellere Pille wie bisher;
+    mittel-dunkler Grund (dunkles Design): dunklere Pille }
+  if IsDarkColor(BackColor) and (Helligkeit(BackColor) >= 40) then
+  begin
+    if Hover then Col := CLR_KOFI_HOVER_DARK else Col := CLR_KOFI_FACE_DUNKEL;
+  end
+  else if Hover then
     Col := CLR_KOFI_HOVER
   else if IsDarkColor(BackColor) then
     Col := CLR_KOFI_FACE_DARK
@@ -280,7 +331,11 @@ var
   X, CY, BarW, FillW, I, D, Gap: Integer;
   Bar: TRect;
   Col: TColor;
+  Dunkel: Boolean;
 begin
+  { dunkler Hintergrund (dunkles Design): hellere Schrift, dunkler Balken }
+  Dunkel := IsDarkColor(BackColor);
+
   { Hintergrund der ganzen Zelle }
   C.Brush.Style := bsSolid;
   C.Brush.Color := BackColor;
@@ -298,10 +353,12 @@ begin
         if BarW >= S(30) then
         begin
           Bar := Rect(X, CY - S(6), X + BarW, CY + S(6));
-          C.Brush.Color := CLR_BAR_BORDER;
+          if Dunkel then C.Brush.Color := CLR_BAR_BORDER_DARK
+          else C.Brush.Color := CLR_BAR_BORDER;
           C.FillRect(Bar);
           InflateRect(Bar, -1, -1);
-          C.Brush.Color := CLR_BAR_BACK;
+          if Dunkel then C.Brush.Color := CLR_BAR_BACK_DARK
+          else C.Brush.Color := CLR_BAR_BACK;
           C.FillRect(Bar);
           FillW := ((Bar.Right - Bar.Left) * Percent) div 100;
           if FillW > 0 then
@@ -317,7 +374,9 @@ begin
 
     slOK:
       begin
-        if Highlighted then Col := TextColor else Col := CLR_OK_TEXT;
+        if Highlighted then Col := TextColor
+        else if Dunkel then Col := CLR_OK_TEXT_DARK
+        else Col := CLR_OK_TEXT;
         { Häkchen als zwei Linien (nicht als Zeichen "✓" - das fehlt in
           manchen Windows-Schriften) }
         C.Pen.Style := psSolid;
@@ -346,13 +405,17 @@ begin
 
     slFail:
       begin
-        if Highlighted then Col := TextColor else Col := CLR_FAIL_TEXT;
+        if Highlighted then Col := TextColor
+        else if Dunkel then Col := CLR_FAIL_TEXT_DARK
+        else Col := CLR_FAIL_TEXT;
         PutText(X, Text, Col);
       end;
 
     slWait:
       begin
-        if Highlighted then Col := TextColor else Col := clGrayText;
+        if Highlighted then Col := TextColor
+        else if Dunkel then Col := CLR_WAIT_TEXT_DARK
+        else Col := clGrayText;
         PutText(X, Text, Col);
       end;
   else

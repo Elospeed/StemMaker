@@ -38,6 +38,8 @@
                        Benennung wird erkannt (packdetect.pas); Ordner und
                        Muster selbst einstellen bleibt als Häkchen; neun
                        Sprachen wie StemMaker
+    0.3.1 (14.11.2026) Hell oder dunkel wie StemMaker (Einstellung "Design",
+                       metadarkstyle, siehe upackdesign.pas)
   ============================================================================ }
 unit packerform;
 
@@ -53,7 +55,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPacker';
-  APP_VER   = '0.3';
+  APP_VER   = '0.3.1';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
   PAGE_URL  = 'https://elospeed.github.io/StemPacker/';
 
@@ -797,7 +799,7 @@ begin
     FreeSongs(FSongs);
     FList.Items.Clear;
     FDetect.Caption := _('Keine bekannte Benennung gefunden. Bitte Ordner und Muster selbst einstellen.');
-    FDetect.Font.Color := clRed;
+    FDetect.Font.Color := FarbeFehler;   // rot, im dunklen Design heller
     FStatus.Caption := FDetect.Caption;
     { Zeilen zeigen, der Ordner steht schon beim Master }
     FLoading := True;

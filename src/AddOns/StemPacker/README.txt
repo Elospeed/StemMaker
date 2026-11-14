@@ -1,4 +1,4 @@
-Elospeed StemPacker 0.3  -  by Elospeed  (ko-fi.com/elospeed)
+Elospeed StemPacker 0.3.1  -  by Elospeed  (ko-fi.com/elospeed)
 ====================================================================
 
 Turns finished single tracks into Traktor stem files (.stem.mp4), WITHOUT

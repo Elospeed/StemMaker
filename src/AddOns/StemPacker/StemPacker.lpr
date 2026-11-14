@@ -18,7 +18,7 @@ program StemPacker;
 
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
-  Interfaces, Forms, packerform;
+  Interfaces, Forms, uPackDesign, packerform;
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -26,6 +26,8 @@ begin
   RequireDerivedFormResource := False;   // Formular wird im Code aufgebaut (keine .lfm)
   Application.Scaled := True;
   Application.Title := 'Elospeed StemPacker';
+  { Hell/Dunkel wie StemMaker: vor dem ersten Fenster (siehe uPackDesign) }
+  PackDesignAnwenden;
   Application.Initialize;
   Application.CreateForm(TPackerForm, MainPacker);
   Application.Run;
