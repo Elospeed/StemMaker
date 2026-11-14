@@ -58,7 +58,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
-  IniFiles, IntfGraphics, Contnrs, ImgList, Math, uLang, uMp4Tags, uId3Tags, uStatusDraw, djcontrols, djextra, coverbild,
+  IniFiles, Registry, IntfGraphics, Contnrs, ImgList, Math, uLang, uMp4Tags, uId3Tags, uStatusDraw, djcontrols, djextra, coverbild,
   uSkalierung, uDunklerRahmen;
 
 const
@@ -358,6 +358,8 @@ begin
     Result := Trim(Copy(Result, 1, P - 1));
 end;
 
+procedure DesignWieStemMaker; forward;
+
 { leer oder ganze Zahl von BPM_MIN bis BPM_MAX }
 function BpmValid(const V: string): Boolean;
 var
@@ -377,6 +379,7 @@ begin
   StelleAufBildschirmDPI(Self);
   FEntries := TFPObjectList.Create(True);
   LoadLanguage;
+  DesignWieStemMaker;   // vor BuildUI: setzt die Farben aus djcontrols
   BuildUI;
   LoadSettings;
   { Dateien/Ordner von der Befehlszeile (z.B. Explorer "Öffnen mit") }
@@ -384,8 +387,10 @@ begin
     AddPath(ParamStr(I));
   UpdateStatusBar;
   ShowSelection;
-  { dunkle Titelleiste schon vor dem ersten Zeigen (kein weisses Aufblitzen) }
-  DunklerRahmen(Self);
+  { dunkle Titelleiste schon vor dem ersten Zeigen (kein weisses Aufblitzen);
+    im hellen Design bleibt die normale Windows-Titelleiste }
+  if not DJ_HELL then
+    DunklerRahmen(Self);
 end;
 
 destructor TMainForm.Destroy;
@@ -394,15 +399,15 @@ begin
   inherited Destroy;
 end;
 
-{ Sprache wie StemMaker: zuerst StemMaker.ini im Programmordner, dann die
-  in %APPDATA%, sonst die Sprache von Windows (gleich wie im StemPlayer) }
-procedure TMainForm.LoadLanguage;
+{ Wert aus StemMaker.ini: zuerst die im Programmordner, dann die in
+  %APPDATA%\StemMaker (gleich wie im StemPlayer). Leer = nicht gefunden. }
+function StemMakerIniWert(const Name: string): string;
 var
   Ini: TIniFile;
-  Code, IniName: string;
+  IniName: string;
   i: Integer;
 begin
-  Code := '';
+  Result := '';
   for i := 1 to 2 do
   begin
     if i = 1 then
@@ -414,18 +419,58 @@ begin
     try
       Ini := TIniFile.Create(IniName);
       try
-        Code := Trim(Ini.ReadString('Main', 'Language', ''));
+        Result := Trim(Ini.ReadString('Main', Name, ''));
       finally
         Ini.Free;
       end;
     except
-      Code := '';
+      Result := '';
     end;
-    if Code <> '' then Break;
+    if Result <> '' then Break;
   end;
+end;
+
+{ Sprache wie StemMaker, sonst die Sprache von Windows }
+procedure TMainForm.LoadLanguage;
+var
+  Code: string;
+begin
+  Code := StemMakerIniWert('Language');
   if Code = '' then
     Code := LangSystemDefault;
   LangLoad(Code);
+end;
+
+{ Hell oder dunkel wie StemMaker ("Design" in StemMaker.ini: auto, hell,
+  dunkel). Automatisch folgt Windows ("Standard-App-Modus"); fehlt die
+  Angabe (älteres Windows, Wine), ist es hell wie StemMaker. }
+procedure DesignWieStemMaker;
+var
+  W: string;
+  Reg: TRegistry;
+  Dunkel: Boolean;
+begin
+  W := LowerCase(StemMakerIniWert('Design'));
+  if W = 'hell' then
+    Dunkel := False
+  else if W = 'dunkel' then
+    Dunkel := True
+  else
+  begin
+    Dunkel := False;
+    Reg := TRegistry.Create(KEY_READ);
+    try
+      Reg.RootKey := HKEY_CURRENT_USER;
+      if Reg.OpenKeyReadOnly('Software\Microsoft\Windows\CurrentVersion\Themes\Personalize') and
+         Reg.ValueExists('AppsUseLightTheme') then
+        Dunkel := Reg.ReadInteger('AppsUseLightTheme') = 0;
+    except
+      Dunkel := False;
+    end;
+    Reg.Free;
+  end;
+  if not Dunkel then
+    DJHellesDesign;
 end;
 
 function TMainForm.FieldCaption(F: TMp4TagField): string;
@@ -1126,7 +1171,7 @@ begin
   R.Right := Sender.ClientWidth;
   with Sender.Canvas do
   begin
-    if Item.Selected then Brush.Color := DJ_BTNBORDER else Brush.Color := DJ_PANEL;
+    if Item.Selected then Brush.Color := DJ_SEL else Brush.Color := DJ_PANEL;
     FillRect(R);
     if Item.Selected then
     begin
@@ -1163,7 +1208,7 @@ begin
       else if I - 1 < Item.SubItems.Count then S := Item.SubItems[I - 1]
       else S := '';
       if I = FList.Columns.Count - 1 then Font.Color := StatusCol
-      else if Item.Selected then Font.Color := clWhite
+      else if Item.Selected then Font.Color := DJ_SELTEXT
       else Font.Color := DJ_TEXT;
       CR := Rect(X + Scale96ToForm(6), R.Top, X + FList.Columns[I].Width - Scale96ToForm(4), R.Bottom);
       { zu langen Text kürzen und mit "…" enden lassen }
@@ -1590,7 +1635,7 @@ begin
   if BpmValid(Trim(FieldText(tfBpm))) then
     FEdits[tfBpm].Color := DJ_BG
   else
-    FEdits[tfBpm].Color := $00303078;   // dunkles Rot: Wert wird nicht gespeichert
+    FEdits[tfBpm].Color := DJ_BADVALUE;   // rot: Wert wird nicht gespeichert
   { den dunklen Rahmen um das Feld gleich mitfärben }
   if FEdits[tfBpm].Parent is TDJPanel then
   begin

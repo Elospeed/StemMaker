@@ -306,7 +306,7 @@ Unter **Weitere Einstellungen → Programm → Design** wählst du, wie StemMake
 | Hell | immer hell |
 | Dunkel | immer dunkel: Fenster, Listen, Knöpfe und Titelleisten |
 
-Die Wahl gilt ab dem nächsten Start. Das dunkle Design braucht Windows 10 ab Version 1809 oder Windows 11; auf älteren Windows und unter Linux bleibt StemMaker hell. StemPlayer und StemTagger haben ihr eigenes dunkles Aussehen.
+Die Wahl gilt nach einem Neustart; StemMaker fragt gleich, ob er neu starten soll. Das dunkle Design braucht Windows 10 ab Version 1809 oder Windows 11; auf älteren Windows und unter Linux bleibt StemMaker hell. Der StemTagger folgt derselben Einstellung (beim nächsten Öffnen), der StemPlayer bleibt immer dunkel.
 
 ## Welches Trenn-Modell? {#modelle}
 

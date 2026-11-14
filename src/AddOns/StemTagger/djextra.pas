@@ -255,11 +255,11 @@ begin
       R := Rect(1, Y, Self.Width - 1 - SCROLL_W - 2, Y + FRowH);
       if I = FIndex then
       begin
-        Brush.Color := DJ_BTNBORDER;
+        Brush.Color := DJ_SEL;
         FillRect(R);
         Brush.Color := DJ_GREEN;      // grüner Streifen links wie im StemPlayer
         FillRect(Rect(1, Y, 4, Y + FRowH));
-        Font.Color := clWhite;
+        Font.Color := DJ_SELTEXT;
       end
       else
         Font.Color := DJ_TEXT;
@@ -703,7 +703,7 @@ begin
     else
       DrawSmoothDot(Canvas, CX, CY, R, Col, clNone, Back);
     Font := Self.Font;
-    if FHover then Font.Color := clWhite
+    if FHover then Font.Color := DJ_HOVERTEXT
     else if FDown then Font.Color := DJ_TEXT
     else Font.Color := DJ_DIM;
     Brush.Style := bsClear;

@@ -20,6 +20,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 #### StemPlayer 1.8.6, StemTagger 1.2.3
 - Titelleiste und Fensterrahmen sind jetzt dunkel wie das Fenster (Windows 10 ab 1809 und Windows 11), statt weiss.
+- StemTagger hell oder dunkel: Er folgt der StemMaker-Einstellung „Design“ (Automatisch wie Windows, Hell, Dunkel). Im hellen Design sind Flächen hell, die Schrift dunkel und die Statusfarben kräftiger, damit sie lesbar bleiben; die Titelleiste bleibt dann normal. Unter Linux ist „Automatisch“ hell wie StemMaker.
 
 ## 2.3 – 10. November 2026
 

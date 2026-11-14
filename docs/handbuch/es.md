@@ -306,7 +306,7 @@ En **Más ajustes → Programa → Tema** eliges el aspecto de StemMaker:
 | Claro | siempre claro |
 | Oscuro | siempre oscuro: ventanas, listas, botones y barras de título |
 
-La elección se aplica tras el próximo inicio. El tema oscuro necesita Windows 10 versión 1809 o posterior, o Windows 11; en Windows más antiguos y en Linux StemMaker sigue claro. StemPlayer y StemTagger tienen su propio aspecto oscuro.
+La elección se aplica tras reiniciar; StemMaker pregunta al momento si quieres reiniciarlo. El tema oscuro necesita Windows 10 versión 1809 o posterior, o Windows 11; en Windows más antiguos y en Linux StemMaker sigue claro. El StemTagger sigue el mismo ajuste (la próxima vez que se abre), el StemPlayer siempre es oscuro.
 
 ## ¿Qué modelo de separación? {#modelle}
 
