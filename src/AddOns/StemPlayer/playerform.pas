@@ -157,7 +157,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.5';
+  APP_VER   = '1.8.6';
   TEMP_PREFIX = 'ElospeedStemPlayer_';  // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';        // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';

@@ -12,6 +12,7 @@ clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 - Ayuda: el botón «?» y la tecla F1 abren la guía ilustrada en el lugar correcto
 ### Corregido
 - Ajustes: el resultado de la prueba previa ya no se corta y aparece en el idioma elegido
+- StemPlayer 1.8.6, StemTagger 1.2.3: barra de título oscura en lugar de blanca
 
 ## 2.3 – 10 de noviembre de 2026
 ### Nuevo

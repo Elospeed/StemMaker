@@ -24,7 +24,8 @@ program StemTagger;
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
   Interfaces, Forms, taggerform,
-  uWine;   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
+  uWine,   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
+  uDunklerRahmen;   // dunkle Titelleiste passend zum dunklen Fenster
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
@@ -34,6 +35,7 @@ begin
   Application.Title := 'Elospeed StemTagger';
   Application.Initialize;
   WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
+  DunkleRahmenEinrichten;  // Windows 10/11: Titelleiste dunkel statt weiss
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

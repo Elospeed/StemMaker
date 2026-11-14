@@ -12,6 +12,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 - Hilfe: Knopf „?“ und Taste F1 öffnen die bebilderte Anleitung an der passenden Stelle
 ### Behoben
 - Einstellungen: Vortest-Ergebnis nicht mehr abgeschnitten und in der gewählten Sprache
+- StemPlayer 1.8.6, StemTagger 1.2.3: dunkle Titelleiste statt weisser
 
 ## 2.3 – 10. November 2026
 ### Neu

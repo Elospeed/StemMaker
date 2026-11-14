@@ -63,7 +63,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemTagger';
-  APP_VER   = '1.2.2';
+  APP_VER   = '1.2.3';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type

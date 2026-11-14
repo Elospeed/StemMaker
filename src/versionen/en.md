@@ -12,6 +12,7 @@ keyword line per item. Only things users notice, no technical details.
 - Help: the "?" button and the F1 key open the illustrated guide at the right place
 ### Fixed
 - Settings: pre-test result no longer cut off and shown in the chosen language
+- StemPlayer 1.8.6, StemTagger 1.2.3: dark title bar instead of a white one
 
 ## 2.3 – 10 November 2026
 ### New
