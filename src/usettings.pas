@@ -65,8 +65,11 @@ function DefaultStemPrefs: TStemPrefs;
   BesideInput: im Hauptfenster ist "neben der Originaldatei speichern" an
   -> "Unterordner nachbauen" wird ausgegraut (geht nur mit Ausgabeordner).
   Die drei Pfade werden nur angezeigt. }
+{ KannNeustarten: keine Umwandlung läuft. Neustart: Benutzer will StemMaker
+  jetzt neu starten (Sprache oder Design geändert, Frage mit Ja beantwortet). }
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
-  const FFmpegExe, DemucsDir, ModelsDir: string): Boolean;
+  const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
+  out Neustart: Boolean): Boolean;
 
 { Zahnrad-Symbol auf einen Button legen (für den Button im Hauptfenster) }
 procedure LoadGearGlyph(Btn: TBitBtn);
@@ -118,7 +121,8 @@ type
     destructor Destroy; override;
     procedure SetPrefs(const P: TStemPrefs);
     function GetPrefs: TStemPrefs;
-    procedure SaveProgramPrefs;
+    { True = Benutzer will jetzt neu starten }
+    function SaveProgramPrefs(KannNeustarten: Boolean): Boolean;
   end;
 
 { '#RRGGBB' (wie Traktor) -> TColor ($00BBGGRR). Ungültig -> clBlack }
@@ -547,34 +551,58 @@ begin
   Result.TurboDevice := TTurboDevice(cbDevice.ItemIndex);
 end;
 
-{ Sprache und Update-Prüfung haben eigene Speicher-Funktionen }
-procedure TfrmSettings.SaveProgramPrefs;
+{ Sprache und Update-Prüfung haben eigene Speicher-Funktionen.
+  Sprache und Design gelten erst nach einem Neustart: Läuft keine Umwandlung,
+  fragt StemMaker, ob er gleich neu starten soll (Result = Ja). }
+function TfrmSettings.SaveProgramPrefs(KannNeustarten: Boolean): Boolean;
 var
-  Neustart: Boolean;
+  DesignNeu, SpracheNeu: Boolean;
+  Frage: string;
 begin
-  Neustart := False;
+  Result := False;
+  DesignNeu := False;
+  SpracheNeu := False;
   UpdateSetAutoCheck(StemIniFileName, chkAutoUpdate.Checked);
   if (cbDesign.ItemIndex >= 0) and
      (TDesignWahl(cbDesign.ItemIndex) <> DesignLesen(StemIniFileName)) then
   begin
     DesignSpeichern(StemIniFileName, TDesignWahl(cbDesign.ItemIndex));
-    Neustart := True;
+    DesignNeu := True;
   end;
   SaveTurboSettings(TStemEngine(cbEngine.ItemIndex), TTurboDevice(cbDevice.ItemIndex));
   if (cbLang.ItemIndex >= 0) and (cbLang.ItemIndex < FLangCodes.Count) and
      (FLangCodes[cbLang.ItemIndex] <> LangCode) then
   begin
     LangSaveChoice(StemIniFileName, FLangCodes[cbLang.ItemIndex]);
-    if Neustart then
+    SpracheNeu := True;
+  end;
+  if not (DesignNeu or SpracheNeu) then Exit;
+
+  if not KannNeustarten then
+  begin
+    { Umwandlung läuft: nicht neu starten, nur Bescheid geben }
+    if SpracheNeu and DesignNeu then
       MessageDlg(_('Sprache und Design werden beim nächsten Start übernommen.'),
         mtInformation, [mbOK], 0)
-    else
+    else if SpracheNeu then
       MessageDlg(_('Die Sprache wird beim nächsten Start übernommen.'),
+        mtInformation, [mbOK], 0)
+    else
+      MessageDlg(_('Das Design wird beim nächsten Start übernommen.'),
         mtInformation, [mbOK], 0);
-  end
-  else if Neustart then
-    MessageDlg(_('Das Design wird beim nächsten Start übernommen.'),
-      mtInformation, [mbOK], 0);
+    Exit;
+  end;
+
+  if SpracheNeu and DesignNeu then
+    Frage := _('Sprache und Design werden nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?')
+  else if SpracheNeu then
+    Frage := _('Die Sprache wird nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?')
+  else
+    Frage := _('Das Design wird nach einem Neustart übernommen. ' +
+      'StemMaker jetzt neu starten?');
+  Result := MessageDlg(Frage, mtConfirmation, [mbYes, mbNo], 0) = mrYes;
 end;
 
 { "Auto" an: Wert ausrechnen und Eingabefeld sperren }
@@ -670,10 +698,12 @@ begin
 end;
 
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
-  const FFmpegExe, DemucsDir, ModelsDir: string): Boolean;
+  const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
+  out Neustart: Boolean): Boolean;
 var
   F: TfrmSettings;
 begin
+  Neustart := False;
   F := TfrmSettings.CreateSettings(BesideInput, FFmpegExe, DemucsDir, ModelsDir);
   try
     F.SetPrefs(P);
@@ -681,7 +711,7 @@ begin
     if Result then
     begin
       P := F.GetPrefs;
-      F.SaveProgramPrefs;
+      Neustart := F.SaveProgramPrefs(KannNeustarten);
     end;
   finally
     F.Free;

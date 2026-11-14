@@ -291,7 +291,7 @@ Everything you set up once is behind the gear button **More settings…**.
 2. **Overwrite, subfolders, keep awake**: redo existing stem files, recreate the folder structure in the output folder, prevent sleep during the conversion.
 3. **Engine**: Turbo or Classic, the device (Automatic or CPU only) and **Pre-test ...**; below it the result of the last pre-test (chapter [§](#turbo)).
 4. **Stems**: name and colour of the four stems as Traktor shows them. **Traktor colours** uses the colours from Traktor's own stem files. Traktor always shows the icons (drum, speaker, wave, microphone) by slot 1 to 4.
-5. **Program**: language and theme (light or dark, both apply from the next start), update check at startup, icon next to the clock when minimized, and a notification when the conversion is done.
+5. **Program**: language and theme (light or dark, both apply after a restart, which StemMaker offers right away), update check at startup, icon next to the clock when minimized, and a notification when the conversion is done.
 6. **Tools**: where ffmpeg, the separation programs and the models are (display only; change them in `StemMaker.ini`, see appendix).
 7. **Restore defaults** resets all values in this window; **Open INI folder** shows where `StemMaker.ini` is; **?** opens this section.
 :::

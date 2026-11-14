@@ -51,6 +51,10 @@ procedure StartUpdateCheck(const CurrentVersion: string; OnFound: TUpdateFoundEv
 { Hauptfenster wird geschlossen: späte Ergebnisse nicht mehr melden }
 procedure CancelUpdateCheck;
 
+{ neuen StemMaker mit --nach-update starten; er wartet, bis dieser zu ist
+  (nach einem Update und nach Änderung von Sprache/Design) }
+procedure RestartStemMaker;
+
 type
   TManualCheckResult = (mcNewer, mcCurrent, mcError);
 

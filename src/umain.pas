@@ -1047,15 +1047,26 @@ end;
   Bei OK sofort in StemMaker.ini speichern (falls StemMaker später
   abstürzt, ist die Änderung trotzdem da). }
 procedure TfrmMain.btnSettingsClick(Sender: TObject);
+var
+  Neustart: Boolean;
 begin
   if ShowSettingsDialog(FPrefs, chkBeside.Checked, FToolFFmpeg, FToolDemucs,
-    FToolModels) then
+    FToolModels, FWorker = nil, Neustart) then
   begin
     SaveSettings;
     UpdateToolStatus;              // Engine kann sich geändert haben
     UpdateEstimate;                // andere Teile-Zahl oder Engine = andere Dauer
     pbAccent.Invalidate;           // Stem-Farben können sich geändert haben
     lvFiles.Invalidate;
+    { Sprache/Design geändert und "Jetzt neu starten" gewählt: neuen StemMaker
+      starten (wartet mit --nach-update, bis dieser zu ist), dann schliessen.
+      Gespeichert ist schon alles; die Liste speichert FormDestroy. }
+    if Neustart and (FWorker = nil) then
+    begin
+      LogLine('Neustart nach Änderung von Sprache/Design');
+      RestartStemMaker;
+      Close;
+    end;
   end;
 end;
 

@@ -291,7 +291,7 @@ Todo lo que se configura una sola vez está detrás del botón del engranaje **M
 2. **Sobrescribir, subcarpetas, mantener despierto**: rehacer archivos stem existentes, recrear la estructura de carpetas en la carpeta de salida, evitar la suspensión durante la conversión.
 3. **Motor**: Turbo o Clásico, el dispositivo (Automático o Solo CPU) y **Prueba previa ...**; debajo, el resultado de la última prueba previa (capítulo [§](#turbo)).
 4. **Stems**: nombre y color de los cuatro stems tal y como los muestra Traktor. **Colores de Traktor** usa los colores de los archivos stem propios de Traktor. Traktor muestra siempre los iconos (tambor, altavoz, onda, micrófono) según la posición 1 a 4.
-5. **Programa**: idioma y tema (claro u oscuro, ambos se aplican tras el próximo inicio), búsqueda de actualizaciones al inicio, icono junto al reloj al minimizar y notificación al terminar la conversión.
+5. **Programa**: idioma y tema (claro u oscuro, ambos se aplican tras reiniciar, StemMaker lo ofrece al momento), búsqueda de actualizaciones al inicio, icono junto al reloj al minimizar y notificación al terminar la conversión.
 6. **Herramientas**: dónde están ffmpeg, los programas de separación y los modelos (solo se muestran; se cambian en `StemMaker.ini`, ver apéndice).
 7. **Restablecer valores por defecto** reinicia todos los valores de esta ventana; **Abrir carpeta INI** muestra dónde está `StemMaker.ini`; **?** abre esta sección.
 :::
