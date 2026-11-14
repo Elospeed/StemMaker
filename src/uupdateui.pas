@@ -1,11 +1,15 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uUpdateUI  (Datei uupdateui.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : uupdateui.pas  (Unit uUpdateUI)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: RestartStemMaker auch für die Einstellungen
+                     (Neustart nach Sprach- oder Designwechsel), F1
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Update-Prüfung beim Start und das Fenster dazu.
 
@@ -28,6 +32,15 @@
        sondern nur die Release-Seite im Browser geöffnet.
 
   Die Fenster werden im Code aufgebaut (keine .lfm-Datei).
+
+  BENUTZUNG
+
+    StartUpdateCheck     beim Start, prüft im Hintergrund.
+    CancelUpdateCheck    beim Beenden, bricht eine laufende Prüfung ab.
+    CheckUpdateNow       "Nach Updates suchen" im Info-Fenster.
+    ShowUpdateDialog     zeigt ein gefundenes Update an.
+    RestartStemMaker     startet StemMaker neu (wartet auf das Ende dieser
+                         Instanz); danach das Hauptfenster schliessen.
   ============================================================================ }
 unit uUpdateUI;
 
@@ -74,7 +87,7 @@ implementation
 type
   TUpdateCheckThread = class(TThread)
   private
-    FStart: QWord;                  // Startzeit (GetTickCount64)
+    FStart: QWord;                                         // Startzeit (GetTickCount64)
     FOK: Boolean;
     FInfo: TUpdateInfo;
     FErr: string;
@@ -174,7 +187,7 @@ type
 procedure TManualCheckThread.Execute;
 begin
   OK := FetchUpdateInfo(UPDATE_TIMEOUT_MS, Info, Err);
-  FreeUpdateInfo(Info);              // Modell-Prüfsummen braucht hier niemand
+  FreeUpdateInfo(Info);                                    // Modell-Prüfsummen braucht hier niemand
 end;
 
 function CheckUpdateNow(const CurrentVersion: string; out Info: TUpdateInfo;
@@ -243,7 +256,7 @@ type
 
   TUpdateDlThread = class(TThread)
   private
-    FForm: TfrmUpdateDl;            // nil = Fenster hat den Thread losgelassen
+    FForm: TfrmUpdateDl;                                   // nil = Fenster hat den Thread losgelassen
     FURL, FDest: string;
     FDone, FTotal: Int64;
     FOK: Boolean;
@@ -260,14 +273,14 @@ type
   private
     pb: TProgressBar;
     lbl: TLabel;
-    FThread: TUpdateDlThread;       // läuft gerade (nil = fertig oder losgelassen)
+    FThread: TUpdateDlThread;                              // läuft gerade (nil = fertig oder losgelassen)
     procedure btnCancelClick(Sender: TObject);
     procedure LetThreadGo;
     procedure ThreadDone(AOK: Boolean; const AErr: string);
     procedure FormCloseQueryDl(Sender: TObject; var CanClose: Boolean);
   public
     OK: Boolean;
-    Cancelled: Boolean;             // vom Benutzer abgebrochen (kein Fehler)
+    Cancelled: Boolean;                                    // vom Benutzer abgebrochen (kein Fehler)
     ErrMsg: string;
     constructor CreateDl(const URL, Dest, Version: string);
     procedure ShowProgress(Done, Total: Int64);
@@ -302,7 +315,7 @@ begin
   if FForm <> nil then
     FForm.ThreadDone(FOK, FErr)
   else if FOK then
-    SysUtils.DeleteFile(FDest);   // kam nach dem Abbruch doch noch an - wegwerfen
+    SysUtils.DeleteFile(FDest);                            // kam nach dem Abbruch doch noch an - wegwerfen
 end;
 
 { Fortschrittsfenster für den Update-Download (URL nach Dest) bauen }
@@ -311,7 +324,7 @@ var
   btnCancel: TButton;
 begin
   inherited CreateNew(nil);
-  HelpKeyword := 'updates';   // F1 öffnet die Hilfe hier (uHilfe)
+  HelpKeyword := 'updates';                                // F1 öffnet die Hilfe hier (uHilfe)
   Caption := APP_NAME + ' - ' + Format(_('Update auf %s'), [Version]);
   BorderStyle := bsDialog;
   Position := poScreenCenter;
@@ -479,7 +492,7 @@ begin
     bSkip.Caption := _('Diese Version überspringen');
     bSkip.ModalResult := MR_SKIP;
 
-    SkaliereDialog(F);             // Masse oben sind 96-dpi-Pixel
+    SkaliereDialog(F);                                     // Masse oben sind 96-dpi-Pixel
     Result := F.ShowModal;
     AutoCheck := chk.Checked;
   finally
@@ -487,10 +500,15 @@ begin
   end;
 end;
 
-{ neuen StemMaker starten (wartet selbst, bis dieser hier zu ist) }
+{ RestartStemMaker
+  Startet StemMaker neu. Der Aufrufer schliesst danach das Hauptfenster.
+  Gebraucht nach einem Update und nach Änderung von Sprache oder Design.
+  Ablauf   : 1. dieselbe Exe mit --nach-update starten, ohne zu warten
+             2. die neue Instanz wartet selbst, bis diese hier beendet ist
+                (sonst meldete die Einzelinstanz-Sperre "läuft schon") }
 procedure RestartStemMaker;
 var
-  P: TProcessUTF8;
+  P: TProcessUTF8;                                         // der neue StemMaker-Prozess
 begin
   P := TProcessUTF8.Create(nil);
   try

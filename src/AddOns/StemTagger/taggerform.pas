@@ -1,8 +1,16 @@
 { ============================================================================
-  taggerform.pas  -  Hauptfenster des Elospeed StemTagger
-
+  Unit    : taggerform  (Datei taggerform.pas)
+  Programm: Elospeed StemTagger 1.2.3
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    1.2.3 (mit StemMaker 2.4), 14.11.2026: hell oder dunkel wie StemMaker,
+                     dunkle Titelleiste, Knopf "?" und F1
+    frühere Versionen: siehe Liste "Versionen" weiter unten
+  ----------------------------------------------------------------------------
+  ZWECK: Hauptfenster des Elospeed StemTagger
 
   Der StemTagger setzt Titel, Interpret, Cover und weitere Tags in
   Traktor-Stem-Dateien (.stem.mp4) und MP3-Dateien. Normale Tag-Editoren schreiben die
@@ -48,6 +56,15 @@
                        Knopf und im Dock das richtige Symbol (uwine.pas)
     1.2.2 (10.11.2026)  Japanisch: Spaltenköpfe in normaler Schrift (fett und klein
                        war das Kanji kaum lesbar)
+    1.2.3 (14.11.2026)  Mit StemMaker 2.4: hell oder dunkel wie StemMaker,
+                       dunkle Titelleiste, Knopf "?" und F1 öffnen das
+                       Kapitel StemTagger der Anleitung
+
+  BENUTZUNG
+
+    Das Fenster legt StemTagger.lpr an. Dateien kommen über die
+    Befehlszeile (StemMaker übergibt die markierten Dateien), über
+    "Dateien..."/"Ordner..." oder per Drag & Drop.
   ============================================================================ }
 unit taggerform;
 
@@ -70,23 +87,23 @@ type
   { Eine Datei in der Liste }
   TTagEntry = class
     FileName: string;
-    Orig    : TMp4Tags;        // so steht es in der Datei
-    Cur     : TMp4Tags;        // so soll es werden
-    Dirty   : TMp4TagFields;   // geänderte Felder (noch nicht gespeichert)
-    IsStem  : Boolean;         // gültige Stem-Datei (5 Spuren + 'stem'-Box)
-    IsMp3   : Boolean;         // MP3-Datei (Tags im ID3v2-Block)
-    Mp3     : TMp3Info;        // ID3-Version, Traktor-Daten (nur bei MP3)
-    CanEdit : Boolean;         // darf bearbeitet werden: Stem-Datei oder schreibbare MP3
+    Orig    : TMp4Tags;                                    // so steht es in der Datei
+    Cur     : TMp4Tags;                                    // so soll es werden
+    Dirty   : TMp4TagFields;                               // geänderte Felder (noch nicht gespeichert)
+    IsStem  : Boolean;                                     // gültige Stem-Datei (5 Spuren + 'stem'-Box)
+    IsMp3   : Boolean;                                     // MP3-Datei (Tags im ID3v2-Block)
+    Mp3     : TMp3Info;                                    // ID3-Version, Traktor-Daten (nur bei MP3)
+    CanEdit : Boolean;                                     // darf bearbeitet werden: Stem-Datei oder schreibbare MP3
     Tracks  : Integer;
-    Status  : string;          // letzte Meldung (gespeichert, Fehler ...)
+    Status  : string;                                      // letzte Meldung (gespeichert, Fehler ...)
   end;
 
   TMainForm = class(TForm)
   private
-    FEntries   : TFPObjectList;   // gehört der Liste, gibt Einträge frei
+    FEntries   : TFPObjectList;                            // gehört der Liste, gibt Einträge frei
     FList      : TListView;
-    FEdits     : array[TMp4TagField] of TWinControl; // TEdit oder TDJCombo, tfCover = nil
-    FMixed     : array[TMp4TagField] of Boolean; // Feld zeigt "verschieden"
+    FEdits     : array[TMp4TagField] of TWinControl;       // TEdit oder TDJCombo, tfCover = nil
+    FMixed     : array[TMp4TagField] of Boolean;           // Feld zeigt "verschieden"
     FCoverImg  : TImage;
     FCoverInfo : TLabel;
     FCoverMixed: Boolean;
@@ -94,26 +111,26 @@ type
     FBtnAdd, FBtnFolder, FBtnRemove, FBtnClear: TDJButton;
     FBtnCoverLoad, FBtnCoverPaste, FBtnCoverDel, FBtnCoverSave: TDJButton;
     FBtnFromName, FBtnSave, FBtnRevert, FBtnHilfe: TDJButton;
-    FChkBackup, FChkShrink: TDJLedSwitch; // Schalter mit LED: Down = eingeschaltet
+    FChkBackup, FChkShrink: TDJLedSwitch;                  // Schalter mit LED: Down = eingeschaltet
     { eigene Kopfzeile der Liste (die Windows-Kopfzeile wäre hell) }
     FHead      : TPaintBox;
-    FColW      : array[0..7] of Integer;  // Spaltenbreiten in Pixeln, die letzte füllt den Rest
-    FDragCol   : Integer;          // Spalte, deren rechter Rand gerade gezogen wird, -1 = keine
-    FDragX0, FDragW0: Integer;     // Maus und Breite beim Beginn des Ziehens
-    FDragged   : Boolean;          // wirklich gezogen (dann kein Sortieren)
-    FLastAvail : Integer;          // Breite der Liste beim letzten Anpassen, 0 = noch nie
-    FStatus    : TLabel;            // Statuszeile unten links
-    FKofi      : TPaintBox;       // Ko-fi-Knopf unten rechts (wie in StemMaker)
+    FColW      : array[0..7] of Integer;                   // Spaltenbreiten in Pixeln, die letzte füllt den Rest
+    FDragCol   : Integer;                                  // Spalte, deren rechter Rand gerade gezogen wird, -1 = keine
+    FDragX0, FDragW0: Integer;                             // Maus und Breite beim Beginn des Ziehens
+    FDragged   : Boolean;                                  // wirklich gezogen (dann kein Sortieren)
+    FLastAvail : Integer;                                  // Breite der Liste beim letzten Anpassen, 0 = noch nie
+    FStatus    : TLabel;                                   // Statuszeile unten links
+    FKofi      : TPaintBox;                                // Ko-fi-Knopf unten rechts (wie in StemMaker)
     FKofiHover : Boolean;
-    FLoading   : Boolean;          // Felder werden gerade befüllt -> OnChange ignorieren
-    FFields    : TDJPanel;         // Bereich mit den Eingabefeldern (wächst mit dem Fenster)
-    FLabels    : array[TMp4TagField] of TLabel;   // Beschriftung je Feld, nil = nicht angezeigt
-    FFieldCol  : array[TMp4TagField] of Integer;  // Feld steht in Spalte 0 (links) oder 1 (rechts)
-    FSelPending: Boolean;          // Anzeige der Auswahl ist schon bestellt
+    FLoading   : Boolean;                                  // Felder werden gerade befüllt -> OnChange ignorieren
+    FFields    : TDJPanel;                                 // Bereich mit den Eingabefeldern (wächst mit dem Fenster)
+    FLabels    : array[TMp4TagField] of TLabel;            // Beschriftung je Feld, nil = nicht angezeigt
+    FFieldCol  : array[TMp4TagField] of Integer;           // Feld steht in Spalte 0 (links) oder 1 (rechts)
+    FSelPending: Boolean;                                  // Anzeige der Auswahl ist schon bestellt
     FLastDir   : string;
-    FFolderHint: Boolean;          // Hinweis nach dem Laden eines Ordners zeigen
+    FFolderHint: Boolean;                                  // Hinweis nach dem Laden eines Ordners zeigen
     FFolderHintPending: Boolean;
-    FSortCol   : Integer;          // zuletzt sortierte Spalte, -1 = keine
+    FSortCol   : Integer;                                  // zuletzt sortierte Spalte, -1 = keine
     FSortDesc  : Boolean;
     procedure ListColumnClick(Sender: TObject; Column: TListColumn);
     function  FieldText(F: TMp4TagField): string;
@@ -382,9 +399,9 @@ begin
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FEntries := TFPObjectList.Create(True);
-  HelpKeyword := 'stemtagger';   // F1 öffnet die Hilfe hier (uHilfe)
+  HelpKeyword := 'stemtagger';                             // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
-  DesignWieStemMaker;   // vor BuildUI: setzt die Farben aus djcontrols
+  DesignWieStemMaker;                                      // vor BuildUI: setzt die Farben aus djcontrols
   BuildUI;
   LoadSettings;
   { Dateien/Ordner von der Befehlszeile (z.B. Explorer "Öffnen mit") }
@@ -405,13 +422,18 @@ begin
   inherited Destroy;
 end;
 
-{ Wert aus StemMaker.ini: zuerst die im Programmordner, dann die in
-  %APPDATA%\StemMaker (gleich wie im StemPlayer). Leer = nicht gefunden. }
+{ StemMakerIniWert
+  Liest einen Wert aus [Main] der StemMaker.ini (gleich wie im StemPlayer).
+  Parameter: Name = Schlüssel, z. B. 'Language' oder 'Design'
+  Rückgabe : der Wert ohne Leerzeichen am Rand; leer = nicht gefunden
+  Ablauf   : 1. StemMaker.ini im Programmordner (portable Installation)
+             2. sonst %APPDATA%\StemMaker\StemMaker.ini
+             3. der erste nicht leere Wert gewinnt }
 function StemMakerIniWert(const Name: string): string;
 var
-  Ini: TIniFile;
-  IniName: string;
-  i: Integer;
+  Ini: TIniFile;                                           // gerade gelesene INI
+  IniName: string;                                         // voller Pfad der INI
+  i: Integer;                                              // 1 = Programmordner, 2 = APPDATA
 begin
   Result := '';
   for i := 1 to 2 do
@@ -436,10 +458,14 @@ begin
   end;
 end;
 
-{ Sprache wie StemMaker, sonst die Sprache von Windows }
+{ TMainForm.LoadLanguage
+  Sprache wie StemMaker, sonst die Sprache von Windows.
+  Ablauf   : 1. 'Language' aus der StemMaker.ini
+             2. fehlt sie: Windows-Sprache, wenn es sie in lang\ gibt
+             3. Sprachdatei laden }
 procedure TMainForm.LoadLanguage;
 var
-  Code: string;
+  Code: string;                                            // Sprachcode, z. B. 'de'
 begin
   Code := StemMakerIniWert('Language');
   if Code = '' then
@@ -447,14 +473,20 @@ begin
   LangLoad(Code);
 end;
 
-{ Hell oder dunkel wie StemMaker ("Design" in StemMaker.ini: auto, hell,
-  dunkel). Automatisch folgt Windows ("Standard-App-Modus"); fehlt die
-  Angabe (älteres Windows, Wine), ist es hell wie StemMaker. }
+{ DesignWieStemMaker
+  Hell oder dunkel wie StemMaker. Läuft im Konstruktor vor BuildUI, weil
+  die Steuerelemente die Farben aus djcontrols beim Aufbau übernehmen.
+  Ablauf   : 1. 'Design' aus der StemMaker.ini: auto, hell oder dunkel
+             2. Automatisch (oder leer): Windows-Einstellung
+                "Standard-App-Modus" aus der Registry
+                (Personalize\AppsUseLightTheme = 0 heisst dunkel);
+                fehlt sie (älteres Windows, Wine), ist es hell wie StemMaker
+             3. hell: DJHellesDesign, sonst bleibt die dunkle Palette }
 procedure DesignWieStemMaker;
 var
-  W: string;
-  Reg: TRegistry;
-  Dunkel: Boolean;
+  W: string;                                               // gelesene Wahl
+  Reg: TRegistry;                                          // Zugriff auf HKCU
+  Dunkel: Boolean;                                         // Ergebnis: dunkel?
 begin
   W := LowerCase(StemMakerIniWert('Design'));
   if W = 'hell' then
@@ -527,7 +559,7 @@ var
   Half: Integer;
   Cb: TDJCombo;
   Box: TDJPanel;
-  RowImg: TImageList;   // leere Bildliste, nur für die Zeilenhöhe   // dunkler Rahmen um ein Eingabefeld
+  RowImg: TImageList;                                      // leere Bildliste, nur für die Zeilenhöhe   // dunkler Rahmen um ein Eingabefeld
   PnlTop, Foot, SaveBox: TPanel;
   PnlEdit, Fields, CoverPanel, Frame, PnlHead, PnlList: TDJPanel;
   Col: TListColumn;
@@ -612,9 +644,9 @@ var
 begin
   Caption := APP_TITLE + ' ' + APP_VER;
   Position := poScreenCenter;
-  Width := Scale96ToForm(920);         // bei 150 % passt die Fusszeile sonst knapp nicht
+  Width := Scale96ToForm(920);                             // bei 150 % passt die Fusszeile sonst knapp nicht
   Height := Scale96ToForm(540);
-  Constraints.MinWidth := Scale96ToForm(880);  // schmaler ragen Jahr/Label/Kommentar und der Namens-Knopf rechts hinaus (Live-Test 30.10.)
+  Constraints.MinWidth := Scale96ToForm(880);              // schmaler ragen Jahr/Label/Kommentar und der Namens-Knopf rechts hinaus (Live-Test 30.10.)
   Constraints.MinHeight := Scale96ToForm(420);
   Color := DJ_BG;
   Font.Color := DJ_TEXT;
@@ -759,7 +791,7 @@ begin
       AddField(Shown[I], 296, 7 + (I - Half) * ROW_H);
   if FEdits[tfGenre] <> nil then
   begin
-    TDJCombo(FEdits[tfGenre]).AutoComplete := True;   // "Tech H" ergänzt zu "Tech House"
+    TDJCombo(FEdits[tfGenre]).AutoComplete := True;        // "Tech H" ergänzt zu "Tech House"
     for I := Low(GENRES) to High(GENRES) do
       TDJCombo(FEdits[tfGenre]).Items.Add(GENRES[I]);
   end;
@@ -958,8 +990,8 @@ end;
 procedure TMainForm.FieldsResize(Sender: TObject);
 var
   F: TMp4TagField;
-  ColW, EdW, X: Integer;   // Breite einer Spalte, Breite eines Felds, linker Rand
-  C: TControl;             // Feld (Auswahlliste) bzw. dunkler Rahmen um das Eingabefeld
+  ColW, EdW, X: Integer;                                   // Breite einer Spalte, Breite eines Felds, linker Rand
+  C: TControl;                                             // Feld (Auswahlliste) bzw. dunkler Rahmen um das Eingabefeld
 begin
   if FFields = nil then Exit;
   ColW := Max(Scale96ToForm(292), (FFields.ClientWidth - Scale96ToForm(8)) div 2);
@@ -1096,7 +1128,7 @@ begin
   if (ssDouble in Shift) and (FDragCol >= 0) then
   begin
     AutoFitColumn(FDragCol);
-    FDragged := True;   // beim Loslassen nicht sortieren
+    FDragged := True;                                      // beim Loslassen nicht sortieren
     Exit;
   end;
   if FDragCol >= 0 then
@@ -1200,7 +1232,7 @@ begin
         StatusCol := DJ_TEXT
       else if (Length(E.Cur.Cover) = 0) or
               ((E.Cur.Text[tfTitle] = '') and (E.Cur.Text[tfArtist] = '')) then
-        StatusCol := DJ_KOFI   // orange
+        StatusCol := DJ_KOFI                               // orange
       else
         StatusCol := DJ_GREEN;
     end;
@@ -1256,7 +1288,7 @@ end;
 procedure TMainForm.LoadSettings;
 var
   Ini: TIniFile;
-  Parts: TStringList;   // Spaltenbreiten aus der INI
+  Parts: TStringList;                                      // Spaltenbreiten aus der INI
   I, W: Integer;
 begin
   try
@@ -1293,7 +1325,7 @@ end;
 procedure TMainForm.SaveSettings;
 var
   Ini: TIniFile;
-  S: string;     // Spaltenbreiten bei 96 dpi, mit Komma getrennt
+  S: string;                                               // Spaltenbreiten bei 96 dpi, mit Komma getrennt
   I: Integer;
 begin
   try
@@ -1517,7 +1549,7 @@ begin
   else
     FStatus.Caption := Format(_('%d Dateien, %d geändert'), [FEntries.Count, N]);
   FBtnSave.Enabled := N > 0;
-  FBtnSave.Down := N > 0;   // leuchtet grün, solange etwas zu speichern ist
+  FBtnSave.Down := N > 0;                                  // leuchtet grün, solange etwas zu speichern ist
   FBtnRevert.Enabled := N > 0;
 end;
 
@@ -1645,7 +1677,7 @@ begin
   if BpmValid(Trim(FieldText(tfBpm))) then
     FEdits[tfBpm].Color := DJ_BG
   else
-    FEdits[tfBpm].Color := DJ_BADVALUE;   // rot: Wert wird nicht gespeichert
+    FEdits[tfBpm].Color := DJ_BADVALUE;                    // rot: Wert wird nicht gespeichert
   { den dunklen Rahmen um das Feld gleich mitfärben }
   if FEdits[tfBpm].Parent is TDJPanel then
   begin
@@ -1673,7 +1705,7 @@ begin
     V := CleanKey(Cb.Text);
     if V <> Cb.Text then
     begin
-      Cb.Text := V;      // löst FieldChange aus
+      Cb.Text := V;                                        // löst FieldChange aus
     end;
   end;
   FieldChange(Cb);
@@ -1821,7 +1853,7 @@ var
   E: TTagEntry;
   Err, Bak: string;
   Fresh: TMp4Tags;
-  Written, ReadOk: Boolean;   // Schreiben bzw. Nachlesen hat geklappt
+  Written, ReadOk: Boolean;                                // Schreiben bzw. Nachlesen hat geklappt
 begin
   Result := False;
   Ok := 0;
@@ -2255,7 +2287,8 @@ begin
   end;
 end;
 
-{ "?": Kapitel StemTagger in der Anleitung öffnen }
+{ TMainForm.BtnHilfeClick
+  Knopf "?": Kapitel StemTagger in der StemMaker-Anleitung öffnen (wie F1) }
 procedure TMainForm.BtnHilfeClick(Sender: TObject);
 begin
   HilfeZeigen('stemtagger');

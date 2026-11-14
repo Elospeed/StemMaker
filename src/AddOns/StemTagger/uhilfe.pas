@@ -1,15 +1,20 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uHilfe  (Datei uhilfe.pas), Kopie für den StemTagger
+            (gleich wie src\uhilfe.pas; Änderungen bitte in allen)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : uhilfe.pas  (Unit uHilfe), Kopie für den StemTagger
-            (gleich wie src\uhilfe.pas; Änderungen bitte in beiden)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: neu (Knopf "?" und F1 in StemMaker und allen AddOns,
+                     unter Wine immer die Online-Hilfe)
+  ----------------------------------------------------------------------------
+  ZWECK
 
-  Die eingebaute Hilfe (ab 2.4): Knopf "?" und Taste F1 öffnen die
-  Anleitung im Browser, direkt an der passenden Stelle.
+  Die eingebaute Hilfe: Knopf "?" und Taste F1 öffnen die Anleitung im
+  Browser, direkt an der passenden Stelle.
+
+  GRUNDIDEE
 
     - Die Anleitung liegt als eine HTML-Datei pro Sprache neben der Exe:
       hilfe\de.html, hilfe\en.html, hilfe\es.html (Bilder eingebettet,
@@ -21,13 +26,21 @@
     - Unter Wine (Linux) immer die Projektseite, siehe HilfeZeigen.
 
   Welche Stelle? Jedes Fenster trägt den Anker in HelpKeyword (z. B.
-  'vortest'). F1 nimmt das HelpKeyword des aktiven Fensters, das
-  erledigt HilfeTasteEinrichten einmal für das ganze Programm.
+  'vortest', 'stemtagger'). Die Anker sind die Marken #anker hinter den
+  Kapitelüberschriften in docs/handbuch/*.md.
 
   Warum der Umweg über eine kleine Weiterleitungs-Datei? Windows lässt
   beim Öffnen einer lokalen Datei den Teil hinter "#" weg, der Browser
   käme immer oben an. Die Weiterleitung im Temp-Ordner springt mit
   Anker in die richtige Datei.
+
+  BENUTZUNG
+
+    HilfeTasteEinrichten       einmal beim Start (im .lpr); danach öffnet
+                               F1 in jedem Fenster die Hilfe bei dessen
+                               HelpKeyword.
+    HilfeZeigen('turbo')       z. B. im OnClick eines "?"-Knopfs;
+                               HilfeZeigen('') öffnet den Anfang.
   ============================================================================ }
 unit uHilfe;
 
@@ -35,11 +48,7 @@ unit uHilfe;
 
 interface
 
-{ Anleitung öffnen, Anker = Abschnitt ohne '#', leer = Anfang }
 procedure HilfeZeigen(const Anker: string = '');
-
-{ F1 in allen Fenstern: öffnet die Hilfe beim HelpKeyword des aktiven
-  Fensters. Einmal beim Start aufrufen. }
 procedure HilfeTasteEinrichten;
 
 implementation
@@ -47,19 +56,36 @@ implementation
 uses
   Classes, SysUtils, Forms, Controls, LCLType, LCLIntf, uLang, uWine;
 
+{ ----------------------------------------------------------------------------
+  Konstanten, Typen, Variablen
+  ---------------------------------------------------------------------------- }
+
 const
+  { Online-Hilfe auf der Projektseite; dahinter kommt <sprache>.html }
   HILFE_ONLINE = 'https://elospeed.github.io/StemMaker/hilfe/';
 
 type
+  { Nimmt die Tastendrücke aller Fenster entgegen. Eine Klasse ist nötig,
+    weil Application nur Methoden als Handler annimmt. }
   THilfeTaste = class
     procedure KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   end;
 
 var
-  Taste: THilfeTaste = nil;
+  Taste: THilfeTaste = nil;                                // einzige Instanz, nil = F1 nicht eingerichtet
 
-{ Pfad als file:-Adresse, Leerzeichen und Umlaute bleiben lesbar
-  (die Browser kommen damit zurecht), nur \ wird zu / }
+{ ----------------------------------------------------------------------------
+  Hilfsfunktionen
+  ---------------------------------------------------------------------------- }
+
+{ DateiAdresse
+  Macht aus einem Windows-Pfad eine file:-Adresse für den Browser.
+  Parameter: Pfad = voller Pfad, z. B. C:\Programme\StemMaker\hilfe\de.html
+  Rückgabe : z. B. file:///C:/Programme/StemMaker/hilfe/de.html
+  Ablauf   : 1. \ wird zu /
+             2. Leerzeichen wird %20, # wird %23 (sonst hielte der Browser
+                den Rest für einen Anker); Umlaute bleiben, die Browser
+                kommen damit zurecht }
 function DateiAdresse(const Pfad: string): string;
 begin
   Result := 'file:///' + StringReplace(Pfad, '\', '/', [rfReplaceAll]);
@@ -67,7 +93,14 @@ begin
   Result := StringReplace(Result, '#', '%23', [rfReplaceAll]);
 end;
 
-{ kleine HTML-Datei, die sofort zur Hilfe mit Anker weiterleitet }
+{ Weiterleitung
+  Schreibt eine kleine HTML-Datei, die sofort zur Hilfe mit Anker springt.
+  Parameter: Ziel = file:-Adresse samt Anker, z. B. ...de.html#turbo
+  Rückgabe : Pfad der Weiterleitung (Temp-Ordner, StemMaker-Hilfe.html)
+  Ablauf   : 1. HTML mit meta refresh und location.replace schreiben
+                (zweifach, falls ein Browser eines davon nicht ausführt)
+             2. dazu ein normaler Link als letzte Rettung
+  Wirft eine Ausnahme, wenn der Temp-Ordner nicht schreibbar ist. }
 function Weiterleitung(const Ziel: string): string;
 var
   L: TStringList;
@@ -86,11 +119,25 @@ begin
   end;
 end;
 
-{ Anleitung in der Programmsprache im Browser öffnen, an der Stelle Anker
-  (leer = Anfang). Lokal aus hilfe\, sonst oder unter Wine online. }
+{ ----------------------------------------------------------------------------
+  Hilfe öffnen
+  ---------------------------------------------------------------------------- }
+
+{ HilfeZeigen
+  Öffnet die Anleitung in der Programmsprache im Browser.
+  Parameter: Anker = Abschnitt ohne '#', z. B. 'turbo'; leer = Anfang
+  Ablauf   : 1. lokale Datei hilfe\<sprache>.html suchen, sonst Englisch
+             2. unter Wine: immer online (siehe Kommentar unten)
+             3. lokal ohne Anker: Datei direkt öffnen
+             4. lokal mit Anker: über die Weiterleitung öffnen; geht das
+                nicht, die Datei ohne Anker
+             5. keine lokale Datei: online, Sprache de, es oder en }
 procedure HilfeZeigen(const Anker: string);
 var
-  Code, Ordner, Datei, Teil: string;
+  Code: string;                                            // Sprachcode, z. B. 'de'
+  Ordner: string;                                          // <Programmordner>\hilfe\
+  Datei: string;                                           // lokale Hilfedatei
+  Teil: string;                                            // '#anker' oder leer
 begin
   Code := LangCode;
   Ordner := AppBaseDir + 'hilfe' + PathDelim;
@@ -121,7 +168,7 @@ begin
     try
       OpenDocument(Weiterleitung(DateiAdresse(Datei) + Teil));
     except
-      OpenDocument(Datei);     // Temp nicht schreibbar: dann eben ohne Anker
+      OpenDocument(Datei);                                 // Temp nicht schreibbar: dann eben ohne Anker
     end;
   end
   else
@@ -133,10 +180,21 @@ begin
   end;
 end;
 
-{ F1 ohne Umschalttasten: Hilfe zum aktiven Fenster (dessen HelpKeyword) }
+{ ----------------------------------------------------------------------------
+  Taste F1
+  ---------------------------------------------------------------------------- }
+
+{ THilfeTaste.KeyDown
+  Läuft vor jedem Tastendruck in jedem Fenster des Programms.
+  Parameter: Sender = Steuerelement mit dem Fokus (unbenutzt)
+             Key    = gedrückte Taste; 0 = erledigt, nicht weitergeben
+             Shift  = Umschalttasten; F1 gilt nur ohne
+  Ablauf   : 1. nur F1 ohne Umschalt-, Strg- oder Alt-Taste
+             2. HelpKeyword des aktiven Fensters als Anker nehmen
+             3. Taste schlucken, damit kein Steuerelement sie nochmals sieht }
 procedure THilfeTaste.KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
-  F: TCustomForm;
+  F: TCustomForm;                                          // aktives Fenster
 begin
   if (Key <> VK_F1) or (Shift <> []) then Exit;
   F := Screen.ActiveCustomForm;
@@ -147,7 +205,11 @@ begin
   Key := 0;
 end;
 
-{ F1 einmal für alle Fenster einrichten (Aufruf beim Start) }
+{ HilfeTasteEinrichten
+  Richtet F1 einmal für alle Fenster ein (Aufruf beim Start).
+  Ablauf   : 1. schon eingerichtet: nichts tun
+             2. THilfeTaste erzeugen und bei Application anmelden; die
+                Anmeldung "Before" sieht die Taste vor dem Fenster }
 procedure HilfeTasteEinrichten;
 begin
   if Taste <> nil then Exit;
@@ -155,6 +217,7 @@ begin
   Application.AddOnKeyDownBeforeHandler(@Taste.KeyDown);
 end;
 
+{ Beim Programmende freigeben }
 finalization
   FreeAndNil(Taste);
 end.

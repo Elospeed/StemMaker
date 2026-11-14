@@ -1,10 +1,17 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
-  Autor   : Elospeed
   Datei   : StemMaker.lpr  (Hauptprogramm)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
+  Autor   : Elospeed
+  Stand   : 14.11.2026
+  Version : APP_VERSION in version.inc
   ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Design hell/dunkel (DesignAnwenden vor dem ersten
+                     Fenster), F1-Hilfe in allen Fenstern
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK UND ABLAUF
+
   Das Hauptprogramm ist bewusst kurz:
     00. Läuft StemMaker schon? Dann dorthin wechseln und hier aufhören.
     0. Log starten, Sprache, Haftungsausschluss/Lizenz bestätigen
@@ -41,22 +48,22 @@ program StemMaker;
 
 uses
   {$IFDEF UNIX}
-  cthreads,          // unter Linux nötig für Threads
+  cthreads,                                                // unter Linux nötig für Threads
   {$ENDIF}
-  Interfaces,        // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
+  Interfaces,                                              // bindet die LCL-Oberfläche ein (Win32 / GTK ...)
   SysUtils, Forms, uMain, uStemJob, uStemMP4, uInit, uDownload, uLog, uLogUI, uDonate, uInfo,
   uPower, uLang, uLangUI, uSingleInstance, uLicense, uLicenseUI, uUpdate, uUpdateUI,
   uSettings, uReport, uStatusDraw, uTurboTest, uLoad,
-  uDesign,           // hell / dunkel / wie Windows (ab 2.4)
-  uHilfe,            // Hilfe: "?" und F1 öffnen die Anleitung (ab 2.4)
-  uSkalierung,       // kein Fenster grösser als der freie Bildschirm (DPI)
-  uWine;             // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
+  uDesign,                                                 // hell / dunkel / wie Windows (ab 2.4)
+  uHilfe,                                                  // Hilfe: "?" und F1 öffnen die Anleitung (ab 2.4)
+  uSkalierung,                                             // kein Fenster grösser als der freie Bildschirm (DPI)
+  uWine;                                                   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
 
 {$R *.res}           // Programmsymbol + Versionsinfo
 
 var
   Settings: TStemSettings;
-  TempDirs: Integer;     // beim Start gelöschte Temp-Ordner
+  TempDirs: Integer;                                       // beim Start gelöschte Temp-Ordner
   TempMB: Int64;
 
 begin
@@ -67,8 +74,8 @@ begin
     darum ganz am Anfang (siehe uDesign) }
   DesignAnwenden(StemIniFileName);
   Application.Initialize;
-  HilfeTasteEinrichten;    // F1 öffnet in jedem Fenster die Hilfe (uHilfe)
-  WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
+  HilfeTasteEinrichten;                                    // F1 öffnet in jedem Fenster die Hilfe (uHilfe)
+  WineFensterEinrichten;                                   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
 
   { 00. Läuft schon ein StemMaker? Dann Hinweis zeigen, dessen Fenster nach
         vorne holen und sofort aufhören - noch bevor Log, INI oder
@@ -81,7 +88,7 @@ begin
   LogInit;
   LogInstallExceptionHandler;
   LogLine('=== ' + APP_NAME + ' ' + APP_VERSION + ' gestartet ===');
-  DownloadUserAgent := 'StemMaker/' + APP_VERSION;   // für alle Downloads (uDownload)
+  DownloadUserAgent := 'StemMaker/' + APP_VERSION;         // für alle Downloads (uDownload)
   LogLine('Programm: ' + ParamStr(0));
   LogLine('Rechner:' + LineEnding + SystemInfoText);
   LogLine(Format('  Echte Kerne    : %d   (Auto-Einstellung: %d Teile, RAM reicht für max. %d)',

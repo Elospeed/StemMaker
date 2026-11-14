@@ -1,11 +1,15 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uSettings  (Datei usettings.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : usettings.pas  (Unit uSettings)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Design hell/dunkel, Frage nach Neustart bei
+                     Sprach- oder Designwechsel, Knopf "?" und F1
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Fenster "Einstellungen" (Zahnrad-Button im Hauptfenster).
 
@@ -31,6 +35,14 @@
 
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei), wie das
   Info-Fenster.
+
+  BENUTZUNG
+
+    ShowSettingsDialog   öffnet das Fenster (Zahnrad im Hauptfenster);
+                         gibt True bei OK zurück, Neustart = Benutzer will
+                         StemMaker gleich neu starten.
+    DefaultStemPrefs     Standardwerte einer frischen Installation.
+    LoadGearGlyph        Zahnrad-Symbol auf den Knopf im Hauptfenster.
   ============================================================================ }
 unit uSettings;
 
@@ -45,16 +57,16 @@ uses
 type
   { Die Einstellungen, die dieses Fenster bearbeitet }
   TStemPrefs = record
-    Threads    : Integer;                 // Teile, die demucs gleichzeitig rechnet
-    ThreadsAuto: Boolean;                 // Teile automatisch wählen
-    Overwrite  : Boolean;                 // vorhandene .stem.mp4 überschreiben
-    KeepTree   : Boolean;                 // Unterordner im Ausgabeordner nachbauen
-    KeepAwake  : Boolean;                 // PC während der Arbeit wach halten
-    TrayMinimize: Boolean;                // minimiert: nur noch Symbol neben der Uhr
-    TrayNotify : Boolean;                 // Meldung neben der Uhr, wenn alles fertig ist
-    Engine     : TStemEngine;             // Turbo oder Klassisch (ab 2.0)
-    TurboDevice: TTurboDevice;            // Turbo: automatisch oder nur CPU
-    StemNames  : array[0..3] of string;   // Drums, Bass, Other, Vox
+    Threads    : Integer;                                  // Teile, die demucs gleichzeitig rechnet
+    ThreadsAuto: Boolean;                                  // Teile automatisch wählen
+    Overwrite  : Boolean;                                  // vorhandene .stem.mp4 überschreiben
+    KeepTree   : Boolean;                                  // Unterordner im Ausgabeordner nachbauen
+    KeepAwake  : Boolean;                                  // PC während der Arbeit wach halten
+    TrayMinimize: Boolean;                                 // minimiert: nur noch Symbol neben der Uhr
+    TrayNotify : Boolean;                                  // Meldung neben der Uhr, wenn alles fertig ist
+    Engine     : TStemEngine;                              // Turbo oder Klassisch (ab 2.0)
+    TurboDevice: TTurboDevice;                             // Turbo: automatisch oder nur CPU
+    StemNames  : array[0..3] of string;                    // Drums, Bass, Other, Vox
     StemColors : array[0..3] of TColor;
   end;
 
@@ -84,9 +96,9 @@ uses
 type
   TfrmSettings = class(TForm)
   private
-    FLangCodes: TStringList;      // Sprach-Codes in der Reihenfolge von cbLang
-    FNextTop: Integer;            // Top für die nächste Gruppe (NewGroup)
-    FInhalt: TScrollBox;          // alle Gruppen; rollt, wenn das Fenster nicht auf den Bildschirm passt
+    FLangCodes: TStringList;                               // Sprach-Codes in der Reihenfolge von cbLang
+    FNextTop: Integer;                                     // Top für die nächste Gruppe (NewGroup)
+    FInhalt: TScrollBox;                                   // alle Gruppen; rollt, wenn das Fenster nicht auf den Bildschirm passt
     seThreads: TSpinEdit;
     chkAutoThreads: TCheckBox;
     lblCores: TLabel;
@@ -94,7 +106,7 @@ type
     edtStem: array[0..3] of TEdit;
     clrStem: array[0..3] of TColorButton;
     cbLang: TComboBox;
-    cbDesign: TComboBox;          // Automatisch / Hell / Dunkel (ab 2.4)
+    cbDesign: TComboBox;                                   // Automatisch / Hell / Dunkel (ab 2.4)
     chkAutoUpdate: TCheckBox;
     chkTrayMinimize, chkTrayNotify: TCheckBox;
     cbEngine, cbDevice: TComboBox;
@@ -146,7 +158,7 @@ begin
   Result.Overwrite := False;
   Result.KeepTree := True;
   Result.KeepAwake := True;
-  Result.TrayMinimize := False;    // aus: sonst sucht man das Fenster
+  Result.TrayMinimize := False;                            // aus: sonst sucht man das Fenster
   Result.TrayNotify := True;
   Result.Engine := D.Engine;
   Result.TurboDevice := D.TurboDevice;
@@ -249,7 +261,7 @@ var
     edt := TEdit.Create(Self);
     edt.Parent := gb;
     edt.SetBounds(110, Y, 460, 25);
-    edt.ReadOnly := True;                  // nur Anzeige, markieren/kopieren geht
+    edt.ReadOnly := True;                                  // nur Anzeige, markieren/kopieren geht
     edt.Color := clBtnFace;
     edt.Text := APath;
     edt.Hint := APath;
@@ -258,7 +270,7 @@ var
 
 begin
   inherited CreateNew(nil);
-  HelpKeyword := 'weitere-einstellungen';   // F1 öffnet die Hilfe hier (uHilfe)
+  HelpKeyword := 'weitere-einstellungen';                  // F1 öffnet die Hilfe hier (uHilfe)
   Caption := _('Einstellungen');
   Position := poMainFormCenter;
   BorderStyle := bsDialog;
@@ -427,7 +439,7 @@ begin
     _('Nur wenn StemMaker gerade nicht im Vordergrund ist.'));
 
   { --- Werkzeuge (nur Anzeige) --- }
-  gb := NewGroup(_('Werkzeuge'), 128);  // Platz für die Hinweiszeile unten (Windows-Schrift ist höher als unter Wine)
+  gb := NewGroup(_('Werkzeuge'), 128);                     // Platz für die Hinweiszeile unten (Windows-Schrift ist höher als unter Wine)
   PathRow(4, 'ffmpeg:', FFmpegExe);
   PathRow(31, 'demucs.cpp:', DemucsDir);
   PathRow(58, _('Modelle:'), ModelsDir);
@@ -471,7 +483,7 @@ begin
   btnCancel.Anchors := [akTop, akRight];
   btnCancel.Caption := _('Abbrechen');
   btnCancel.ModalResult := mrCancel;
-  btnCancel.Cancel := True;                // Esc = abbrechen
+  btnCancel.Cancel := True;                                // Esc = abbrechen
 
   btnOK := TButton.Create(Self);
   btnOK.Parent := pnlBottom;
@@ -479,7 +491,7 @@ begin
   btnOK.Anchors := [akTop, akRight];
   btnOK.Caption := _('OK');
   btnOK.ModalResult := mrOK;
-  btnOK.Default := True;                   // Enter = OK
+  btnOK.Default := True;                                   // Enter = OK
 
   { OnChange erst nach dem Aufbau setzen }
   chkAutoThreads.OnChange := @chkAutoThreadsChange;
@@ -545,7 +557,7 @@ begin
   for I := 0 to 3 do
   begin
     Result.StemNames[I] := Trim(edtStem[I].Text);
-    if Result.StemNames[I] = '' then         // leer = Standardname behalten
+    if Result.StemNames[I] = '' then                       // leer = Standardname behalten
       Result.StemNames[I] := DefaultStemSettings.Stems[I].Name;
     Result.StemColors[I] := clrStem[I].ButtonColor;
   end;
@@ -553,13 +565,23 @@ begin
   Result.TurboDevice := TTurboDevice(cbDevice.ItemIndex);
 end;
 
-{ Sprache und Update-Prüfung haben eigene Speicher-Funktionen.
-  Sprache und Design gelten erst nach einem Neustart: Läuft keine Umwandlung,
-  fragt StemMaker, ob er gleich neu starten soll (Result = Ja). }
+{ TfrmSettings.SaveProgramPrefs
+  Speichert die Programm-Einstellungen, die eigene Speicher-Funktionen
+  haben (Update-Prüfung, Design, Engine, Sprache). Sprache und Design
+  gelten erst nach einem Neustart.
+  Parameter: KannNeustarten = keine Umwandlung läuft, ein Neustart ist
+                              jetzt möglich
+  Rückgabe : True = Benutzer will StemMaker jetzt neu starten
+  Ablauf   : 1. Update-Prüfung, Design, Engine und Sprache speichern und
+                merken, ob Design oder Sprache neu sind
+             2. nichts davon neu: fertig
+             3. Umwandlung läuft: nur Bescheid geben (gilt beim nächsten Start)
+             4. sonst fragen, ob StemMaker gleich neu starten soll }
 function TfrmSettings.SaveProgramPrefs(KannNeustarten: Boolean): Boolean;
 var
-  DesignNeu, SpracheNeu: Boolean;
-  Frage: string;
+  DesignNeu: Boolean;                                      // Design wurde geändert
+  SpracheNeu: Boolean;                                     // Sprache wurde geändert
+  Frage: string;                                           // Text der Neustart-Frage
 begin
   Result := False;
   DesignNeu := False;
@@ -696,19 +718,31 @@ begin
   OpenDocument(ExtractFilePath(StemIniFileName));
 end;
 
-{ "?": Hilfe zu diesem Fenster öffnen }
+{ TfrmSettings.btnHilfeClick
+  Knopf "?": Hilfe zu diesem Fenster öffnen (Anker im HelpKeyword) }
 procedure TfrmSettings.btnHilfeClick(Sender: TObject);
 begin
   HilfeZeigen(HelpKeyword);
 end;
 
-{ Einstellungen zeigen; bei OK P übernehmen und Programmwerte speichern.
-  Neustart = Benutzer will wegen Sprache/Design gleich neu starten. }
+{ ShowSettingsDialog
+  Zeigt das Fenster "Einstellungen".
+  Parameter: P              = Werte hinein; bei OK die neuen Werte heraus
+             BesideInput    = "neben der Originaldatei speichern" ist an
+             FFmpegExe,
+             DemucsDir,
+             ModelsDir      = Pfade, nur zur Anzeige
+             KannNeustarten = keine Umwandlung läuft
+             Neustart       = heraus: Benutzer will gleich neu starten
+  Rückgabe : True bei OK
+  Ablauf   : 1. Fenster bauen und mit P füllen
+             2. bei OK P übernehmen und Programmwerte speichern
+                (dabei evtl. die Frage nach dem Neustart) }
 function ShowSettingsDialog(var P: TStemPrefs; BesideInput: Boolean;
   const FFmpegExe, DemucsDir, ModelsDir: string; KannNeustarten: Boolean;
   out Neustart: Boolean): Boolean;
 var
-  F: TfrmSettings;
+  F: TfrmSettings;                                         // das Fenster
 begin
   Neustart := False;
   F := TfrmSettings.CreateSettings(BesideInput, FFmpegExe, DemucsDir, ModelsDir);

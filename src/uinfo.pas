@@ -1,11 +1,14 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uInfo  (Datei uinfo.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : uinfo.pas  (Unit uInfo)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Knopf "Hilfe (F1)" und F1 (Hilfe zum Abschnitt Info)
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Info-Fenster (Button "Info" oben links im Hauptfenster):
     - oben: Programmname, Version, Autor, Build-Datum, aktuelle Log-Datei
@@ -28,6 +31,10 @@
   Sprachauswahl und "Beim Start nach Updates suchen" waren bis 1.7 hier,
   seit 1.7.1 stehen sie im Fenster "Einstellungen" (uSettings).
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei).
+
+  BENUTZUNG
+
+    ShowInfoDialog       öffnet das Info-Fenster (Knopf "Info").
   ============================================================================ }
 unit uInfo;
 
@@ -53,7 +60,7 @@ uses
 type
   TfrmInfo = class(TForm)
   private
-    btnUpdate: TButton;           // "Nach Updates suchen"
+    btnUpdate: TButton;                                    // "Nach Updates suchen"
     FVersion: string;
     procedure btnUpdateClick(Sender: TObject);
     procedure btnDonateClick(Sender: TObject);
@@ -63,7 +70,7 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure lblChangelogClick(Sender: TObject);
   public
-    FoundUpdate: Boolean;         // neue Version gefunden -> FoundInfo
+    FoundUpdate: Boolean;                                  // neue Version gefunden -> FoundInfo
     FoundInfo: TUpdateInfo;
     constructor CreateInfo(const Version, Author: string);
   end;
@@ -78,9 +85,9 @@ begin
   repeat
     P := Pos('](', Result);
     if P = 0 then Break;
-    Q := P;                                   // '[' davor suchen
+    Q := P;                                                // '[' davor suchen
     while (Q > 0) and (Result[Q] <> '[') do Dec(Q);
-    R := PosEx(')', Result, P + 2);           // ')' danach suchen
+    R := PosEx(')', Result, P + 2);                        // ')' danach suchen
     if (Q = 0) or (R = 0) then Break;
     Result := Copy(Result, 1, Q - 1) + Copy(Result, Q + 1, P - Q - 1) + ' (' +
       Copy(Result, P + 2, R - P - 2) + ')' + Copy(Result, R + 1, MaxInt);
@@ -120,7 +127,7 @@ begin
       if Copy(TrimLeft(S), 1, 3) = '```' then Continue;
       S := StringReplace(S, '**', '', [rfReplaceAll]);
       S := StringReplace(S, '`', '', [rfReplaceAll]);
-      if Pos('|---', S) = 1 then Continue;    // Tabellen-Trennzeile weglassen
+      if Pos('|---', S) = 1 then Continue;                 // Tabellen-Trennzeile weglassen
       S := CleanLinks(S);
       if Copy(S, 1, 1) = '#' then
       begin
@@ -143,7 +150,7 @@ end;
 { Anleitung laden (deutsch: LIESMICH.md, sonst README.md) }
 function LoadReadme: string;
 var
-  FileName: string;     // welche Anleitung gelesen wird (ohne Pfad)
+  FileName: string;                                        // welche Anleitung gelesen wird (ohne Pfad)
 begin
   { Dateiname je nach Sprache wählen: Deutsch -> LIESMICH.md,
     alle anderen -> README.md. Gibt es keine README.md, wird die
@@ -201,8 +208,8 @@ end;
   AddThanksName-Zeile eintragen (Namen werden nicht übersetzt). }
 
 const
-  THANKS_RED  = $005E5AFF;   // #FF5A5E wie das Herz im Spenden-Fenster
-  THANKS_BLUE = $00D69B2E;   // #2E9BD6, kräftiges Blau
+  THANKS_RED  = $005E5AFF;                                 // #FF5A5E wie das Herz im Spenden-Fenster
+  THANKS_BLUE = $00D69B2E;                                 // #2E9BD6, kräftiges Blau
 
 { Hängt ein Label unten an die Liste an. Mit alTop und wachsendem Top
   bleibt die Reihenfolge so, wie die Zeilen angelegt werden. }
@@ -271,7 +278,7 @@ begin
     L := TLabel.Create(Row);
     L.Parent := Row;
     L.Align := alLeft;
-    L.Left := 10000;                              // rechts vom Namen
+    L.Left := 10000;                                       // rechts vom Namen
     L.BorderSpacing.Left := 8;
     L.Font.Height := -13;
     L.Font.Color := clGrayText;
@@ -338,7 +345,7 @@ var
   L: TStringList;
   I: Integer;
   S: string;
-  First: Boolean;       // die neueste Version bekommt die Akzentfarbe
+  First: Boolean;                                          // die neueste Version bekommt die Akzentfarbe
 begin
   L := TStringList.Create;
   try
@@ -389,7 +396,7 @@ var
   btnDonate, btnLogs, btnClose, btnReport, btnHilfe: TButton;
 begin
   inherited CreateNew(nil);
-  HelpKeyword := 'info';   // F1 öffnet die Hilfe hier (uHilfe)
+  HelpKeyword := 'info';                                   // F1 öffnet die Hilfe hier (uHilfe)
   FVersion := Version;
   Caption := _('Info') + ' - ' + APP_NAME + ' ' + Version;
   Position := poMainFormCenter;
@@ -412,7 +419,7 @@ begin
   lblSub := TLabel.Create(Self);
   lblSub.Parent := Self;
   lblSub.Align := alTop;
-  lblSub.Top := 100;                               // unter lblTitle
+  lblSub.Top := 100;                                       // unter lblTitle
   lblSub.BorderSpacing.Left := 10;
   lblSub.BorderSpacing.Bottom := 8;
   lblSub.Caption :=
@@ -435,7 +442,7 @@ begin
   btnClose.Left := pnlBottom.ClientWidth - 110;
   btnClose.Caption := _('Schließen');
   btnClose.OnClick := @btnCloseClick;
-  btnClose.Cancel := True;                         // Esc = schließen
+  btnClose.Cancel := True;                                 // Esc = schließen
 
   btnLogs := TButton.Create(Self);
   btnLogs.Parent := pnlBottom;
@@ -459,7 +466,7 @@ begin
   pnlUpdate := TPanel.Create(Self);
   pnlUpdate.Parent := Self;
   pnlUpdate.Align := alBottom;
-  pnlUpdate.Top := 0;                              // über pnlBottom
+  pnlUpdate.Top := 0;                                      // über pnlBottom
   pnlUpdate.Height := 44;
   pnlUpdate.BevelOuter := bvNone;
 
@@ -611,7 +618,8 @@ begin
   ShowErrorReport('', '');
 end;
 
-{ "Hilfe": Anleitung beim Abschnitt Info öffnen }
+{ TfrmInfo.btnHilfeClick
+  Knopf "Hilfe (F1)": Anleitung im Browser beim Abschnitt Info öffnen }
 procedure TfrmInfo.btnHilfeClick(Sender: TObject);
 begin
   HilfeZeigen('info');

@@ -1,11 +1,15 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uTurboTest  (Datei uturbotest.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : uturbotest.pas  (Unit uTurboTest)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Ergebnis wird als Messwerte gespeichert und in der
+                     aktuellen Sprache angezeigt (VerdictText), F1
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Fenster "Turbo-Vortest" (ab 2.0). Es kommt beim ersten Start mit
   Turbo von selbst, ausserdem nach einem Wechsel von Grafikkarte oder
@@ -37,6 +41,12 @@
   für die Prüfung draufgeht.
 
   Das Fenster wird im Code aufgebaut (keine .lfm-Datei).
+
+  BENUTZUNG
+
+    TurboTestNeeded      beim Start: braucht es einen (neuen) Vortest?
+    ShowTurboTest        öffnet das Fenster "Turbo-Vortest".
+    TurboTestSummary     kurzer Text zum letzten Ergebnis (Einstellungen).
   ============================================================================ }
 unit uTurboTest;
 
@@ -71,8 +81,8 @@ const
   { Abschnitte pro Minute Musik: StemOnnx rechnet 7,8-s-Abschnitte mit 25 %
     Überlappung, also alle 0,75 * 343980 Samples einen (bei 44,1 kHz) }
   SEG_PER_MIN = 60 * 44100 / 257985;
-  ENC_TEST_SEC = 30;               // so viele Sekunden kodiert der Test
-  ENC_MUSIC_FACTOR = 0.5;          // Musik kodiert etwa doppelt so schnell wie Sinustöne
+  ENC_TEST_SEC = 30;                                       // so viele Sekunden kodiert der Test
+  ENC_MUSIC_FACTOR = 0.5;                                  // Musik kodiert etwa doppelt so schnell wie Sinustöne
 
 type
   TfrmTurboTest = class;
@@ -91,9 +101,9 @@ type
   protected
     procedure Execute; override;
   public
-    ExitCode: Integer;             // von StemOnnx
-    Aborted: Boolean;              // abgebrochen (Fenster zu)
-    EncodeSec: Double;             // Zeit für ENC_TEST_SEC Sekunden, 0 = nicht gemessen
+    ExitCode: Integer;                                     // von StemOnnx
+    Aborted: Boolean;                                      // abgebrochen (Fenster zu)
+    EncodeSec: Double;                                     // Zeit für ENC_TEST_SEC Sekunden, 0 = nicht gemessen
     constructor Create(AForm: TfrmTurboTest; const S: TStemSettings; const AModel: string);
     procedure Abort;
   end;
@@ -103,8 +113,8 @@ type
     FSettings: TStemSettings;
     FModel: string;
     FThread: TTurboTestThread;
-    FValues: TStringList;          // VORTEST name=wert
-    FCpuSeg, FGpuSeg: Double;      // gemessene Sekunden pro Abschnitt (0 = noch nicht)
+    FValues: TStringList;                                  // VORTEST name=wert
+    FCpuSeg, FGpuSeg: Double;                              // gemessene Sekunden pro Abschnitt (0 = noch nicht)
     FErrors: Integer;
     FDone: Boolean;
     lblIntro, lblStep, lblVerdict, lblForecast: TLabel;
@@ -171,8 +181,12 @@ begin
     Result := Status;
 end;
 
-{ Kartenname für die Anzeige:
-  "NVIDIA GeForce RTX 4060 Ti|32.0.15.6094" -> nur der Name }
+{ GpuDisplayName
+  Kartenname für die Anzeige.
+  Parameter: Raw = Name wie vom Vortest gemeldet, evtl. mit Treiberversion
+             hinter "|" und mehreren Karten getrennt durch ";"
+  Rückgabe : nur die Namen, z. B.
+             "NVIDIA GeForce RTX 4060 Ti|32.0.15.6094" -> "NVIDIA GeForce RTX 4060 Ti" }
 function GpuDisplayName(const Raw: string): string;
 begin
   Result := StringReplace(Raw, ';', ', ', [rfReplaceAll]);
@@ -180,9 +194,20 @@ begin
     Result := Copy(Result, 1, Pos('|', Result) - 1);
 end;
 
-{ Ergebnis des Vortests als Satz in der aktuellen Sprache. Gespeichert
+{ VerdictText
+  Ergebnis des Vortests als Satz in der aktuellen Sprache. Gespeichert
   werden nur die Messwerte, damit der Satz nach einem Sprachwechsel
-  nicht in der alten Sprache stehen bleibt. }
+  nicht in der alten Sprache stehen bleibt.
+  Parameter: Status  = gpu_status des Vortests ('ein', 'wine', 'keine'
+                       oder ein Grund, siehe ReasonText)
+             Gpu     = Kartenname für die Anzeige
+             GpuUsed = True, wenn Turbo die Grafikkarte nutzt
+             CpuSPM  = Rechenzeit mit der CPU in Sekunden pro Minute Musik
+             GpuSPM  = Rechenzeit mit der Grafikkarte in s pro Minute Musik
+  Rückgabe : ein Satz, z. B. "... mit der Grafikkarte (RTX 4060 Ti): etwa
+             9 s Rechenzeit pro Minute Musik (CPU: 1:50 min)."
+  Ablauf   : 1. Grafikkarte genutzt -> Zeit der Karte, CPU in Klammern
+             2. sonst je nach Status der passende Grund, Zeit der CPU }
 function VerdictText(const Status, Gpu: string; GpuUsed: Boolean;
   CpuSPM, GpuSPM: Double): string;
 begin
@@ -378,7 +403,7 @@ var
   pnl: TPanel;
 begin
   inherited CreateNew(nil);
-  HelpKeyword := 'vortest';   // F1 öffnet die Hilfe hier (uHilfe)
+  HelpKeyword := 'vortest';                                // F1 öffnet die Hilfe hier (uHilfe)
   FSettings := S;
   FValues := TStringList.Create;
   Caption := _('Turbo-Vortest');
@@ -467,7 +492,7 @@ end;
 procedure TfrmTurboTest.AddStep(const S: string);
 begin
   mmSteps.Lines.Add(S);
-  mmSteps.SelStart := Length(mmSteps.Text);   // ans Ende scrollen
+  mmSteps.SelStart := Length(mmSteps.Text);                // ans Ende scrollen
 end;
 
 procedure TfrmTurboTest.StartTest(Data: PtrInt);
@@ -889,7 +914,7 @@ begin
         Result := True;
       end
       else if L[I] = 'KARTEN' then
-        Result := True;            // keine Grafikkarte
+        Result := True;                                    // keine Grafikkarte
   finally
     L.Free;
     P.Free;
@@ -905,7 +930,7 @@ begin
   Result := False;
   Reason := '';
   if not TurboFor(S) then Exit;
-  if TestModelFile(S) = '' then Exit;        // erst nach dem Modell-Download
+  if TestModelFile(S) = '' then Exit;                      // erst nach dem Modell-Download
   Ini := TIniFile.Create(StemIniFileName);
   try
     Tested := Ini.ValueExists('Turbo', 'VortestDatum');
@@ -925,10 +950,16 @@ begin
   end;
 end;
 
-{ Kurzfassung des letzten Turbo-Tests aus der INI (für die Einstellungen) }
+{ TurboTestSummary
+  Kurzfassung des letzten Turbo-Tests aus der INI (für die Einstellungen).
+  Rückgabe : Satz mit Datum in Klammern; '' = noch nie getestet
+  Ablauf   : 1. ab 2.4 stehen Messwerte in [Turbo] Vortest...: daraus
+                mit VerdictText den Satz in der aktuellen Sprache bauen
+             2. Vortest einer älteren Version: den gespeicherten Satz nehmen
+             3. Datum anhängen }
 function TurboTestSummary: string;
 var
-  Ini: TIniFile;
+  Ini: TIniFile;                                           // StemMaker.ini
 begin
   Result := '';
   try

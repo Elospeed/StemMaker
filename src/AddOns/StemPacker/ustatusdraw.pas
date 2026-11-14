@@ -1,7 +1,18 @@
-unit uStatusDraw;
+{ ============================================================================
+  Unit    : uStatusDraw  (Datei ustatusdraw.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
+  Autor   : Elospeed
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    2.4, 14.11.2026: dunkles Design (DunklesDesign, FarbeOK/Fehler/Info,
+                     dunkle Balken und Schrift, Ko-fi-Pille auf
+                     mittel-dunklem Grund)
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK: Kleine Farb-Akzente im Hauptfenster
 
-{ ---------------------------------------------------------------------------
-  Kleine Farb-Akzente im Hauptfenster
+  GRUNDIDEE
 
   Grundsatz: Das Hauptfenster bleibt ein normales Windows-Fenster. Nur drei
   Stellen bekommen etwas Farbe:
@@ -27,7 +38,25 @@ unit uStatusDraw;
 
   Grössen sind für 96 dpi angegeben und werden mit PPI umgerechnet
   (125 %, 150 % ... Skalierung in Windows).
-  --------------------------------------------------------------------------- }
+
+  Im dunklen Design (ab 2.4) nehmen Schrift und Balken hellere bzw.
+  dunklere Farben. Ob ein Hintergrund dunkel ist, entscheidet seine
+  Helligkeit (Formel bei Helligkeit).
+
+  BENUTZUNG
+
+    DunklesDesign          setzt uDesign beim Start (True = dunkel)
+    FarbeOK/Fehler/Info    Schriftfarben für Labels und Log, passend
+                           zum Design
+    DrawAccentStrip        im OnPaint des Streifens unter der Knopfleiste
+    DrawStatusCell         im OnDrawItem/OnCustomDrawSubItem der Dateiliste
+    KofiButtonWidth,
+    DrawKofiButton         Grösse und Zeichnen des Ko-fi-Knopfs
+
+  Kopie von src/ustatusdraw.pas für den StemPacker (gleich, Änderungen
+  bitte dort machen und hierher kopieren).
+  ============================================================================ }
+unit uStatusDraw;
 
 {$mode objfpc}{$H+}
 
@@ -45,32 +74,32 @@ type
 
 const
   { Farben wie bei Windows 10/11 (TColor = $00BBGGRR, Blau zuerst!) }
-  CLR_BAR_BORDER = TColor($00BCBCBC);   // Rand des Balkens
-  CLR_BAR_BACK   = TColor($00E6E6E6);   // leerer Teil
-  CLR_BAR_FILL   = TColor($0025B006);   // Windows-Grün  #06B025
-  CLR_OK_TEXT    = TColor($00377F1A);   // dunkles Grün  #1A7F37 (gut lesbar)
-  CLR_FAIL_TEXT  = TColor($001C2BC4);   // Windows-Rot   #C42B1C
-  CLR_KOFI       = TColor($005E5AFF);   // Ko-fi-Rot     #FF5A5E (Herz, wie im Danke-Fenster)
+  CLR_BAR_BORDER = TColor($00BCBCBC);                      // Rand des Balkens
+  CLR_BAR_BACK   = TColor($00E6E6E6);                      // leerer Teil
+  CLR_BAR_FILL   = TColor($0025B006);                      // Windows-Grün  #06B025
+  CLR_OK_TEXT    = TColor($00377F1A);                      // dunkles Grün  #1A7F37 (gut lesbar)
+  CLR_FAIL_TEXT  = TColor($001C2BC4);                      // Windows-Rot   #C42B1C
+  CLR_KOFI       = TColor($005E5AFF);                      // Ko-fi-Rot     #FF5A5E (Herz, wie im Danke-Fenster)
   { Ko-fi-Knopf "E" (Wahl Speedy 29.10.2026): dunkle Pille, vorne das Symbol
     des jeweiligen Programms, rotes Herz, weisser Text - in allen Elospeed-Tools gleich }
-  CLR_KOFI_FACE      = TColor($00262220);   // auf hellem Grund     #202226
-  CLR_KOFI_FACE_DARK  = TColor($00302C2A);  // auf fast schwarzem Grund (StemPlayer) #2A2C30
+  CLR_KOFI_FACE      = TColor($00262220);                  // auf hellem Grund     #202226
+  CLR_KOFI_FACE_DARK  = TColor($00302C2A);                 // auf fast schwarzem Grund (StemPlayer) #2A2C30
   { auf mittel-dunklem Grund (dunkles Design, Fenster #353535): dunkler als
     der Grund, damit sich die Pille klar abhebt; Maus darüber heller }
-  CLR_KOFI_FACE_DUNKEL = TColor($001E1C1A); // #1A1C1E
-  CLR_KOFI_HOVER      = TColor($00443F3C);  // Maus darüber         #3C3F44
-  CLR_KOFI_HOVER_DARK = TColor($00524D4A);  // Maus darüber, dunkel #4A4D52
+  CLR_KOFI_FACE_DUNKEL = TColor($001E1C1A);                // #1A1C1E
+  CLR_KOFI_HOVER      = TColor($00443F3C);                 // Maus darüber         #3C3F44
+  CLR_KOFI_HOVER_DARK = TColor($00524D4A);                 // Maus darüber, dunkel #4A4D52
   { "wartet" im dunklen Design: etwas heller als Windows-Grau, besser lesbar }
-  CLR_WAIT_TEXT_DARK  = TColor($00B8B8B8);  // #B8B8B8
+  CLR_WAIT_TEXT_DARK  = TColor($00B8B8B8);                 // #B8B8B8
 
 var
   { True = Programm läuft im dunklen Design (setzt uDesign beim Start) }
   DunklesDesign: Boolean = False;
 
 { Schriftfarben, die im hellen und im dunklen Design gut lesbar sind }
-function FarbeOK: TColor;       // Grün für "fertig"
-function FarbeFehler: TColor;   // Rot für Fehler
-function FarbeInfo: TColor;     // Blau für Hinweise
+function FarbeOK: TColor;                                  // Grün für "fertig"
+function FarbeFehler: TColor;                              // Rot für Fehler
+function FarbeInfo: TColor;                                // Blau für Hinweise
 
 { Streifen in den vier Stem-Farben, gleich breite Teile von links nach rechts }
 procedure DrawAccentStrip(C: TCanvas; const R: TRect; const Colors: TStemColorArray);
@@ -106,28 +135,41 @@ const
   { dunkles Design: Farben wie Windows 11 im Dunkelmodus }
   CLR_BAR_BORDER_DARK = TColor($00606060);
   CLR_BAR_BACK_DARK   = TColor($00383838);
-  CLR_OK_TEXT_DARK    = TColor($005FCB6C);   // #6CCB5F
-  CLR_FAIL_TEXT_DARK  = TColor($00A499FF);   // #FF99A4
-  CLR_INFO_TEXT       = TColor($00800000);   // clNavy
-  CLR_INFO_TEXT_DARK  = TColor($00FFC060);   // #60C0FF
+  CLR_OK_TEXT_DARK    = TColor($005FCB6C);                 // #6CCB5F
+  CLR_FAIL_TEXT_DARK  = TColor($00A499FF);                 // #FF99A4
+  CLR_INFO_TEXT       = TColor($00800000);                 // clNavy
+  CLR_INFO_TEXT_DARK  = TColor($00FFC060);                 // #60C0FF
 
-{ Grün für "fertig", im dunklen Design heller (sonst auf dunklem Grund zu schwach) }
+{ ----------------------------------------------------------------------------
+  Schriftfarben je nach Design
+  ---------------------------------------------------------------------------- }
+
+{ FarbeOK
+  Rückgabe : Grün für "fertig"; im dunklen Design heller, sonst wäre es
+             auf dunklem Grund zu schwach }
 function FarbeOK: TColor;
 begin
   if DunklesDesign then Result := CLR_OK_TEXT_DARK else Result := CLR_OK_TEXT;
 end;
 
-{ Rot für Fehler, im dunklen Design heller und leicht rosa (besser lesbar) }
+{ FarbeFehler
+  Rückgabe : Rot für Fehler; im dunklen Design heller und leicht rosa,
+             reines Rot ist auf dunklem Grund schlecht lesbar }
 function FarbeFehler: TColor;
 begin
   if DunklesDesign then Result := CLR_FAIL_TEXT_DARK else Result := CLR_FAIL_TEXT;
 end;
 
-{ Blau für Hinweise: hell Navy, dunkel ein helles Blau }
+{ FarbeInfo
+  Rückgabe : Blau für Hinweise; hell Navy, dunkel ein helles Blau }
 function FarbeInfo: TColor;
 begin
   if DunklesDesign then Result := CLR_INFO_TEXT_DARK else Result := CLR_INFO_TEXT;
 end;
+
+{ ----------------------------------------------------------------------------
+  Hilfsfunktionen
+  ---------------------------------------------------------------------------- }
 
 { 96-dpi-Mass auf den Bildschirm umrechnen }
 function ScalePx(V, PPI: Integer): Integer;
@@ -136,23 +178,34 @@ begin
   Result := (V * PPI + 48) div 96;
 end;
 
-{ Breite des Ko-fi-Knopfs in Pixeln für Text und Bildschirm-DPI (PPI) }
+{ KofiButtonWidth
+  Parameter: C    = Leinwand mit der Schrift des Knopfs
+             Text = Beschriftung, z. B. "Kaffee spendieren"
+             PPI  = Bildschirm-DPI (96 = 100 %)
+  Rückgabe : Breite des Ko-fi-Knopfs in Pixeln
+  Formel   : 56 Punkte bei 96 dpi für Ränder, Symbol und Herz, plus Textbreite }
 function KofiButtonWidth(C: TCanvas; const Text: string; PPI: Integer): Integer;
 begin
   { 6 Rand links, 16 Symbol, 6 Abstand, 10 Herz, 6 Abstand, Text, 12 Rand rechts }
   Result := ScalePx(56, PPI) + C.TextWidth(Text);
 end;
 
-{ wahrgenommene Helligkeit 0..255 }
+{ Helligkeit
+  Parameter: Col = Farbe (auch Systemfarben wie clBtnFace)
+  Rückgabe : wahrgenommene Helligkeit 0 (schwarz) bis 255 (weiss)
+  Formel   : (299·Rot + 587·Grün + 114·Blau) / 1000 nach ITU-R BT.601
+  Beispiel : dunkles Design #353535 -> 53, StemPlayer #17181A -> 23,
+             Windows-Grau #F0F0F0 -> 240 }
 function Helligkeit(Col: TColor): Integer;
 var
-  RGB: LongInt;
+  RGB: LongInt;                                            // Col als echte RGB-Farbe
 begin
   RGB := ColorToRGB(Col);
   Result := (Red(RGB) * 299 + Green(RGB) * 587 + Blue(RGB) * 114) div 1000;
 end;
 
-{ ist die Farbe dunkel? (für die Wahl der Pillenfarbe) }
+{ IsDarkColor
+  Rückgabe : True, wenn die Farbe dunkel ist (Helligkeit unter 100) }
 function IsDarkColor(Col: TColor): Boolean;
 begin
   Result := Helligkeit(Col) < 100;
@@ -166,7 +219,7 @@ end;
 procedure DrawSmoothPill(C: TCanvas; const B: TRect; PillColor, BackColor: TColor;
   HeartX, HeartY, D: Integer);
 const
-  SS = 4;   // Vergrösserung beim Zeichnen
+  SS = 4;                                                  // Vergrösserung beim Zeichnen
 var
   Big, Small: TBitmap;
   BigImg, SmallImg: TLazIntfImage;
@@ -235,14 +288,36 @@ begin
   end;
 end;
 
-{ Ko-fi-Knopf als Pille zeichnen: Farbe nach Hintergrund (BackColor hell oder
-  dunkel), Hover = Maus darüber, AppIcon = Programmsymbol links (darf nil sein) }
+{ ----------------------------------------------------------------------------
+  Ko-fi-Knopf
+  ---------------------------------------------------------------------------- }
+
+{ DrawKofiButton
+  Zeichnet den Ko-fi-Knopf als Pille.
+  Parameter: C         = Leinwand
+             R         = ganzer Platz des Knopfs in Pixeln
+             Text      = Beschriftung
+             Hover     = Maus ist darüber (Pille heller)
+             BackColor = Farbe dahinter; bestimmt die Pillenfarbe
+             PPI       = Bildschirm-DPI (96 = 100 %)
+             AppIcon   = Programmsymbol links, darf nil sein
+  Ablauf   : 1. Hintergrund füllen (clDefault wird zu clBtnFace)
+             2. Pillenhöhe aus der Schrift, senkrecht mittig
+             3. Pillenfarbe nach Hintergrund: fast schwarz (StemPlayer,
+                Helligkeit unter 40) hellere Pille, mittel-dunkel
+                (dunkles Design) dunklere Pille, hell die normale Pille
+             4. Pille, Symbol, Herz und Text zeichnen }
 procedure DrawKofiButton(C: TCanvas; const R: TRect; const Text: string;
   Hover: Boolean; BackColor: TColor; PPI: Integer; AppIcon: TIcon);
 var
-  B, IR: TRect;    // der Knopf selbst, das Symbol
-  H, HX, HY, D, X, S: Integer;
-  Col: TColor;
+  B: TRect;                                                // die Pille
+  IR: TRect;                                               // das Programmsymbol
+  H: Integer;                                              // Pillenhöhe in Pixeln
+  HX, HY: Integer;                                         // Lage des Herzens
+  D: Integer;                                              // Grösse des Herzens
+  X: Integer;                                              // laufende x-Position
+  S: Integer;                                              // Symbolgrösse in Pixeln
+  Col: TColor;                                             // Pillenfarbe
 begin
   { clDefault (Panel ohne eigene Farbe) wäre in der Bitmap schwarz }
   if (BackColor = clDefault) or (BackColor = clNone) then
@@ -309,8 +384,26 @@ begin
   end;
 end;
 
-{ Statuszelle der Dateiliste zeichnen: je nach Look Text, Fortschrittsbalken
-  oder die vier Stem-Farben; Highlighted = Zeile markiert (Textfarbe von Windows) }
+{ ----------------------------------------------------------------------------
+  Statusspalte der Dateiliste
+  ---------------------------------------------------------------------------- }
+
+{ DrawStatusCell
+  Zeichnet eine Zelle der Spalte "Status".
+  Parameter: C          = Leinwand der Liste
+             R          = Zellenrechteck in Pixeln
+             Look       = wartet, läuft, fertig, Fehler oder sonst
+             Percent    = Fortschritt 0..100 (nur bei "läuft")
+             Text       = anzuzeigender Text
+             Colors     = die vier Stem-Farben (nur bei "fertig")
+             BackColor  = Hintergrund; dunkel = dunkles Design
+             TextColor  = normale Schriftfarbe der Zeile
+             Highlighted= Zeile markiert; dann Schrift wie Windows
+             PPI        = Bildschirm-DPI (96 = 100 %)
+  Ablauf   : 1. Hintergrund füllen
+             2. je nach Look: Balken mit Prozent, Häkchen mit Text und
+                Farbpunkten, roter oder grauer Text
+             3. im dunklen Design jeweils die *_DARK-Farben }
 procedure DrawStatusCell(C: TCanvas; const R: TRect; Look: TStatusLook;
   Percent: Integer; const Text: string; const Colors: TStemColorArray;
   BackColor, TextColor: TColor; Highlighted: Boolean; PPI: Integer);
@@ -336,10 +429,13 @@ procedure DrawStatusCell(C: TCanvas; const R: TRect; Look: TStatusLook;
   end;
 
 var
-  X, CY, BarW, FillW, I, D, Gap: Integer;
-  Bar: TRect;
-  Col: TColor;
-  Dunkel: Boolean;
+  X: Integer;                                              // laufende x-Position
+  CY: Integer;                                             // senkrechte Mitte der Zelle
+  BarW, FillW: Integer;                                    // Balkenbreite, gefüllter Teil
+  I, D, Gap: Integer;                                      // Punktnummer, -durchmesser, -abstand
+  Bar: TRect;                                              // Rechteck des Balkens
+  Col: TColor;                                             // gerade benutzte Farbe
+  Dunkel: Boolean;                                         // Hintergrund dunkel?
 begin
   { dunkler Hintergrund (dunkles Design): hellere Schrift, dunkler Balken }
   Dunkel := IsDarkColor(BackColor);
@@ -377,7 +473,7 @@ begin
           PutText(X + BarW + S(6), Format('%d %%', [Percent]), TextColor);
         end
         else
-          PutText(X, Text, TextColor);    // Spalte zu schmal: nur der Text
+          PutText(X, Text, TextColor);                     // Spalte zu schmal: nur der Text
       end;
 
     slOK:

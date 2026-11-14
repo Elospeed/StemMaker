@@ -1,8 +1,16 @@
 { ============================================================================
-  djcontrols.pas  -  Selbst gezeichnete Steuerelemente für den DJ-Look
-
+  Unit    : djcontrols  (Datei djcontrols.pas)
+  Programm: Elospeed StemTagger (Kopie aus dem StemPlayer, erweitert)
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
+  Stand   : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    1.2.3 (mit StemMaker 2.4), 14.11.2026: Farben als Variablen,
+                     DJHellesDesign für das helle Design
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK: Selbst gezeichnete Steuerelemente für den DJ-Look
 
   Warum eigene Steuerelemente?
     Die Standard-Buttons und -Schieberegler von Windows (TButton, TTrackBar)
@@ -39,30 +47,30 @@ var
   { Farbpalette "Traktor Dark" (siehe Design-Vorschlag A). Variablen statt
   Konstanten: DJHellesDesign stellt sie beim Start auf die helle Variante um
   (StemMaker-Einstellung "Design"), bevor das erste Fenster entsteht. }
-  DJ_BG        : TColor = $001A1817;   // Fensterhintergrund   #17181A
-  DJ_PANEL     : TColor = $0023201F;   // Flächen / Zeilen     #1F2023
-  DJ_BORDER    : TColor = $00322E2C;   // Rahmen               #2C2E32
-  DJ_BTN       : TColor = $00302C2A;   // Button-Fläche        #2A2C30
-  DJ_BTNBORDER : TColor = $00423D3A;   // Button-Rahmen        #3A3D42
-  DJ_TEXT      : TColor = $00E6E6E6;   // heller Text
-  DJ_DIM       : TColor = $007A7A7A;   // gedimmter Text
-  DJ_METERBG   : TColor = $00282523;   // unbeleuchtete LED    #232528
-  DJ_TRACK     : TColor = $00111111;   // Spur der Fader
-  DJ_FOOTER    : TColor = $00141211;   // Fusszeile            #111214
-  DJ_RED       : TColor = $004A4AFF;   // Mute                 #FF4A4A
-  DJ_YELLOW    : TColor = $0000C4FF;   // Solo                 #FFC400
-  DJ_GREEN     : TColor = $0084DC3D;   // Play / Meter grün    #3DDC84
-  DJ_AMBER     : TColor = $003DD2FF;   // Meter gelb           #FFD23D
-  DJ_PLAYHEAD  : TColor = $003B3BFF;   // Abspielkopf          #FF3B3B
-  DJ_OFF       : TColor = $00555555;   // ausgeschaltete Stems
-  DJ_KOFI      : TColor = $005A9FFF;   // Ko-fi-Link           #FF9F5A
+  DJ_BG        : TColor = $001A1817;                       // Fensterhintergrund   #17181A
+  DJ_PANEL     : TColor = $0023201F;                       // Flächen / Zeilen     #1F2023
+  DJ_BORDER    : TColor = $00322E2C;                       // Rahmen               #2C2E32
+  DJ_BTN       : TColor = $00302C2A;                       // Button-Fläche        #2A2C30
+  DJ_BTNBORDER : TColor = $00423D3A;                       // Button-Rahmen        #3A3D42
+  DJ_TEXT      : TColor = $00E6E6E6;                       // heller Text
+  DJ_DIM       : TColor = $007A7A7A;                       // gedimmter Text
+  DJ_METERBG   : TColor = $00282523;                       // unbeleuchtete LED    #232528
+  DJ_TRACK     : TColor = $00111111;                       // Spur der Fader
+  DJ_FOOTER    : TColor = $00141211;                       // Fusszeile            #111214
+  DJ_RED       : TColor = $004A4AFF;                       // Mute                 #FF4A4A
+  DJ_YELLOW    : TColor = $0000C4FF;                       // Solo                 #FFC400
+  DJ_GREEN     : TColor = $0084DC3D;                       // Play / Meter grün    #3DDC84
+  DJ_AMBER     : TColor = $003DD2FF;                       // Meter gelb           #FFD23D
+  DJ_PLAYHEAD  : TColor = $003B3BFF;                       // Abspielkopf          #FF3B3B
+  DJ_OFF       : TColor = $00555555;                       // ausgeschaltete Stems
+  DJ_KOFI      : TColor = $005A9FFF;                       // Ko-fi-Link           #FF9F5A
   { Zusätzlich für Hell/Dunkel (vorher fest im Zeichencode) }
-  DJ_SEL       : TColor = $00423D3A;   // markierte Zeile (= DJ_BTNBORDER)
-  DJ_SELTEXT   : TColor = $00FFFFFF;   // Schrift der markierten Zeile
-  DJ_HOVERTEXT : TColor = $00FFFFFF;   // Schrift unter der Maus, Aufhellen
-  DJ_BTNTEXT   : TColor = $00B0B0B0;   // Schrift normaler Knöpfe
-  DJ_BADVALUE  : TColor = $00303078;   // Feld mit ungültigem Wert (dunkles Rot)
-  DJ_HELL      : Boolean = False;      // True = helle Variante aktiv
+  DJ_SEL       : TColor = $00423D3A;                       // markierte Zeile (= DJ_BTNBORDER)
+  DJ_SELTEXT   : TColor = $00FFFFFF;                       // Schrift der markierten Zeile
+  DJ_HOVERTEXT : TColor = $00FFFFFF;                       // Schrift unter der Maus, Aufhellen
+  DJ_BTNTEXT   : TColor = $00B0B0B0;                       // Schrift normaler Knöpfe
+  DJ_BADVALUE  : TColor = $00303078;                       // Feld mit ungültigem Wert (dunkles Rot)
+  DJ_HELL      : Boolean = False;                          // True = helle Variante aktiv
 
 { Palette auf hell umstellen (einmal beim Start, vor dem ersten Fenster) }
 procedure DJHellesDesign;
@@ -82,8 +90,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property AccentColor: TColor read FAccentColor write SetAccentColor;
-    property AccentWidth: Integer read FAccentWidth write FAccentWidth;  // 0 = kein Streifen
-    property BorderColor: TColor read FBorderColor write FBorderColor;   // clNone = kein Rahmen
+    // 0 = kein Streifen
+    property AccentWidth: Integer read FAccentWidth write FAccentWidth;
+    // clNone = kein Rahmen
+    property BorderColor: TColor read FBorderColor write FBorderColor;
   end;
 
   { ---------- Button ---------- }
@@ -181,32 +191,41 @@ procedure DrawLedBar(ACanvas: TCanvas; const R: TRect; Frac: Single;
 
 implementation
 
-{ Helle Variante: Flächen hell wie Windows 11, Schrift dunkel, Signalfarben
-  dunkler, damit sie auf hellem Grund lesbar bleiben. }
+{ DJHellesDesign
+  Stellt die Palette auf die helle Variante um (StemMaker-Einstellung
+  "Design" = hell, oder Automatisch bei hellem Windows). Muss vor dem
+  ersten Fenster laufen, weil die Steuerelemente die Farben beim Aufbau
+  übernehmen.
+  Ablauf   : 1. DJ_HELL := True (taggerform lässt dann die normale
+                Windows-Titelleiste)
+             2. Flächen hell wie Windows 11, Schrift dunkel
+             3. Signalfarben (Rot, Gelb, Grün, Ko-fi) dunkler, damit sie
+                auf hellem Grund lesbar bleiben
+             4. Markierung hellblau wie in Windows-Listen }
 procedure DJHellesDesign;
 begin
   DJ_HELL      := True;
-  DJ_BG        := $00F3F3F3;   // Fensterhintergrund   #F3F3F3
-  DJ_PANEL     := $00FFFFFF;   // Flächen / Zeilen     #FFFFFF
-  DJ_BORDER    := $00CFCFCF;   // Rahmen               #CFCFCF
-  DJ_BTN       := $00E9E9E9;   // Button-Fläche        #E9E9E9
-  DJ_BTNBORDER := $00ADADAD;   // Button-Rahmen        #ADADAD
-  DJ_TEXT      := $001E1E1E;   // dunkler Text
-  DJ_DIM       := $00666666;   // gedimmter Text
-  DJ_METERBG   := $00DEDEDE;
-  DJ_TRACK     := $00C4C4C4;
-  DJ_FOOTER    := $00E8E8E8;   // Fusszeile            #E8E8E8
-  DJ_RED       := $002828C8;   // #C82828
-  DJ_YELLOW    := $00007AA6;   // #A67A00 (gelb wäre auf Weiss unlesbar)
-  DJ_GREEN     := $00508A1A;   // #1A8A50
-  DJ_AMBER     := $000090C0;   // #C09000
-  DJ_OFF       := $00A0A0A0;
-  DJ_KOFI      := $001A60C8;   // #C8601A (orange, dunkler)
-  DJ_SEL       := $00F5DDC4;   // #C4DDF5 markierte Zeile hellblau wie Windows
-  DJ_SELTEXT   := $001E1E1E;
-  DJ_HOVERTEXT := $00000000;   // auf hellem Grund abdunkeln statt aufhellen
-  DJ_BTNTEXT   := $00404040;
-  DJ_BADVALUE  := $00C8C8FF;   // #FFC8C8 helles Rot
+  DJ_BG        := $00F3F3F3;                               // Fensterhintergrund   #F3F3F3
+  DJ_PANEL     := $00FFFFFF;                               // Flächen / Zeilen     #FFFFFF
+  DJ_BORDER    := $00CFCFCF;                               // Rahmen               #CFCFCF
+  DJ_BTN       := $00E9E9E9;                               // Button-Fläche        #E9E9E9
+  DJ_BTNBORDER := $00ADADAD;                               // Button-Rahmen        #ADADAD
+  DJ_TEXT      := $001E1E1E;                               // dunkler Text
+  DJ_DIM       := $00666666;                               // gedimmter Text
+  DJ_METERBG   := $00DEDEDE;                               // unbeleuchtete LED    #DEDEDE
+  DJ_TRACK     := $00C4C4C4;                               // Spur der Fader       #C4C4C4
+  DJ_FOOTER    := $00E8E8E8;                               // Fusszeile            #E8E8E8
+  DJ_RED       := $002828C8;                               // #C82828
+  DJ_YELLOW    := $00007AA6;                               // #A67A00 (gelb wäre auf Weiss unlesbar)
+  DJ_GREEN     := $00508A1A;                               // #1A8A50
+  DJ_AMBER     := $000090C0;                               // #C09000
+  DJ_OFF       := $00A0A0A0;                               // ausgeschaltete Stems #A0A0A0
+  DJ_KOFI      := $001A60C8;                               // #C8601A (orange, dunkler)
+  DJ_SEL       := $00F5DDC4;                               // #C4DDF5 markierte Zeile hellblau wie Windows
+  DJ_SELTEXT   := $001E1E1E;                               // Schrift markiert     #1E1E1E
+  DJ_HOVERTEXT := $00000000;                               // auf hellem Grund abdunkeln statt aufhellen
+  DJ_BTNTEXT   := $00404040;                               // Schrift der Knöpfe   #404040
+  DJ_BADVALUE  := $00C8C8FF;                               // #FFC8C8 helles Rot
 end;
 
 function BlendColor(A, B: TColor; T: Single): TColor;
@@ -225,8 +244,8 @@ end;
 procedure DrawLedBar(ACanvas: TCanvas; const R: TRect; Frac: Single;
   LitColor: TColor; Zones: Boolean);
 const
-  SEG_W = 10;   // Breite eines Segments
-  GAP   = 3;    // Abstand dazwischen
+  SEG_W = 10;                                              // Breite eines Segments
+  GAP   = 3;                                               // Abstand dazwischen
 var
   N, i, X, Lit: Integer;
   C, ZoneC: TColor;
@@ -249,7 +268,8 @@ begin
     else
       ZoneC := LitColor;
     if i < Lit then C := ZoneC
-    else if Zones then C := BlendColor(DJ_METERBG, ZoneC, 0.15)  // Zone leicht angedeutet
+    // Zone leicht angedeutet
+    else if Zones then C := BlendColor(DJ_METERBG, ZoneC, 0.15)
     else C := DJ_METERBG;
     ACanvas.Brush.Color := C;
     ACanvas.FillRect(X, R.Top, X + SEG_W, R.Bottom);
@@ -269,7 +289,7 @@ begin
   FBorderColor := DJ_BORDER;
   FAccentColor := clNone;
   FAccentWidth := 0;
-  DoubleBuffered := True;   // verhindert Flackern der Meter
+  DoubleBuffered := True;                                  // verhindert Flackern der Meter
   ParentBackground := False;
 end;
 
@@ -346,19 +366,19 @@ end;
 
 procedure TDJButton.Click;
 begin
-  if FIndicator then Exit;   // Anzeige: Klicks ignorieren
+  if FIndicator then Exit;                                 // Anzeige: Klicks ignorieren
   if FToggle then
   begin
     FDown := not FDown;
     Invalidate;
   end;
-  inherited Click;   // ruft OnClick auf
+  inherited Click;                                         // ruft OnClick auf
 end;
 
 procedure TDJButton.MouseEnter;
 begin
   inherited MouseEnter;
-  if FIndicator then Exit;   // Anzeige: kein Aufhellen beim Drüberfahren
+  if FIndicator then Exit;                                 // Anzeige: kein Aufhellen beim Drüberfahren
   FHover := True;
   Invalidate;
 end;
@@ -474,7 +494,7 @@ begin
 
     CX := (R.Left + R.Right) div 2;
     CY := (R.Top + R.Bottom) div 2;
-    S := Math.Min(Self.Width, Self.Height) div 4;   // halbe Symbolgrösse
+    S := Math.Min(Self.Width, Self.Height) div 4;          // halbe Symbolgrösse
     Brush.Color := Fg;
     Pen.Color := Fg;
     case FGlyph of
@@ -519,8 +539,8 @@ end;
   ============================================================================ }
 
 const
-  CAP_W = 14;   // Breite der Fader-Kappe
-  CAP_H = 22;   // Höhe der Fader-Kappe
+  CAP_W = 14;                                              // Breite der Fader-Kappe
+  CAP_H = 22;                                              // Höhe der Fader-Kappe
 
 constructor TDJSlider.Create(AOwner: TComponent);
 begin
@@ -590,7 +610,7 @@ end;
 
 procedure TDJSlider.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  inherited MouseDown(Button, Shift, X, Y);   // OnMouseDown für das Hauptfenster
+  inherited MouseDown(Button, Shift, X, Y);                // OnMouseDown für das Hauptfenster
   if (Button = mbLeft) and IsEnabled then
   begin
     FDragging := True;
