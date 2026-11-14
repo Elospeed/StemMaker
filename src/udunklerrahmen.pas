@@ -30,7 +30,9 @@ interface
 uses
   Forms;
 
-{ Titelleiste dieses Fensters dunkel machen (nur Windows) }
+{ Titelleiste dieses Fensters dunkel machen (nur Windows). Am besten am
+  Ende des Konstruktors aufrufen, dann ist sie schon beim ersten Zeigen
+  dunkel (sonst blitzt sie kurz weiss auf). Erzeugt dafür das Handle. }
 procedure DunklerRahmen(F: TCustomForm);
 { Ab jetzt jedes dunkle Fenster des Programms beim Aktivieren dunkel rahmen }
 procedure DunkleRahmenEinrichten;
@@ -87,18 +89,25 @@ procedure DunklerRahmen(F: TCustomForm);
 const
   DWMWA_USE_IMMERSIVE_DARK_MODE        = 20;   // ab Windows 10 20H1
   DWMWA_USE_IMMERSIVE_DARK_MODE_ALT    = 19;   // Windows 10 1809 bis 1909
+  DWMWA_CAPTION_COLOR                  = 35;   // nur Windows 11
 var
   Setze: TDwmSetWindowAttribute;
   Ein: LongBool;
+  Farbe: DWORD;
 {$ENDIF}
 begin
   {$IFDEF WINDOWS}
-  if (F = nil) or not F.HandleAllocated then Exit;
+  if F = nil then Exit;
   Setze := DwmFunktion;
   if not Assigned(Setze) then Exit;
+  F.HandleNeeded;
   Ein := True;
   if Setze(F.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, @Ein, SizeOf(Ein)) <> S_OK then
     Setze(F.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_ALT, @Ein, SizeOf(Ein));
+  { Windows 11: Titelleiste genau in der Farbe des Fensters (Windows 10
+    kennt das nicht und bleibt beim Standard-Dunkelgrau) }
+  Farbe := DWORD(ColorToRGB(F.Color));
+  Setze(F.Handle, DWMWA_CAPTION_COLOR, @Farbe, SizeOf(Farbe));
   {$ENDIF}
 end;
 

@@ -59,7 +59,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, IntfGraphics, Contnrs, ImgList, Math, uLang, uMp4Tags, uId3Tags, uStatusDraw, djcontrols, djextra, coverbild,
-  uSkalierung;
+  uSkalierung, uDunklerRahmen;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
@@ -384,6 +384,8 @@ begin
     AddPath(ParamStr(I));
   UpdateStatusBar;
   ShowSelection;
+  { dunkle Titelleiste schon vor dem ersten Zeigen (kein weisses Aufblitzen) }
+  DunklerRahmen(Self);
 end;
 
 destructor TMainForm.Destroy;

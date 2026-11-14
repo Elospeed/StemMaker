@@ -413,7 +413,7 @@ implementation
 
 uses
   {$IFDEF WINDOWS}UxTheme,{$ENDIF}
-  uStatusDraw;   // Ko-fi-Knopf, gleich wie in StemMaker
+  uStatusDraw, uDunklerRahmen;   // Ko-fi-Knopf, gleich wie in StemMaker
 
 const
   { Farben: siehe djcontrols.pas (Palette "Traktor Dark") }
@@ -531,6 +531,8 @@ begin
     LblStatus.Caption := _('ffmpeg.exe nicht gefunden - wird beim ersten Öffnen abgefragt.')
   else
     LblStatus.Caption := 'ffmpeg: ' + FFFmpeg;
+  { dunkle Titelleiste schon vor dem ersten Zeigen (kein weisses Aufblitzen) }
+  DunklerRahmen(Self);
 end;
 
 { ---------------------------------------------------------------------------
