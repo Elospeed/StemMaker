@@ -2,7 +2,7 @@
 # Stellt das Release-ZIP einer neuen Version zusammen (läuft im Workflow
 # "Release erstellen", siehe .github/workflows/release.yml, geht aber auch lokal).
 #
-#   installer/release-zip.sh <altes ZIP> <Ordner mit neuen Exes> <Version> <Ausgabeordner> [<StemOnnx>]
+#   installer/release-zip.sh <altes ZIP> <Ordner mit neuen Exes> <Version> <Ausgabeordner> [<StemOnnx>] [<Hilfe>]
 #
 # <altes ZIP>   das letzte Release-ZIP (aus update.json). Daraus kommen die Teile,
 #               die nicht im Repository liegen: demucs.cpp in tools\ und der
@@ -11,6 +11,8 @@
 # <Version>     z. B. 1.7.2
 # <StemOnnx>    (ab 2.0) frisch gebauter Ordner von engines/onnx/build.sh
 #               (dist/StemOnnx). Kommt nach tools\onnx\ und ersetzt dort alles.
+# <Hilfe>       (ab 2.4) Ordner mit de.html, en.html, es.html von
+#               docs/handbuch/build.py --hilfe. Kommt nach hilfe\.
 #
 # Aufbau wie bisher: alles im Ordner StemMaker\, StemCLI, StemPlayer und StemTagger
 # unter AddOns\, dazu Quelltext (Hauptprogramm, StemPlayer, StemTagger),
@@ -22,6 +24,7 @@ set -euo pipefail
 
 ALT=$(realpath "$1"); EXES=$(realpath "$2"); VERSION="$3"
 ONNX="${5:-}"; [ -n "$ONNX" ] && ONNX=$(realpath "$ONNX")
+HILFE="${6:-}"; [ -n "$HILFE" ] && HILFE=$(realpath "$HILFE")
 mkdir -p "$4"; AUS=$(realpath "$4")
 REPO=$(realpath "$(dirname "$0")/..")
 ARBEIT=$(mktemp -d)
@@ -63,6 +66,16 @@ if [ -n "$ONNX" ]; then
   mkdir -p "$Z/tools/onnx"
   cp -r "$ONNX"/. "$Z/tools/onnx/"
   rm -f "$Z/tools/onnx/Test-starten.bat"
+fi
+
+# 3c. Hilfe (ab 2.4): "?" und F1 öffnen hilfe\<Sprache>.html
+if [ -n "$HILFE" ]; then
+  for L in de en es; do
+    [ -f "$HILFE/$L.html" ] || { echo "In $HILFE fehlt $L.html"; exit 1; }
+  done
+  rm -rf "$Z/hilfe"
+  mkdir -p "$Z/hilfe"
+  cp "$HILFE"/*.html "$Z/hilfe/"
 fi
 
 # 4. packen

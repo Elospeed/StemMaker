@@ -1,11 +1,14 @@
 { ============================================================================
-  StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
-  ----------------------------------------------------------------------------
+  Unit    : uInit  (Datei uinit.pas)
+  Programm: StemMaker  -  Traktor-Stem-Dateien aus MP3 erstellen
   Autor   : Elospeed
-  Datei   : uinit.pas  (Unit uInit)
-  Version : wie StemMaker, siehe APP_VERSION in version.inc
+  Stand   : 14.11.2026
   ----------------------------------------------------------------------------
-  WORUM GEHT ES HIER?
+  ÄNDERUNGEN
+    2.4, 14.11.2026: Häkchen-Farben passend zum dunklen Design, F1
+    frühere Versionen: siehe CHANGELOG.md
+  ----------------------------------------------------------------------------
+  ZWECK
 
   Das Startfenster. Bevor das eigentliche Programm aufgeht, wird geprüft,
   ob alles da ist und funktioniert. Die Prüfungen werden nacheinander
@@ -30,6 +33,12 @@
 
   Das Fenster wird komplett im Code aufgebaut (keine .lfm-Datei), weil
   es sehr einfach ist und so alles an einer Stelle steht.
+
+  BENUTZUNG
+
+    RunStartupCheck      Startfenster mit allen Prüfungen; False =
+                         Programm nicht starten.
+    TextMitAuslassung    kürzt Text mit "..." auf eine Breite in Pixeln.
   ============================================================================ }
 unit uInit;
 
@@ -56,7 +65,7 @@ function TextMitAuslassung(C: TCanvas; const S: string; MaxW: Integer): string;
 implementation
 
 uses
-  LazUTF8, uLang;
+  LazUTF8, uLang, uStatusDraw;
 
 const
   { Download-Adressen (lassen sich in der INI überschreiben, siehe DownloadURL) }
@@ -74,8 +83,8 @@ const
   DEF_MODEL_SHA256_FT_BASS = 'e6ded215aa15fb4eff7a37f3a51fd596ee17c94ae0ddb7ef3f2f6ecf8b86cdb5';
   DEF_MODEL_SHA256_FT_OTHER = 'cbc315571584d512e7853c9d40a499182393a7f4155cb8723a9040a685c2435b';
   DEF_MODEL_SHA256_FT_VOCALS = '19186500a45a551a034d96e9500415ebe73c8bd570bf55337ddc8cc8f53a9120';
-  FFMPEG_MB = 60;                       // ungefähre Downloadgröße für die Anzeige (feste Version aus update.json)
-  MIN_MODEL_SIZE = 40 * 1024 * 1024;    // echte Modelle sind 53..160 MB groß
+  FFMPEG_MB = 60;                                          // ungefähre Downloadgröße für die Anzeige (feste Version aus update.json)
+  MIN_MODEL_SIZE = 40 * 1024 * 1024;                       // echte Modelle sind 53..160 MB groß
 
   { Zeilennummern der Prüfliste }
   ROW_CPU = 0; ROW_FFMPEG = 1; ROW_DEMUCS = 2; ROW_MODEL = 3; ROW_TEMP = 4;
@@ -92,12 +101,12 @@ type
 
   { ein Download-Auftrag }
   TDlJob = record
-    URL     : string;   // woher
-    Dest    : string;   // wohin (endgültiger Dateiname)
-    ZipEntry: string;   // leer = direkt speichern; sonst diese Datei aus dem ZIP holen
-    Caption : string;   // Anzeigename
-    SizeMB  : Integer;  // ungefähre Größe für die Anzeige
-    IniKey  : string;   // 'FFmpegZipURL' / 'ModelBaseURL': Adresse aus update.json,
+    URL     : string;                                      // woher
+    Dest    : string;                                      // wohin (endgültiger Dateiname)
+    ZipEntry: string;                                      // leer = direkt speichern; sonst diese Datei aus dem ZIP holen
+    Caption : string;                                      // Anzeigename
+    SizeMB  : Integer;                                     // ungefähre Größe für die Anzeige
+    IniKey  : string;                                      // 'FFmpegZipURL' / 'ModelBaseURL': Adresse aus update.json,
                         // ausser sie ist in der INI fest eingetragen
   end;
 
@@ -112,8 +121,8 @@ type
   private
     FForm: TfrmInit;
     FJobs: array of TDlJob;
-    FIndex: Integer;               // welcher Auftrag gerade läuft
-    FDone, FTotal: Int64;          // Fortschritt des aktuellen Downloads
+    FIndex: Integer;                                       // welcher Auftrag gerade läuft
+    FDone, FTotal: Int64;                                  // Fortschritt des aktuellen Downloads
     procedure Progress(Done, Total: Int64);
     function Cancelled: Boolean;
     procedure SyncProgress;
@@ -121,7 +130,7 @@ type
   protected
     procedure Execute; override;
   public
-    ErrMsg: string;                // leer = alles gut
+    ErrMsg: string;                                        // leer = alles gut
     constructor Create(AForm: TfrmInit; const Jobs: array of TDlJob);
   end;
 
@@ -132,15 +141,15 @@ type
   private
     FRows: array of TCheckRow;
     lblHead, lblStatus, lblDlTime: TLabel;
-    FDlStart: QWord;               // Startzeit des aktuellen Downloads (ms)
+    FDlStart: QWord;                                       // Startzeit des aktuellen Downloads (ms)
     pb: TProgressBar;
     btnDownload, btnRetry, btnStartAnyway, btnQuit, btnCancel: TButton;
     tmrStart, tmrClose: TTimer;
     FSettings: TStemSettings;
     FAutoClose: Boolean;
-    FJobs: array of TDlJob;        // was heruntergeladen werden muss
-    FFatal: Boolean;               // Problem, das ein Download NICHT löst
-    FThread: TDlThread;            // läuft gerade ein Download?
+    FJobs: array of TDlJob;                                // was heruntergeladen werden muss
+    FFatal: Boolean;                                       // Problem, das ein Download NICHT löst
+    FThread: TDlThread;                                    // läuft gerade ein Download?
     function AddRow(const ATitle: string): Integer;
     procedure SetRow(I: Integer; State: TCheckState; const ADetail: string);
     procedure AddJob(const URL, Dest, ZipEntry, ACaption: string; SizeMB: Integer;
@@ -293,11 +302,11 @@ begin
       else if P.Running then
       begin
         Sleep(20);
-        Application.ProcessMessages;   // Fenster bleibt bedienbar
+        Application.ProcessMessages;                       // Fenster bleibt bedienbar
       end;
       if GetTickCount64 - T0 > 15000 then
       begin
-        P.Terminate(1);                 // hängt -> abbrechen
+        P.Terminate(1);                                    // hängt -> abbrechen
         Output := Output + _(' [Zeitlimit]');
         Exit;
       end;
@@ -382,7 +391,7 @@ end;
 function ModelSizeMB(M: TStemModel): Integer;
 begin
   case M of
-    smHTDemucsFT: Result := 81;     // pro Datei, es sind 4 Dateien
+    smHTDemucsFT: Result := 81;                            // pro Datei, es sind 4 Dateien
     smHDemucsV3 : Result := 160;
   else
     Result := 81;
@@ -396,8 +405,8 @@ constructor TDlThread.Create(AForm: TfrmInit; const Jobs: array of TDlJob);
 var
   I: Integer;
 begin
-  inherited Create(True);          // True = noch nicht starten
-  FreeOnTerminate := False;        // wir geben ihn selbst frei (FreeDlThread)
+  inherited Create(True);                                  // True = noch nicht starten
+  FreeOnTerminate := False;                                // wir geben ihn selbst frei (FreeDlThread)
   FForm := AForm;
   SetLength(FJobs, Length(Jobs));
   for I := 0 to High(Jobs) do
@@ -489,7 +498,7 @@ begin
     FIndex := I;
     Synchronize(@SyncJobStart);
     LogLine('Download: ' + FJobs[I].URL);
-    ForceDirectories(ExtractFilePath(FJobs[I].Dest));   // tools\ bzw. models\
+    ForceDirectories(ExtractFilePath(FJobs[I].Dest));      // tools\ bzw. models\
     if FJobs[I].ZipEntry <> '' then
       Target := GetTempDir(False) + 'stemmaker_download.zip'
     else
@@ -517,7 +526,7 @@ begin
     begin
       if not ExtractSingleFromZip(Target, FJobs[I].ZipEntry, FJobs[I].Dest, E) then
         ErrMsg := FJobs[I].Caption + ': ' + E;
-      SysUtils.DeleteFile(Target);                        // ZIP wird nicht mehr gebraucht
+      SysUtils.DeleteFile(Target);                         // ZIP wird nicht mehr gebraucht
       if ErrMsg <> '' then
         Exit;
     end;
@@ -547,6 +556,7 @@ constructor TfrmInit.CreateInit(AModel: TStemModel; AAutoClose: Boolean);
 begin
   { CreateNew statt Create: dieses Fenster hat keine .lfm-Datei }
   inherited CreateNew(nil);
+  HelpKeyword := 'pruefen';                                // F1 öffnet die Hilfe hier (uHilfe)
   FAutoClose := AAutoClose;
   { Pfade genauso ermitteln wie das Hauptprogramm (Standard + INI) }
   FSettings := DefaultStemSettings;
@@ -630,7 +640,7 @@ var
 begin
   Result := Length(FRows);
   SetLength(FRows, Result + 1);
-  Y := 48 + Result * 26;           // 26 Pixel pro Zeile
+  Y := 48 + Result * 26;                                   // 26 Pixel pro Zeile
   with FRows[Result] do
   begin
     Icon := TLabel.Create(Self);
@@ -651,7 +661,7 @@ begin
     Detail.Parent := Self;
     Detail.AutoSize := False;
     Detail.SetBounds(200, Y + 1, 384, 20);
-    Detail.ShowHint := True;       // langer Text -> als Tooltip lesbar
+    Detail.ShowHint := True;                               // langer Text -> als Tooltip lesbar
   end;
   SetRow(Result, csWait, '');
 end;
@@ -678,10 +688,11 @@ begin
     case State of
       csWait   : begin Icon.Caption := '·';  Icon.Font.Color := clGrayText; end;
       csRunning: begin Icon.Caption := '…';  Icon.Font.Color := clGrayText; end;
-      csOK     : begin Icon.Caption := '✓';  Icon.Font.Color := clGreen;    end;
-      csWarn   : begin Icon.Caption := '!';  Icon.Font.Color := $0080FF;    end; // orange
-      csFail   : begin Icon.Caption := '✗';  Icon.Font.Color := clRed;      end;
-      csInfo   : begin Icon.Caption := 'i';  Icon.Font.Color := clNavy;     end;
+      csOK     : begin Icon.Caption := '✓';  Icon.Font.Color := FarbeOK;    end;
+      // orange
+      csWarn   : begin Icon.Caption := '!';  Icon.Font.Color := $0080FF;    end;
+      csFail   : begin Icon.Caption := '✗';  Icon.Font.Color := FarbeFehler; end;
+      csInfo   : begin Icon.Caption := 'i';  Icon.Font.Color := FarbeInfo;  end;
     end;
     Detail.Canvas.Font := Detail.Font;
     Detail.Caption := TextMitAuslassung(Detail.Canvas, ADetail, Detail.Width);
@@ -891,9 +902,9 @@ begin
     lblStatus.Caption := Format(_('%s wird gestartet ...'), [APP_NAME]);
     btnStartAnyway.Caption := _('Starten');
     if FAutoClose then
-      tmrClose.Enabled := True      // kurz stehen lassen, dann zu
+      tmrClose.Enabled := True                             // kurz stehen lassen, dann zu
     else
-      ModalResult := mrOK;          // aus dem Hauptfenster: sofort zurück
+      ModalResult := mrOK;                                 // aus dem Hauptfenster: sofort zurück
   end
   else if not FFatal then
   begin
@@ -948,20 +959,20 @@ begin
     begin
       X := X - Order[I].Width;
       Order[I].SetBounds(X, ClientHeight - 44, Order[I].Width, 30);
-      X := X - 8;                  // Abstand zwischen den Buttons
+      X := X - 8;                                          // Abstand zwischen den Buttons
     end;
 end;
 
 procedure TfrmInit.tmrStartTimer(Sender: TObject);
 begin
-  tmrStart.Enabled := False;       // nur einmal auslösen
+  tmrStart.Enabled := False;                               // nur einmal auslösen
   RunChecks;
 end;
 
 procedure TfrmInit.tmrCloseTimer(Sender: TObject);
 begin
   tmrClose.Enabled := False;
-  ModalResult := mrOK;             // Fenster schließen, Hauptprogramm startet
+  ModalResult := mrOK;                                     // Fenster schließen, Hauptprogramm startet
 end;
 
 { ---------------------------------------------------------------------------
@@ -990,7 +1001,7 @@ procedure TfrmInit.DlJobStart(Index, Count: Integer; const ACaption: string);
 begin
   lblStatus.Caption := Format(_('Lade %s  (%d von %d)'), [ACaption, Index + 1, Count]);
   pb.Position := 0;
-  FDlStart := GetTickCount64;      // Stoppuhr für diese Datei starten
+  FDlStart := GetTickCount64;                              // Stoppuhr für diese Datei starten
   lblDlTime.Caption := '';
 end;
 
@@ -1029,8 +1040,8 @@ begin
   { Zeitanzeige: vergangen, Tempo und - wenn die Größe bekannt ist -
     die Restzeit. Restzeit = noch fehlende Bytes / bisheriges Tempo. }
   MS := GetTickCount64 - FDlStart;
-  if MS < 500 then Exit;           // ganz am Anfang noch nichts anzeigen
-  Speed := Done / (MS / 1000);     // Bytes pro Sekunde
+  if MS < 500 then Exit;                                   // ganz am Anfang noch nichts anzeigen
+  Speed := Done / (MS / 1000);                             // Bytes pro Sekunde
   if (Total > 0) and (Speed > 0) and (MS > 3000) then
     Rest := Format(_('ca. %s'), [Dur(Round((Total - Done) / Speed * 1000))])
   else
@@ -1104,7 +1115,7 @@ begin
   if FThread <> nil then
   begin
     lblStatus.Caption := _('Breche ab ...');
-    FThread.Terminate;             // der Thread merkt das beim nächsten Stück
+    FThread.Terminate;                                     // der Thread merkt das beim nächsten Stück
   end;
 end;
 

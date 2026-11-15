@@ -3,6 +3,13 @@
   Traktor-Stem-Dateien (.stem.mp4) setzen, ohne die Stem-Daten anzufassen.
 
   Autor : Elospeed  ·  ko-fi.com/elospeed
+  Stand : 14.11.2026
+  ----------------------------------------------------------------------------
+  ÄNDERUNGEN
+    1.2.3 (mit StemMaker 2.4), 14.11.2026: dunkle Titelleiste,
+                     F1-Hilfe
+    frühere Versionen: siehe Liste "Versionen" in taggerform.pas
+  ----------------------------------------------------------------------------
 
   Projektaufbau:
     StemTagger.lpr   dieses Hauptprogramm
@@ -15,6 +22,8 @@
     ustatusdraw.pas  Ko-fi-Knopf zeichnen
     uskalierung.pas  Hilfen für die Windows-Skalierung (DPI)
     uwine.pas        unter Wine (Linux) normales Fenster mit Minimieren
+    udunklerrahmen.pas  dunkle Titelleiste (Kopie aus StemMaker)
+    uhilfe.pas       "?" und F1: Anleitung im Browser (Kopie)
     StemTagger.ico   Programmsymbol (wird über die .lpi eingebunden)
   ============================================================================ }
 program StemTagger;
@@ -24,16 +33,20 @@ program StemTagger;
 uses
   {$IFDEF UNIX}cthreads,{$ENDIF}
   Interfaces, Forms, taggerform,
-  uWine;   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
+  uWine,                                                   // unter Wine (Linux-AppImage): normales Fenster mit Minimieren
+  uDunklerRahmen,                                          // dunkle Titelleiste passend zum dunklen Fenster
+  uHilfe;                                                  // F1 öffnet das Kapitel StemTagger der Anleitung
 
 {$R *.res}   // Symbol, Versionsinfo und Manifest (von Lazarus erzeugt)
 
 begin
-  RequireDerivedFormResource := False;   // Formular wird im Code aufgebaut (keine .lfm)
+  RequireDerivedFormResource := False;                     // Formular wird im Code aufgebaut (keine .lfm)
   Application.Scaled := True;
   Application.Title := 'Elospeed StemTagger';
   Application.Initialize;
-  WineFensterEinrichten;   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
+  WineFensterEinrichten;                                   // nur unter Wine: Hauptfenster besitzt den Taskleisten-Knopf
+  DunkleRahmenEinrichten;                                  // Windows 10/11: Titelleiste dunkel statt weiss
+  HilfeTasteEinrichten;                                    // F1 in allen Fenstern (uHilfe)
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

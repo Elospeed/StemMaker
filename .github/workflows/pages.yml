@@ -7,7 +7,7 @@ name: Projektseite
 on:
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "docs/handbuch/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 env:
@@ -43,6 +43,16 @@ jobs:
           DATUM=$(git log -1 --format=%cs -- site)
           sed -i "s|<lastmod>[^<]*</lastmod>|<lastmod>$DATUM</lastmod>|g" site/sitemap.xml
           grep lastmod site/sitemap.xml
+      # Anleitung aus docs/handbuch (ab 2.4): die HTML-Hilfe unter hilfe/
+      # (StemMaker öffnet sie mit "?" und F1, wenn der Ordner hilfe neben
+      # der Exe fehlt) und das Handbuch als PDF unter handbuch/.
+      - name: Hilfe und Handbuch bauen
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq pandoc poppler-utils fonts-crosextra-carlito fonts-dejavu-core
+          python3 docs/handbuch/build.py --hilfe site/hilfe
+          python3 docs/handbuch/build.py --out site/handbuch
+          ls -l site/hilfe site/handbuch
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

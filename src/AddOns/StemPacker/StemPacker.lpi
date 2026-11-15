@@ -23,7 +23,8 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="0"/>
       <MinorVersionNr Value="3"/>
-      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPacker - fertige Spuren zu Traktor-Stems" InternalName="StemPacker" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPacker.exe" ProductName="Elospeed StemPacker" ProductVersion="0.3"/>
+      <RevisionNr Value="1"/>
+      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPacker - fertige Spuren zu Traktor-Stems" InternalName="StemPacker" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPacker.exe" ProductName="Elospeed StemPacker" ProductVersion="0.3.1"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -69,7 +70,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      
+      <OtherUnitFiles Value="../../darkstyle"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

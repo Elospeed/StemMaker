@@ -27,6 +27,11 @@ It builds on the work of the people and projects listed below. Thank you!
 - Free Pascal RTL/FCL and Lazarus LCL/LazUtils – https://www.freepascal.org, https://www.lazarus-ide.org
 - License: **modified LGPL** with a static-linking exception, which allows distributing programs built with them under any license.
 
+### metadarkstyle – dark theme on Windows (from StemMaker 2.4)
+- metadarkstyle by Andrey Zubarev, partly based on the dark widgetset of Double Commander by Alexander Koblov – https://github.com/zamtmn/metadarkstyle
+- Source copied unchanged into `src/darkstyle/` (see the README there for the exact version).
+- License: **LGPL 2.1 or later with a static-linking exception** (in the header of each file), which allows distributing StemMaker under MIT.
+
 ---
 
 ## Downloaded by StemMaker on first start (not part of this repository)
