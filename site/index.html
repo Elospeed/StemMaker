@@ -43,7 +43,7 @@
   "description": "Converts MP3, WAV, FLAC, AIFF, M4A, AAC, OGG and Opus files into Traktor stem files (.stem.mp4) with four stems: drums, bass, other (melody) and vocals.",
   "url": "https://elospeed.github.io/StemMaker/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
-  "softwareVersion": "2.3",
+  "softwareVersion": "2.4",
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -75,7 +75,7 @@
 <section class="hero">
   <div class="wrap">
     <h1>Turn your MP3s into<br><span class="grad">Traktor Stems</span></h1>
-    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. One small Windows program, free and open source: no Python, no PyTorch, no graphics drivers, nothing to set up. The Turbo engine separates a song in about a minute on a normal PC, and in seconds with a graphics card. New in 2.3: the StemPacker add-on packs finished tracks into stem files. Also available for Linux (beta).</p>
+    <p class="lead">StemMaker splits a track into drums, bass, melody and vocals and saves it as a ready-to-play <code>.stem.mp4</code> for Traktor. One small Windows program, free and open source: no Python, no PyTorch, no graphics drivers, nothing to set up. The Turbo engine separates a song in about a minute on a normal PC, and in seconds with a graphics card. New in 2.4: light or dark design and built-in help on F1. Also available for Linux (beta).</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/latest">⬇ Download for Windows</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker">View source on GitHub</a>
@@ -93,7 +93,7 @@
       <li>Up to 320 kbit/s</li>
     </ul>
     <figure class="shot light hero-shot">
-      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 2.3 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
+      <div class="bar"><img src="img/icon-32.png" alt=""><span>Elospeed StemMaker 2.4 - Traktor stems (*.stem.mp4) from audio files</span><i class="min"></i><i class="max"></i><i class="cls"></i></div>
       <img src="img/stemmaker-en.png" width="860" height="724" alt="StemMaker main window with a list of MP3 files being converted into Traktor stem files, with the add-on bar for StemPlayer, StemTagger and StemPacker on the right">
     </figure>
   </div>
@@ -189,9 +189,21 @@
 <section id="new" class="alt">
   <div class="wrap">
     <div style="margin-bottom:56px">
-      <span class="badge">New in 2.3</span>
+      <span class="badge">New in 2.4</span>
+      <h2>Light or dark, and help on F1</h2>
+      <p class="sub">Already using StemMaker? The built-in update brings you version 2.4 with one click.</p>
+      <div class="soon">
+        <ul class="ticks">
+          <li><strong>Light or dark:</strong> under "More settings..." → "Program" → "Theme" you choose "Automatic (like Windows)", "Light" or "Dark". The main window, settings, messages, lists, menus and title bars turn dark, and StemPlayer, StemTagger and StemPacker follow along. Needs Windows 10 1809 or newer or Windows 11. Thanks to David GJ for the idea</li>
+          <li><strong>Built-in help:</strong> the new <strong>?</strong> button and the <strong>F1</strong> key open the illustrated <a href="hilfe/en.html">user guide</a> right at the matching section, also in StemPlayer, StemTagger and StemPacker. It works offline and comes in English, German and Spanish</li>
+          <li><strong>User guide updated:</strong> new chapters on StemTagger and StemPacker, the add-on panel, light/dark and Linux, all with fresh pictures</li>
+          <li>Fixed: the pre-test result in the settings was cut off in English and Spanish and stayed in the language of the test</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-bottom:56px">
+      <span class="badge">Since 2.3</span>
       <h2>StemPacker joins as an add-on</h2>
-      <p class="sub">Already using StemMaker? The built-in update brings you version 2.3 with one click.</p>
       <div class="soon">
         <ul class="ticks">
           <li><strong>StemPacker 0.3:</strong> packs finished tracks into Traktor stem files, without AI and in batches: a master plus up to four stems, for example from your DAW, a 5.1 DVD or another separation tool. It recognises how the files are named. Start it from the new tile in the add-on panel or from the Start menu; it uses StemMaker's ffmpeg and languages. Also available on its own on the <a href="https://elospeed.github.io/StemPacker/">StemPacker page</a></li>
@@ -305,7 +317,7 @@
   <div class="wrap">
     <span class="badge">Beta</span>
     <h2>StemMaker on Linux</h2>
-    <p class="sub">The regular StemMaker in a single AppImage with Wine built in. Nothing to install, not even Wine. StemPlayer, StemTagger and StemPacker are included, and it is the same version as for Windows (2.3). It is still a beta: Turbo runs on the processor only for now, and dialogs look like Windows.</p>
+    <p class="sub">The regular StemMaker in a single AppImage with Wine built in. Nothing to install, not even Wine. StemPlayer, StemTagger and StemPacker are included, and it is the same version as for Windows (2.4). It is still a beta: Turbo runs on the processor only for now, and dialogs look like Windows.</p>
     <ul class="ticks">
       <li>Download the AppImage (about 110 MB).</li>
       <li>Make it executable (right-click → Properties → “Run as program”) and start it. The first start takes about 30 seconds.</li>
@@ -313,7 +325,7 @@
     </ul>
     <p class="note"><strong>AppImage won't start?</strong> Install <code>libfuse2</code> (Ubuntu 24.04 and newer: <code>sudo apt install libfuse2t64</code>).</p>
     <div class="cta" style="justify-content:flex-start;margin-top:22px">
-      <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/download/v2.3/StemMaker-2.3-x86_64.AppImage">⬇ Download for Linux (AppImage)</a>
+      <a class="btn primary" href="https://github.com/Elospeed/StemMaker/releases/download/v2.4/StemMaker-2.4-x86_64.AppImage">⬇ Download for Linux (AppImage)</a>
       <a class="btn" href="https://github.com/Elospeed/StemMaker/discussions">Give feedback</a>
     </div>
     <p class="sub" style="margin:18px 0 0">A big thank you to David GJ and ptrex from the Mixxx forum, who tested the Linux version thoroughly.</p>
