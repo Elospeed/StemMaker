@@ -44,11 +44,127 @@
   "url": "https://elospeed.github.io/StemMaker/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
   "softwareVersion": "2.4",
+  "featureList": [
+    "Separates music into four stems: drums, bass, other (melody) and vocals",
+    "Writes ready-to-use Traktor stem files (.stem.mp4) in one step",
+    "Processes whole folders in a list and resumes after a stop",
+    "Turbo engine (ONNX Runtime) runs on the CPU; optional graphics card via DirectML (NVIDIA, AMD, Intel)",
+    "No Python, no PyTorch, no CUDA to install",
+    "Copies tags and cover art from the source file",
+    "Works with Traktor Pro 4 and Mixxx 2.6",
+    "Includes StemPlayer, StemTagger and StemPacker add-ons",
+    "Nine languages, light and dark design",
+    "Windows 10/11 (64-bit) and Linux (beta, AppImage)"
+  ],
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": { "@type": "Organization", "name": "Elospeed", "url": "https://elospeed.github.io/", "sameAs": ["https://github.com/Elospeed"] },
   "screenshot": "https://elospeed.github.io/StemMaker/img/stemmaker-en.png"
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Is StemMaker really free?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. StemMaker is open source under the MIT licence. There are no ads, no account and no paid version. If you like it, you can leave a voluntary donation on Ko-fi."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Which DJ software can play the stem files?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "The files follow the open NI stem format (an MP4 with master plus four stems and stem metadata), the same way Stemgen builds them. Confirmed so far: Traktor Pro 4: tested by us, all four stems play in the Stem Decks. Mixxx 2.6 (currently in beta): tested by us, the files load as stems with four stem controls, names, colours and a coloured stem waveform. The stable Mixxx 2.5 cannot play stems yet. Any other software that reads .stem.mp4 should work too."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do I need a graphics card or Python?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. StemMaker brings its separation engine along (ONNX Runtime, with demucs.cpp as a fallback), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. The Turbo engine runs fast on the processor alone. If you have a graphics card (NVIDIA, AMD or Intel), StemMaker tests it on the first start and uses it only if it computes correctly and faster; that part is still marked beta. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB)."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Does StemMaker run on Linux or macOS?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Linux: yes. There is an AppImage with Wine built in, so you install nothing extra (see StemMaker on Linux). It is still a beta, and there Turbo runs on the processor only. macOS: there is no version for macOS."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "StemMaker, UVR5 or StemRoller: what is the difference?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "All three separate music into stems with AI models. UVR5 and StemRoller save each stem as its own audio file; UVR5 offers many models and settings for the cleanest possible separation. StemMaker is made for DJs: it writes one finished .stem.mp4 per track that Traktor and Mixxx load directly as a stem file, with tags and cover, and works through whole folders on its own. If you need single WAV tracks, UVR5 or StemRoller fit better; if you want stem files for your DJ software, StemMaker saves the extra packing step."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Windows shows “Windows protected your PC”. Is that a problem?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "StemMaker is not digitally signed, because signing certificates cost money every year. Click “More info” and then “Run anyway”. The full source code is on GitHub, and you can check the download on VirusTotal or build it yourself."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "How good is the separation?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "In our test against a stem file made by Traktor Pro 4 from the same track, StemMaker came out about level: drums, kick and vocals sounded nearly identical. Paid tools like RipX or Lalal.ai and special models in UVR5 separate even more cleanly. When you solo a stem you can sometimes hear small artifacts, as with every tool of this kind."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Traktor Pro 4 can make stems itself. Why StemMaker?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Honestly: if Traktor's own separation works for you, you don't need StemMaker. Since version 2.0 StemMaker is about as fast as Traktor 4 on the same processor, and much faster with a suitable graphics card. Traktor keeps its stems inside its own collection, though: in its Stems folder, with hashed file names, linked to the original track. StemMaker writes standalone .stem.mp4 files with readable names next to your music, so you can copy them to another laptop or a USB stick and use them with any software that reads .stem.mp4. It works through complete folders on its own, for example overnight, shows the expected time beforehand and continues after a stop or power cut. You don't need a Traktor licence for it, and it raises quiet files to club level, so the waveforms are easy to read."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Are tags and cover art carried over?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes: title, artist, album, genre, year, track number, BPM, key, label, ISRC and the cover are copied from the source file, so the stem file looks right in your collection straight away. Traktor replaces BPM and key with its own analysis anyway; until then, and in other programs, the values from your file are shown."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What music can I use?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "StemMaker is a tool for music you own, for example tracks you bought or your own productions. Please respect the rights of the artists and only use the stem files for your own purposes."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Is there a command line version?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes, AddOns\\StemCLI.exe does the same without a window, for batch files or the Windows Task Scheduler."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Where can I ask questions or suggest ideas?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "In the GitHub Discussions. You can attach screenshots, logs and files there. Reading works without an account, writing needs a free GitHub account."
+   }
+  }
+ ]
 }
 </script>
 </head>
@@ -354,7 +470,15 @@
     </details>
     <details>
       <summary>Do I need a graphics card or Python?</summary>
-      <p>No. StemMaker brings its separation engine along (ONNX Runtime, with demucs.cpp as a fallback), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. It runs fast on the processor. If you have a graphics card (NVIDIA, AMD or Intel), StemMaker tests it on the first start and uses it only if it computes correctly and faster; that part is still marked beta. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB).</p>
+      <p>No. StemMaker brings its separation engine along (ONNX Runtime, with demucs.cpp as a fallback), so there is no Python environment, no PyTorch and no CUDA driver to install and nothing that can conflict with other software on your PC. The Turbo engine runs fast on the processor alone. If you have a graphics card (NVIDIA, AMD or Intel), StemMaker tests it on the first start and uses it only if it computes correctly and faster; that part is still marked beta. You need a 64-bit Windows 10 or 11 and an internet connection on the first start for the downloads (ffmpeg approx. 56 MB, model 81 MB).</p>
+    </details>
+    <details>
+      <summary>Does StemMaker run on Linux or macOS?</summary>
+      <p>Linux: yes. There is an AppImage with Wine built in, so you install nothing extra (see <a href="#linux">StemMaker on Linux</a>). It is still a beta, and there Turbo runs on the processor only. macOS: there is no version for macOS.</p>
+    </details>
+    <details>
+      <summary>StemMaker, UVR5 or StemRoller: what is the difference?</summary>
+      <p>All three separate music into stems with AI models. UVR5 and StemRoller save each stem as its own audio file; UVR5 offers many models and settings for the cleanest possible separation. StemMaker is made for DJs: it writes one finished <code>.stem.mp4</code> per track that Traktor and Mixxx load directly as a stem file, with tags and cover, and works through whole folders on its own. If you need single WAV tracks, UVR5 or StemRoller fit better; if you want stem files for your DJ software, StemMaker saves the extra packing step.</p>
     </details>
     <details>
       <summary>Windows shows “Windows protected your PC”. Is that a problem?</summary>
