@@ -45,11 +45,127 @@
   "url": "https://elospeed.github.io/StemMaker/de/",
   "downloadUrl": "https://github.com/Elospeed/StemMaker/releases/latest",
   "softwareVersion": "2.4",
+  "featureList": [
+    "Trennt Musik in vier Stems: Drums, Bass, Other (Melodie) und Vox",
+    "Schreibt fertige Traktor-Stem-Dateien (.stem.mp4) in einem Schritt",
+    "Arbeitet ganze Ordner als Liste ab und macht nach einem Abbruch weiter",
+    "Turbo-Engine (ONNX Runtime) läuft auf dem Prozessor; Grafikkarte optional über DirectML (NVIDIA, AMD, Intel)",
+    "Kein Python, kein PyTorch, kein CUDA zu installieren",
+    "Übernimmt Tags und Cover aus der Quelldatei",
+    "Läuft mit Traktor Pro 4 und Mixxx 2.6",
+    "Mit den AddOns StemPlayer, StemTagger und StemPacker",
+    "Neun Sprachen, helles und dunkles Design",
+    "Windows 10/11 (64 Bit) und Linux (Beta, AppImage)"
+  ],
   "license": "https://opensource.org/licenses/MIT",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
   "author": { "@type": "Organization", "name": "Elospeed", "url": "https://elospeed.github.io/", "sameAs": ["https://github.com/Elospeed"] },
   "screenshot": "https://elospeed.github.io/StemMaker/img/stemmaker-de.png"
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Ist StemMaker wirklich kostenlos?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ja. StemMaker ist Open Source unter der MIT-Lizenz. Keine Werbung, kein Konto, keine Bezahlversion. Wenn er dir gefällt, freut sich Elospeed über eine freiwillige Spende auf Ko-fi."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "In welchen DJ-Programmen laufen die Stem-Dateien?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Die Dateien folgen dem offenen NI-Stem-Format (MP4 mit Master, vier Stems und Stem-Metadaten), genau wie bei Stemgen. Gesichert sind: Traktor Pro 4: selbst getestet, die vier Stems laufen in den Stem Decks. Mixxx 2.6 (zurzeit Beta): selbst getestet, die Dateien laden als Stems mit vier Stem-Reglern, Namen, Farben und farbiger Stem-Wellenform. Die stabile Mixxx 2.5 kann noch keine Stems. Andere Programme, die .stem.mp4 lesen, sollten ebenfalls funktionieren."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Brauche ich eine Grafikkarte oder Python?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Nein. StemMaker bringt seine Trenn-Engine mit (ONNX Runtime, dazu demucs.cpp als Rückfall). Es gibt also keine Python-Umgebung, kein PyTorch und keinen CUDA-Treiber zu installieren und nichts, was sich mit anderer Software auf deinem PC in die Haare kriegt. Die Turbo-Engine ist schon allein auf dem Prozessor schnell. Hast du eine Grafikkarte (NVIDIA, AMD oder Intel), testet StemMaker sie beim ersten Start und nimmt sie nur, wenn sie richtig und schneller rechnet; dieser Teil ist noch Beta. Nötig sind Windows 10 oder 11 (64 Bit) und beim ersten Start eine Internetverbindung für die Downloads (ffmpeg ca. 56 MB, Modell 81 MB)."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Läuft StemMaker unter Linux oder macOS?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Linux: ja. Es gibt ein AppImage mit eingebautem Wine, du musst also nichts zusätzlich installieren (siehe StemMaker unter Linux). Es ist noch eine Beta, und Turbo rechnet dort nur auf dem Prozessor. macOS: Für macOS gibt es keine Version."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "StemMaker, UVR5 oder StemRoller: Was ist der Unterschied?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Alle drei trennen Musik mit KI-Modellen in Stems. UVR5 und StemRoller speichern jeden Stem als eigene Audiodatei; UVR5 bietet viele Modelle und Einstellungen für eine möglichst saubere Trennung. StemMaker ist für DJs gemacht: Es schreibt pro Track eine fertige .stem.mp4, die Traktor und Mixxx direkt als Stem-Datei laden, mit Tags und Cover, und arbeitet ganze Ordner selbständig ab. Brauchst du einzelne WAV-Spuren, passen UVR5 oder StemRoller besser; willst du Stem-Dateien für deine DJ-Software, spart dir StemMaker den zusätzlichen Schritt des Packens."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Windows zeigt „Der Computer wurde durch Windows geschützt“. Ist das schlimm?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "StemMaker ist nicht digital signiert, weil Zertifikate jedes Jahr Geld kosten. Klick auf „Weitere Informationen“ und dann auf „Trotzdem ausführen“. Der komplette Quellcode liegt auf GitHub. Du kannst den Download auf VirusTotal prüfen oder StemMaker selbst bauen."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Wie gut ist die Trennung?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Im Test gegen eine Stem-Datei, die Traktor Pro 4 aus demselben Track gemacht hat, lag StemMaker etwa gleichauf: Drums, Kick und Gesang klangen fast identisch. Bezahl-Tools wie RipX oder Lalal.ai und Spezialmodelle in UVR5 trennen noch sauberer. Hört man einen Stem solo, sind manchmal kleine Artefakte zu hören, wie bei jedem Werkzeug dieser Art."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Traktor Pro 4 kann selbst Stems machen. Wozu StemMaker?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ehrlich gesagt: Wenn dir die Trennung von Traktor reicht, brauchst du StemMaker nicht. Seit Version 2.0 ist StemMaker auf demselben Prozessor etwa so schnell wie Traktor 4 und mit passender Grafikkarte deutlich schneller. Traktor behält seine Stems aber in der eigenen Sammlung: im Ordner „Stems“, mit kryptischen Dateinamen, verknüpft mit dem Original-Track. StemMaker schreibt eigenständige .stem.mp4-Dateien mit lesbaren Namen neben deine Musik. Die kannst du auf einen anderen Laptop oder USB-Stick kopieren und in jedem Programm nutzen, das .stem.mp4 liest. StemMaker arbeitet komplette Ordner selbstständig ab, zum Beispiel über Nacht, zeigt vorher die geschätzte Dauer und macht nach einem Abbruch oder Stromausfall weiter. Eine Traktor-Lizenz brauchst du dafür nicht, und leise Dateien hebt StemMaker auf Club-Pegel, damit die Wellenformen gut lesbar sind."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Werden Tags und Cover übernommen?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ja: Titel, Interpret, Album, Genre, Jahr, Tracknummer, BPM, Tonart, Label, ISRC und das Cover werden aus der Quelldatei übernommen, damit die Stem-Datei in deiner Sammlung gleich richtig aussieht. BPM und Tonart ersetzt Traktor ohnehin durch seine eigene Analyse; bis dahin und in anderen Programmen stehen die Werte aus deiner Datei."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Welche Musik darf ich verwenden?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "StemMaker ist ein Werkzeug für Musik, die dir gehört, zum Beispiel gekaufte Tracks oder eigene Produktionen. Bitte respektiere die Rechte der Künstler und nutze die Stem-Dateien nur für deine eigenen Zwecke."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Gibt es eine Kommandozeilen-Version?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ja, AddOns\\StemCLI.exe macht dasselbe ohne Fenster, für Batch-Dateien oder die Windows-Aufgabenplanung."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Wo kann ich Fragen stellen oder Ideen einbringen?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "In den GitHub Discussions. Dort kannst du Screenshots, Logs und Dateien anhängen. Mitlesen geht ohne Konto, zum Schreiben brauchst du ein kostenloses GitHub-Konto."
+   }
+  }
+ ]
 }
 </script>
 </head>
@@ -355,7 +471,15 @@
     </details>
     <details>
       <summary>Brauche ich eine Grafikkarte oder Python?</summary>
-      <p>Nein. StemMaker bringt seine Trenn-Engine mit (ONNX Runtime, dazu demucs.cpp als Rückfall). Es gibt also keine Python-Umgebung, kein PyTorch und keinen CUDA-Treiber zu installieren und nichts, was sich mit anderer Software auf deinem PC in die Haare kriegt. Auf dem Prozessor geht es schon schnell. Hast du eine Grafikkarte (NVIDIA, AMD oder Intel), testet StemMaker sie beim ersten Start und nimmt sie nur, wenn sie richtig und schneller rechnet; dieser Teil ist noch Beta. Nötig sind Windows 10 oder 11 (64 Bit) und beim ersten Start eine Internetverbindung für die Downloads (ffmpeg ca. 56 MB, Modell 81 MB).</p>
+      <p>Nein. StemMaker bringt seine Trenn-Engine mit (ONNX Runtime, dazu demucs.cpp als Rückfall). Es gibt also keine Python-Umgebung, kein PyTorch und keinen CUDA-Treiber zu installieren und nichts, was sich mit anderer Software auf deinem PC in die Haare kriegt. Die Turbo-Engine ist schon allein auf dem Prozessor schnell. Hast du eine Grafikkarte (NVIDIA, AMD oder Intel), testet StemMaker sie beim ersten Start und nimmt sie nur, wenn sie richtig und schneller rechnet; dieser Teil ist noch Beta. Nötig sind Windows 10 oder 11 (64 Bit) und beim ersten Start eine Internetverbindung für die Downloads (ffmpeg ca. 56 MB, Modell 81 MB).</p>
+    </details>
+    <details>
+      <summary>Läuft StemMaker unter Linux oder macOS?</summary>
+      <p>Linux: ja. Es gibt ein AppImage mit eingebautem Wine, du musst also nichts zusätzlich installieren (siehe <a href="#linux">StemMaker unter Linux</a>). Es ist noch eine Beta, und Turbo rechnet dort nur auf dem Prozessor. macOS: Für macOS gibt es keine Version.</p>
+    </details>
+    <details>
+      <summary>StemMaker, UVR5 oder StemRoller: Was ist der Unterschied?</summary>
+      <p>Alle drei trennen Musik mit KI-Modellen in Stems. UVR5 und StemRoller speichern jeden Stem als eigene Audiodatei; UVR5 bietet viele Modelle und Einstellungen für eine möglichst saubere Trennung. StemMaker ist für DJs gemacht: Es schreibt pro Track eine fertige <code>.stem.mp4</code>, die Traktor und Mixxx direkt als Stem-Datei laden, mit Tags und Cover, und arbeitet ganze Ordner selbständig ab. Brauchst du einzelne WAV-Spuren, passen UVR5 oder StemRoller besser; willst du Stem-Dateien für deine DJ-Software, spart dir StemMaker den zusätzlichen Schritt des Packens.</p>
     </details>
     <details>
       <summary>Windows zeigt „Der Computer wurde durch Windows geschützt“. Ist das schlimm?</summary>
