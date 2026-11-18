@@ -259,6 +259,9 @@ function NowSeconds: Double;
 
 implementation
 
+uses
+  zeittext;   // ZoomTimeText (eigene Unit, damit testbar)
+
 const
   WAVE_BG = $00151312;   // Hintergrund der Spur  #121315 (etwas dunkler als die Zeile)
   LOOP_COLOR = DJ_GREEN; // Loop wie in Traktor grün
@@ -754,21 +757,6 @@ const
   NUDGE_STEPS: array[0..9] of Double = (0.001, 0.002, 0.005, 0.01, 0.02,
                                         0.05, 0.1, 0.2, 0.5, 1);
 
-{ Zeit für die Rasterbeschriftung, z.B. 1:30.5, 1:30.25 oder 1:30.125.
-  Digits = Nachkommastellen }
-function ZoomTimeText(Sec: Double; Digits: Integer): string;
-var
-  M: Integer;
-  S: Double;
-begin
-  if Sec < 0 then Sec := 0;
-  M := Trunc(Sec) div 60;
-  S := Sec - M * 60;
-  Result := FloatToStrF(S, ffFixed, 6, Digits);
-  if S < 10 then Result := '0' + Result;      // 1:05.3 statt 1:5.3
-  Result := IntToStr(M) + ':' + StringReplace(Result, ',', '.', []);
-end;
-
 constructor TZoomView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1002,7 +990,6 @@ var
   H, CW, Mid, x, b, b0, b1, xa, xb: Integer;
   Lo, Hi, R, Amp, Fpp, Step, Major, T, T0, T1, Fr, F0, F1: Double;
   CWave, CRms, CWaveOff, CRmsOff, C: TColor;
-  Txt: string;
 
   function FX(F: Double): Integer;     // Frame -> x im Vorrat
   begin
@@ -1018,21 +1005,6 @@ var
     FCacheOn.Canvas.FillRect(XL, Y1, XR, Y2);
     FCacheOff.Canvas.Brush.Color := AColor;
     FCacheOff.Canvas.FillRect(XL, Y1, XR, Y2);
-  end;
-
-  procedure Label1(Cv: TCanvas; XPos: Integer);
-  begin
-    Cv.Font.Name := 'Segoe UI';
-    Cv.Font.Size := 7;
-    Cv.Font.Color := DJ_DIM;
-    Cv.ClipRect := Rect(X0, 0, X1, H);
-    Cv.Clipping := True;
-    Cv.Brush.Style := bsClear;
-    { Höhe aus der Schrift, nicht fest 13 Pixel: bei 150/200 % Anzeigeskalierung
-      wird die Schrift grösser und die Zeiten waren unten abgeschnitten }
-    Cv.TextOut(XPos + 3, H - Cv.TextHeight('0:') - 1, Txt);
-    Cv.Brush.Style := bsSolid;
-    Cv.Clipping := False;
   end;
 
   { Welle aus den echten Samples: pro Pixel Minimum und Maximum der Samples
@@ -1105,8 +1077,8 @@ begin
   end;
   if not FPeaks.Valid or (FTotal <= 0) then Exit;
 
-  { Raster: feine Linien dunkel, grobe heller mit Zeit. Links etwas früher
-    anfangen, damit hineinragende Beschriftungen vollständig sind. }
+  { Raster: feine Linien dunkel, grobe heller. Die Zeiten dazu zeichnet
+    Paint (ZeichneZeiten) über die Welle. }
   Step := GridStep(Major);
   T0 := (FCacheStart + (X0 - 60) * Fpp) / WAVE_RATE;
   T1 := (FCacheStart + X1 * Fpp) / WAVE_RATE;
@@ -1120,11 +1092,6 @@ begin
       if Abs(Fr - Round(Fr)) < 0.001 then
       begin
         Both($00403A36, x, 0, x + 1, H);
-        if Major < 0.1 then Txt := ZoomTimeText(T, 3)
-        else if Major < 1 then Txt := ZoomTimeText(T, 2)
-        else Txt := ZoomTimeText(T, 1);
-        Label1(FCacheOn.Canvas, x);
-        Label1(FCacheOff.Canvas, x);
       end
       else
         Both($00262321, x, 0, x + 1, H);
@@ -1198,6 +1165,42 @@ var
     C.Font.Style := [];
   end;
 
+  { Zeiten an den groben Rasterlinien (1.8.7: hier statt im Vorrat).
+    Mit dunklem Kasten, damit sie auch auf der hellen, gespielten Welle
+    lesbar sind. Zeiten, die nicht ganz in den Ausschnitt passen, fallen
+    weg: am Rand standen sonst Bruchstücke wie „6.00“. }
+  procedure ZeichneZeiten;
+  var
+    Major, TL, TR, T: Double;
+    k, k0, k1, xx, Ty, Dig: Integer;
+    S: string;
+  begin
+    GridStep(Major);
+    if Major < 0.1 then Dig := 3
+    else if Major < 1 then Dig := 2
+    else Dig := 1;
+    TL := (ViewPos - X0 * FramesPerPx) / WAVE_RATE;
+    TR := (ViewPos + (W - X0) * FramesPerPx) / WAVE_RATE;
+    k0 := Floor(TL / Major);
+    k1 := Ceil(TR / Major);
+    Ty := H - C.TextHeight('0:') - 1;
+    for k := k0 to k1 do
+    begin
+      T := k * Major;
+      if (T < 0) or (T * WAVE_RATE > FTotal) then Continue;
+      xx := FrameToX(T * WAVE_RATE);
+      S := ZoomTimeText(T, Dig);
+      if (xx + 2 < 1) or (xx + 4 + C.TextWidth(S) > W - 1) then Continue;
+      C.Brush.Style := bsSolid;
+      C.Brush.Color := WAVE_BG;
+      C.FillRect(xx + 2, Ty, xx + 4 + C.TextWidth(S), H - 1);
+      C.Font.Color := DJ_DIM;
+      C.Brush.Style := bsClear;
+      C.TextOut(xx + 3, Ty, S);
+      C.Brush.Style := bsSolid;
+    end;
+  end;
+
 begin
   W := Max(1, Width);
   H := Max(1, Height);
@@ -1230,6 +1233,8 @@ begin
   { links vom Kopf hell (gespielt), rechts gedämpft }
   C.CopyRect(Rect(0, 0, X0, H), FCacheOn.Canvas, Rect(Off, 0, Off + X0, H));
   C.CopyRect(Rect(X0, 0, W, H), FCacheOff.Canvas, Rect(Off + X0, 0, Off + W, H));
+
+  if FPeaks.Valid and (FTotal > 0) then ZeichneZeiten;
 
   if FPeaks.Valid and (FTotal > 0) then
   begin

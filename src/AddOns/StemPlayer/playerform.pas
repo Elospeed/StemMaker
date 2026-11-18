@@ -1,11 +1,13 @@
 { ============================================================================
   Unit    : playerform  (Datei playerform.pas)
-  Programm: Elospeed StemPlayer 1.8.6
+  Programm: Elospeed StemPlayer 1.8.7
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
-  Stand   : 14.11.2026
+  Stand   : 18.11.2026
   ----------------------------------------------------------------------------
   ÄNDERUNGEN
+    1.8.7, 18.11.2026: Zeitskala der Lupe beim Minutenwechsel richtig
+                     (1:00.00 statt 0:60.00), Tastenleiste "1-4 Stumm"
     1.8.6 (mit StemMaker 2.4), 14.11.2026: dunkle Titelleiste, Knopf "?"
                      neben der Ansicht und F1
     frühere Versionen: siehe Liste "Versionen" weiter unten
@@ -153,6 +155,13 @@
     1.8.6 (14.11.2026) Mit StemMaker 2.4: dunkle Titelleiste, Knopf "?"
                        neben der Ansicht und F1 öffnen das Kapitel
                        StemPlayer der Anleitung.
+    1.8.7 (18.11.2026) Zeitskala der Lupe: erst runden, dann in Minuten
+                       und Sekunden zerlegen (Unit zeittext). Vorher stand
+                       bei 60 s "0:60.00" und bei 70 s eine falsche Zahl.
+                       Tastenleiste deutsch "1-4 Stumm" statt "1-4 Mute",
+                       Trenner schmaler; passt die Zeile trotzdem nicht
+                       (200 %), wird die Schrift kleiner (PasseHilfeAn).
+                       Zeiten der Lupe mit dunklem Kasten über der Welle.
 
   BENUTZUNG
 
@@ -169,12 +178,12 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, LCLType, LCLIntf, Process, FileUtil,
-  LazFileUtils, IniFiles, MMSystem, Menus, uLang, mp4stem, stemengine, djcontrols, wellenform,
+  LazFileUtils, LazUTF8, IniFiles, MMSystem, Menus, uLang, mp4stem, stemengine, djcontrols, wellenform,
   bildtakt, designviews;
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.6';
+  APP_VER   = '1.8.7';
   TEMP_PREFIX = 'ElospeedStemPlayer_';                     // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';                           // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -251,6 +260,8 @@ type
     PbKofi      : TPaintBox;                               // Ko-fi-Knopf unten rechts (wie in allen Elospeed-Tools)
     FKofiHover  : Boolean;
     LblHelp     : TLabel;
+    FHelpText   : string;     // ganze Tastenleiste (Tooltip, PasseHilfeAn)
+    FHelpGroesse: Integer;    // Schriftgrösse der Tastenleiste ohne Verkleinerung
     LblStatus   : TLabel;
     LblKofi     : TLabel;
     { --- Design CD-Player (designviews.pas) --- }
@@ -411,6 +422,7 @@ type
     procedure HeadTimerTick(Data: PtrInt);
     procedure KofiClick(Sender: TObject);
     procedure PnlBottomResize(Sender: TObject);
+    procedure PasseHilfeAn;
     procedure KofiPaint(Sender: TObject);
     procedure KofiEnter(Sender: TObject);
     procedure KofiLeave(Sender: TObject);
@@ -890,15 +902,23 @@ begin
   PnlBottom.Color := DJ_FOOTER;
   PnlBottom.Width := ClientWidth;
 
-  LblHelp := MakeLabel(PnlBottom,
-    _('Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite'), 12, 6, 0, False);
+  { Trenner mit einem statt zwei Leerzeichen: so passt die Zeile in allen
+    Sprachen in die Fensterbreite (vorher fehlte das Ende von "Breite").
+    Ersetzt wird erst nach der Übersetzung, die Übersetzungen bleiben. }
+  FHelpText := StringReplace(
+    _('Leertaste Play/Pause  ·  1-4 Stumm  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite'),
+    '  ·  ', ' · ', [rfReplaceAll]);
+  LblHelp := MakeLabel(PnlBottom, FHelpText, 12, 6, 0, False);
+  LblHelp.ShowHint := True;
   LblHelp.Font.Color := $00999999;
   { feste Breite statt AutoSize: die Breite richtet sich nach dem Text in der
     jeweiligen Sprache, AutoSize schnitt unter Wine den letzten Buchstaben ab }
   LblHelp.AutoSize := False;
   LblHelp.Anchors := [akLeft, akTop, akRight];
   LblHelp.Width := PnlBottom.Width - 24;
+  FHelpGroesse := LblHelp.Font.Size;
+  if FHelpGroesse <= 0 then FHelpGroesse := 9;   // 0 = Standardschrift (Segoe UI 9 pt)
 
   LblStatus := MakeLabel(PnlBottom, '', 12, 25, 0, False);
   LblStatus.Font.Color := DJ_DIM;
@@ -2935,6 +2955,45 @@ procedure TMainForm.PnlBottomResize(Sender: TObject);
 begin
   if PbKofi <> nil then
     PbKofi.Left := PnlBottom.ClientWidth - PbKofi.Width - Scale96ToForm(12);
+  PasseHilfeAn;
+end;
+
+{ Tastenleiste an die Breite anpassen (1.8.7): passt der Text nicht, wird
+  die Schrift bis 7 pt kleiner, danach mit „…“ gekürzt. Der ganze Text
+  steht immer im Tooltip. Vorher war bei 200 % das Ende abgeschnitten. }
+procedure TMainForm.PasseHilfeAn;
+var
+  MaxW, N, Groesse: Integer;
+  Bmp: TBitmap;
+  S: string;
+begin
+  if (LblHelp = nil) or (FHelpText = '') then Exit;
+  MaxW := PnlBottom.ClientWidth - LblHelp.Left - Scale96ToForm(12);
+  if MaxW <= 0 then Exit;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Canvas.Font.Assign(LblHelp.Font);
+    Groesse := FHelpGroesse;
+    Bmp.Canvas.Font.Size := Groesse;
+    while (Groesse > 7) and (Bmp.Canvas.TextWidth(FHelpText) > MaxW) do
+    begin
+      Dec(Groesse);
+      Bmp.Canvas.Font.Size := Groesse;
+    end;
+    S := FHelpText;
+    if Bmp.Canvas.TextWidth(S) > MaxW then
+    begin
+      N := UTF8Length(S);
+      while (N > 0) and (Bmp.Canvas.TextWidth(UTF8Copy(S, 1, N) + '…') > MaxW) do Dec(N);
+      S := UTF8Copy(S, 1, N) + '…';
+    end;
+  finally
+    Bmp.Free;
+  end;
+  LblHelp.Font.Size := Groesse;
+  LblHelp.Width := MaxW;
+  LblHelp.Caption := S;
+  LblHelp.Hint := FHelpText;
 end;
 
 procedure TMainForm.KofiClick(Sender: TObject);
