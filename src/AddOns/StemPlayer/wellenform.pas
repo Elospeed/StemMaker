@@ -259,6 +259,9 @@ function NowSeconds: Double;
 
 implementation
 
+uses
+  zeittext;   // ZoomTimeText (eigene Unit, damit testbar)
+
 const
   WAVE_BG = $00151312;   // Hintergrund der Spur  #121315 (etwas dunkler als die Zeile)
   LOOP_COLOR = DJ_GREEN; // Loop wie in Traktor grün
@@ -753,21 +756,6 @@ const
     ganz hineingezoomt (0,25 s) 2 ms. }
   NUDGE_STEPS: array[0..9] of Double = (0.001, 0.002, 0.005, 0.01, 0.02,
                                         0.05, 0.1, 0.2, 0.5, 1);
-
-{ Zeit für die Rasterbeschriftung, z.B. 1:30.5, 1:30.25 oder 1:30.125.
-  Digits = Nachkommastellen }
-function ZoomTimeText(Sec: Double; Digits: Integer): string;
-var
-  M: Integer;
-  S: Double;
-begin
-  if Sec < 0 then Sec := 0;
-  M := Trunc(Sec) div 60;
-  S := Sec - M * 60;
-  Result := FloatToStrF(S, ffFixed, 6, Digits);
-  if S < 10 then Result := '0' + Result;      // 1:05.3 statt 1:5.3
-  Result := IntToStr(M) + ':' + StringReplace(Result, ',', '.', []);
-end;
 
 constructor TZoomView.Create(AOwner: TComponent);
 begin

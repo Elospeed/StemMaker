@@ -97,6 +97,12 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Automatische Tests
+        run: |
+          set -e
+          lazbuild -B src/AddOns/StemPlayer/tests/zeittext_test.lpi
+          src/AddOns/StemPlayer/tests/zeittext_test.exe
+
       - name: Exes einsammeln, verkleinern und Prüfsummen bilden
         run: |
           set -e

@@ -6,6 +6,12 @@ Neueste Einträge oben.
 
 ---
 
+## StemPlayer: Zeitskala beim Minutenwechsel (StemPlayer 1.8.7, November 2026)
+
+**Problem:** Die Lupe beschriftete bei 60 s „0:60.00“ statt „1:00.00“ und bei 70 s eine falsche Zahl. `ZoomTimeText` zerlegte erst in Minuten und Sekunden und rundete danach: Eine Rastermarke wie 59,9999 s ergab Minute 0 und gerundet „60.00“ Sekunden, 69,9999 s ergab „10.00“ mit einer zusätzlichen führenden Null.
+**Lösung:** Erst auf die angezeigten Stellen runden (ganze Hundertstel usw.), dann mit Ganzzahlen in Minuten und Sekunden zerlegen. Die Funktion liegt jetzt in der Unit `zeittext.pas` ohne LCL, damit der Konsolentest `tests/zeittext_test` sie prüfen kann; der Build-Workflow führt ihn bei jedem Lauf aus.
+Im gleichen Zug: deutsche Tastenleiste „1-4 Stumm“ statt „1-4 Mute“ (Schlüssel in `lang-tools/*.json` umbenannt, die Übersetzungen bleiben) und Trenner „ · “ statt „  ·  “, weil die Zeile rechts abgeschnitten war.
+
 ## Lange Übersetzungen abgeschnitten (2.3, November 2026)
 
 **Problem:** Auf Japanisch lief im Prüffenster die Detailspalte rechts aus dem Fenster, und die rote Zeile „Fehlt:“ im Hauptfenster war breiter als das Fenster. Im StemTagger waren die fetten 8-pt-Spaltenköpfe in japanischer Schrift kaum lesbar.

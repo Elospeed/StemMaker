@@ -1,11 +1,13 @@
 { ============================================================================
   Unit    : playerform  (Datei playerform.pas)
-  Programm: Elospeed StemPlayer 1.8.6
+  Programm: Elospeed StemPlayer 1.8.7
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
-  Stand   : 14.11.2026
+  Stand   : 18.11.2026
   ----------------------------------------------------------------------------
   ÄNDERUNGEN
+    1.8.7, 18.11.2026: Zeitskala der Lupe beim Minutenwechsel richtig
+                     (1:00.00 statt 0:60.00), Tastenleiste "1-4 Stumm"
     1.8.6 (mit StemMaker 2.4), 14.11.2026: dunkle Titelleiste, Knopf "?"
                      neben der Ansicht und F1
     frühere Versionen: siehe Liste "Versionen" weiter unten
@@ -153,6 +155,11 @@
     1.8.6 (14.11.2026) Mit StemMaker 2.4: dunkle Titelleiste, Knopf "?"
                        neben der Ansicht und F1 öffnen das Kapitel
                        StemPlayer der Anleitung.
+    1.8.7 (18.11.2026) Zeitskala der Lupe: erst runden, dann in Minuten
+                       und Sekunden zerlegen (Unit zeittext). Vorher stand
+                       bei 60 s "0:60.00" und bei 70 s eine falsche Zahl.
+                       Tastenleiste deutsch "1-4 Stumm" statt "1-4 Mute",
+                       Trenner schmaler, damit die Zeile ganz hineinpasst.
 
   BENUTZUNG
 
@@ -174,7 +181,7 @@ uses
 
 const
   APP_TITLE = 'Elospeed StemPlayer';
-  APP_VER   = '1.8.6';
+  APP_VER   = '1.8.7';
   TEMP_PREFIX = 'ElospeedStemPlayer_';                     // Präfix der Temp-Ordner (siehe oben)
   LOCK_NAME   = 'instance.lock';                           // Sperrdatei im Instanz-Ordner
   KOFI_URL  = 'https://ko-fi.com/elospeed';
@@ -890,9 +897,13 @@ begin
   PnlBottom.Color := DJ_FOOTER;
   PnlBottom.Width := ClientWidth;
 
-  LblHelp := MakeLabel(PnlBottom,
-    _('Leertaste Play/Pause  ·  1-4 Mute  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
-    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite'), 12, 6, 0, False);
+  { Trenner mit einem statt zwei Leerzeichen: so passt die Zeile in allen
+    Sprachen in die Fensterbreite (vorher fehlte das Ende von "Breite").
+    Ersetzt wird erst nach der Übersetzung, die Übersetzungen bleiben. }
+  LblHelp := MakeLabel(PnlBottom, StringReplace(
+    _('Leertaste Play/Pause  ·  1-4 Stumm  ·  Shift+1-4 Solo  ·  0 Reset  ·  ' +
+    'S/O/R Modus  ·  Pfeile -/+5 s  ·  W Wellenform  ·  A/B/L Loop  ·  Shift/Strg+Pfeil Breite'),
+    '  ·  ', ' · ', [rfReplaceAll]), 12, 6, 0, False);
   LblHelp.Font.Color := $00999999;
   { feste Breite statt AutoSize: die Breite richtet sich nach dem Text in der
     jeweiligen Sprache, AutoSize schnitt unter Wine den letzten Buchstaben ab }
