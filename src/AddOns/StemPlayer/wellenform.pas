@@ -1015,12 +1015,45 @@ var
     Cv.Font.Color := DJ_DIM;
     Cv.ClipRect := Rect(X0, 0, X1, H);
     Cv.Clipping := True;
-    Cv.Brush.Style := bsClear;
     { Höhe aus der Schrift, nicht fest 13 Pixel: bei 150/200 % Anzeigeskalierung
-      wird die Schrift grösser und die Zeiten waren unten abgeschnitten }
+      wird die Schrift grösser und die Zeiten waren unten abgeschnitten.
+      Dunkler Kasten hinter der Zeit (1.8.7): auf der hellen, schon
+      gespielten Welle war die Zeit sonst kaum lesbar. }
+    Cv.Brush.Style := bsSolid;
+    Cv.Brush.Color := WAVE_BG;
+    Cv.FillRect(XPos + 2, H - Cv.TextHeight('0:') - 1,
+      XPos + 4 + Cv.TextWidth(Txt), H);
+    Cv.Brush.Style := bsClear;
     Cv.TextOut(XPos + 3, H - Cv.TextHeight('0:') - 1, Txt);
     Cv.Brush.Style := bsSolid;
     Cv.Clipping := False;
+  end;
+
+  { Zeiten an den groben Rasterlinien, erst nach der Welle gezeichnet,
+    damit sie mit ihrem Kasten über der Welle liegen (1.8.7) }
+  procedure ZeichneZeiten;
+  var
+    TT, FrT: Double;
+    xx: Integer;
+  begin
+    TT := Floor(T0 / Step) * Step;
+    while TT <= T1 do
+    begin
+      if (TT >= 0) and (TT * WAVE_RATE <= FTotal) then
+      begin
+        FrT := TT / Major;
+        if Abs(FrT - Round(FrT)) < 0.001 then
+        begin
+          xx := FX(TT * WAVE_RATE);
+          if Major < 0.1 then Txt := ZoomTimeText(TT, 3)
+          else if Major < 1 then Txt := ZoomTimeText(TT, 2)
+          else Txt := ZoomTimeText(TT, 1);
+          Label1(FCacheOn.Canvas, xx);
+          Label1(FCacheOff.Canvas, xx);
+        end;
+      end;
+      TT := TT + Step;
+    end;
   end;
 
   { Welle aus den echten Samples: pro Pixel Minimum und Maximum der Samples
@@ -1108,11 +1141,6 @@ begin
       if Abs(Fr - Round(Fr)) < 0.001 then
       begin
         Both($00403A36, x, 0, x + 1, H);
-        if Major < 0.1 then Txt := ZoomTimeText(T, 3)
-        else if Major < 1 then Txt := ZoomTimeText(T, 2)
-        else Txt := ZoomTimeText(T, 1);
-        Label1(FCacheOn.Canvas, x);
-        Label1(FCacheOff.Canvas, x);
       end
       else
         Both($00262321, x, 0, x + 1, H);
@@ -1126,7 +1154,11 @@ begin
   CWaveOff := Blend($00D0D0D0, WAVE_BG, 0.22);
   CRmsOff := Blend($00D0D0D0, WAVE_BG, 0.40);
   Amp := (H / 2 - 2) * FScale;
-  if (FRaw <> nil) and (Fpp < FINE_FRAMES) and RenderSamples then Exit;
+  if (FRaw <> nil) and (Fpp < FINE_FRAMES) and RenderSamples then
+  begin
+    ZeichneZeiten;
+    Exit;
+  end;
   for x := X0 to X1 - 1 do
   begin
     F0 := FCacheStart + x * Fpp;
@@ -1154,6 +1186,7 @@ begin
     FCacheOff.Canvas.Pen.Color := CRmsOff;
     FCacheOff.Canvas.Line(x, Mid - Round(R * Amp), x, Mid + Round(R * Amp) + 1);
   end;
+  ZeichneZeiten;
 end;
 
 procedure TZoomView.Paint;
