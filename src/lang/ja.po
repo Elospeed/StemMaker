@@ -525,7 +525,7 @@ msgstr "バッテリー"
 msgid "Akku (%d %%)"
 msgstr "バッテリー (%d %%)"
 
-#: uinfo.pas:428
+#: uinfo.pas:429
 msgid "Aktuelles Log: %s"
 msgstr "現在のログ: %s"
 
@@ -569,7 +569,7 @@ msgstr "すべてのファイルが完了しました。%d 秒後にPCをシャ�
 msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
 msgstr "詳細: 情報 -> ライセンス、および StemMaker フォルダー内の LICENSE と THIRD-PARTY-NOTICES.md。"
 
-#: uinfo.pas:533
+#: uinfo.pas:534
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "詳細は GitHub の CHANGELOG にあります (ドイツ語)"
 
@@ -601,7 +601,7 @@ msgstr "GitHub Issue として (公開)"
 msgid "Anhören"
 msgstr "試聴"
 
-#: uinfo.pas:506
+#: uinfo.pas:507
 msgid "Anleitung"
 msgstr "説明書"
 
@@ -877,7 +877,7 @@ msgstr "DAW 書き出し:「Song」+「Song_drums」…「_vocals」"
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "終了後はすべて元の設定に戻ります。画面はオフになってもかまいません。"
 
-#: uinfo.pas:539
+#: uinfo.pas:540
 msgid "Danke"
 msgstr "謝辞"
 
@@ -1017,7 +1017,7 @@ msgstr "StemPlayer が再生できるのは Traktor ステムファイル (.stem
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
 msgstr "分離で「Other」ステムに残った 80 Hz 未満の重低音を Bass ステムへ移動します。\nBass ステムが厚くなり (Traktor 純正のステムと同様)、全ステムを合わせた音は変わりません。"
 
-#: uinfo.pas:355
+#: uinfo.pas:356
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "このバージョンにはバージョン履歴がありません。"
 
@@ -1089,7 +1089,7 @@ msgstr "言語は次回起動時に反映されます。"
 msgid "Die Sprache wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "言語は再起動後に適用されます。今すぐ StemMaker を再起動しますか？"
 
-#: uinfo.pas:601
+#: uinfo.pas:602
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "更新の確認に失敗しました: %s"
 
@@ -1153,7 +1153,7 @@ msgstr "ダウンロード中 ...  %s"
 msgid "Download unvollständig"
 msgstr "ダウンロードが不完全です"
 
-#: uinfo.pas:598
+#: uinfo.pas:599
 msgid "Du hast die neueste Version (%s)."
 msgstr "最新バージョンです (%s)。"
 
@@ -1341,7 +1341,7 @@ msgstr "エラーレポート"
 msgid "Fehlerbericht senden"
 msgstr "エラーレポートを送信"
 
-#: uinfo.pas:483 ulogui.pas:60
+#: uinfo.pas:484 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "エラーレポートを送信..."
 
@@ -1489,7 +1489,7 @@ msgstr "ダウンロード"
 msgid "Herunterladen (ca. %d MB)"
 msgstr "ダウンロード (約 %d MB)"
 
-#: uinfo.pas:555
+#: uinfo.pas:556
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "ここには同意いただいた方のみ掲載しています。ご協力いただいて掲載をご希望の方は elospeed.dev@gmail.com までご連絡ください。"
 
@@ -1557,6 +1557,10 @@ msgstr "StemMaker は私が自由時間に、たくさんの時間と情熱を�
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "免責事項とライセンス情報を読み、同意します。"
 
+#: uinfo.pas:303
+msgid "Idee Linux hell/dunkel"
+msgstr "Linux のライト/ダークのアイデア"
+
 #: packerform.pas:1073
 msgid "Im Muster von „%s“ fehlt der Stern * für den Songnamen."
 msgstr "「%s」のパターンに曲名を表す * がありません。"
@@ -1573,7 +1577,7 @@ msgstr "うまくいかない場合は、リリースページの ZIP を手動�
 msgid "In der Zwischenablage ist kein Bild."
 msgstr "クリップボードに画像がありません。"
 
-#: packerform.pas:686 uinfo.pas:401 umain.lfm:80
+#: packerform.pas:686 uinfo.pas:402 umain.lfm:80
 msgid "Info"
 msgstr "情報"
 
@@ -1629,7 +1633,7 @@ msgstr "今すぐ確認して、不足しているファイルをダウンロー
 msgid "Jetzt speichern?"
 msgstr "今すぐ保存しますか?"
 
-#: uinfo.pas:456
+#: uinfo.pas:457
 msgid "Jetzt spenden"
 msgstr "今すぐ寄付"
 
@@ -1801,7 +1805,7 @@ msgstr "リストをクリア"
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "前回のリストを復元しました: %d ファイル、うち %d が未処理です。"
 
-#: uinfo.pas:560
+#: uinfo.pas:561
 msgid "Lizenzen"
 msgstr "ライセンス"
 
@@ -1821,7 +1825,7 @@ msgstr "ログをコピー"
 msgid "Log:"
 msgstr "ログ:"
 
-#: uinfo.pas:450
+#: uinfo.pas:451
 msgid "Logs-Ordner öffnen"
 msgstr "ログフォルダーを開く"
 
@@ -2001,7 +2005,7 @@ msgstr "ミュート: このステムを消音 (%d キー)"
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Elospeed にエラーレポートを送りますか? 送信前にレポートを確認でき、自動では何も送信されません。"
 
-#: uinfo.pas:476 uinfo.pas:587
+#: uinfo.pas:477 uinfo.pas:588
 msgid "Nach Updates suchen"
 msgstr "更新を確認"
 
@@ -2325,7 +2329,7 @@ msgstr "ミュート"
 msgid "Schliessen"
 msgstr "閉じる"
 
-#: uinfo.pas:443
+#: uinfo.pas:444
 msgid "Schließen"
 msgstr "閉じる"
 
@@ -2621,7 +2625,7 @@ msgstr "停止して先頭に戻る"
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+クリック: 別のステムを追加 (複数ソロ)"
 
-#: uinfo.pas:581
+#: uinfo.pas:582
 msgid "Suche ..."
 msgstr "確認中 ..."
 
@@ -2833,7 +2837,7 @@ msgstr "接続に失敗しました (エラー %d)"
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "スリープを防ぎ、省電力設定を一時的に停止します。"
 
-#: uinfo.pas:516
+#: uinfo.pas:517
 msgid "Versionen"
 msgstr "バージョン"
 
@@ -2937,7 +2941,7 @@ msgstr "既存の .stem.mp4 のトラックとステムのメタデータを表�
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "完成したステムファイルをエクスプローラーで表示 - そこから Traktor に直接ドラッグできます"
 
-#: uinfo.pas:484
+#: uinfo.pas:485
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "ログを表示し、メールまたは GitHub で Elospeed に送るのを手伝います。自動では何も送信されません。"
 
@@ -3245,7 +3249,7 @@ msgstr "許可されていないパス"
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "経過 %s   |   残り %s   |   %.1f MB/s"
 
-#: uinfo.pas:426
+#: uinfo.pas:427
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "作者 %s  ·  オーディオファイルから Traktor ステムを作成  ·  無料 && オープンソース  ·  ビルド: %s"
 
@@ -3293,7 +3297,7 @@ msgstr "開く"
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "StemMaker.ini があるフォルダーを開きます"
 
-#: uinfo.pas:494
+#: uinfo.pas:495
 msgid "Öffnet die bebilderte Anleitung im Browser."
 msgstr "図解ガイドをブラウザーで開きます。"
 

@@ -8,7 +8,7 @@ keyword line per item. Only things users notice, no technical details.
 
 ## 2.5 – 21 November 2026
 ### New
-- Linux: light or dark like the desktop, title bar included
+- Linux: light or dark like the desktop, title bar included (idea by samuelsmith)
 - Linux: a new desktop scaling applies on the next start
 ### Fixed
 - Linux: disabled buttons readable in the dark theme
