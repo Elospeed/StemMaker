@@ -85,8 +85,20 @@ jobs:
               s = s.replace(a, blk + a)
               open(p, 'w').write(s)
           PY
+          # Skalierung bei jedem Start und dunkle Titelleiste (ab 2.5)
+          python3 - sq/AppRun installer/linux/titelleiste.sh <<'PY'
+          import sys
+          p, blk = sys.argv[1], open(sys.argv[2]).read()
+          s = open(p).read()
+          if '_titelleisten' not in s:
+              a = 'case "$1" in\n'
+              assert s.count(a) == 1, 'AppRun: Einfügestelle fehlt'
+              s = s.replace(a, blk + '\n' + a)
+              open(p, 'w').write(s)
+          PY
           bash -n sq/AppRun
           grep -c ELOSPEED_DESKTOP_DUNKEL sq/AppRun
+          grep -c _titelleisten sq/AppRun
           (cd rel/StemMaker && tar cf - --exclude=./src --exclude=./demucs-build --exclude=./lang-tools .) | (cd sq/StemMaker && tar xf -)
           echo "${VER/-/\~}" > sq/StemMaker/APPIMAGE_VERSION
           N="StemMaker-$VER-Linux-Test"
