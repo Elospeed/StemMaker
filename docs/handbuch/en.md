@@ -2,7 +2,7 @@
 titel: Elospeed StemMaker
 untertitel: User Manual
 versionstext: Version
-version: "2.4"
+version: "2.5"
 datum: November 2026
 umfang: "Split music into Traktor stems, preview them and play them out. With StemPlayer, StemTagger and StemPacker."
 fusszeile: "Free and open source (MIT License) · © 2026 Elospeed"
@@ -85,8 +85,8 @@ The best model (htdemucs_ft) takes about three times as long as the default mode
 
 The project page <https://elospeed.github.io/StemMaker/> and the GitHub release page offer two downloads with the same program:
 
-- **`StemMaker-2.4-Setup.exe`** (installer): installs StemMaker for your Windows user only, without administrator rights, with a Start menu entry. Uninstall it as usual under *Settings → Apps*.
-- **`StemMaker-2.4.zip`** (portable): unzip it anywhere, for example to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
+- **`StemMaker-2.5-Setup.exe`** (installer): installs StemMaker for your Windows user only, without administrator rights, with a Start menu entry. Uninstall it as usual under *Settings → Apps*.
+- **`StemMaker-2.5.zip`** (portable): unzip it anywhere, for example to `C:\Tools\StemMaker` or a USB stick. Nothing is installed.
 
 Either way you start `StemMaker.exe` (after the installer, via the Start menu entry "StemMaker").
 
@@ -306,7 +306,7 @@ Under **More settings → Program → Theme** you choose how StemMaker looks:
 | Light | always light |
 | Dark | always dark: windows, lists, buttons and title bars |
 
-The choice applies after a restart; StemMaker asks right away whether to restart. The dark theme needs Windows 10 version 1809 or later, or Windows 11; on older Windows and on Linux StemMaker stays light. StemTagger and StemPacker follow the same setting (the next time they open), the StemPlayer always stays dark.
+The choice applies after a restart; StemMaker asks right away whether to restart. The dark theme needs Windows 10 version 1809 or later, or Windows 11; on older Windows StemMaker stays light. On Linux (AppImage), "Automatic" follows the desktop. StemTagger and StemPacker follow the same setting (the next time they open), the StemPlayer always stays dark.
 
 ## Which separation model? {#modelle}
 

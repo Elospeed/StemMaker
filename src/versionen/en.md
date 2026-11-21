@@ -6,6 +6,15 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
+## 2.5 – unreleased
+### New
+- Linux: light or dark like the desktop, title bar included
+- Linux: a new desktop scaling applies on the next start
+### Fixed
+- Linux: disabled buttons readable in the dark theme
+- StemPlayer 1.8.7: time ruler of the zoom at the minute change
+- StemTagger 1.3: disabled buttons easier to read
+
 ## 2.4 – 15 November 2026
 ### New
 - Light or dark: choose the theme in the settings, default follows Windows (idea by David GJ)

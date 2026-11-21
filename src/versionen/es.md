@@ -6,6 +6,15 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
+## 2.5 – sin publicar
+### Nuevo
+- Linux: claro u oscuro como el escritorio, también la barra de título
+- Linux: un nuevo escalado del escritorio se aplica en el siguiente inicio
+### Corregido
+- Linux: botones desactivados legibles en el tema oscuro
+- StemPlayer 1.8.7: escala de tiempo de la lupa al cambiar de minuto
+- StemTagger 1.3: botones desactivados más legibles
+
 ## 2.4 – 15 de noviembre de 2026
 ### Nuevo
 - Claro u oscuro: el tema se elige en los ajustes, por defecto como Windows (idea de David GJ)
