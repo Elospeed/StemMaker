@@ -166,13 +166,11 @@ unset _dpi
 # StemMaker und den AddOns, passend zum Design in StemMaker (Wine-Farbe
 # "Window" in user.reg, siehe uWineFarben). Ohne xprop passiert nichts.
 _titelleisten() {
-  local gesehen="" fremd="" leer=0 zyklus=0 ids id klasse art alt w
+  local fremd="" leer=0 zyklus=0 ids id klasse art w
   while :; do
     art=light
     w=$(awk '/^\[/{f=($0 ~ /^\[Control Panel\\\\Colors\]/)} f && /^"Window"=/{gsub(/[^0-9 ]/,"");print $1;exit}' "$WINEPREFIX/user.reg" 2>/dev/null)
     [ -n "$w" ] && [ "$w" -lt 128 ] && art=dark
-    [ "$art" != "$alt" ] && gesehen=""
-    alt=$art
     ids=$(xprop -root _NET_CLIENT_LIST 2>/dev/null | grep -o '0x[0-9a-f]*')
     leer=$((leer + 1))
     # Fensternummern werden wiederverwendet: Listen ab und zu leeren
@@ -184,9 +182,12 @@ _titelleisten() {
       case "$klasse" in
         *[Ss]tem[Mm]aker.exe*|*[Ss]tem[Pp]layer.exe*|*[Ss]tem[Tt]agger.exe*|*[Ss]tem[Pp]acker.exe*|*[Ss]tem[Dd]ecks.exe*|*[Ss]tem51.exe*)
           leer=0
-          case " $gesehen " in *" $id "*) continue ;; esac
-          xprop -id "$id" -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT "$art" 2>/dev/null
-          gesehen="$gesehen $id" ;;
+          # Wine verwendet Fensternummern wieder: darum jedes Mal den Wert
+          # am Fenster prüfen und nur setzen, wenn er fehlt oder anders ist
+          case "$(xprop -id "$id" _GTK_THEME_VARIANT 2>/dev/null)" in
+            *\"$art\"*) ;;
+            *) xprop -id "$id" -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT "$art" 2>/dev/null ;;
+          esac ;;
         # fremd merken, aber nur wenn WM_CLASS schon gesetzt ist (Wine setzt
         # sie bei neuen Fenstern manchmal erst kurz nach dem Erscheinen)
         *\"*) fremd="$fremd $id" ;;
