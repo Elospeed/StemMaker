@@ -22,7 +22,7 @@ unset _dpi
 # StemMaker und den AddOns, passend zum Design in StemMaker (Wine-Farbe
 # "Window" in user.reg, siehe uWineFarben). Ohne xprop passiert nichts.
 _titelleisten() {
-  local gesehen="" fremd="" leer=0 ids id klasse art alt w
+  local gesehen="" fremd="" leer=0 zyklus=0 ids id klasse art alt w
   while :; do
     art=light
     w=$(awk '/^\[/{f=($0 ~ /^\[Control Panel\\\\Colors\]/)} f && /^"Window"=/{gsub(/[^0-9 ]/,"");print $1;exit}' "$WINEPREFIX/user.reg" 2>/dev/null)
@@ -31,6 +31,9 @@ _titelleisten() {
     alt=$art
     ids=$(xprop -root _NET_CLIENT_LIST 2>/dev/null | grep -o '0x[0-9a-f]*')
     leer=$((leer + 1))
+    # Fensternummern werden wiederverwendet: Listen ab und zu leeren
+    zyklus=$((zyklus + 1))
+    [ $((zyklus % 30)) -eq 0 ] && fremd=""
     for id in $ids; do
       case " $fremd " in *" $id "*) continue ;; esac
       klasse=$(xprop -id "$id" WM_CLASS 2>/dev/null)
@@ -40,7 +43,9 @@ _titelleisten() {
           case " $gesehen " in *" $id "*) continue ;; esac
           xprop -id "$id" -f _GTK_THEME_VARIANT 8u -set _GTK_THEME_VARIANT "$art" 2>/dev/null
           gesehen="$gesehen $id" ;;
-        *) fremd="$fremd $id" ;;
+        # fremd merken, aber nur wenn WM_CLASS schon gesetzt ist (Wine setzt
+        # sie bei neuen Fenstern manchmal erst kurz nach dem Erscheinen)
+        *\"*) fremd="$fremd $id" ;;
       esac
     done
     # Ende, wenn 60 s lang kein Fenster von StemMaker offen war
