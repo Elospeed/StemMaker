@@ -925,7 +925,7 @@ msgstr "これはステムファイルではありません: オーディオト�
 msgid "Das offene Fenster wird jetzt nach vorne geholt. Weitere Dateien einfach dort zur Liste hinzufügen."
 msgstr "開いているウィンドウを前面に表示します。そこでリストにファイルを追加してください。"
 
-#: udonate.pas:219
+#: udonate.pas:220
 msgid "Das sind rund %s Musik, getrennt auf deinem eigenen PC - ohne Abo, ohne Upload, ohne Werbung."
 msgstr "約 %s の音楽を、ご自身のPCで分離しました - サブスクなし、アップロードなし、広告なし。"
 
@@ -1541,6 +1541,10 @@ msgstr "高パフォーマンス"
 msgid "INI-Ordner öffnen"
 msgstr "INI フォルダーを開く"
 
+#: udonate.pas:229
+msgid "Ich entwickle StemMaker in meiner Freizeit, mit viel Zeit und Herzblut."
+msgstr "StemMaker は私が自由時間に、たくさんの時間と情熱を注いで開発しています。"
+
 #: ulicenseui.pas:91
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "免責事項とライセンス情報を読み、同意します。"
@@ -2025,7 +2029,7 @@ msgstr "読み取れません"
 msgid "Nicht mehr anzeigen"
 msgstr "今後は表示しない"
 
-#: udonate.pas:243
+#: udonate.pas:245
 msgid "Nicht mehr fragen"
 msgstr "今後は表示しない"
 
@@ -2518,8 +2522,8 @@ msgid "StemMaker anzeigen"
 msgstr "StemMaker を表示"
 
 #: udonate.pas:216
-msgid "StemMaker bleibt gratis, ohne Abo und ohne Werbung: ein Hobbyprojekt, ein Mensch, viele Abende."
-msgstr "StemMaker はこれからも無料です。サブスクも広告もありません。一人で、たくさんの夜を費やした趣味のプロジェクトです。"
+msgid "StemMaker bleibt gratis, ohne Abo und ohne Werbung. Ich entwickle es in meiner Freizeit, mit viel Zeit und Herzblut."
+msgstr "StemMaker はこれからも無料です。サブスクも広告もありません。私が自由時間に、たくさんの時間と情熱を注いで開発しています。"
 
 #: ulicense.pas:156
 msgid "StemMaker ist Open Source unter der MIT-Lizenz (© 2026 Elospeed). Fremde Bestandteile:"
@@ -2532,10 +2536,6 @@ msgstr "StemMaker は既に開いています。2 つ起動するとキュー、
 #: umain.pas:2843
 msgid "StemMaker ist fertig"
 msgstr "StemMaker の処理が完了しました"
-
-#: udonate.pas:228
-msgid "StemMaker ist mein Hobbyprojekt: ein Mensch, viele Abende."
-msgstr "StemMaker は私の趣味のプロジェクトです: 一人で、たくさんの夜を費やしました。"
 
 #: usingleinstance.pas:266
 msgid "StemMaker läuft schon"
@@ -2773,7 +2773,7 @@ msgstr "究極のパフォーマンス"
 msgid "Umwandlung"
 msgstr "変換"
 
-#: udonate.pas:232
+#: udonate.pas:234
 msgid "Und wenn nicht, ist das völlig in Ordnung. Viel Spass beim Auflegen!"
 msgstr "もちろん、しなくてもまったく問題ありません。DJ を楽しんでください!"
 
@@ -2857,7 +2857,7 @@ msgstr "警告"
 msgid "Was habe ich gerade gemacht?"
 msgstr "直前に何をしていましたか?"
 
-#: udonate.pas:249
+#: udonate.pas:251
 msgid "Weiter"
 msgstr "続ける"
 
@@ -2873,7 +2873,7 @@ msgstr "その他の設定..."
 msgid "Weitere Modelle"
 msgstr "その他のモデル"
 
-#: udonate.pas:230
+#: udonate.pas:232
 msgid "Wenn StemMaker dir Zeit spart, hilft ein Kaffee, dass es weitergeht."
 msgstr "StemMaker で時間が節約できたなら、コーヒー一杯が開発を続ける力になります。"
 

@@ -213,8 +213,9 @@ begin
     fühlt sich nicht gedrängt, und genau so soll es sich anfühlen. }
   S := '';
   if NachUpdate then
-    S := _('StemMaker bleibt gratis, ohne Abo und ohne Werbung: ein ' +
-      'Hobbyprojekt, ein Mensch, viele Abende.') + LineEnding + LineEnding
+    S := _('StemMaker bleibt gratis, ohne Abo und ohne Werbung. Ich ' +
+      'entwickle es in meiner Freizeit, mit viel Zeit und Herzblut.') +
+      LineEnding + LineEnding
   else if AudioSec >= 60 then
     S := Format(_('Das sind rund %s Musik, getrennt auf deinem eigenen PC - ' +
       'ohne Abo, ohne Upload, ohne Werbung.'), [AudioText(AudioSec)]) +
@@ -225,7 +226,8 @@ begin
   lblText.WordWrap := True;
   lblText.SetBounds(42, 50, 420, 160);
   if not NachUpdate then
-    S := S + _('StemMaker ist mein Hobbyprojekt: ein Mensch, viele Abende.') + ' ';
+    S := S + _('Ich entwickle StemMaker in meiner Freizeit, mit viel Zeit ' +
+      'und Herzblut.') + ' ';
   lblText.Caption := S +
     _('Wenn StemMaker dir Zeit spart, hilft ein Kaffee, dass es weitergeht.') +
     ' ☕' + LineEnding + LineEnding +
