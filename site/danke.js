@@ -5,8 +5,8 @@
    sobald Setup und ZIP am Release hängen; VERSION_APPIMAGE erst, wenn auch
    das AppImage (wird von Hand hochgeladen) dort liegt. */
 (function () {
-  var VERSION = '2.4';
-  var VERSION_APPIMAGE = '2.4';
+  var VERSION = '2.5';
+  var VERSION_APPIMAGE = '2.5';
   function Url(art) {
     var v = art === 'appimage' ? VERSION_APPIMAGE : VERSION;
     var name = { setup: 'StemMaker-' + v + '-Setup.exe', zip: 'StemMaker-' + v + '.zip',
