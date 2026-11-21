@@ -45,6 +45,19 @@ jobs:
           OFF=$(python3 -c "import struct,sys;k=open(sys.argv[1],'rb').read(64);s=struct.unpack_from('<Q',k,0x28)[0];a,b=struct.unpack_from('<HH',k,0x3A);print(s+a*b)" "$A")
           unsquashfs -q -o "$OFF" -d sq "$A" >/dev/null
           head -c "$OFF" "$A" > runtime
+          # Hell/dunkel wie der Desktop (ab 2.5): Erkennung in AppRun einfügen
+          python3 - sq/AppRun installer/linux/desktop-dunkel.sh <<'PY'
+          import sys
+          p, blk = sys.argv[1], open(sys.argv[2]).read()
+          s = open(p).read()
+          if 'ELOSPEED_DESKTOP_DUNKEL' not in s:
+              a = 'WINE="$HERE/wine/bin/wine"\n'
+              assert s.count(a) == 1, 'AppRun: Einfügestelle fehlt'
+              s = s.replace(a, blk + a)
+              open(p, 'w').write(s)
+          PY
+          bash -n sq/AppRun
+          grep -c ELOSPEED_DESKTOP_DUNKEL sq/AppRun
           (cd rel/StemMaker && tar cf - --exclude=./src --exclude=./demucs-build --exclude=./lang-tools .) | (cd sq/StemMaker && tar xf -)
           echo "${VER/-/\~}" > sq/StemMaker/APPIMAGE_VERSION
           N="StemMaker-$VER-Linux-Test"
