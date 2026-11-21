@@ -61,7 +61,8 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, LCLType, LCLIntf, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, UTF8Process, Process,
-  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe;
+  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe,
+  uPackDesign;
 
 const
   APP_TITLE = 'Elospeed StemPacker';
@@ -703,6 +704,9 @@ begin
   FList.ReadOnly := True;
   FList.RowSelect := True;
   FList.HideSelection := False;
+  { Linux dunkel (Wine-Systemfarben): sonst schwarze Schrift }
+  if WineDunkel then
+    FList.Font.Color := clWindowText;
   with FList.Columns.Add do begin Caption := _('Song');    Width := Scale96ToForm(220); end;
   with FList.Columns.Add do begin Caption := _('Dateien'); Width := Scale96ToForm(60);  end;
   with FList.Columns.Add do begin Caption := _('Status');  Width := Scale96ToForm(360); end;

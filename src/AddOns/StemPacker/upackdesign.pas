@@ -38,12 +38,16 @@ interface
 
 procedure PackDesignAnwenden;
 
+var
+  { True: läuft unter Wine (Linux) und ist dunkel (Wine-Systemfarben) }
+  WineDunkel: Boolean = False;
+
 implementation
 
 uses
   SysUtils, IniFiles, uLang, uStatusDraw
   {$IFDEF LCLWIN32}
-  , uDarkStyleParams, uMetaDarkStyle, uDarkStyleSchemes
+  , Windows, uDarkStyleParams, uMetaDarkStyle, uDarkStyleSchemes
   {$ENDIF};
 
 { ----------------------------------------------------------------------------
@@ -99,6 +103,27 @@ end;
   Ablauf   : 1. Wahl lesen (leer oder 'auto' = wie Windows)
              2. PreferredAppMode setzen und ApplyMetaDarkStyle aufrufen
              3. IsDarkModeEnabled in DunklesDesign übernehmen }
+{$IFDEF LCLWIN32}
+{ UnterWine: läuft der StemPacker unter Wine (Linux-AppImage)? }
+function UnterWine: Boolean;
+var
+  H: HMODULE;
+begin
+  H := GetModuleHandle('ntdll.dll');
+  Result := (H <> 0) and (GetProcAddress(H, 'wine_get_version') <> nil);
+end;
+
+{ Unter Wine stellt StemMaker hell oder dunkel über die Systemfarben ein
+  (uWineFarben in StemMaker). Hier nur ablesen: Fensterhintergrund dunkel? }
+function SystemFarbenDunkel: Boolean;
+var
+  C: DWORD;
+begin
+  C := GetSysColor(COLOR_WINDOW);
+  Result := ((C and $FF) * 3 + ((C shr 8) and $FF) * 6 + ((C shr 16) and $FF)) div 10 < 128;
+end;
+{$ENDIF}
+
 procedure PackDesignAnwenden;
 {$IFDEF LCLWIN32}
 var
@@ -106,6 +131,14 @@ var
 {$ENDIF}
 begin
   {$IFDEF LCLWIN32}
+  { Linux (Wine): metadarkstyle wirkt dort nicht; die Farben hat StemMaker
+    schon gesetzt }
+  if UnterWine then
+  begin
+    DunklesDesign := SystemFarbenDunkel;
+    WineDunkel := DunklesDesign;
+    Exit;
+  end;
   W := DesignWert;
   if W = 'hell' then
     PreferredAppMode := pamForceLight

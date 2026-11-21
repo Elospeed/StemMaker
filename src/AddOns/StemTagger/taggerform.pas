@@ -480,7 +480,9 @@ end;
              2. Automatisch (oder leer): Windows-Einstellung
                 "Standard-App-Modus" aus der Registry
                 (Personalize\AppsUseLightTheme = 0 heisst dunkel);
-                fehlt sie (älteres Windows, Wine), ist es hell wie StemMaker
+                fehlt sie (älteres Windows), ist es hell. Unter Linux
+                (Wine) setzt das AppImage ELOSPEED_DESKTOP_DUNKEL=1,
+                wenn der Desktop dunkel ist (wie StemMaker)
              3. hell: DJHellesDesign, sonst bleibt die dunkle Palette }
 procedure DesignWieStemMaker;
 var
@@ -492,6 +494,8 @@ begin
   if W = 'hell' then
     Dunkel := False
   else if W = 'dunkel' then
+    Dunkel := True
+  else if GetEnvironmentVariable('ELOSPEED_DESKTOP_DUNKEL') = '1' then
     Dunkel := True
   else
   begin
