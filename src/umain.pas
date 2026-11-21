@@ -223,7 +223,7 @@ type
     FTrayTimer : TTimer;                                   // fragt ab, ob ein zweiter Start "zeig dich" will
     FInTray    : Boolean;                                  // Fenster ist gerade ins Symbol versteckt
     FTrayNotice: Boolean;                                  // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
-    FDonatePending: Boolean;                               // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    FDonatePending: Boolean;                               // Dankfenster fällig, wartet bis StemMaker vorne ist
     { Rechtsklick-Menü der Dateiliste }
     FMenuListen: TMenuItem;
     FMenuRemove: TMenuItem;
@@ -2227,7 +2227,7 @@ begin
   EndPower;                                                // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Fertige Tracks zählen. Ist eine "runde" Zahl erreicht (10, 50, 100 ...),
-    kommt der Spenden-Hinweis - aber nur nach einem guten Durchlauf: ohne
+    kommt das Dankfenster - aber nur nach einem guten Durchlauf: ohne
     Abbruch, ohne anschliessendes Herunterfahren und mit höchstens 10 %
     fehlgeschlagenen Dateien (siehe uDonate). Bei langen Listen (z. B.
     1000 MP3s) ist eine kaputte Datei normal und soll den Hinweis nicht
@@ -2266,11 +2266,11 @@ begin
     { Update kam während der Umwandlung - jetzt anbieten }
     Application.QueueAsyncCall(@OfferUpdate, 0)
   else if FDonatePending then
-    { Spenden-Hinweis: wie oben NICHT direkt hier (Ende-Ereignis des Threads) }
+    { Dankfenster: wie oben NICHT direkt hier (Ende-Ereignis des Threads) }
     Application.QueueAsyncCall(@ShowDonate, 0);
 end;
 
-{ Spenden-Hinweis zeigen - aber nur, wenn man StemMaker gerade anschaut.
+{ Dankfenster zeigen - aber nur, wenn man StemMaker gerade anschaut.
   Ist das Fenster im Symbol neben der Uhr oder im Hintergrund, wartet der
   Hinweis, bis StemMaker wieder vorne ist (AppActivate). So springt nie
   ein Fenster über ein anderes Programm. }

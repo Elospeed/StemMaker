@@ -61,7 +61,7 @@ const
 function CountStemsForDonate(OKCount: Integer; AudioMS: Int64;
   HappyRun: Boolean): Boolean;
 
-{ Zeigt den Dank-/Spenden-Hinweis mit den aktuellen Zahlen.
+{ Zeigt das Dankfenster mit den aktuellen Zahlen.
   Nicht aus dem Ende-Ereignis eines Threads aufrufen (modales Fenster),
   sondern über Application.QueueAsyncCall. }
 procedure ShowDonateThanks;
@@ -249,7 +249,7 @@ end;
 procedure TfrmDonate.btnDonateClick(Sender: TObject);
 begin
   OpenDonatePage;
-  LogLine('Spenden-Hinweis: Ko-fi geöffnet');
+  LogLine('Dankfenster: Ko-fi geöffnet');
   ModalResult := mrOK;
 end;
 
@@ -299,10 +299,10 @@ begin
   end;
   HinweisGezeigt := True;
   if NachUpdate then
-    LogLine(Format('Spenden-Hinweis zum Update auf %s gezeigt (%d Tracks gesamt)',
+    LogLine(Format('Dankfenster zum Update auf %s gezeigt (%d Tracks gesamt)',
       [Version, Stems]))
   else
-    LogLine(Format('Spenden-Hinweis gezeigt (%d Tracks gesamt)', [Stems]));
+    LogLine(Format('Dankfenster gezeigt (%d Tracks gesamt)', [Stems]));
 
   F := TfrmDonate.CreateDonate(Stems, AudioSec, NachUpdate);
   try
@@ -315,7 +315,7 @@ begin
       finally
         Ini.Free;
       end;
-      LogLine('Spenden-Hinweis: "Nicht mehr fragen" gewählt');
+      LogLine('Dankfenster: "Nicht mehr fragen" gewählt');
     except
       { INI nicht schreibbar - dann kommt der Hinweis bei der nächsten Marke wieder.
         "Nicht mehr fragen" gilt bis zur nächsten neuen Version (uDonateLogik). }

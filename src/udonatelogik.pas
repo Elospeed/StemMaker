@@ -7,9 +7,9 @@
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
-  Die Entscheidung, ob nach einem Durchlauf der Spenden-Hinweis kommt
+  Die Entscheidung, ob nach einem Durchlauf das Dankfenster kommt
   (Fenster in uDonate). Ohne Fenster und ohne INI, damit sie sich
-  automatisch testen lässt (tests/spendenhinweis_test.lpr).
+  automatisch testen lässt (tests/dankfenster_test.lpr).
 
   Der Hinweis kommt nur nach einem guten Durchlauf und höchstens einmal
   pro Sitzung, in zwei Fällen:

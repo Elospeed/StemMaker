@@ -102,8 +102,8 @@ jobs:
           set -e
           lazbuild -B src/AddOns/StemPlayer/tests/zeittext_test.lpi
           src/AddOns/StemPlayer/tests/zeittext_test.exe
-          lazbuild -B tests/spendenhinweis_test.lpi
-          tests/spendenhinweis_test.exe
+          lazbuild -B tests/dankfenster_test.lpi
+          tests/dankfenster_test.exe
 
       - name: Exes einsammeln, verkleinern und Prüfsummen bilden
         run: |

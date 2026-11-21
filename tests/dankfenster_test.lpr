@@ -1,5 +1,5 @@
 { ============================================================================
-  spendenhinweis_test.lpr  -  Automatischer Test: wann kommt der Spenden-Hinweis?
+  dankfenster_test.lpr  -  Automatischer Test: wann kommt das Dankfenster?
 
   Autor   : Elospeed
 
@@ -8,7 +8,7 @@
   Hinweis pro Sitzung, nie nach einem schlechten Durchlauf.
   Ende mit Code 0 = alles gut, 1 = mindestens ein Fehler.
   ============================================================================ }
-program spendenhinweis_test;
+program dankfenster_test;
 
 {$mode objfpc}{$H+}
 
