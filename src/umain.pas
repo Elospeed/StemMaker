@@ -640,6 +640,9 @@ begin
   TranslateComponent(Self);                                // Texte aus umain.lfm übersetzen (uLangUI)
   HelpKeyword := 'hauptfenster';                           // F1 öffnet die Hilfe hier (uHilfe)
   memLog.Font.Name := MonoFontName;                        // Consolas hat keine japanischen Zeichen
+  { Linux dunkel (uWineFarben): die Liste nähme sonst schwarze Schrift }
+  if UnterWine and DunklesDesign then
+    lvFiles.Font.Color := clWindowText;
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');
