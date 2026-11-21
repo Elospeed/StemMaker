@@ -6,7 +6,7 @@ aquí, en de.md y en en.md (el workflow de release lo comprueba).
 Debajo «### Nuevo», «### Mejorado», «### Corregido» (solo los que haya), una palabra
 clave breve por punto. Solo lo que notan los usuarios, sin detalles técnicos.
 
-## 2.5 – sin publicar
+## 2.5 – 21 de noviembre de 2026
 ### Nuevo
 - Linux: claro u oscuro como el escritorio, también la barra de título
 - Linux: un nuevo escalado del escritorio se aplica en el siguiente inicio

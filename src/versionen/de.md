@@ -6,7 +6,7 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
-## 2.5 – unveröffentlicht
+## 2.5 – 21. November 2026
 ### Neu
 - Linux: hell oder dunkel wie der Desktop, auch die Titelleiste
 - Linux: neue Skalierung des Desktops gilt beim nächsten Start

@@ -6,7 +6,7 @@ here, in de.md and in es.md (the release workflow checks this).
 Below it "### New", "### Improved", "### Fixed" (only those that apply), one short
 keyword line per item. Only things users notice, no technical details.
 
-## 2.5 – unreleased
+## 2.5 – 21 November 2026
 ### New
 - Linux: light or dark like the desktop, title bar included
 - Linux: a new desktop scaling applies on the next start
