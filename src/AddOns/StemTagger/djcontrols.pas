@@ -424,7 +424,7 @@ begin
   begin
     Bg := BlendColor(DJ_BTN, DJ_BG, 0.5);
     Bd := DJ_BORDER;
-    Fg := BlendColor(DJ_DIM, DJ_BG, 0.4);
+    Fg := BlendColor(DJ_DIM, DJ_BG, 0.15);                 // gesperrt: gut lesbar, aber schwächer
   end
   else if FIndicator and not FDown then
   begin
