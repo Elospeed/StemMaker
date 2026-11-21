@@ -8,7 +8,7 @@ ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheite
 
 ## 2.5 – 21. November 2026
 ### Neu
-- Linux: hell oder dunkel wie der Desktop, auch die Titelleiste
+- Linux: hell oder dunkel wie der Desktop, auch die Titelleiste (Idee von samuelsmith)
 - Linux: neue Skalierung des Desktops gilt beim nächsten Start
 ### Behoben
 - Linux: gesperrte Knöpfe im dunklen Design gut lesbar

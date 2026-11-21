@@ -1,4 +1,4 @@
-# Elospeed StemMaker 2.4
+# Elospeed StemMaker 2.5
 
 **by Elospeed**
 

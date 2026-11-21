@@ -10,7 +10,7 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 ## 2.5 – 21. November 2026
 
 ### Neu
-- **Linux hell oder dunkel:** Die AppImage folgt bei „Automatisch“ dem Linux-Desktop (GNOME, Cinnamon, MATE, XFCE, KDE), „Hell“ und „Dunkel“ gehen wie unter Windows. Hauptfenster, Einstellungen, Listen, Knöpfe und Menüs sind dann dunkel, ebenso die AddOns. Auch die Titelleiste folgt dem Design (GNOME, Cinnamon, MATE, XFCE).
+- **Linux hell oder dunkel:** Die AppImage folgt bei „Automatisch“ dem Linux-Desktop (GNOME, Cinnamon, MATE, XFCE, KDE), „Hell“ und „Dunkel“ gehen wie unter Windows. Hauptfenster, Einstellungen, Listen, Knöpfe und Menüs sind dann dunkel, ebenso die AddOns. Auch die Titelleiste folgt dem Design (GNOME, Cinnamon, MATE, XFCE). Danke an samuelsmith für die Idee.
 - **Linux-Skalierung:** Ändert sich die Skalierung des Desktops, übernimmt StemMaker sie beim nächsten Start der AppImage (bisher nur beim allerersten Start).
 - **Projektseite:** Nach einem Klick auf „Download“ startet der Download sofort, dazu eine kurze Anleitung für den ersten Start.
 

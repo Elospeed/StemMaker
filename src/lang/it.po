@@ -525,7 +525,7 @@ msgstr "Batteria"
 msgid "Akku (%d %%)"
 msgstr "Batteria (%d %%)"
 
-#: uinfo.pas:428
+#: uinfo.pas:429
 msgid "Aktuelles Log: %s"
 msgstr "Log attuale: %s"
 
@@ -569,7 +569,7 @@ msgstr "Tutti i file sono pronti. Il PC si spegnerà tra %d secondi."
 msgid "Alle Details: Info -> Lizenzen sowie LICENSE und THIRD-PARTY-NOTICES.md im StemMaker-Ordner."
 msgstr "Tutti i dettagli: Info -> Licenze, oltre a LICENSE e THIRD-PARTY-NOTICES.md nella cartella di StemMaker."
 
-#: uinfo.pas:533
+#: uinfo.pas:534
 msgid "Alle Einzelheiten stehen im CHANGELOG auf GitHub"
 msgstr "Tutti i dettagli sono nel CHANGELOG su GitHub (in tedesco)"
 
@@ -601,7 +601,7 @@ msgstr "Come issue su GitHub (pubblica)"
 msgid "Anhören"
 msgstr "Ascolta"
 
-#: uinfo.pas:506
+#: uinfo.pas:507
 msgid "Anleitung"
 msgstr "Guida"
 
@@ -877,7 +877,7 @@ msgstr "Esportazione DAW: «Song» + «Song_drums» … «_vocals»"
 msgid "Danach wird alles wieder so eingestellt wie vorher. Der Bildschirm darf ausgehen."
 msgstr "Dopo, tutto torna come prima. Lo schermo può spegnersi."
 
-#: uinfo.pas:539
+#: uinfo.pas:540
 msgid "Danke"
 msgstr "Grazie"
 
@@ -1017,7 +1017,7 @@ msgstr "StemPlayer riproduce solo file stem per Traktor (.stem.mp4),"
 msgid "Der Tiefbass unter 80 Hz, den die Trennung im Stem \"Other\" lässt, wird in den Bass-Stem verschoben.\nDer Bass-Stem wird dadurch voller (wie bei Traktors eigenen Stems), alle Stems zusammen klingen unverändert."
 msgstr "I sub-bassi sotto 80 Hz che la separazione lascia nello stem \"Other\" vengono spostati nello stem Bass.\nLo stem Bass suona così più pieno (come gli stem di Traktor); tutti gli stem insieme suonano invariati."
 
-#: uinfo.pas:355
+#: uinfo.pas:356
 msgid "Der Versionsverlauf fehlt in dieser Version."
 msgstr "In questa versione manca la cronologia delle versioni."
 
@@ -1089,7 +1089,7 @@ msgstr "La lingua verrà applicata al prossimo avvio."
 msgid "Die Sprache wird nach einem Neustart übernommen. StemMaker jetzt neu starten?"
 msgstr "La lingua verrà applicata dopo un riavvio. Riavviare StemMaker ora?"
 
-#: uinfo.pas:601
+#: uinfo.pas:602
 msgid "Die Suche nach Updates hat nicht geklappt: %s"
 msgstr "La ricerca di aggiornamenti non è riuscita: %s"
 
@@ -1153,7 +1153,7 @@ msgstr "Download in corso ...  %s"
 msgid "Download unvollständig"
 msgstr "Download incompleto"
 
-#: uinfo.pas:598
+#: uinfo.pas:599
 msgid "Du hast die neueste Version (%s)."
 msgstr "Hai la versione più recente (%s)."
 
@@ -1341,7 +1341,7 @@ msgstr "Segnalazione errore"
 msgid "Fehlerbericht senden"
 msgstr "Invia segnalazione errore"
 
-#: uinfo.pas:483 ulogui.pas:60
+#: uinfo.pas:484 ulogui.pas:60
 msgid "Fehlerbericht senden..."
 msgstr "Invia segnalazione errore..."
 
@@ -1489,7 +1489,7 @@ msgstr "Scarica"
 msgid "Herunterladen (ca. %d MB)"
 msgstr "Scarica (circa %d MB)"
 
-#: uinfo.pas:555
+#: uinfo.pas:556
 msgid "Hier steht nur, wer zugestimmt hat. Du hast mitgeholfen und möchtest hier genannt werden? Schreib an elospeed.dev@gmail.com."
 msgstr "Qui compare solo chi ha dato il consenso. Hai aiutato e vuoi essere citato qui? Scrivi a elospeed.dev@gmail.com."
 
@@ -1557,6 +1557,10 @@ msgstr "Sviluppo StemMaker nel mio tempo libero, con tanto tempo e passione."
 msgid "Ich habe den Haftungsausschluss und die Lizenzhinweise gelesen und bin einverstanden."
 msgstr "Ho letto l'esclusione di responsabilità e le note sulle licenze e le accetto."
 
+#: uinfo.pas:303
+msgid "Idee Linux hell/dunkel"
+msgstr "idea chiaro/scuro su Linux"
+
 #: packerform.pas:1073
 msgid "Im Muster von „%s“ fehlt der Stern * für den Songnamen."
 msgstr "Nel modello di «%s» manca l’asterisco * per il nome del brano."
@@ -1573,7 +1577,7 @@ msgstr "Nel dubbio estrai a mano lo ZIP dalla pagina delle release."
 msgid "In der Zwischenablage ist kein Bild."
 msgstr "Negli appunti non c'è nessuna immagine."
 
-#: packerform.pas:686 uinfo.pas:401 umain.lfm:80
+#: packerform.pas:686 uinfo.pas:402 umain.lfm:80
 msgid "Info"
 msgstr "Info"
 
@@ -1629,7 +1633,7 @@ msgstr "Verificare ora e scaricare i file mancanti?"
 msgid "Jetzt speichern?"
 msgstr "Salvare ora?"
 
-#: uinfo.pas:456
+#: uinfo.pas:457
 msgid "Jetzt spenden"
 msgstr "Dona ora"
 
@@ -1801,7 +1805,7 @@ msgstr "Svuota elenco"
 msgid "Liste vom letzten Mal wiederhergestellt: %d Dateien, davon %d noch offen."
 msgstr "Elenco dell'ultima volta ripristinato: %d file, di cui %d ancora in attesa."
 
-#: uinfo.pas:560
+#: uinfo.pas:561
 msgid "Lizenzen"
 msgstr "Licenze"
 
@@ -1821,7 +1825,7 @@ msgstr "Copia log"
 msgid "Log:"
 msgstr "Log:"
 
-#: uinfo.pas:450
+#: uinfo.pas:451
 msgid "Logs-Ordner öffnen"
 msgstr "Apri cartella log"
 
@@ -2001,7 +2005,7 @@ msgstr "Mute: silenzia questo stem (tasto %d)"
 msgid "Möchtest du Elospeed einen Fehlerbericht schicken? Du siehst den Bericht vorher, es wird nichts automatisch gesendet."
 msgstr "Vuoi inviare a Elospeed una segnalazione errore? Vedrai prima il rapporto, nulla viene inviato automaticamente."
 
-#: uinfo.pas:476 uinfo.pas:587
+#: uinfo.pas:477 uinfo.pas:588
 msgid "Nach Updates suchen"
 msgstr "Cerca aggiornamenti"
 
@@ -2325,7 +2329,7 @@ msgstr "MUTO"
 msgid "Schliessen"
 msgstr "Chiudi"
 
-#: uinfo.pas:443
+#: uinfo.pas:444
 msgid "Schließen"
 msgstr "Chiudi"
 
@@ -2621,7 +2625,7 @@ msgstr "Stop e ritorno all'inizio"
 msgid "Strg+Klick: weiteren Stem dazunehmen (mehrere Solos)"
 msgstr "Ctrl+clic: aggiungi un altro stem (più solo)"
 
-#: uinfo.pas:581
+#: uinfo.pas:582
 msgid "Suche ..."
 msgstr "Ricerca ..."
 
@@ -2833,7 +2837,7 @@ msgstr "Connessione non riuscita (errore %d)"
 msgid "Verhindert den Ruhezustand und setzt den Energiesparmodus vorübergehend aus."
 msgstr "Impedisce la sospensione e disattiva temporaneamente il risparmio energia."
 
-#: uinfo.pas:516
+#: uinfo.pas:517
 msgid "Versionen"
 msgstr "Versioni"
 
@@ -2937,7 +2941,7 @@ msgstr "Mostra le tracce e i metadati stem di un .stem.mp4 esistente"
 msgid "Zeigt die fertige Stem-Datei im Explorer - von dort direkt in Traktor ziehen"
 msgstr "Mostra il file stem pronto in Esplora file - da lì trascinalo direttamente in Traktor"
 
-#: uinfo.pas:484
+#: uinfo.pas:485
 msgid "Zeigt ein Log an und hilft, es per Mail oder GitHub an Elospeed zu schicken. Nichts wird automatisch gesendet."
 msgstr "Mostra un log e aiuta a inviarlo a Elospeed per e-mail o su GitHub. Nulla viene inviato automaticamente."
 
@@ -3245,7 +3249,7 @@ msgstr "percorso non consentito"
 msgid "vergangen %s   |   verbleibend %s   |   %.1f MB/s"
 msgstr "trascorso %s   |   rimanente %s   |   %.1f MB/s"
 
-#: uinfo.pas:426
+#: uinfo.pas:427
 msgid "von %s  ·  Traktor-Stems aus Audiodateien  ·  kostenlos && quelloffen  ·  Build: %s"
 msgstr "di %s  ·  Stem per Traktor da file audio  ·  gratuito && open source  ·  Build: %s"
 
@@ -3293,7 +3297,7 @@ msgstr "APRI"
 msgid "Öffnet den Ordner, in dem StemMaker.ini liegt"
 msgstr "Apre la cartella in cui si trova StemMaker.ini"
 
-#: uinfo.pas:494
+#: uinfo.pas:495
 msgid "Öffnet die bebilderte Anleitung im Browser."
 msgstr "Apre la guida illustrata nel browser."
 
