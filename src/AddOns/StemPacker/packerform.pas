@@ -1,6 +1,6 @@
 { ============================================================================
   Unit    : packerform  (Datei packerform.pas)
-  Programm: Elospeed StemPacker 0.3.1
+  Programm: Elospeed StemPacker 0.4
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
   Stand   : 14.11.2026
@@ -61,12 +61,12 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, LCLType, LCLIntf, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, UTF8Process, Process,
-  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe,
+  uLang, uStemMP4, uStatusDraw, uSkalierung, packmatch, packjob, packdetect, uHilfe, uDankFenster,
   uPackDesign;
 
 const
   APP_TITLE = 'Elospeed StemPacker';
-  APP_VER   = '0.3.1';
+  APP_VER   = '0.4';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
   PAGE_URL  = 'https://elospeed.github.io/StemPacker/';
 
@@ -119,6 +119,7 @@ type
     FSongs     : TList;                                    // TPackSong
     FFFmpeg    : string;
     FBusy      : Boolean;
+    FIniWarSchonDa: Boolean;                               // INI gab es schon beim Start (Dankfenster)
     FCancel    : Boolean;
     FCloseAfter: Boolean;
     FWarned    : Integer;                                  // Songs mit Längen-Warnung beim letzten Packen
@@ -134,6 +135,7 @@ type
     procedure ShowExpert;
     procedure RunDetect(const Folder: string);
     function  IniFileName: string;
+    function  ImStemMakerOrdner: Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
     function  GetRules: TPackRules;
@@ -240,6 +242,7 @@ begin
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FSongs := TList.Create;
+  FIniWarSchonDa := FileExists(IniFileName);               // für das Dankfenster (neue Installation?)
   HelpKeyword := 'stempacker';                             // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
 
@@ -895,6 +898,12 @@ end;
 
 { StemPacker.ini neben der exe, bei schreibgeschütztem Ordner (Setup unter
   C:\Programme) in %APPDATA%\StemMaker\ - wie StemTagger.ini }
+{ Läuft der StemPacker als AddOn von StemMaker (AddOns\ neben StemMaker.exe)? }
+function TPackerForm.ImStemMakerOrdner: Boolean;
+begin
+  Result := FileExists(ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'StemMaker.exe');
+end;
+
 function TPackerForm.IniFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.ini');
@@ -1445,6 +1454,11 @@ begin
        _('Die Dateien lassen sich direkt in Traktor laden. Ordner jetzt öffnen?'),
        mtInformation, [mbYes, mbNo], 0) = mrYes then
     if LastOut <> '' then OpenDocument(ExtractFilePath(LastOut));
+  { Dankfenster einmal pro neuer Version (uDankFenster), nur nach einem Lauf
+    ohne Fehler. Nicht als AddOn in StemMaker: dort kommt schon das Fenster
+    von StemMaker. }
+  if (Done > 0) and (Failed = 0) and not ImStemMakerOrdner then
+    DankNachPacken(IniFileName, 'StemPacker', APP_VER, FIniWarSchonDa, KOFI_URL);
 end;
 
 procedure TPackerForm.SetBusy(B: Boolean);
