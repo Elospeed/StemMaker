@@ -15,11 +15,18 @@ on:
       version:
         description: "Version der Testversion"
         default: "2.3"
+      exe_lauf:
+        description: "Optional, für Tests vor dem Release: Lauf-Nummer von Build, dessen Exes über das Release gelegt werden"
+        default: ""
+      quell_ref:
+        description: "Optional, mit exe_lauf: Branch, aus dem die Sprachdateien (src/lang) kommen"
+        default: ""
   push:
     branches: [elospeed/linux-beta2]
     paths: [".github/workflows/linux-testversion.yml"]
 permissions:
   contents: read
+  actions: read
 jobs:
   packen:
     runs-on: ubuntu-latest
@@ -39,6 +46,28 @@ jobs:
           gh release download "$REL" -R "$GITHUB_REPOSITORY" -p 'StemMaker-*.zip' -D rel
           ls -la alt rel
           (cd alt && unzip -q *.zip) && (cd rel && unzip -q StemMaker-*.zip)
+      - name: Exes aus einem Build-Lauf darüberlegen (nur Test vor dem Release)
+        if: ${{ inputs.exe_lauf != '' }}
+        env:
+          LAUF: ${{ inputs.exe_lauf }}
+          QREF: ${{ inputs.quell_ref }}
+        run: |
+          set -e
+          gh run download "$LAUF" -R "$GITHUB_REPOSITORY" -p 'StemMaker-Win64-*' -D exes
+          find exes -name '*.exe' | sort
+          Z=rel/StemMaker
+          for f in StemMaker.exe StemCLI.exe; do cp "$(find exes -name $f | head -n 1)" "$Z/$f"; done
+          for f in StemPlayer.exe StemDecks.exe Stem51.exe StemTagger.exe StemPacker.exe; do
+            Q="$(find exes -name $f | head -n 1)"
+            if [ -n "$Q" ] && [ -f "$Z/AddOns/$f" ]; then cp "$Q" "$Z/AddOns/$f"; fi
+          done
+          if [ -n "$QREF" ]; then
+            git fetch -q origin "$QREF"
+            for po in $(git ls-tree --name-only FETCH_HEAD src/lang/); do
+              git show "FETCH_HEAD:$po" > "$Z/lang/$(basename "$po")"
+            done
+          fi
+          ls -la "$Z" "$Z/AddOns" "$Z/lang"
       - name: AppImage neu packen
         run: |
           A=$(ls alt/*/*.AppImage)
