@@ -25,7 +25,9 @@
   Fenster entsteht. Darum gilt eine Änderung erst nach einem Neustart
   (die Einstellungen fragen dann, ob StemMaker neu starten soll).
 
-  Braucht Windows 10 ab 1809. Ältere Windows und Wine bleiben hell.
+  Braucht Windows 10 ab 1809. Ältere Windows bleiben hell. Unter Linux
+  (Wine, ab 2.5) setzt uWineFarben die Systemfarben hell oder dunkel;
+  "Automatisch" folgt dort dem Linux-Desktop.
   Selbst gezeichnete Teile (Statusspalte, Ko-fi-Knopf, AddOn-Leiste)
   fragen DunklesDesign in uStatusDraw ab.
 
@@ -63,7 +65,7 @@ implementation
 uses
   SysUtils, IniFiles, uStatusDraw
   {$IFDEF LCLWIN32}
-  , uDarkStyleParams, uMetaDarkStyle, uDarkStyleSchemes
+  , Windows, uDarkStyleParams, uMetaDarkStyle, uDarkStyleSchemes, uWine, uWineFarben
   {$ENDIF};
 
 { ----------------------------------------------------------------------------
@@ -144,9 +146,66 @@ end;
              2. ApplyMetaDarkStyle färbt alle späteren Fenster um
              3. IsDarkModeEnabled sagt, ob es wirklich dunkel ist (bei
                 Automatisch hängt das von Windows ab) }
+{$IFDEF LCLWIN32}
+{ NeuStarten
+  Startet dieselbe Exe mit derselben Befehlszeile noch einmal (mit
+  ELOSPEED_FARBEN_NEU=1) und beendet diese sofort. Nur unter Wine, noch
+  bevor ein Fenster da ist. Klappt der Start nicht, läuft diese weiter. }
+procedure NeuStarten;
+var
+  SI: TStartupInfoW;
+  PI: TProcessInformation;
+  Zeile: UnicodeString;
+begin
+  Windows.SetEnvironmentVariable('ELOSPEED_FARBEN_NEU', '1');
+  FillChar(SI, SizeOf(SI), 0);
+  SI.cb := SizeOf(SI);
+  Zeile := GetCommandLineW;
+  UniqueString(Zeile);
+  if CreateProcessW(nil, PWideChar(Zeile), nil, nil, False, 0, nil, nil, SI, PI) then
+  begin
+    CloseHandle(PI.hThread);
+    CloseHandle(PI.hProcess);
+    Halt(0);
+  end;
+  Windows.SetEnvironmentVariable('ELOSPEED_FARBEN_NEU', nil);
+end;
+{$ENDIF}
+
 procedure DesignAnwenden(const IniName: string);
+{$IFDEF LCLWIN32}
+var
+  Dunkel: Boolean;                                         // unter Wine: dunkel?
+  Neustart: Boolean;                                       // darf noch neu starten
+{$ENDIF}
 begin
   {$IFDEF LCLWIN32}
+  { Linux (Wine): metadarkstyle wirkt dort nicht. Stattdessen die
+    Systemfarben setzen, mit denen Wine alles zeichnet (uWineFarben).
+    Automatisch = wie der Linux-Desktop. }
+  if UnterWine then
+  begin
+    case DesignLesen(IniName) of
+      dwHell  : Dunkel := False;
+      dwDunkel: Dunkel := True;
+    else
+      Dunkel := DesktopDunkel;
+    end;
+    { Einmal neu starten, wenn Farben oder Thema geändert werden mussten
+      (Wine liest sie nur beim Programmstart). Die Umgebungsvariable
+      verhindert eine Schleife und wird gleich wieder gelöscht, damit ein
+      späterer Neustart (Design umgestellt) wieder neu starten darf. }
+    Neustart := SysUtils.GetEnvironmentVariable('ELOSPEED_FARBEN_NEU') <> '1';
+    Windows.SetEnvironmentVariable('ELOSPEED_FARBEN_NEU', nil);
+    try
+      if WineFarbenSetzen(Dunkel) and Neustart then
+        NeuStarten;
+    except
+      { Registry nicht schreibbar: dann eben mit den Farben von Wine }
+    end;
+    DunklesDesign := Dunkel;
+    Exit;
+  end;
   case DesignLesen(IniName) of
     dwHell  : PreferredAppMode := pamForceLight;
     dwDunkel: PreferredAppMode := pamForceDark;

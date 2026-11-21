@@ -83,7 +83,7 @@ StemMaker is free and open source, with no ads, no account and no paid version, 
 - **Star the repository** on GitHub. It costs nothing and helps other DJs find StemMaker.
 - **Tell others** about it, or report a bug or an idea in the [Discussions](https://github.com/Elospeed/StemMaker/discussions).
 
-The program never asks at startup. Only when you reach a round number of finished tracks (10, 50, 100, 250, 500, 1000, then every 1000), and only after a run in which at least 90% of the files succeeded, a short thank-you note appears with a Ko-fi button. "Continue" simply carries on, and "Don't ask again" switches the note off for good.
+After a successful run, a short thank-you note appears now and then. "Don't ask again" hides it until the next version.
 
 ## Folder structure
 
@@ -299,7 +299,7 @@ The language files are in the `lang\` folder (gettext, `.po`). To add a language
   | `udownload.pas` | download via WinINet + unzip |
   | `ulog.pas` | real-time log file, crash detection, system info |
   | `ulogui.pas` | catches unexpected errors and writes them to the log |
-  | `udonate.pas` | donation window before startup |
+  | `udonate.pas` | thank-you window after successful runs |
   | `uinfo.pas` | Info window |
   | `usettings.pas` | "More settings" window (gear button) |
   | `upower.pas` | keep the PC awake, power plan, battery, sleep detection |

@@ -1,6 +1,6 @@
 { ============================================================================
   Unit    : taggerform  (Datei taggerform.pas)
-  Programm: Elospeed StemTagger 1.2.3
+  Programm: Elospeed StemTagger 1.3
   Autor   : Elospeed
   Lizenz  : frei (wie Elospeed StemMaker)
   Stand   : 14.11.2026
@@ -76,11 +76,11 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   ComCtrls, LCLType, LCLIntf, Clipbrd, FileUtil, LazFileUtils, LazUTF8,
   IniFiles, Registry, IntfGraphics, Contnrs, ImgList, Math, uLang, uMp4Tags, uId3Tags, uStatusDraw, djcontrols, djextra, coverbild,
-  uSkalierung, uDunklerRahmen, uHilfe;
+  uSkalierung, uDunklerRahmen, uHilfe, uDankFenster;
 
 const
   APP_TITLE = 'Elospeed StemTagger';
-  APP_VER   = '1.2.3';
+  APP_VER   = '1.3';
   KOFI_URL  = 'https://ko-fi.com/elospeed';
 
 type
@@ -101,6 +101,7 @@ type
   TMainForm = class(TForm)
   private
     FEntries   : TFPObjectList;                            // gehört der Liste, gibt Einträge frei
+    FIniWarSchonDa: Boolean;                               // INI gab es schon beim Start (Dankfenster)
     FList      : TListView;
     FEdits     : array[TMp4TagField] of TWinControl;       // TEdit oder TDJCombo, tfCover = nil
     FMixed     : array[TMp4TagField] of Boolean;           // Feld zeigt "verschieden"
@@ -151,6 +152,7 @@ type
                          ALeft, ATop, AWidth: Integer; AClick: TNotifyEvent): TDJButton;
     function  FieldCaption(F: TMp4TagField): string;
     function  IniFileName: string;
+    function  ImStemMakerOrdner: Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure Log(const S: string);
@@ -399,6 +401,7 @@ begin
   { gleich auf die Bildschirm-DPI: BuildUI rechnet alles mit Scale96ToForm }
   StelleAufBildschirmDPI(Self);
   FEntries := TFPObjectList.Create(True);
+  FIniWarSchonDa := FileExists(IniFileName);               // für das Dankfenster (neue Installation?)
   HelpKeyword := 'stemtagger';                             // F1 öffnet die Hilfe hier (uHilfe)
   LoadLanguage;
   DesignWieStemMaker;                                      // vor BuildUI: setzt die Farben aus djcontrols
@@ -480,7 +483,9 @@ end;
              2. Automatisch (oder leer): Windows-Einstellung
                 "Standard-App-Modus" aus der Registry
                 (Personalize\AppsUseLightTheme = 0 heisst dunkel);
-                fehlt sie (älteres Windows, Wine), ist es hell wie StemMaker
+                fehlt sie (älteres Windows), ist es hell. Unter Linux
+                (Wine) setzt das AppImage ELOSPEED_DESKTOP_DUNKEL=1,
+                wenn der Desktop dunkel ist (wie StemMaker)
              3. hell: DJHellesDesign, sonst bleibt die dunkle Palette }
 procedure DesignWieStemMaker;
 var
@@ -492,6 +497,8 @@ begin
   if W = 'hell' then
     Dunkel := False
   else if W = 'dunkel' then
+    Dunkel := True
+  else if GetEnvironmentVariable('ELOSPEED_DESKTOP_DUNKEL') = '1' then
     Dunkel := True
   else
   begin
@@ -1273,6 +1280,12 @@ end;
 
 { StemTagger.ini neben der exe, bei schreibgeschütztem Ordner (Setup unter
   C:\Programme) in %APPDATA%\StemMaker\ - wie StemPlayer.ini }
+{ Läuft der StemTagger als AddOn von StemMaker (AddOns\ neben StemMaker.exe)? }
+function TMainForm.ImStemMakerOrdner: Boolean;
+begin
+  Result := FileExists(ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'StemMaker.exe');
+end;
+
 function TMainForm.IniFileName: string;
 begin
   Result := ChangeFileExt(Application.ExeName, '.ini');
@@ -1938,7 +1951,13 @@ begin
     MessageDlg(Format(_('%d Dateien gespeichert, %d mit Fehler. Die Dateien mit Fehler sind unverändert, Details in der Spalte Status.'),
       [Ok, Bad]), mtWarning, [mbOK], 0)
   else if Ok > 0 then
+  begin
     FStatus.Caption := Format(_('%d Dateien gespeichert'), [Ok]);
+    { Dankfenster einmal pro neuer Version (uDankFenster). Nicht als AddOn
+      in StemMaker: dort kommt schon das Fenster von StemMaker. }
+    if not ImStemMakerOrdner then
+      DankNachSpeichern(IniFileName, 'StemTagger', APP_VER, FIniWarSchonDa, KOFI_URL);
+  end;
   Result := Bad = 0;
 end;
 

@@ -31,7 +31,7 @@
     uLog       Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos
     uLogUI     fängt unerwartete Fehler ab und schreibt sie ins Log
     uReport    Fenster "Fehlerbericht senden" (Mail / GitHub, nur auf Wunsch)
-    uDonate    Spenden-Hinweis nach erfolgreichen Durchläufen
+    uDonate    Dankfenster nach erfolgreichen Durchläufen
     uLicense   Haftungsausschluss/Lizenz: Text, PC-Kennung, INI (ohne Oberfläche)
     uLicenseUI Fenster dazu (einmal pro PC bestätigen)
     uUpdate    update.json lesen, Prüfsummen, Update installieren (ohne Oberfläche)
@@ -130,9 +130,6 @@ begin
   { 0a. Hat ein abgestürzter Lauf den Energiesparplan umgestellt und
         konnte ihn nicht mehr zurückstellen? Dann jetzt nachholen. }
   PowerRestoreAfterCrash(StemIniFileName);
-
-  { 0b. (Das Spendenfenster vor dem Start gibt es seit 1.7.2 nicht mehr -
-        der Hinweis kommt jetzt nach erfolgreichen Durchläufen, siehe uDonate) }
 
   { 1. gewähltes Modell aus der INI holen }
   Settings := DefaultStemSettings;

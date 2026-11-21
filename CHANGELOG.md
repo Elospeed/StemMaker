@@ -7,6 +7,21 @@ Die technischen Hintergründe (Fehler und wie sie gelöst wurden) stehen im [Ent
 
 ---
 
+## 2.5 – 21. November 2026
+
+### Neu
+- **Linux hell oder dunkel:** Die AppImage folgt bei „Automatisch“ dem Linux-Desktop (GNOME, Cinnamon, MATE, XFCE, KDE), „Hell“ und „Dunkel“ gehen wie unter Windows. Hauptfenster, Einstellungen, Listen, Knöpfe und Menüs sind dann dunkel, ebenso die AddOns. Auch die Titelleiste folgt dem Design (GNOME, Cinnamon, MATE, XFCE).
+- **Linux-Skalierung:** Ändert sich die Skalierung des Desktops, übernimmt StemMaker sie beim nächsten Start der AppImage (bisher nur beim allerersten Start).
+- **Projektseite:** Nach einem Klick auf „Download“ startet der Download sofort, dazu eine kurze Anleitung für den ersten Start.
+
+### Behoben
+- **Linux, dunkles Design:** Gesperrte Knöpfe und Texte sind gut lesbar, die Spalte „Pfad“ füllt die Liste auch, wenn sie leer ist.
+
+#### StemPlayer 1.8.7, StemTagger 1.3, StemPacker 0.4
+- StemPlayer: Die Zeitskala der Lupe zeigt den Minutenwechsel richtig (1:00.00 statt 0:60.00), die Tastenleiste heisst auf Deutsch „1-4 Stumm“.
+- StemTagger: Gesperrte Knöpfe sind im dunklen Design besser lesbar.
+- StemTagger und StemPacker unter Linux hell oder dunkel wie StemMaker.
+
 ## 2.4 – 15. November 2026
 
 ### Neu

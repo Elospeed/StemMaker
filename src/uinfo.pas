@@ -208,7 +208,7 @@ end;
   AddThanksName-Zeile eintragen (Namen werden nicht übersetzt). }
 
 const
-  THANKS_RED  = $005E5AFF;                                 // #FF5A5E wie das Herz im Spenden-Fenster
+  THANKS_RED  = $005E5AFF;                                 // #FF5A5E wie das Herz im Dankfenster
   THANKS_BLUE = $00D69B2E;                                 // #2E9BD6, kräftiges Blau
 
 { Hängt ein Label unten an die Liste an. Mit alTop und wachsendem Top

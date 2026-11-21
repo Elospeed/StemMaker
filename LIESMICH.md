@@ -81,7 +81,7 @@ StemMaker ist kostenlos und quelloffen, ohne Werbung, ohne Konto und ohne Bezahl
 - **Dem Repository einen Stern geben** auf GitHub. Das kostet nichts und hilft anderen DJs, StemMaker zu finden.
 - **Weitersagen**, oder einen Fehler oder eine Idee in den [Discussions](https://github.com/Elospeed/StemMaker/discussions) melden.
 
-Beim Start fragt das Programm nie. Nur wenn du eine runde Zahl fertiger Tracks erreichst (10, 50, 100, 250, 500, 1000, danach alle 1000), und nur nach einem Durchlauf, in dem mindestens 90 % der Dateien geklappt haben, erscheint ein kurzes Dankeschön mit einem Ko-fi-Knopf. „Weiter“ geht einfach weiter, „Nicht mehr fragen“ schaltet den Hinweis dauerhaft ab.
+Nach einem erfolgreichen Durchlauf erscheint ab und zu ein kurzes Danke. Mit „Nicht mehr fragen“ kommt es bis zur nächsten Version nicht wieder.
 
 ## Ordnerstruktur
 
@@ -297,7 +297,7 @@ Die Sprachdateien liegen im Ordner `lang\` (gettext, `.po`). Für eine neue Spra
   | `udownload.pas` | Download über WinINet + ZIP entpacken |
   | `ulog.pas` | Log-Datei in Echtzeit, Absturz-Erkennung, Rechner-Infos |
   | `ulogui.pas` | fängt unerwartete Fehler ab und schreibt sie ins Log |
-  | `udonate.pas` | Spendenfenster vor dem Start |
+  | `udonate.pas` | Dankfenster nach erfolgreichen Durchläufen |
   | `uinfo.pas` | Info-Fenster |
   | `usettings.pas` | Fenster „Weitere Einstellungen“ (Zahnrad) |
   | `upower.pas` | PC wach halten, Energiesparplan, Akku, Ruhezustand erkennen |

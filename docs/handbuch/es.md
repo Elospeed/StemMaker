@@ -2,7 +2,7 @@
 titel: Elospeed StemMaker
 untertitel: Manual de usuario
 versionstext: Versión
-version: "2.4"
+version: "2.5"
 datum: Noviembre de 2026
 umfang: "Separa tu música en stems de Traktor, escúchalos antes y pínchalos. Con StemPlayer, StemTagger y StemPacker."
 fusszeile: "Gratuito y de código abierto (licencia MIT) · © 2026 Elospeed"
@@ -85,8 +85,8 @@ El mejor modelo (htdemucs_ft) tarda unas tres veces más que el estándar. Para 
 
 En la página del proyecto <https://elospeed.github.io/StemMaker/> y en la página de versiones de GitHub hay dos descargas con el mismo programa:
 
-- **`StemMaker-2.4-Setup.exe`** (instalador): instala StemMaker solo para tu usuario de Windows, sin derechos de administrador, con entrada en el menú Inicio. Se desinstala como siempre en *Configuración → Aplicaciones*.
-- **`StemMaker-2.4.zip`** (portátil): descomprímelo donde quieras, por ejemplo en `C:\Tools\StemMaker` o en una memoria USB. No se instala nada.
+- **`StemMaker-2.5-Setup.exe`** (instalador): instala StemMaker solo para tu usuario de Windows, sin derechos de administrador, con entrada en el menú Inicio. Se desinstala como siempre en *Configuración → Aplicaciones*.
+- **`StemMaker-2.5.zip`** (portátil): descomprímelo donde quieras, por ejemplo en `C:\Tools\StemMaker` o en una memoria USB. No se instala nada.
 
 En ambos casos se inicia `StemMaker.exe` (tras el instalador, desde la entrada «StemMaker» del menú Inicio).
 
@@ -306,7 +306,7 @@ En **Más ajustes → Programa → Tema** eliges el aspecto de StemMaker:
 | Claro | siempre claro |
 | Oscuro | siempre oscuro: ventanas, listas, botones y barras de título |
 
-La elección se aplica tras reiniciar; StemMaker pregunta al momento si quieres reiniciarlo. El tema oscuro necesita Windows 10 versión 1809 o posterior, o Windows 11; en Windows más antiguos y en Linux StemMaker sigue claro. StemTagger y StemPacker siguen el mismo ajuste (la próxima vez que se abren), el StemPlayer siempre es oscuro.
+La elección se aplica tras reiniciar; StemMaker pregunta al momento si quieres reiniciarlo. El tema oscuro necesita Windows 10 versión 1809 o posterior, o Windows 11; en Windows más antiguos StemMaker sigue claro. En Linux (AppImage), «Automático» sigue al escritorio. StemTagger y StemPacker siguen el mismo ajuste (la próxima vez que se abren), el StemPlayer siempre es oscuro.
 
 ## ¿Qué modelo de separación? {#modelle}
 

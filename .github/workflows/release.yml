@@ -25,6 +25,8 @@
 #
 # update.json wird NICHT geändert. Die nötigen Werte stehen in der Zusammenfassung
 # des Laufs; erst wenn das Release online ist, kommt update.json per PR nach.
+# Im selben PR VERSION in site/danke.js anpassen: alle Download-Knöpfe der
+# Projektseite laufen über die Danke-Seite, die die Dateien dieser Version lädt.
 
 name: Release erstellen
 

@@ -2,7 +2,7 @@
 titel: Elospeed StemMaker
 untertitel: Benutzerhandbuch
 versionstext: Version
-version: "2.4"
+version: "2.5"
 datum: November 2026
 umfang: "Musik in Traktor-Stems zerlegen, vorher reinhören und auflegen. Mit StemPlayer, StemTagger und StemPacker."
 fusszeile: "Kostenlos und quelloffen (MIT-Lizenz) · © 2026 Elospeed"
@@ -85,8 +85,8 @@ Das beste Modell (htdemucs_ft) braucht etwa dreimal so lang wie das Standard-Mod
 
 Auf der Projektseite <https://elospeed.github.io/StemMaker/> und auf der GitHub-Release-Seite gibt es zwei Downloads mit demselben Programm:
 
-- **`StemMaker-2.4-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
-- **`StemMaker-2.4.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
+- **`StemMaker-2.5-Setup.exe`** (Installer): installiert StemMaker nur für deinen Windows-Benutzer, ohne Administratorrechte, mit Eintrag im Startmenü. Deinstallieren geht wie gewohnt über *Einstellungen → Apps*.
+- **`StemMaker-2.5.zip`** (portabel): irgendwohin entpacken, zum Beispiel nach `C:\Tools\StemMaker` oder auf einen USB-Stick. Es wird nichts installiert.
 
 Gestartet wird in beiden Fällen `StemMaker.exe` (nach dem Installer über den Startmenü-Eintrag „StemMaker“).
 
@@ -306,7 +306,7 @@ Unter **Weitere Einstellungen → Programm → Design** wählst du, wie StemMake
 | Hell | immer hell |
 | Dunkel | immer dunkel: Fenster, Listen, Knöpfe und Titelleisten |
 
-Die Wahl gilt nach einem Neustart; StemMaker fragt gleich, ob er neu starten soll. Das dunkle Design braucht Windows 10 ab Version 1809 oder Windows 11; auf älteren Windows und unter Linux bleibt StemMaker hell. StemTagger und StemPacker folgen derselben Einstellung (beim nächsten Öffnen), der StemPlayer bleibt immer dunkel.
+Die Wahl gilt nach einem Neustart; StemMaker fragt gleich, ob er neu starten soll. Das dunkle Design braucht Windows 10 ab Version 1809 oder Windows 11; auf älteren Windows bleibt StemMaker hell. Unter Linux (AppImage) folgt „Automatisch“ dem Desktop. StemTagger und StemPacker folgen derselben Einstellung (beim nächsten Öffnen), der StemPlayer bleibt immer dunkel.
 
 ## Welches Trenn-Modell? {#modelle}
 

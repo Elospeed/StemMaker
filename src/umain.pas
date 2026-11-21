@@ -182,6 +182,7 @@ type
     procedure FormResizeDrop(Sender: TObject);
     { rote „Fehlt: …“-Zeile auf die Breite des Rahmens kürzen }
     procedure ZeigeToolsText;
+    procedure PfadBreite;
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
@@ -222,7 +223,7 @@ type
     FTrayTimer : TTimer;                                   // fragt ab, ob ein zweiter Start "zeig dich" will
     FInTray    : Boolean;                                  // Fenster ist gerade ins Symbol versteckt
     FTrayNotice: Boolean;                                  // "fertig"-Meldung wurde gezeigt, noch nicht gesehen
-    FDonatePending: Boolean;                               // Spenden-Hinweis fällig, wartet bis StemMaker vorne ist
+    FDonatePending: Boolean;                               // Dankfenster fällig, wartet bis StemMaker vorne ist
     { Rechtsklick-Menü der Dateiliste }
     FMenuListen: TMenuItem;
     FMenuRemove: TMenuItem;
@@ -640,6 +641,13 @@ begin
   TranslateComponent(Self);                                // Texte aus umain.lfm übersetzen (uLangUI)
   HelpKeyword := 'hauptfenster';                           // F1 öffnet die Hilfe hier (uHilfe)
   memLog.Font.Name := MonoFontName;                        // Consolas hat keine japanischen Zeichen
+  { Linux dunkel (uWineFarben): die Liste nähme sonst schwarze Schrift }
+  if UnterWine and DunklesDesign then
+    lvFiles.Font.Color := clWindowText;
+  { Wine füllt die letzte Spalte (AutoSize) bei leerer Liste nicht auf,
+    "Pfad" würde abgeschnitten. Dort die Breite selbst setzen (PfadBreite). }
+  if UnterWine then
+    lvFiles.Columns[2].AutoSize := False;
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');
@@ -2219,7 +2227,7 @@ begin
   EndPower;                                                // zuerst zurückstellen, dann zusammenfassen
   WriteRunSummary(FWorker);
   { Fertige Tracks zählen. Ist eine "runde" Zahl erreicht (10, 50, 100 ...),
-    kommt der Spenden-Hinweis - aber nur nach einem guten Durchlauf: ohne
+    kommt das Dankfenster - aber nur nach einem guten Durchlauf: ohne
     Abbruch, ohne anschliessendes Herunterfahren und mit höchstens 10 %
     fehlgeschlagenen Dateien (siehe uDonate). Bei langen Listen (z. B.
     1000 MP3s) ist eine kaputte Datei normal und soll den Hinweis nicht
@@ -2258,11 +2266,11 @@ begin
     { Update kam während der Umwandlung - jetzt anbieten }
     Application.QueueAsyncCall(@OfferUpdate, 0)
   else if FDonatePending then
-    { Spenden-Hinweis: wie oben NICHT direkt hier (Ende-Ereignis des Threads) }
+    { Dankfenster: wie oben NICHT direkt hier (Ende-Ereignis des Threads) }
     Application.QueueAsyncCall(@ShowDonate, 0);
 end;
 
-{ Spenden-Hinweis zeigen - aber nur, wenn man StemMaker gerade anschaut.
+{ Dankfenster zeigen - aber nur, wenn man StemMaker gerade anschaut.
   Ist das Fenster im Symbol neben der Uhr oder im Hintergrund, wartet der
   Hinweis, bis StemMaker wieder vorne ist (AppActivate). So springt nie
   ein Fenster über ein anderes Programm. }
@@ -2984,8 +2992,21 @@ begin
     lblTools.Parent.ClientWidth - lblTools.Left - Scale96ToForm(8));
 end;
 
+{ Unter Wine: Spalte "Pfad" füllt den Rest der Liste }
+procedure TfrmMain.PfadBreite;
+var
+  W: Integer;
+begin
+  if not UnterWine then Exit;
+  W := lvFiles.ClientWidth - lvFiles.Columns[0].Width - lvFiles.Columns[1].Width;
+  if W < Scale96ToForm(120) then W := Scale96ToForm(120);
+  if lvFiles.Columns[2].Width <> W then
+    lvFiles.Columns[2].Width := W;
+end;
+
 procedure TfrmMain.FormResizeDrop(Sender: TObject);
 begin
+  PfadBreite;
   lblDrop.Visible := lblDrop.Left + lblDrop.Width <= lblDrop.Parent.ClientWidth;
   ZeigeToolsText;
   { breiteres Fenster: passt "fertig ca. ..." jetzt in die Zeile?

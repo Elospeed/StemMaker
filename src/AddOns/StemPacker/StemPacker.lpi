@@ -22,9 +22,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="0"/>
-      <MinorVersionNr Value="3"/>
-      <RevisionNr Value="1"/>
-      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPacker - fertige Spuren zu Traktor-Stems" InternalName="StemPacker" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPacker.exe" ProductName="Elospeed StemPacker" ProductVersion="0.3.1"/>
+      <MinorVersionNr Value="4"/>
+      <RevisionNr Value="0"/>
+      <StringTable CompanyName="Elospeed" FileDescription="Elospeed StemPacker - fertige Spuren zu Traktor-Stems" InternalName="StemPacker" LegalCopyright="Elospeed - freie Software" OriginalFilename="StemPacker.exe" ProductName="Elospeed StemPacker" ProductVersion="0.4"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -59,6 +59,14 @@
       </Unit>
       <Unit>
         <Filename Value="packdetect.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="udonatelogik.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="udankfenster.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>

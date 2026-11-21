@@ -6,6 +6,15 @@ hier, in en.md und in es.md ergänzen (der Release-Workflow prüft das).
 Darunter „### Neu“, „### Verbessert“, „### Behoben“ (nur was es gibt), je Punkt
 ein kurzes Stichwort. Nur Punkte, die Nutzer merken, ohne technische Einzelheiten.
 
+## 2.5 – 21. November 2026
+### Neu
+- Linux: hell oder dunkel wie der Desktop, auch die Titelleiste
+- Linux: neue Skalierung des Desktops gilt beim nächsten Start
+### Behoben
+- Linux: gesperrte Knöpfe im dunklen Design gut lesbar
+- StemPlayer 1.8.7: Zeitskala der Lupe beim Minutenwechsel
+- StemTagger 1.3: gesperrte Knöpfe besser lesbar
+
 ## 2.4 – 15. November 2026
 ### Neu
 - Hell oder dunkel: Design in den Einstellungen wählbar, Standard wie Windows (Idee von David GJ)
