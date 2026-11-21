@@ -77,14 +77,16 @@ const
     $FFFFFF, $F5F5F5, $A6A6A6, $A6A6A6,
     $000000, $C8C8C8, $FFFFFF,
     $6A6A6A, $E3E3E3, $000000, $FFFFFF);
-  { Dunkel: ähnlich wie das dunkle Design unter Windows }
+  { Dunkel: ähnlich wie das dunkle Design unter Windows.
+    ButtonShadow hell und ButtonHilight wie die Knopffarbe: Gesperrte
+    Texte zeichnet Wine mit diesen beiden Farben, so bleiben sie lesbar. }
   FARBEN_DUNKEL: array[0..ANZAHL - 1] of DWORD = (
     $3A3A3A, $202020, $5A3A1E,
     $2B2B2B, $2B2B2B, $202020, $505050,
     $E8E8E8, $E8E8E8, $FFFFFF, $3A3A3A,
     $2B2B2B, $1A1A1A, $8A5A26,
-    $FFFFFF, $2B2B2B, $1A1A1A, $8C8C8C,
-    $E8E8E8, $A0A0A0, $4A4A4A,
+    $FFFFFF, $2B2B2B, $808080, $8C8C8C,
+    $E8E8E8, $A0A0A0, $2B2B2B,
     $101010, $3A3A3A, $E8E8E8, $2B2B2B);
 
 function DesktopDunkel: Boolean;

@@ -182,6 +182,7 @@ type
     procedure FormResizeDrop(Sender: TObject);
     { rote „Fehlt: …“-Zeile auf die Breite des Rahmens kürzen }
     procedure ZeigeToolsText;
+    procedure PfadBreite;
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tmrTimeTimer(Sender: TObject);
     procedure btnInfoClick(Sender: TObject);
@@ -643,6 +644,10 @@ begin
   { Linux dunkel (uWineFarben): die Liste nähme sonst schwarze Schrift }
   if UnterWine and DunklesDesign then
     lvFiles.Font.Color := clWindowText;
+  { Wine füllt die letzte Spalte (AutoSize) bei leerer Liste nicht auf,
+    "Pfad" würde abgeschnitten. Dort die Breite selbst setzen (PfadBreite). }
+  if UnterWine then
+    lvFiles.Columns[2].AutoSize := False;
   { Dialog-Titel und Dateifilter werden von TranslateComponent nicht
     erfasst - deshalb hier (gleicher Inhalt wie in umain.lfm) }
   dlgOpen.Title := _('Audiodateien wählen');
@@ -2987,8 +2992,21 @@ begin
     lblTools.Parent.ClientWidth - lblTools.Left - Scale96ToForm(8));
 end;
 
+{ Unter Wine: Spalte "Pfad" füllt den Rest der Liste }
+procedure TfrmMain.PfadBreite;
+var
+  W: Integer;
+begin
+  if not UnterWine then Exit;
+  W := lvFiles.ClientWidth - lvFiles.Columns[0].Width - lvFiles.Columns[1].Width;
+  if W < Scale96ToForm(120) then W := Scale96ToForm(120);
+  if lvFiles.Columns[2].Width <> W then
+    lvFiles.Columns[2].Width := W;
+end;
+
 procedure TfrmMain.FormResizeDrop(Sender: TObject);
 begin
+  PfadBreite;
   lblDrop.Visible := lblDrop.Left + lblDrop.Width <= lblDrop.Parent.ClientWidth;
   ZeigeToolsText;
   { breiteres Fenster: passt "fertig ca. ..." jetzt in die Zeile?

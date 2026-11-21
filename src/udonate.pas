@@ -7,33 +7,25 @@
   ----------------------------------------------------------------------------
   WORUM GEHT ES HIER?
 
-  Der freundliche Spenden-Hinweis. StemMaker ist kostenlos und quelloffen,
-  über Ko-fi kann man freiwillig etwas zurückgeben.
+  Das Dankfenster nach einem Durchlauf, mit Link zu ko-fi.com/elospeed.
 
-  WANN KOMMT DER HINWEIS? (seit Oktober 2026)
-  Früher kam vor JEDEM Programmstart ein Spendenfenster. Das ist der
-  schlechteste Moment: Wer das Programm gerade erst öffnet, hat noch nichts
-  davon gehabt und klickt das Fenster nur weg (oder schaltet es für immer
-  ab). Jetzt kommt der Hinweis genau dann, wenn StemMaker gerade geholfen
-  hat - nach einem erfolgreichen Durchlauf, an dem eine "runde" Zahl
-  fertiger Tracks erreicht wurde:
+  WANN KOMMT DAS FENSTER?
+  Nach einem erfolgreichen Durchlauf, wenn eine dieser Zahlen fertiger
+  Tracks erreicht wurde:
 
       10, 50, 100, 250, 500, 1000, danach alle 1000 Tracks
 
   Dazu einmal pro neuer Haupt- oder Unterversion (2.5, 2.6, nicht 2.5.1)
   nach der ersten erfolgreichen Umwandlung, mit "Danke fürs Update".
-  Höchstens ein Hinweis pro Sitzung, nie beim Start, nie bei einem Abbruch
+  Höchstens einmal pro Sitzung, nie beim Start, nie bei einem Abbruch
   und nie nach einem Durchlauf, in dem mehr als 10 % der Dateien
   fehlgeschlagen sind. Die Entscheidung steht in uDonateLogik.
-  Der Hinweis nennt, was StemMaker schon geleistet hat (Anzahl Tracks,
-  Stunden Musik), sagt ehrlich, dass dahinter ein Hobbyprojekt steckt, und
-  sagt ausdrücklich, dass "nein" völlig in Ordnung ist.
 
     [ Kaffee spendieren ]  -> öffnet ko-fi.com/elospeed im Browser
-    [ Weiter            ]  -> einfach weiter
+    [ Weiter            ]  -> schliesst das Fenster
     [x] Nicht mehr fragen   -> StemMaker.ini, [Main] HideDonate=1
                                (gilt bis zur nächsten neuen Version;
-                               dann kommt der Hinweis zum Update einmal
+                               dann kommt das Fenster zum Update einmal
                                und HideDonate wird zurückgesetzt)
 
   Im Info-Fenster gibt es "Jetzt spenden" weiterhin jederzeit.
@@ -144,8 +136,7 @@ begin
           ShownForWirksam(Vorher, ShownFor, APP_VERSION));
       ShownFor := ShownForWirksam(Vorher, ShownFor, APP_VERSION);
 
-      { Hinweis nur nach einem guten Durchlauf - der Moment, in dem
-        StemMaker gerade sichtbar geholfen hat. Eine Marke, die bei einem
+      { Nur nach einem guten Durchlauf. Eine Marke, die bei einem
         schlechten Durchlauf erreicht wurde, kommt beim nächsten guten nach.
         Gemerkt wird erst, wenn der Hinweis wirklich erscheint
         (ShowDonateThanks). Wird StemMaker vorher geschlossen, z. B. aus
@@ -182,7 +173,7 @@ begin
   ClientWidth := 480;
   ClientHeight := 330;
 
-  { kleines farbiges Element links als Blickfang (Ko-fi-Rot) }
+  { farbiger Streifen links (Farbe #FF5A5E) }
   pnlHeart := TShape.Create(Self);
   pnlHeart.Parent := Self;
   pnlHeart.Shape := stRoundRect;
@@ -190,7 +181,7 @@ begin
   pnlHeart.Pen.Style := psClear;
   pnlHeart.SetBounds(20, 22, 8, 208);
 
-  { Titel: was StemMaker schon geleistet hat - konkret, mit Zahl }
+  { Titel: Update-Dank oder Anzahl Tracks }
   lblTitle := TLabel.Create(Self);
   lblTitle.Parent := Self;
   lblTitle.SetBounds(42, 18, 420, 24);
@@ -202,15 +193,8 @@ begin
   lblTitle.Font.Style := [fsBold];
   lblTitle.Font.Height := -17;
 
-  { Der Text. Bewusst so aufgebaut:
-    1. erst das, was der Benutzer schon bekommen hat (ohne Abo, ohne Upload),
-    2. dann ehrlich, wer dahinter steckt (ein Mensch, Freizeit),
-    3. eine kleine, konkrete Bitte (ein Kaffee, kein Betrag) und wofür
-       sie gut ist (dass es weitergeht),
-    4. und ausdrücklich: "nein" ist völlig in Ordnung.
-    Nach einem Update statt der Zahlen: StemMaker bleibt gratis.
-    Punkt 4 ist kein Trick gegen den Benutzer - wer frei entscheiden darf,
-    fühlt sich nicht gedrängt, und genau so soll es sich anfühlen. }
+  { Text: Anzahl Tracks und Stunden Musik (nach einem Update stattdessen
+    ein Satz zur Version), dann der Link-Satz und "nein" ist in Ordnung. }
   S := '';
   if NachUpdate then
     S := _('StemMaker bleibt gratis, ohne Abo und ohne Werbung. Ich ' +
@@ -259,7 +243,7 @@ begin
   btnDonate.Caption := _('Kaffee spendieren');
   btnDonate.Font.Style := [fsBold];
   btnDonate.OnClick := @btnDonateClick;
-  ActiveControl := btnStart;     // Fokus auf "Weiter" - niemand spendet aus Versehen
+  ActiveControl := btnStart;     // Fokus auf "Weiter"
 end;
 
 procedure TfrmDonate.btnDonateClick(Sender: TObject);
